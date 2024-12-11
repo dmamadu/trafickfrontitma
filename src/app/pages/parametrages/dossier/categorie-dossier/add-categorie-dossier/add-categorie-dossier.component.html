@@ -1,34 +1,54 @@
-<mat-toolbar class="mat-accent m-0 backToolbar">
-  <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
-    <span class="c_title dialog-title">{{ dialogTitle }}</span>
-    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
-      <mat-icon>close</mat-icon>
+<mat-toolbar class="mat-accent m-0 backToolbar shadow-md">
+  <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire px-4">
+    <span class="c_title dialog-title text-lg font-semibold text-white">{{ dialogTitle }}</span>
+    <button
+      mat-icon-button
+      (click)="matDialogRef.close()"
+      aria-label="Close dialog"
+      class="closeButton hover:bg-gray-200 rounded-full"
+    >
+      <mat-icon class="text-white">close</mat-icon>
     </button>
   </mat-toolbar-row>
 </mat-toolbar>
 
-<div class="flex flex-col flex-auto min-w-10-0 p-2 md:p-4">
-  <form [formGroup]="initForm" class="event-form w-100-p">
-    <div class="d-flex items-center justify-center">
-      <mat-form-field class="w-1/2 mt-2 mr-2" appearance="outline">
-        <mat-label class="enteteccColor">Libelle</mat-label>
-        <input class="typeTitle" matInput type="text" name="libelle" formControlName="libelle" />
+<div class="flex flex-col flex-auto min-w-10-0 p-4 md:p-6 bg-gray-100 rounded-lg shadow-lg">
+  <form [formGroup]="initForm" class="event-form w-full space-y-4">
+    <!-- Libelle Field -->
+    <div class="flex justify-center">
+      <mat-form-field class="w-full md:w-1/2" appearance="outline">
+        <mat-label class="text-sm text-gray-600">Libelle</mat-label>
+        <input
+          matInput
+          type="text"
+          name="libelle"
+          formControlName="libelle"
+          class="text-gray-700"
+        />
         <mat-icon matSuffix class="secondary-text">code</mat-icon>
-        <mat-error>Le champs est obligatoire</mat-error>
+        <mat-error class="text-red-500">Le champ est obligatoire</mat-error>
       </mat-form-field>
     </div>
 
-
-
+    <!-- Action Buttons -->
     <div class="flex justify-center gap-4 mt-4">
-      <button mat-raised-button class="submit-buttonRed" type="button">
-        <span class="textForm">Annuler</span>
+      <button
+        mat-raised-button
+        class="submit-buttonRed bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-6 rounded-md"
+        type="button"
+      >
+        <span>Annuler</span>
       </button>
-      <button [disabled]="loader" mat-raised-button class="submit-button" (click)="checkRecap(action)">
-        <span class="textForm">{{ labelButton }}</span>
+      <button
+        [disabled]="loader"
+        mat-raised-button
+        class="submit-button bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-6 rounded-md"
+        (click)="checkRecap(action)"
+      >
+        <span>{{ labelButton }}</span>
       </button>
     </div>
   </form>
-
 </div>
+
 

@@ -79,12 +79,6 @@ export class FonctionUtilisateurComponent implements OnInit {
   }
 
 
-
-
-
-
-
-
   createHeader() {
     return [
       {
@@ -129,7 +123,6 @@ export class FonctionUtilisateurComponent implements OnInit {
     private snackbar: SnackBarService,
     private _matDialog: MatDialog,
     private coreService: CoreService,
-  //  public matDialogRef: MatDialogRef<>,
     private _changeDetectorRef: ChangeDetectorRef,
     public toastr: ToastrService,
     ){

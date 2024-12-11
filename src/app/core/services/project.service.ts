@@ -14,23 +14,14 @@ export class ProjectService extends RootService {
     return this.http.post<any>(url, imageFormData);
   }
 
-
-
-
-
   uploadFichiers(fichier: any, projectId: number) {
     const body = {
       fichierUrl: fichier,
-     // projectId: projectId
+      // projectId: projectId
     };
     const url = `${this.url}/fichiers/ajout/${projectId}`;
     return this.http.post<any>(url, body);
   }
-
-
-
-
-
 
   saveNormeProjet(normeProjet: any, projectId: number) {
     const url = `${this.url}/normes/saveNorme/${projectId}`;
@@ -46,15 +37,23 @@ export class ProjectService extends RootService {
     return this.http.put<any>(url, normeProjet);
   }
 
-  uploadFiles(files: File[], filenames: string[], idProd: number): Observable<any[]> {
+  uploadFiles(
+    files: File[],
+    filenames: string[],
+    idProd: number
+  ): Observable<any[]> {
     const imageFormData = new FormData();
 
     for (let i = 0; i < files.length; i++) {
-      imageFormData.append('files', files[i], filenames[i]);
+      imageFormData.append("files", files[i], filenames[i]);
     }
 
     const url = `${this.url}/file/update/${idProd}`;
     return this.http.post<any[]>(url, imageFormData);
   }
 
+  getRencontreByProjectId(projectId: number): Observable<any> {
+    const url = `${this.url}/rencontres/project/${projectId}`;
+    return this.http.get<any>(url);
+  }
 }

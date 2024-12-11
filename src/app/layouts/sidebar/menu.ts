@@ -25,7 +25,7 @@ export const MENU: MenuItem[] = [
         parentId: 2,
         icon: "bx bx-wrench", // Example of a Boxicon class
       },
-    ]
+    ],
   },
 
   // {
@@ -552,25 +552,25 @@ export const MENU: MenuItem[] = [
     label: "MAITRES D'OUVRAGES",
     icon: "bxs-user-detail",
     subItems: [
-  // {
-  //   id: 92,
-  //   label: "MO GRID",
-  //   link: "/maitrouvrages/grid",
-  //   parentId: 91,
-  // },
-  {
-    id: 93,
-    label: "Liste",
-    "icon": "bx-list-ul",
-    link: "/maitrouvrages/list",
-    parentId: 91,
-  },
-  // {
-  //   id: 94,
-  //   label: "MO PROFILE",
-  //   link: "/maitrouvrages/profile",
-  //   parentId: 91,
-  // },
+      // {
+      //   id: 92,
+      //   label: "MO GRID",
+      //   link: "/maitrouvrages/grid",
+      //   parentId: 91,
+      // },
+      {
+        id: 93,
+        label: "Liste",
+        icon: "bx-list-ul",
+        link: "/maitrouvrages/list",
+        parentId: 91,
+      },
+      // {
+      //   id: 94,
+      //   label: "MO PROFILE",
+      //   link: "/maitrouvrages/profile",
+      //   parentId: 91,
+      // },
     ],
   },
   {
@@ -584,6 +584,36 @@ export const MENU: MenuItem[] = [
         icon: "bxs-user-detail",
         link: "/pap/list",
         parentId: 92,
+        subItems: [
+          {
+            id: 110,
+            label: "Pap Agricole",
+            icon: "bxs-tree",
+            link: "/pap/papAgricole",
+            parentId: 95,
+          },
+          {
+            id: 111,
+            label: "Pap place affaire",
+            icon: "bxs-briefcase",
+            link: "/pap/papPlaceAffaire",
+            parentId: 95,
+          },
+          // {
+          //   id: 112,
+          //   label: "Pap Economique",
+          //   icon: "bxs-chart",
+          //   link: "/pap/list",
+          //   parentId: 95,
+          // },
+          {
+            id: 112,
+            label: "Pap Economique",
+            icon: "bxs-chart",
+            link: "/pap/papEconomique",
+            parentId: 95,
+          },
+        ]
       },
       {
         id: 95,
@@ -698,44 +728,44 @@ export const MENU: MenuItem[] = [
         id: 102,
         label: "Chef de mission",
         icon: "bx-list-ul",
-        link: "/consultant/chef-de-mission",  // Lien vers la liste des "Chef de mission"
+        link: "/consultant/chef-de-mission", // Lien vers la liste des "Chef de mission"
         parentId: 93,
       },
       {
         id: 103,
         label: "Spécialiste en réinstallation",
         icon: "bx-list-ul",
-        link: "/consultant/specialiste-reinstallation",  // Lien vers la liste des "Spécialiste en réinstallation"
+        link: "/consultant/specialiste-reinstallation", // Lien vers la liste des "Spécialiste en réinstallation"
         parentId: 93,
       },
       {
         id: 104,
         label: "Spécialiste en gestion des parties prenantes",
         icon: "bx-list-ul",
-        link: "/consultant/gestion-parties-prenantes",  // Lien vers la liste des "Spécialiste en gestion des parties prenantes"
+        link: "/consultant/gestion-parties-prenantes", // Lien vers la liste des "Spécialiste en gestion des parties prenantes"
         parentId: 93,
       },
       {
         id: 105,
         label: "Spécialiste en Genre et Inclusions Sociale",
         icon: "bx-list-ul",
-        link: "/consultant/genre-inclusions-sociale",  // Lien vers la liste des "Spécialiste en Genre et Inclusions Sociale"
+        link: "/consultant/genre-inclusions-sociale", // Lien vers la liste des "Spécialiste en Genre et Inclusions Sociale"
         parentId: 93,
       },
       {
         id: 106,
         label: "Spécialiste en base de données et SIG",
         icon: "bx-list-ul",
-        link: "/consultant/base-de-donnees-sig",  // Lien vers la liste des "Spécialiste en base de données et SIG"
+        link: "/consultant/base-de-donnees-sig", // Lien vers la liste des "Spécialiste en base de données et SIG"
         parentId: 93,
       },
       {
         id: 107,
         label: "Animateurs communautaires",
         icon: "bx-list-ul",
-        link: "/consultant/animateurs-communautaires",  // Lien vers la liste des "Animateurs communautaires"
+        link: "/consultant/animateurs-communautaires", // Lien vers la liste des "Animateurs communautaires"
         parentId: 93,
-      }
+      },
     ],
   },
   {
@@ -774,14 +804,14 @@ export const MENU: MenuItem[] = [
       },
       {
         id: 103,
-        label: "Profil",
+        label: "Fonctions",
         icon: "bx-list-ul",
         link: "/fonctions",
         parentId: 94,
       },
       {
         id: 104,
-        label: "Catégories",
+        label: "Niveau de priviléges",
         icon: "bx-list-ul",
         link: "/categories",
         parentId: 94,
@@ -806,19 +836,19 @@ export const MENU: MenuItem[] = [
 
   {
     id: 96,
-    label: "Gestion des dossiers",
+    label: "Gestion des documents",
     icon: "bxs-user-detail",
     subItems: [
       {
         id: 103,
-        label: "Dosssiers",
+        label: "Documents",
         icon: "bx-list-ul",
         link: "/dossiers",
         parentId: 96,
       },
       {
         id: 103,
-        label: "Catégories dossiers",
+        label: "Catégories documents",
         icon: "bx-list-ul",
         link: "/catégorie-dossier",
         parentId: 96,
@@ -854,4 +884,26 @@ export const MENU: MenuItem[] = [
   // }
   //   ],
   // },
+
+  {
+    id: 96,
+    label: "Élaboration du PAR",
+    icon: "bxs-detail",
+    subItems: [
+      {
+        id: 104,
+        label: "Liste",
+        icon: "bx-list-ul",
+        link: "/rencontres",
+        parentId: 96,
+       }
+      // {
+      //   id: 105,
+      //   label: "Ajouter",
+      //   icon: "bx-plus-circle",
+      //   link: "/ententeCompensation/add",
+      //   parentId: 96,
+      // },
+    ],
+  },
 ];

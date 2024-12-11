@@ -70,7 +70,10 @@ export class CategorieDossierComponent {
   btnActions: any = [];
 
 
-
+  breadCrumbItems: (
+    | { label: string; active?: undefined }
+    | { label: string; active: boolean }
+  )[];
 
 
   roles: any[]=[];
@@ -83,7 +86,9 @@ export class CategorieDossierComponent {
 
 
 
-
+  filterTable($event: any) {
+    throw new Error("Method not implemented.");
+  }
 
 
 

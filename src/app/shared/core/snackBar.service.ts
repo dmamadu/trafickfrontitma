@@ -33,7 +33,7 @@ export class SnackBarService {
     openSnackBar(message: string, action: string, className,callBack?) {
         if(callBack){
             this.matSnackBar.open(message, action, {
-                duration: 10000,
+                duration: 50000,
                 panelClass: className
             }).onAction().subscribe(()=>{
                 callBack();

@@ -28,24 +28,7 @@
             <mat-error>Le champs est obligatoire</mat-error>
           </mat-form-field>
         </div>
-        <!-- <div class="flex gap-2">
-          <mat-form-field class="w-1/2 mt-2" fxFlex="50">
-            <mat-label class="enteteccColor">Date de naissance</mat-label>
-            <input class="enteteccColor" [max]="minBirthDay" autocomplete="off" matInput [matDatepicker]="picker" formControlName="dateNaissance" />
-            <mat-datepicker-toggle matSuffix [for]="picker">
-              <mat-icon matDatepickerToggleIcon class="enteteccColor">calendar_today</mat-icon>
-            </mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-            <mat-error>Le champ est obligatoire</mat-error>
-          </mat-form-field>
 
-          <mat-form-field class=" w-1/2 mt-2">
-            <mat-label class="enteteccColor">Lieu de naissance
-            </mat-label>
-            <input class="typeTitle" matInput type="text" name="lieuNaissance" formControlName="lieuNaissance" />
-            <mat-error>Le champs est obligatoire</mat-error>
-          </mat-form-field>
-        </div> -->
         <div class="flex gap-2">
           <mat-form-field class=" w-1/2 mt-2" fxFlex="100" appearance="outline">
             <mat-label disabled value="" selected class="enteteccColor">Couriel Principal</mat-label>
@@ -59,40 +42,7 @@
             <mat-icon matSuffix class="enteteccColor">home</mat-icon>
             <mat-error>Le champs est oligatoire</mat-error>
           </mat-form-field>
-
-          <!-- <mat-form-field class=" w-1/2 mt-2" fxFlex="100">
-            <mat-label disabled value="" selected class="enteteccColor">Pays </mat-label>
-            <mat-select formControlName="pays" class="enteteccColor">
-              <mat-option class="enteteccColor" *ngFor="let country of countries" [value]="country?.libelleNationalite">
-                {{ country?.libelleNationalite }}
-              </mat-option>
-            </mat-select>
-            <mat-icon matSuffix class="enteteccColor">storage</mat-icon>
-            <mat-error>Le champs est oligatoire</mat-error>
-          </mat-form-field> -->
         </div>
-        <!-- <div class="flex gap-2">
-          <mat-form-field class=" w-1/2 mt-2" fxFlex="100">
-            <mat-label disabled value="" selected class="enteteccColor">Sexe</mat-label>
-            <mat-select formControlName="sexe" class="enteteccColor">
-              <mat-option class="enteteccColor" *ngFor="let sexe of sexe" [value]="sexe?.id">
-                {{ sexe?.name }}
-              </mat-option>
-            </mat-select>
-            <mat-icon matSuffix class="enteteccColor">storage</mat-icon>
-            <mat-error>Le champs est oligatoire</mat-error>
-          </mat-form-field>
-          <mat-form-field class=" w-1/2 mt-2" fxFlex="100">
-            <mat-label disabled value="" selected class="enteteccColor">Situation matrimoniale</mat-label>
-            <mat-select formControlName="situationMatrimoniale" class="enteteccColor">
-              <mat-option (click)="getRegimeBySituation(situationMatrimoniale)" class="enteteccColor"
-                *ngFor="let situationMatrimoniale of situationsMatrimoniales" [value]="situationMatrimoniale?.id">
-                {{ situationMatrimoniale?.libelle }}
-              </mat-option>
-            </mat-select>
-            <mat-icon matSuffix class="enteteccColor">storage</mat-icon>
-          </mat-form-field>
-        </div> -->
         <div class="flex gap-2">
           <mat-form-field class=" w-full mt-2" appearance="outline">
             <mat-label class="enteteccColor">localisation</mat-label>
@@ -100,12 +50,7 @@
             <mat-icon matSuffix class="secondary-text">place</mat-icon>
             <mat-error>Le champs est obligatoire</mat-error>
           </mat-form-field>
-          <!-- <mat-form-field class=" w-full mt-2">
-            <mat-label class="enteteccColor">Nombres de pareclle</mat-label>
-              <input class="typeTitle" matInput type="numer" name="nombreParcelle"
-              formControlName="nombreParcelle" />
-            <mat-error>Le champs est obligatoire</mat-error>
-          </mat-form-field> -->
+
           <mat-form-field class=" w-1/2 mt-2" fxFlex="100" appearance="outline">
             <mat-label disabled value="" selected class="enteteccColor">Catégorie </mat-label>
             <mat-select formControlName="categoriePartieInteresse" class="enteteccColor">
@@ -160,8 +105,7 @@
           <mat-form-field class=" w-1/2 mt-2" appearance="outline">
             <mat-label class="enteteccColor">Sexe
             </mat-label>
-            <!-- <input class="typeTitle" matInput type="text" name="sexeContactPrincipal"
-              formControlName="sexeContactPrincipal" /> -->
+
               <mat-select formControlName="sexe" class="enteteccColor">
                 <mat-option class="enteteccColor" *ngFor="let sexe of sexe" [value]="sexe?.id">
                   {{ sexe?.name }}
@@ -237,9 +181,6 @@
           </button>
         </div>
       </mat-step>
-
-
-
 
       <mat-step label="Récapitulatif">
         <mat-accordion>

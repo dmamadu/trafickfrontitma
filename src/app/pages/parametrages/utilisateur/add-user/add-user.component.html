@@ -9,24 +9,6 @@
 </mat-toolbar>
 
 
-<!--
-
-<div class="fuse-mat-dense myFile w-full">
-  <div class="c-img">
-      <button mat-button class="use-avatar" type="button" mat-raised-button
-              (click)="fileInput.click()">
-          <mat-icon class="s-32" svgIcon="cloud_upload"></mat-icon> &nbsp;Photo
-      </button>
-      <input hidden #fileInput class="use-avatar" (change)="selectOnFile($event,'logo','photo')"
-             type="file" id="file" required />
-      <div *ngIf="!fileSelected && loaderss" class="textError">{{ errorFile }}</div>
-  </div>
-  <div class="textOk mt-3" *ngIf="noImage!=''">
-      <img class="w-40 h-5"
-           [src]="noImage" alt="attribut complementaire">
-  </div>
-
-</div> -->
 
    <!-- Image Section -->
    <div class="row">
@@ -117,30 +99,6 @@
         <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
     </div>
-    <!-- <div class="flex gap-2">
-      <mat-form-field class="w-full mt-2" appearance="outline">
-        <mat-label class="enteteccColor">Niveau</mat-label>
-        <mat-select formControlName="categorie_id">
-          <mat-option *ngFor="let categorie of categories" [value]="categorie.id">
-            {{ categorie.libelle }}
-          </mat-option>
-        </mat-select>
-        <mat-icon matSuffix class="secondary-text">code</mat-icon>
-        <mat-error>Le champs est obligatoire</mat-error>
-      </mat-form-field>
-    </div>
-    <div class="flex gap-2">
-      <mat-form-field class="w-full mt-2" appearance="outline">
-        <mat-label class="enteteccColor">Profil</mat-label>
-        <mat-select formControlName="fonction_id">
-          <mat-option *ngFor="let profil of profils" [value]="profil.id">
-            {{ profil.libelle }}
-          </mat-option>
-        </mat-select>
-        <mat-icon matSuffix class="secondary-text">code</mat-icon>
-        <mat-error>Le champs est obligatoire</mat-error>
-      </mat-form-field>
-    </div> -->
     <div class="flex gap-2">
       <mat-form-field class="w-full mt-2" appearance="outline">
         <mat-label class="enteteccColor">Niveau</mat-label>
@@ -155,10 +113,16 @@
     </div>
 
     <div class="flex gap-2">
-      <mat-form-field class="w-full mt-2" appearance="outline">
-        <mat-label class="enteteccColor">Profil</mat-label>
-        <mat-select formControlName="fonction_id">
-          <mat-option *ngFor="let profil of filteredProfils" [value]="profil.id">
+      <mat-form-field class="w-full mt-2" appearance="outline" >
+        <mat-label class="enteteccColor">Fonctions</mat-label>
+        <mat-select formControlName="fonction_id" *ngIf="action=='new'">
+          <mat-option *ngFor="let profil of filteredProfils" [value]="profil.id" >
+            {{ profil.libelle }}
+          </mat-option>
+        </mat-select>
+
+        <mat-select formControlName="fonction_id" *ngIf="action=='edit'">
+          <mat-option *ngFor="let profil of profils" [value]="profil.id" >
             {{ profil.libelle }}
           </mat-option>
         </mat-select>

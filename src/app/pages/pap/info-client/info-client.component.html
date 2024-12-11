@@ -1,6 +1,6 @@
 <div class="w-full heighContentRight" id="heighContentRightId">
   <div class="w-full mb-10 ">
-    <fuse-card class="flex flex-col w-full p-4">
+    <fuse-card class="flex flex-col w-full p-4" *ngIf="(infosPap.type!='PAPAGRICOLE' &&  infosPap.type!='PAPPLACEAFFAIRE' && infosPap.type!='PAPECONOMIQUE')">
       <mat-tab-group dynamicHeight class="w-full" >
         <mat-tab label="Détails">
           <div class="">
@@ -178,29 +178,6 @@
                   </div>
                 </div>
               </div>
-
-              <!-- <div class="flex flex-col w-full mb-2">
-                <label class="leading-tight uppercase c_title_header mb-4">Betails</label>
-                <div class="my-2 text-gray-700 font-semibold" *ngIf="betails.length>0" >
-                  Nombre total des bétails : {{ betails.length }}
-                </div>
-                <div class="my-2 text-red-700 font-semibold" *ngIf="betails.length==0">
-                 Aucun bétail
-                </div>
-                <div class="overflow-x-auto">
-                  <div class="flex flex-nowrap">
-                    <div *ngFor="let betail of betails" class="bg-white p-6 rounded-lg shadow-md min-w-max mr-4">
-                      <div *ngFor="let key of getKeys(betail)" class="flex justify-between items-center mb-4">
-                        <span class="font-semibold capitalize text-gray-700">
-                          {{ formatKey(key) }}:
-                        </span>
-                        <span class="text-gray-900">{{ betail[key] }}</span>
-                      </div>
-                      <hr class="border-gray-200" />
-                    </div>
-                  </div>
-                </div>
-              </div> -->
               <div class="flex flex-col w-full mb-3">
                 <label class="leading-tight uppercase c_title_header mb-4">Culture</label>
                 <div class="my-2 text-gray-700 font-semibold" *ngIf="cultures.length>0">
@@ -343,6 +320,396 @@
           </div>
         </mat-tab>
 
+
+      </mat-tab-group>
+    </fuse-card>
+
+    <!---PAP AGRICOLE-->
+
+    <fuse-card class="flex flex-col w-full p-4" *ngIf="infosPap.type=='PAPAGRICOLE'">
+      <mat-tab-group dynamicHeight class="w-full" >
+        <mat-tab label="Détails">
+          <div class="">
+            <div class="flex flex-col w-full p-4">
+              <div class="flex justify-between">
+                <div class="leading-tight uppercase c_title_header">Partie affecté par le projet</div>
+                <div class="">
+                  <button (click)="updateClient(infosPap)" class="c_btnAccount_attribut c_btnAccountF"
+                    [disabled]="infosPap?.statut ==='DEMISSION'" matTooltip="Modifier le pap" mat-icon-button>
+                    <i class="bx bx-edit"></i>
+                  </button>
+                  <button (click)="templateConsentementClient(infosPap)"
+                    class="ml-2 c_btnAccount_attribut c_btnAccountF" [disabled]="infosPap?.statut ==='DEMISSION'"
+                    matTooltip="Lettre de consentement" mat-icon-button>
+                    <i class="bx bx-envelope"></i>
+                  </button>
+                </div>
+              </div>
+              <hr class="w-full border-t">
+              <div class="flex flex-auto w-full">
+                <div class="flex flex-col w-full">
+                  <div class="grid grid-cols-2">
+                    <span class="mr-3 span-text">Code du Pap:</span>
+                    <span class="leading-none font-bold">{{infosPap?.codePap}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Nom: </span>
+                    <span class="leading-none font-bold">{{infosPap?.nom}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Prénom: </span>
+                    <span class="leading-none font-bold">{{infosPap?.prenom}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Nationalité: </span>
+                    <span class="leading-none font-bold">{{infosPap?.nationalite}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Langue Parlée: </span>
+                    <span class="leading-none font-bold">{{infosPap?.langueParlee}}</span>
+                  </div>
+
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Sexe: </span>
+                    <span class="leading-none font-bold">{{infosPap?.sexe}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Age: </span>
+                    <span class="leading-none font-bold">{{infosPap?.age}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Situation Matrimoniale: </span>
+                    <span class="leading-none font-bold">{{infosPap?.situationMatrimoniale}}</span>
+                  </div>
+                </div>
+                <div class="flex flex-col w-full">
+                  <div class="grid grid-cols-2">
+                    <span class="span-text">Type d'identification: </span>
+                    <span class="leading-none font-bold">{{infosPap?.typePni}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="span-text">Numéro d'identification: </span>
+                    <span class="leading-none font-bold">{{infosPap?.numeroPni}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="span-text">Numéro téléphone: </span>
+                    <span class="leading-none font-bold">{{infosPap?.numeroTelephone}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Nombre de parcelle affectée: </span>
+                    <span class="leading-none font-bold">{{infosPap?.nombreParcelle}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Département: </span>
+                    <span class="leading-none font-bold">{{infosPap?.departement}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Commune: </span>
+                    <span class="leading-none font-bold">{{infosPap?.commune}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Statut: </span>
+                    <span class="leading-none font-bold">{{infosPap?.statutPap}}</span>
+
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Statut vulnérable: </span>
+                    <span class="leading-none font-bold">{{infosPap?.vulnerabilite }}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <attribut-complementaire title="Attribut complémentaire"
+                (ajoutAttributComplementaire)="ajoutAttributComplementaire(infosPap,_attributComplementaire)"
+                [infosPap]="infosPap" (updateAttributComplementaire)="updateAttributComplementaire($event,infosPap)"
+                [attributComplementaire]="_attributComplementaire"
+                [natureAttribut]="'CLIENT'"></attribut-complementaire>
+
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Caractéristiques Parcelle">
+          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
+            {{ infosPap.caracteristiqueParcelle }}
+          </div>
+        </mat-tab>
+        <mat-tab label="Evaluation des pertes subies">
+          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
+            {{ infosPap.evaluationPerte }}
+          </div>
+        </mat-tab>
+        <mat-tab label="Informations complémentaires">
+          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
+            {{ infosPap.informationsEtendues }}
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </fuse-card>
+
+
+    <fuse-card class="flex flex-col w-full p-4" *ngIf="infosPap.type=='PAPPLACEAFFAIRE'">
+      <mat-tab-group dynamicHeight class="w-full" >
+        <mat-tab label="Détails">
+          <div class="">
+            <div class="flex flex-col w-full p-4">
+              <div class="flex justify-between">
+                <div class="leading-tight uppercase c_title_header">Partie affecté par le projet</div>
+                <div class="">
+                  <button (click)="updateClient(infosPap)" class="c_btnAccount_attribut c_btnAccountF"
+                    [disabled]="infosPap?.statut ==='DEMISSION'" matTooltip="Modifier le pap" mat-icon-button>
+                    <i class="bx bx-edit"></i>
+                  </button>
+                  <button (click)="templateConsentementClient(infosPap)"
+                    class="ml-2 c_btnAccount_attribut c_btnAccountF" [disabled]="infosPap?.statut ==='DEMISSION'"
+                    matTooltip="Lettre de consentement" mat-icon-button>
+                    <i class="bx bx-envelope"></i>
+                  </button>
+                </div>
+              </div>
+              <hr class="w-full border-t">
+              <div class="flex flex-auto w-full">
+                <div class="flex flex-col w-full">
+                  <div class="grid grid-cols-2">
+                    <span class="mr-3 span-text">Code du Pap:</span>
+                    <span class="leading-none font-bold">{{infosPap?.codePap}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Nom: </span>
+                    <span class="leading-none font-bold">{{infosPap?.nom}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Prénom: </span>
+                    <span class="leading-none font-bold">{{infosPap?.prenom}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Nationalité: </span>
+                    <span class="leading-none font-bold">{{infosPap?.nationalite}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Langue Parlée: </span>
+                    <span class="leading-none font-bold">{{infosPap?.langueParlee}}</span>
+                  </div>
+
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Sexe: </span>
+                    <span class="leading-none font-bold">{{infosPap?.sexe}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Age: </span>
+                    <span class="leading-none font-bold">{{infosPap?.age}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Situation Matrimoniale: </span>
+                    <span class="leading-none font-bold">{{infosPap?.situationMatrimoniale}}</span>
+                  </div>
+                </div>
+                <div class="flex flex-col w-full">
+                  <div class="grid grid-cols-2">
+                    <span class="span-text">Type d'identification: </span>
+                    <span class="leading-none font-bold">{{infosPap?.typePni}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="span-text">Numéro d'identification: </span>
+                    <span class="leading-none font-bold">{{infosPap?.numeroPni}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="span-text">Numéro téléphone: </span>
+                    <span class="leading-none font-bold">{{infosPap?.numeroTelephone}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Nombre de place affaire affectée: </span>
+                    <span class="leading-none font-bold">{{infosPap?.nombrePlaceAffaire}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Département: </span>
+                    <span class="leading-none font-bold">{{infosPap?.departement}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Commune: </span>
+                    <span class="leading-none font-bold">{{infosPap?.commune}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Statut: </span>
+                    <span class="leading-none font-bold">{{infosPap?.statutPap}}</span>
+
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Statut vulnérable: </span>
+                    <span class="leading-none font-bold">{{infosPap?.vulnerabilite }}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <attribut-complementaire title="Attribut complémentaire"
+                (ajoutAttributComplementaire)="ajoutAttributComplementaire(infosPap,_attributComplementaire)"
+                [infosPap]="infosPap" (updateAttributComplementaire)="updateAttributComplementaire($event,infosPap)"
+                [attributComplementaire]="_attributComplementaire"
+                [natureAttribut]="'CLIENT'"></attribut-complementaire>
+
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Caractéristiques de la place affaire">
+          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
+            {{ infosPap.caracteristiquePlaceAffaire }}
+          </div>
+        </mat-tab>
+        <mat-tab label="Evaluation des pertes subies">
+          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
+            {{ infosPap.evaluationPerte }}
+          </div>
+        </mat-tab>
+        <mat-tab label="Informations complémentaires">
+          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
+            {{ infosPap.informationsEtendues }}
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
+    </fuse-card>
+
+
+    <fuse-card class="flex flex-col w-full p-4" *ngIf="infosPap.type=='PAPECONOMIQUE'">
+      <mat-tab-group dynamicHeight class="w-full" >
+        <mat-tab label="Détails">
+          <div class="">
+            <div class="flex flex-col w-full p-4">
+              <div class="flex justify-between">
+                <div class="leading-tight uppercase c_title_header">Partie affecté par le projet</div>
+                <div class="">
+                  <button (click)="updateClient(infosPap)" class="c_btnAccount_attribut c_btnAccountF"
+                    [disabled]="infosPap?.statut ==='DEMISSION'" matTooltip="Modifier le pap" mat-icon-button>
+                    <i class="bx bx-edit"></i>
+                  </button>
+                  <button (click)="templateConsentementClient(infosPap)"
+                    class="ml-2 c_btnAccount_attribut c_btnAccountF" [disabled]="infosPap?.statut ==='DEMISSION'"
+                    matTooltip="Lettre de consentement" mat-icon-button>
+                    <i class="bx bx-envelope"></i>
+                  </button>
+                </div>
+              </div>
+              <hr class="w-full border-t">
+              <div class="flex flex-auto w-full">
+                <div class="flex flex-col w-full">
+                  <div class="grid grid-cols-2">
+                    <span class="mr-3 span-text">Code du Pap:</span>
+                    <span class="leading-none font-bold">{{infosPap?.codePap}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Nom: </span>
+                    <span class="leading-none font-bold">{{infosPap?.nom}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Prénom: </span>
+                    <span class="leading-none font-bold">{{infosPap?.prenom}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Nationalité: </span>
+                    <span class="leading-none font-bold">{{infosPap?.nationalite}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Langue Parlée: </span>
+                    <span class="leading-none font-bold">{{infosPap?.langueParlee}}</span>
+                  </div>
+
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Sexe: </span>
+                    <span class="leading-none font-bold">{{infosPap?.sexe}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Age: </span>
+                    <span class="leading-none font-bold">{{infosPap?.age}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Situation Matrimoniale: </span>
+                    <span class="leading-none font-bold">{{infosPap?.situationMatrimoniale}}</span>
+                  </div>
+                </div>
+                <div class="flex flex-col w-full">
+                  <div class="grid grid-cols-2">
+                    <span class="span-text">Type d'identification: </span>
+                    <span class="leading-none font-bold">{{infosPap?.typePni}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="span-text">Numéro d'identification: </span>
+                    <span class="leading-none font-bold">{{infosPap?.numeroPni}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="span-text">Numéro téléphone: </span>
+                    <span class="leading-none font-bold">{{infosPap?.numeroTelephone}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Nombre de place affaire affectée: </span>
+                    <span class="leading-none font-bold">{{infosPap?.nombrePlaceAffaire}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Département: </span>
+                    <span class="leading-none font-bold">{{infosPap?.departement}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Commune: </span>
+                    <span class="leading-none font-bold">{{infosPap?.commune}}</span>
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Statut: </span>
+                    <span class="leading-none font-bold">{{infosPap?.statutPap}}</span>
+
+                  </div>
+                  <div class="grid grid-cols-2 mt-4">
+                    <span class="mr-3 span-text">Statut vulnérable: </span>
+                    <span class="leading-none font-bold">{{infosPap?.vulnerabilite }}</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <attribut-complementaire title="Attribut complémentaire"
+                (ajoutAttributComplementaire)="ajoutAttributComplementaire(infosPap,_attributComplementaire)"
+                [infosPap]="infosPap" (updateAttributComplementaire)="updateAttributComplementaire($event,infosPap)"
+                [attributComplementaire]="_attributComplementaire"
+                [natureAttribut]="'CLIENT'"></attribut-complementaire>
+
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Caractéristiques des équipements">
+          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
+            {{ infosPap.descriptionEquipement }}
+          </div>
+        </mat-tab>
+        <mat-tab label="Evaluation des pertes subies">
+          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
+            {{ infosPap.evaluationPerte }}
+          </div>
+        </mat-tab>
+        <mat-tab label="Description des animeaux">
+          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
+            {{ infosPap.descriptionAnimeaux }}
+          </div>
+        </mat-tab>
+        <mat-tab label="Description des batiments & Cloture">
+
+          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
+            <div>Batiments</div>
+            {{ infosPap.descriptionBatiment }}
+          </div>
+          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
+            <div>Clotures</div>
+            {{ infosPap.descriptionCloture }}
+          </div>
+        </mat-tab>
+        <!-- <mat-tab label="Description de la cloture">
+          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
+            {{ infosPap.descriptionCloture }}
+          </div>
+        </mat-tab> -->
+        <mat-tab label="Informations complémentaires">
+          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
+            {{ infosPap.informationsEtendues }}
+          </div>
+        </mat-tab>
 
       </mat-tab-group>
     </fuse-card>

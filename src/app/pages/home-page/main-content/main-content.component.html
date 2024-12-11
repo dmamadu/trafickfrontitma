@@ -1,0 +1,211 @@
+<div class="main">
+  <!-- Bannière Titre -->
+  <div class="banner">
+    <h1>Bienvenue sur notre plateforme</h1>
+    <p>Notre objectif, faciliter la gestion et la transparence de votre projet.</p>
+    <div class="infos">
+      <div>
+        <span>RENDRE L’INFORMATION DU PROJET <br> ACCESSIBLE A TOUTES LES PARTIES CONSERNÉES :</span>
+      </div>
+      <div>
+        <ul>
+          <li><span class="icon">👤</span> CHEF DE PROJET</li>
+          <li><span class="icon">💼</span> BAILLEUR</li>
+          <li><span class="icon">💰</span> INVESTISSEUR</li>
+          <li><span class="icon">📋</span> PARTIE AFFECTÉE</li>
+          <li><span class="icon">📌</span> ETC</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Section d'introduction -->
+  <section class="intro">
+    <div class="intro-content">
+      <div class="intro-text">
+        <h2>À propos de nous</h2>
+        <p>Notre plateforme est conçue pour rendre la gestion de projets simple, transparente et accessible. Nous
+          permettons
+          aux chefs de projet, aux bailleurs, aux investisseurs, et aux parties affectées d'accéder à une information
+          claire et
+          centralisée pour une prise de décision éclairée. Grâce à notre expertise et aux technologies modernes, nous
+          assurons un suivi de projet fluide et transparent, adapté aux besoins de chaque partie concernée.</p>
+      </div>
+      <div class="intro-image">
+        <img src="assets/images/premium_photo.jpg" alt="Illustration de la plateforme">
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Partie Affectée -->
+  <section class="partie-affectee">
+    <div class="partie-affectee-container">
+      <h2>Exprimez votre Réclamation</h2>
+      <p>Vous pouvez partager vos préoccupations en cliquant sur le bouton ci-dessous pour remplir le formulaire de réclamation.</p>
+      <button class="open-complaint-btn" (click)="openComplaintModal()">Faire une réclamation</button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" [ngClass]="{ 'is-open': modalOpen }">
+      <div class="modal-content">
+        <button class="close-btn" (click)="closeComplaintModal()">×</button>
+        <h3>Formulaire de plainte</h3>
+        <form [formGroup]="complaintForm">
+
+          <div class="flex gap-2">
+            <!-- Nom et Prénom (alignés côte à côte) -->
+            <div class="form-group">
+              <label for="first-name">Prénom</label>
+              <input type="text" id="first-name" formControlName="firstName" placeholder="Votre prénom" required />
+            </div>
+
+            <div class="form-group">
+              <label for="last-name">Nom</label>
+              <input type="text" id="last-name" formControlName="lastName" placeholder="Votre nom" required />
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <!-- Informations de contact (alignées côte à côte) -->
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" formControlName="email" placeholder="Votre email" required />
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Téléphone</label>
+              <input type="tel" id="phone" formControlName="phone" placeholder="Votre numéro de téléphone" required />
+            </div>
+          </div>
+
+          <!-- Type de plainte -->
+          <div class="form-group">
+            <label for="complaint-type">Type de plainte</label>
+            <select id="complaint-type" formControlName="complaintType" required>
+              <option value="" disabled selected>Choisissez un type de plainte</option>
+              <option value="abuse">Abus de pouvoir</option>
+              <option value="negligence">Négligence</option>
+              <option value="fraud">Fraude</option>
+              <option value="other">Autre</option>
+            </select>
+          </div>
+
+          <!-- Description de la plainte -->
+          <div class="form-group">
+            <label for="complaint-description">Description de la plainte</label>
+            <textarea id="complaint-description" formControlName="complaintDescription" placeholder="Décrivez la plainte..." rows="5" required></textarea>
+          </div>
+
+          <!-- Bouton de soumission -->
+          <button type="submit" class="submit-btn" (click)="submitComplaint()">Envoyer la plainte</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Section Nous Contacter -->
+  <!-- Section Nous Contacter -->
+
+
+  <section class="contact">
+    <div class="contact-container">
+      <div class="contact-info">
+        <h2>Nous contacter</h2>
+        <p>Nous serions ravis d'échanger avec vous ! Remplissez le formulaire ci-dessous, et notre équipe vous répondra
+          dans les plus brefs délais.</p>
+      </div>
+      <div class="contact-form">
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+          <!-- Champ Motif -->
+          <div class="form-group">
+            <label for="motif">Motif</label>
+            <select id="motif" formControlName="motif" required>
+              <option value="" disabled selected>Choisissez un motif</option>
+              <option value="demande">Demande d'information</option>
+              <option value="support">Support technique</option>
+              <option value="suggestion">Suggestion</option>
+              <option value="autre">Autre</option>
+            </select>
+            <!-- Message d'erreur pour le champ Motif -->
+            <div *ngIf="contactForm.get('motif').touched && contactForm.get('motif').invalid" class="error-message">
+              <small *ngIf="contactForm.get('motif').hasError('required')">Le motif est requis.</small>
+            </div>
+          </div>
+
+          <!-- Champs Nom et Email -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Nom complet</label>
+              <input type="text" id="name" formControlName="name" placeholder="Votre nom complet" required>
+              <!-- Message d'erreur pour le champ Nom -->
+              <div *ngIf="contactForm.get('name').touched && contactForm.get('name').invalid" class="error-message">
+                <small *ngIf="contactForm.get('name').hasError('required')">Le nom est requis.</small>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" formControlName="email" placeholder="Votre adresse email" required>
+              <!-- Message d'erreur pour le champ Email -->
+              <div *ngIf="contactForm.get('email').touched && contactForm.get('email').invalid" class="error-message">
+                <small *ngIf="contactForm.get('email').hasError('required')">L'email est requis.</small>
+                <small *ngIf="contactForm.get('email').hasError('email')">L'email doit être valide.</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Champs Numéro de téléphone et Sujet -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">Numéro de téléphone</label>
+              <input type="tel" id="phone" formControlName="phone" placeholder="Votre numéro de téléphone" required>
+              <!-- Message d'erreur pour le champ Numéro de téléphone -->
+              <div *ngIf="contactForm.get('phone').touched && contactForm.get('phone').invalid" class="error-message">
+                <small *ngIf="contactForm.get('phone').hasError('required')">Le numéro de téléphone est requis.</small>
+                <small *ngIf="contactForm.get('phone').hasError('pattern')">Le numéro de téléphone doit contenir 10
+                  chiffres.</small>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="subject">Sujet</label>
+              <input type="text" id="subject" formControlName="subject" placeholder="Le sujet de votre message"
+                required>
+              <!-- Message d'erreur pour le champ Sujet -->
+              <div *ngIf="contactForm.get('subject').touched && contactForm.get('subject').invalid"
+                class="error-message">
+                <small *ngIf="contactForm.get('subject').hasError('required')">Le sujet est requis.</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Champ Message -->
+          <div class="form-group full-width">
+            <label for="message">Message</label>
+            <textarea id="message" formControlName="message" placeholder="Écrivez votre message ici..." rows="5"
+              required></textarea>
+            <!-- Message d'erreur pour le champ Message -->
+            <div *ngIf="contactForm.get('message').touched && contactForm.get('message').invalid" class="error-message">
+              <small *ngIf="contactForm.get('message').hasError('required')">Le message est requis.</small>
+            </div>
+          </div>
+
+          <!-- Bouton Envoyer -->
+          <button type="submit" class="submit-btn">
+            <mat-progress-spinner *ngIf="loader" class="circle-loader" color="accent" [mode]="'indeterminate'"
+              [strokeWidth]="4" [diameter]="30"></mat-progress-spinner>
+            <span *ngIf="!loader">Envoyer</span>
+          </button>
+
+        </form>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+
+</div>

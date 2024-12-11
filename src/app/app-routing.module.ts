@@ -6,6 +6,7 @@ import { LayoutComponent } from "./layouts/layout.component";
 import { CyptolandingComponent } from "./cyptolanding/cyptolanding.component";
 import { Page404Component } from "./extrapages/page404/page404.component";
 import { PersonnePhysiqueComponent } from "./pages/personne-physique/personne-physique.component";
+import { HomePageComponent } from "./pages/home-page/home-page.component";
 
 const routes: Routes = [
   {
@@ -21,13 +22,18 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: "accueil",
+    component: HomePageComponent,
+  },
+  {
     path: "pages",
     loadChildren: () =>
       import("./extrapages/extrapages.module").then((m) => m.ExtrapagesModule),
     canActivate: [AuthGuard],
   },
   { path: "crypto-ico-landing", component: CyptolandingComponent },
-  { path: "**", component: Page404Component }
+  { path: "**", component: Page404Component },
+
 ];
 
 @NgModule({

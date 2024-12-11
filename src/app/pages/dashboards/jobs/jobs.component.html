@@ -83,7 +83,7 @@
       </ngx-doc-viewer> -->
       <table class="table table-nowrap align-middle table-hover mb-0">
         <tbody>
-          <tr *ngFor="let item of DetailProject.fichiers; let i = index">
+          <tr *ngFor="let item of listDocument; let i = index">
             <td style="width: 45px;">
               <div class="avatar-sm">
                 <span class="avatar-title rounded-circle bg-primary-subtle text-primary font-size-24">
@@ -94,13 +94,13 @@
             <td>
               <h5 class="font-size-14 mb-1">
                 <a [href]="item.fichierUrl" class="text-dark" target="_blank">
-                  {{ getFileName(item.fichierUrl) }}
+                  {{ getFileName(item.libelle) }}
                 </a>
               </h5>
             </td>
             <td>
               <div class="text-center">
-                <a [href]="item.fichierUrl" target="_blank" class="text-dark">
+                <a [href]="item.urlDocument" target="_blank" class="text-dark">
                   <i class="bx bx-download h3 m-0"></i>
                 </a>
               </div>

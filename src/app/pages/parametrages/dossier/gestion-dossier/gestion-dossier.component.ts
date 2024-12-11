@@ -169,6 +169,7 @@ export class GestionDossierComponent {
       {
         th: "Catégorie de Document",
         td: "categorie",
+        el:'libelle'
       }
     ];
   }

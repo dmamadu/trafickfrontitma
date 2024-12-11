@@ -16,6 +16,7 @@ import { CategorieUtilisateurComponent } from "./parametrages/categorie-utilisat
 import { UtilisateurComponent } from "./parametrages/utilisateur/utilisateur.component";
 import { GestionDossierComponent } from "./parametrages/dossier/gestion-dossier/gestion-dossier.component";
 import { CategorieDossierComponent } from "./parametrages/dossier/categorie-dossier/categorie-dossier.component";
+import { RencontreComponent } from "./elaboration/rencontre/rencontre.component";
 
 const routes: Routes = [
   // { path: '', redirectTo: 'dashboard' },
@@ -161,6 +162,7 @@ const routes: Routes = [
 
   { path: "dossiers", component: GestionDossierComponent },
   { path: "catégorie-dossier", component: CategorieDossierComponent },
+  { path: "rencontres", component: RencontreComponent },
 ];
 
 @NgModule({

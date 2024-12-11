@@ -260,7 +260,7 @@ export class CreateComponent implements OnInit {
           // Upload attached files if there are any
           const attachedFiles: File[] =
             this.projectForm.get("attachedFiles").value;
-         
+
           if (this.uploadedFiles && this.uploadedFiles.length > 0) {
             this.uploadedFiles.forEach((file) => {
               this.projectService
@@ -391,7 +391,7 @@ export class CreateComponent implements OnInit {
   listMo: Mo[] = [];
   fetchMo() {
     return this.projectService
-      .all<ResponseData<Mo[]>>("users/by_role?roleName=Maitre d'ouvrage")
+      .all<ResponseData<any[]>>("users/by_role?roleName=Super Admin")
       .subscribe((users: ResponseData<Mo[]>) => {
         this.listMo = users.data.map((user) => {
           return {

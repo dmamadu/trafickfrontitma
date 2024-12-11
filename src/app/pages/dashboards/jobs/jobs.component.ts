@@ -9,6 +9,8 @@ import { ServiceParent } from "src/app/core/services/serviceParent";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { ListPvComponent } from "../list-pv/list-pv.component";
 import { Project } from "../../projects/project.model";
+import { CoreService } from "src/app/shared/core/core.service";
+import { ProjectService } from "src/app/core/services/project.service";
 
 @Component({
   selector: "app-jobs",
@@ -30,22 +32,30 @@ export class JobsComponent implements OnInit {
 
   lengthPap: number;
   lengthPip: number;
+  lenghtDocument: number
   lengthPlainte: number;
 
   listPlainte: any[] = [];
+  listDocument: any[] = [];
+  lisRencontre:any[] = [];
 
   public listPap: any[] = [];
   public vulnerabilityCounts = {
     vulnerable: 0,
     nonVulnerable: 0,
   };
+  currentUser: any;
 
   constructor(
     private localService: LocalService,
     private utilService: UtilsService,
     private parentService: ServiceParent,
+    private coreService: CoreService,
+    private projectService: ProjectService,
     private snackbar: SnackBarService
-  ) {}
+  ) {
+    this.currentUser=this.localService.getDataJson("user");
+  }
 
   jobViewChart: ChartType;
   ApplicationChart: ChartType;
@@ -83,6 +93,8 @@ export class JobsComponent implements OnInit {
     this.getPap();
     this.getPip();
     this.getPlainte();
+    this.getDocument();
+    this.getRencontres();
   }
 
   getUserConnected() {
@@ -202,6 +214,28 @@ export class JobsComponent implements OnInit {
               this.complaintCounts.enAttente,
               this.complaintCounts.enCours,
             ];
+          } else {
+            this.loadData = false;
+          }
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+  }
+
+  getDocument(){
+    return this.parentService
+      .list("documents", this.pageSize, this.offset)
+      .subscribe(
+        (data: any) => {
+          this.loadData = false;
+          if (data["responseCode"] == 200) {
+            console.log("list des documents");
+            this.loadData = false;
+            this.listDocument=data["data"]
+            this.lenghtDocument = data.length;
+            console.log(data);
           } else {
             this.loadData = false;
           }
@@ -365,5 +399,32 @@ export class JobsComponent implements OnInit {
 
   getFileName(url: string): string {
     return url.substring(url.lastIndexOf('/') + 1);
+  }
+
+
+
+
+
+
+
+  getRencontres() {
+    return this.projectService
+      .getRencontreByProjectId(this.currentUser.projects[0]?.id)
+      .subscribe(
+        (data: any) => {
+          this.loadData = false;
+          if (data["responseCode"] == 200) {
+            this.loadData = false;
+            console.log(data);
+            this.lisRencontre = data["data"];
+            console.log(data);
+          } else {
+            this.loadData = false;
+          }
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
   }
 }

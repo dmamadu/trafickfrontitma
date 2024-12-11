@@ -1,4 +1,15 @@
 <div class="flex flex-col flex-auto min-w-0">
+  <button
+    class="px-4 mb-2 w-[120px] py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded shadow-md flex items-center justify-center space-x-2 transition-all duration-300"
+    onclick="history.back()">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+      class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+    <span>Retour</span>
+  </button>
+
+
   <div class="flex flex-col shadow bg-card">
     <div>
       <img class="h-24 lg:h-24 object-cover w-full" src="../../../../assets/images/41.jpg" alt="Cover image">
@@ -45,8 +56,8 @@
         </div>
       </div>
       <div class="flex items-center mt-8 mb-4  justify-between">
-        <button class="fuse-mat-button-rounded  bg-green-500 p-2 rounded-md text-white mx-1 " matTooltip="dédommager client"
-          (click)="changeClient('dedommage',infosPap.id)">
+        <button class="fuse-mat-button-rounded  bg-green-500 p-2 rounded-md text-white mx-1 "
+          matTooltip="dédommager client" (click)="changeClient('dedommage',infosPap.id)">
           <i class="bx bx-user-check" style="color: #FFFFFF !important;"></i>
           <span class="ml-2">Dédommager</span>
         </button>
@@ -54,8 +65,8 @@
             class="mdi mdi-file-excel me-1">Importer une plainte</i>
         </button>
         <button type="submit" class="btn btn-success mx-1" (click)="addItems()"> <i
-          class="mdi mdi-file-excel me-1">Formuler une plainte</i>
-      </button>
+            class="mdi mdi-file-excel me-1">Formuler une plainte</i>
+        </button>
         <input type="file" id="file-upload" (change)="fileUpload($event)" name="fileUpload" accept=".xls,.xlsx"
           style="display: none;">
 
@@ -67,17 +78,17 @@
     </div>
   </div>
 
-   @if (dataExcel.length>0) {
-    <app-datatable [headings]="headings" [dataExcel]="dataExcel"></app-datatable>
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="text-end">
-          <button type="button" class="btn btn-danger me-1 w-36" (click)="resetDataFromExcel()">Annuler</button>
-          <button type="submit" class="btn btn-success  w-36" (click)="importData()">Ajouter</button>
-        </div>
+  @if (dataExcel.length>0) {
+  <app-datatable [headings]="headings" [dataExcel]="dataExcel"></app-datatable>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="text-end">
+        <button type="button" class="btn btn-danger me-1 w-36" (click)="resetDataFromExcel()">Annuler</button>
+        <button type="submit" class="btn btn-success  w-36" (click)="importData()">Ajouter</button>
       </div>
     </div>
-    }
+  </div>
+  }
 
   <div class="flex flex-col w-full min-w-0 sm:inset-0 sm:overflow-hidden">
     <mat-drawer-container class="flex-auto sm:h-auto">

@@ -157,7 +157,7 @@ throw new Error('Method not implemented.');
       AddUserComponent,
       "55rem",
       "new",
-      "",
+      "50rem",
       this.datas,
       "",
       () => {

@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   defaultauth: "fakebackend",
-  apiUrl: "http://localhost:8080",
+  apiUrl: "http://localhost:8081",
   firebaseConfig: {
     apiKey: "",
     authDomain: "",
@@ -20,7 +20,7 @@ export const environment = {
    // production: false,
     // apiURL: 'https://api.suntelecoms.com/SFD/api/',
     //apiURL: 'https://sfp.suntelecoms.com/api/',
-    apiURL: "http://localhost:8080/",
+    apiURL: "http://localhost:8081/",
     batchApiURL: 'https://sfp.suntelecoms.com/batchapi/',
     apicomURL: 'https://api.suntelecoms.com/comapi/',
     //apiURL: 'http://192.168.1.38:8085/api/',

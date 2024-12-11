@@ -37,11 +37,15 @@ export class AddDossierComponent {
   id: string;
   initForm: UntypedFormGroup;
   labelButton: string;
-  suffixe: string = " un utilisateur";
+  suffixe: string = " un dossier";
   countries: any;
 
   pageSize: number = 100;
   pageIndex: number = 0;
+
+  imageToff: any;
+
+  imageProjet: any;
 
   nrSelect;
   situationsMatrimoniales: any;
@@ -105,12 +109,10 @@ export class AddDossierComponent {
       this.labelButton = "Ajouter ";
     } else if (_data?.action == "edit") {
       this.labelButton = "Modifier ";
-      this.imageToff=_data.data.urlDocument;
+      this.imageToff = _data.data.urlDocument;
       this.id = _data.data.id;
       this.initForms(_data.data);
       const imageToEdit = _data.data.image;
-      // console.log("is",_data.data.image.type);
-
       if (imageToEdit) {
         document.querySelectorAll("#member-img").forEach((element: any) => {
           element.src = this.getImageFromBase64(
@@ -158,89 +160,28 @@ export class AddDossierComponent {
   currentUser: any;
   ngOnInit(): void {
     this.getCategorieItems();
-    //this.getFonctions();
-   // this.getRole();
   }
-
-  // initForms(donnees?) {
-  //   this.initForm = this.fb.group({
-  //     lastname: this.fb.control(donnees ? donnees?.lastname : null, [
-  //       Validators.required,
-  //     ]),
-  //     firstname: this.fb.control(donnees ? donnees?.firstname : null, [
-  //       Validators.required,
-  //     ]),
-  //     email: this.fb.control(donnees ? donnees?.email : null, [
-  //       Validators.required,
-  //       Validators.email,
-  //     ]),
-  //     locality: this.fb.control(donnees ? donnees?.locality : null, [
-  //       Validators.required,
-  //     ]),
-
-  //     project_id: this.fb.control(
-  //       this.currentUser.projects ? this.currentUser.projects[0]?.id : null,
-  //       [Validators.required]
-  //     ),
-
-  //     role_id: this.fb.control(donnees ? donnees?.role_id : null, [
-  //       Validators.required,
-  //     ]),
-  //     imageUrl: this.fb.control(donnees ? donnees?.imageUrl : null, [
-  //       Validators.required,
-  //     ]),
-  //     contact: this.fb.control(donnees ? donnees?.contact : null, [
-  //       Validators.required,
-  //     ]),
-  //     categorie_id: this.fb.control(donnees ? donnees?.categorie_id : null, [
-  //       Validators.required,
-  //     ]),
-  //     fonction_id: this.fb.control(donnees ? donnees?.fonction_id : null, [
-  //       Validators.required,
-  //     ]),
-  //   });
-  // }
-
-
-  // initForms(donnees?) {
-  //   this.initForm = this.fb.group({
-  //     libelle: this.fb.control(donnees ? donnees?.libelle : null, [
-  //       Validators.required,
-  //     ]),
-  //     urlDocument: this.fb.control(donnees ? donnees?.urlDocument : null, [
-  //       Validators.required,
-
-  //     ]),
-  //     projetId: this.fb.control(donnees ? donnees?.projetId : null, [
-  //       Validators.required,
-  //     ]),
-  //     categorieDocumentId: this.fb.control(donnees ? donnees?.categorieDocumentId : null, [
-  //       Validators.required,
-  //     ]),
-  //   });
-  // }
 
   initForms(donnees?) {
     this.initForm = this.fb.group({
       libelle: this.fb.control(donnees ? donnees?.libelle : null, [
         Validators.required,
       ]),
-      urlDocument: this.fb.control(donnees ? this.urlImage + donnees?.urlDocument : this.urlImage, [
-        Validators.required,
-      ]),
-        projetId: this.fb.control(
+      urlDocument: this.fb.control(
+        donnees ? this.urlImage + donnees?.urlDocument : this.urlImage,
+        [Validators.required]
+      ),
+      projetId: this.fb.control(
         this.currentUser.projects ? this.currentUser.projects[0]?.id : null,
         [Validators.required]
       ),
 
-      categorieDocumentId: this.fb.control(donnees ? donnees?.categorieDocumentId : null, [
-        Validators.required,
-      ]),
+      categorieDocumentId: this.fb.control(
+        donnees ? donnees?.categorie.id : null,
+        [Validators.required]
+      ),
     });
   }
-
-
-
 
   get phoneValue() {
     return this.initForm.controls["numeroTelephonePersonneContact"];
@@ -260,37 +201,36 @@ export class AddDossierComponent {
 
   updateItems() {
     console.log(this.initForm.value);
+    this.initForm.get('projetId').setValue(1);
     this.snackbar
       .showConfirmation(`Voulez-vous vraiment modifier ce document `)
       .then((result) => {
         if (result["value"] == true) {
           this.loader = true;
           const value = this.initForm.value;
-          this.coreService
-            .updateItem(value, this.id, this.url)
-            .subscribe(
-              (resp) => {
-                if (resp) {
-                  this.loader = false;
-                  this.matDialogRef.close(resp);
-                  this.snackbar.openSnackBar(
-                    "document  modifié avec succés",
-                    "OK",
-                    ["mycssSnackbarGreen"]
-                  );
-                } else {
-                  this.loader = false;
-                  this.snackbar.openSnackBar(resp["message"], "OK", [
-                    "mycssSnackbarRed",
-                  ]);
-                }
-              },
-              (error) => {
+          this.coreService.updateItem(value, this.id, this.url).subscribe(
+            (resp) => {
+              if (resp) {
                 this.loader = false;
+                this.matDialogRef.close(resp);
+                this.snackbar.openSnackBar(
+                  "document  modifié avec succés",
+                  "OK",
+                  ["mycssSnackbarGreen"]
+                );
+              } else {
                 this.loader = false;
-                this.snackbar.showErrors(error);
+                this.snackbar.openSnackBar(resp["message"], "OK", [
+                  "mycssSnackbarRed",
+                ]);
               }
-            );
+            },
+            (error) => {
+              this.loader = false;
+              this.loader = false;
+              this.snackbar.showErrors(error);
+            }
+          );
         }
       });
   }
@@ -320,7 +260,6 @@ export class AddDossierComponent {
   saveFile(file, type, name) {
     let formData = new FormData();
     formData.append("file", file);
-
     this.loaderImg = true;
     this.changeDetectorRefs.detectChanges();
     const dataFile = { file: file };
@@ -363,12 +302,9 @@ export class AddDossierComponent {
   }
 
   deleteImage() {
-    // Logique pour supprimer l'image sélectionnée
-    // Par exemple, réinitialisation de l'image à une image par défaut
     document
       .getElementById("member-img")
       .setAttribute("src", "assets/images/users/user-dummy-img.jpg");
-    // Réinitialisation de l'input de type fichier pour effacer la sélection
     const inputElement = document.getElementById(
       "member-image-input"
     ) as HTMLInputElement;
@@ -389,15 +325,14 @@ export class AddDossierComponent {
   }
 
   addItems() {
-    console.log('====================================');
-    this.initForm.get('projetId').setValue(1);
-    console.log('====================================');
+   console.log(this.initForm.value);
+   this.initForm.get('projetId').setValue(1);
     this.snackbar
       .showConfirmation(`Voulez-vous vraiment ajouter ce document `)
       .then((result) => {
         if (result["value"] == true) {
           this.loader = true;
-         // const value = documentRequest;
+          // const value = documentRequest;
           this.coreService.addItem(this.initForm.value, this.url).subscribe(
             (resp) => {
               if (resp["responseCode"] == 201) {
@@ -424,213 +359,89 @@ export class AddDossierComponent {
       });
   }
 
-  // selectOnFile(evt, type, name) {
-  //   let accept = [];
-  //   let extension = "";
-  //   if (type === "photo_profile") {
-  //     accept = [".png", ".PNG", ".jpg", ".JPG"];
-  //     extension = "une image";
-  //   }
-  //   for (const file of evt.target.files) {
-  //     const index = file.name.lastIndexOf(".");
-  //     const strsubstring = file.name.substring(index, file.name.length);
-  //     const ext = strsubstring;
-  //     if (accept.indexOf(strsubstring) === -1) {
-  //       this.snackbar.openSnackBar(
-  //         "Ce fichier " + file.name + " n'est " + extension,
-  //         "OK",
-  //         ["mycssSnackbarRed"]
-  //       );
-  //       return;
-  //     } else {
-  //       const reader = new FileReader();
-  //       reader.onload = (e: any) => {
-  //         if (type === "photo_profile") {
-  //           const img = new Image();
-  //           img.src = e.target.result;
-  //           this.saveStoreFile(file);
-  //         }
-  //       };
-  //       reader.readAsDataURL(file);
-  //     }
-  //   }
-  // }
-
-  // imageToff: any;
-
-  // saveStoreFile(file) {
-  //   let formData = new FormData();
-  //   formData.append("file", file);
-  //   this.changeDetectorRefs.detectChanges();
-  //   const dataFile = { file: file };
-  //   this.clientServive
-  //     .saveStoreFile("image/uploadFileDossier", formData)
-  //     .subscribe(
-  //       (resp) => {
-  //         if (resp) {
-  //           console.log(resp);
-  //           this.imageToff = `${this.urlImage + resp["data"]}`;
-  //           this.initForm.get("imageUrl").setValue(this.imageToff);
-  //         }
-  //       },
-  //       (error) => {
-  //         console.log(error);
-  //         this.snackbar.showErrors(error);
-  //       }
-  //     );
-  // }
-
-  // selectOnFile(evt, type, name) {
-  //   let accept = [];
-  //   let extension = "";
-  //   if (type === "photo_profile") {
-  //     accept = [".png", ".PNG", ".jpg", ".JPG"];
-  //     extension = "une image";
-  //   }
-  //   for (const file of evt.target.files) {
-  //     const index = file.name.lastIndexOf(".");
-  //     const strsubstring = file.name.substring(index, file.name.length);
-  //     const ext = strsubstring;
-  //     if (accept.indexOf(strsubstring) === -1) {
-  //       this.snackbar.openSnackBar(
-  //         "Ce fichier " + file.name + " n'est " + extension,
-  //         "OK",
-  //         ["mycssSnackbarRed"]
-  //       );
-  //       return;
-  //     } else {
-  //       // recuperation du fichier et conversion en base64
-  //       const reader = new FileReader();
-  //       reader.onload = (e: any) => {
-  //         if (type === "photo_profile") {
-  //           const img = new Image();
-  //           img.src = e.target.result;
-  //           this.saveStoreFile(file);
-  //         }
-  //       };
-  //       reader.readAsDataURL(file);
-  //     }
-  //   }
-  // }
-
-  imageToff: any;
-
-  // saveStoreFile(file) {
-  //   let formData = new FormData();
-  //   formData.append("file", file);
-  //   this.changeDetectorRefs.detectChanges();
-  //   const dataFile = { file: file };
-  //   this.clientServive
-  //     .saveStoreFile("image/uploadFileDossier", formData)
-  //     .subscribe(
-  //       (resp) => {
-  //         if (resp) {
-  //           console.log(resp);
-  //           this.imageToff = `${this.urlImage + resp["data"]}`;
-  //           this.initForm.get("imageUrl").setValue(this.imageToff);
-  //           // Fermez le dialogue et renvoyez l'URL de la signature
-  //           // this.matDialogRef.close(signatureUrl);
-  //         }
-  //       },
-  //       (error) => {
-  //         console.log(error);
-  //         this.snackbar.showErrors(error);
-  //       }
-  //     );
-  // }
-
-  selectOnFile(evt, type, name) {
-
+  selectOnFile(evt) {
     let accept = [];
-    let extension = "";
-    if (type === "photo_profile") {
-      accept = [".png", ".PNG", ".jpg", ".JPG"];
-      extension = "une image";
-    }
+    let extension = "un fichier";
+    accept = [".png", ".PNG", ".jpg", ".JPG", ".jpeg", ".JPEG", ".gif"];
+    extension = "une image";
+    const acceptDocuments = [".pdf", ".doc", ".docx", ".xls", ".xlsx"];
+    const extensionDocuments = "un document";
+
     for (const file of evt.target.files) {
       const index = file.name.lastIndexOf(".");
       const strsubstring = file.name.substring(index, file.name.length);
-      const ext = strsubstring;
-      // Verification de l'extension du ficihier est valide
-      if (accept.indexOf(strsubstring) === -1) {
+      const fileExtension = strsubstring.toLowerCase();
+
+      if (
+        accept.indexOf(fileExtension) === -1 &&
+        acceptDocuments.indexOf(fileExtension) === -1
+      ) {
         this.snackbar.openSnackBar(
-          "Ce fichier " + file.name + " n'est " + extension,
+          "Ce fichier " +
+            file.name +
+            " n'est pas " +
+            extension +
+            " ou " +
+            extensionDocuments,
           "OK",
           ["mycssSnackbarRed"]
         );
         return;
-      } else {
-        // recuperation du fichier et conversion en base64
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          if (type === "photo_profile") {
-            const img = new Image();
-            img.src = e.target.result;
-            this.saveStoreFile(file);
-          }
-        };
-        reader.readAsDataURL(file);
       }
+      if (file.size > 10 * 1024 * 1024) {
+        this.snackbar.openSnackBar(
+          "Le fichier " +
+            file.name +
+            " est trop volumineux. La taille maximale est de 10 Mo.",
+          "OK",
+          ["mycssSnackbarRed"]
+        );
+        return;
+      }
+
+      // Si tout est valide, lire le fichier
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        if (
+          fileExtension === ".png" ||
+          fileExtension === ".jpg" ||
+          fileExtension === ".jpeg" ||
+          fileExtension === ".gif"
+        ) {
+          const img = new Image();
+          img.src = e.target.result;
+        }
+        this.saveStoreFile(file);
+      };
+      reader.readAsDataURL(file);
     }
   }
-
-
-  imageProjet:any
 
   saveStoreFile(file) {
     let formData = new FormData();
     formData.append("file", file);
-  //  this._changeDetectorRef.detectChanges();
-    const dataFile = { file: file };
+
     this.clientServive
       .saveStoreFile("image/uploadFileDossier", formData)
       .subscribe(
         (resp) => {
           if (resp) {
-            console.log(resp);
             this.imageToff = `${this.urlImage + resp["data"]}`;
-             this.imageProjet = `${this.urlImage + resp["data"]}`;
-             this.initForm.get('urlDocument').setValue(this.imageProjet);
-            // Fermez le dialogue et renvoyez l'URL de la signature
-           // this.matDialogRef.close(signatureUrl);
+            this.imageProjet = `${this.urlImage + resp["data"]}`;
+            this.initForm.get("urlDocument").setValue(this.imageProjet);
+            this.snackbar.openSnackBar(
+              "Fichier chargé avec succès : " + file.name,
+              "OK",
+              ["mycssSnackbarGreen"]
+            );
           }
         },
         (error) => {
-          console.log(error);
           this.snackbar.showErrors(error);
         }
       );
   }
 
-  // getRole() {
-  //   return this.parentService
-  //     .list("roles/all", this.pageSize, this.pageIndex)
-  //     .subscribe(
-  //       (data: any) => {
-  //         if (data["responseCode"] == 200) {
-  //           this.roles = data["data"];
-  //         }
-  //       },
-  //       (err) => {
-  //         console.log(err);
-  //       }
-  //     );
-  // }
-
-  // getFonctions() {
-  //   return this.parentService
-  //     .list("fonctions", this.pageSize, this.pageIndex)
-  //     .subscribe(
-  //       (data: any) => {
-  //         if (data["responseCode"] == 200) {
-  //           this.profils = data["data"];
-  //         }
-  //       },
-  //       (err) => {
-  //         console.log(err);
-  //       }
-  //     );
-  // }
   getCategorieItems() {
     return this.parentService
       .list("categorieDocuments", this.pageSize, this.pageIndex)

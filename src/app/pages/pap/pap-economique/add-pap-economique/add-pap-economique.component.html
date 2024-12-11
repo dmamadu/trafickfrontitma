@@ -1,0 +1,653 @@
+<mat-toolbar class="mat-accent m-0 backToolbar">
+  <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
+    <span class="c_title dialog-title">{{ dialogTitle }}</span>
+    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<div class="flex flex-col flex-auto min-w-10-0 p-2 md:p-4">
+  <form [formGroup]="initForm" class="event-form w-100-p">
+    <mat-stepper #stepper>
+      <mat-step label="Informations personnelles">
+        <!-- Code PAP -->
+
+
+        <div class="flex gap-2">
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Prénom</mat-label>
+            <input class="typeTitle" matInput type="text" name="prenom" formControlName="prenom" />
+            <mat-error *ngIf="initForm.get('prenom')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Nom -->
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Nom</mat-label>
+            <input class="typeTitle" matInput type="text" name="nom" formControlName="nom" />
+            <mat-error *ngIf="initForm.get('nom')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <!-- Prénom -->
+
+
+        <div class="flex gap-2">
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Sexe</mat-label>
+            <mat-select formControlName="sexe">
+              <mat-option value="Masculin">Masculin</mat-option>
+              <mat-option value="Féminin">Féminin</mat-option>
+            </mat-select>
+            <mat-error *ngIf="initForm.get('sexe')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Code PAP</mat-label>
+            <input class="typeTitle" matInput type="text" name="codePap" formControlName="codePap" />
+            <mat-error *ngIf="initForm.get('codePap')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <!-- Sexe -->
+
+
+        <div class="flex gap-2">
+          <!-- Nationalité -->
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Nationalité</mat-label>
+            <input class="typeTitle" matInput type="text" name="nationalite" formControlName="nationalite" />
+            <mat-error *ngIf="initForm.get('nationalite')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Situation matrimoniale -->
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Situation matrimoniale</mat-label>
+            <input class="typeTitle" matInput type="text" name="situationMatrimoniale"
+              formControlName="situationMatrimoniale" />
+            <mat-error *ngIf="initForm.get('situationMatrimoniale')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="flex gap-2">
+          <!-- Commune -->
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Commune</mat-label>
+            <input class="typeTitle" matInput type="text" name="commune" formControlName="commune" />
+            <mat-error *ngIf="initForm.get('commune')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Département -->
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Département</mat-label>
+            <input class="typeTitle" matInput type="text" name="departement" formControlName="departement" />
+            <mat-error *ngIf="initForm.get('departement')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+
+        </div>
+
+        <div class="flex gap-2">
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Langue parlée</mat-label>
+            <input class="typeTitle" matInput type="text" name="langueParlee" formControlName="langueParlee" />
+          </mat-form-field>
+
+          <!-- Niveau d'étude -->
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Niveau d'étude</mat-label>
+            <input class="typeTitle" matInput type="text" name="niveauEtude" formControlName="niveauEtude" />
+          </mat-form-field>
+        </div>
+        <!-- <div class="flex gap-2">
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Religion</mat-label>
+            <input class="typeTitle" matInput type="text" name="religion" formControlName="religion" />
+          </mat-form-field>
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Nombre de parcelles</mat-label>
+            <input class="typeTitle" matInput type="number" name="nombrePlaceAffaire" formControlName="nombrePlaceAffaire" />
+            <mat-error *ngIf="initForm.get('nombrePlaceAffaire')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div> -->
+
+        <!-- Langue parlée -->
+
+
+        <!-- Religion -->
+
+
+        <!-- Boutons de navigation -->
+        <div class="flex justify-center gap-4 mt-4">
+          <button mat-raised-button matDialogClose class="submit-buttonRed" matStepperPrevious type="button">
+            <span class="textForm">Annuler</span>
+          </button>
+          <button mat-raised-button class="submit-button" aria-label="VALIDER" matStepperNext type="button">
+            <span class="textForm">Suivant</span>
+          </button>
+        </div>
+      </mat-step>
+
+      <mat-step label="Informations sur la parcelle">
+        <!-- Code parcelle -->
+        <div class="flex gap-2">
+          <!-- Nombre de parcelles -->
+
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Contact du representant</mat-label>
+            <input class="typeTitle" matInput type="text" name="contactRepresentant"
+              formControlName="contactRepresentant" />
+            <mat-error *ngIf="initForm.get('codePlaceAffaire')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Nom complet du contact Principal</mat-label>
+            <input class="typeTitle" matInput type="text" name="nomCompletRepresentant"
+              formControlName="nomCompletRepresentant" />
+          </mat-form-field>
+        </div>
+
+        <!-- Évaluation de la perte -->
+        <div class="flex gap-2">
+          <mat-form-field class="w-full mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Évaluation de la perte</mat-label>
+            <textarea matInput name="evaluationPerte" formControlName="evaluationPerte" class="typeTitle"></textarea>
+            <mat-error *ngIf="initForm.get('evaluationPerte')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="flex gap-2">
+          <mat-form-field class="w-full mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Détail Employés</mat-label>
+            <textarea class="typeTitle" matInput name="detailEmploye" formControlName="detailEmploye"></textarea>
+            <mat-error *ngIf="initForm.get('detailEmploye')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Boutons de navigation -->
+        <div class="flex justify-center gap-4 mt-4">
+          <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
+            <span class="textForm">Précédent</span>
+          </button>
+          <button mat-raised-button class="submit-button" matStepperNext type="button">
+            <span class="textForm">Suivant</span>
+          </button>
+        </div>
+      </mat-step>
+
+
+
+      <!-- description des elemennts-->
+
+
+
+      <mat-step label="Informations des objets">
+        <div class="flex gap-2">
+          <mat-form-field class="w-full mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Description des animeaux</mat-label>
+            <textarea matInput name="descriptionAnimeaux" formControlName="descriptionAnimeaux"
+              class="typeTitle"></textarea>
+            <mat-error *ngIf="initForm.get('descriptionAnimeaux')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="flex gap-2">
+          <mat-form-field class="w-full mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Description des batiments</mat-label>
+            <textarea class="typeTitle" matInput name="descriptionBatiment"
+              formControlName="descriptionBatiment"></textarea>
+            <mat-error *ngIf="initForm.get('descriptionBatiment')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="flex gap-2">
+          <mat-form-field class="w-full mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Description de la cloture</mat-label>
+            <textarea class="typeTitle" matInput name="descriptionCloture"
+              formControlName="descriptionCloture"></textarea>
+            <mat-error *ngIf="initForm.get('descriptionCloture')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="flex gap-2">
+          <mat-form-field class="w-full mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Détail Coproprietaire</mat-label>
+            <textarea class="typeTitle" matInput name="detailCoproprietaire"
+              formControlName="detailCoproprietaire"></textarea>
+            <mat-error *ngIf="initForm.get('detailCoproprietaire')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Boutons de navigation -->
+        <div class="flex justify-center gap-4 mt-4">
+          <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
+            <span class="textForm">Précédent</span>
+          </button>
+          <button mat-raised-button class="submit-button" matStepperNext type="button">
+            <span class="textForm">Suivant</span>
+          </button>
+        </div>
+      </mat-step>
+
+      <mat-step label="Images et justificatifs" class="d-flex">
+
+
+        <div class="d-flex justify-center items-center">
+          <div class="row">
+            <label for="">Photo des équipements</label>
+            <div class="col-lg-12 text-center mb-4">
+              <div class="position-relative d-inline-block">
+                <div class="position-absolute bottom-0 end-0">
+                  <label for="member-image-input" class="mb-0" data-bs-toggle="tooltip" data-bs-placement="right"
+                    title="Select Member Image">
+                    <div class="avatar-xs">
+                      <div class="avatar-title bg-light border rounded-circle text-muted cursor-pointer">
+                        <i class="bx bxs-image-alt"></i>
+                      </div>
+                    </div>
+                  </label>
+                  <input class="form-control d-none" id="member-image-input" type="file"
+                    accept="image/png, image/gif, image/jpeg"
+                    (change)="selectOnFile($event,'photo_profile','Thumbnail')">
+                  <!-- Bouton pour supprimer l'image -->
+                  @if (uploadedImage) {
+                  <div>
+                    <button type="button" class="btn btn-danger btn-sm mt-1" id="delete-image-btn"
+                      (click)="deleteImage()">
+                      <i class="bx bx-trash me-1"></i>
+                    </button>
+                  </div>
+                  }
+                </div>
+                <div class="avatar-lg">
+                  <div class="avatar-title bg-light rounded-circle">
+                    <!-- <img src="assets/images/users/user-dummy-img.jpg" id="member-img"
+                      class="avatar-md rounded-circle h-auto" /> -->
+                    <img [src]="imageToff ? imageToff : 'assets/images/users/user-dummy-img.jpg'"
+                      class="avatar-md rounded-circle h-auto" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label for="">Photo de la fiche de consentement</label>
+            <div class="col-lg-12 text-center mb-4">
+              <div class="position-relative d-inline-block">
+                <div class="position-absolute bottom-0 end-0">
+                  <label for="member-image-input" class="mb-0" data-bs-toggle="tooltip" data-bs-placement="right"
+                    title="Select Member Image">
+                    <div class="avatar-xs">
+                      <div class="avatar-title bg-light border rounded-circle text-muted cursor-pointer">
+                        <i class="bx bxs-image-alt"></i>
+                      </div>
+                    </div>
+                  </label>
+                  <input class="form-control d-none" id="member-image-input" type="file"
+                    accept="image/png, image/gif, image/jpeg"
+                    (change)="selectOnFile($event,'photo_profile','Thumbnail')">
+                  <!-- Bouton pour supprimer l'image -->
+                  @if (uploadedImage) {
+                  <div>
+                    <button type="button" class="btn btn-danger btn-sm mt-1" id="delete-image-btn"
+                      (click)="deleteImage()">
+                      <i class="bx bx-trash me-1"></i>
+                    </button>
+                  </div>
+                  }
+                </div>
+                <div class="avatar-lg">
+                  <div class="avatar-title bg-light rounded-circle">
+                    <!-- <img src="assets/images/users/user-dummy-img.jpg" id="member-img"
+                      class="avatar-md rounded-circle h-auto" /> -->
+                    <img [src]="imageToff ? imageToff : 'assets/images/users/user-dummy-img.jpg'"
+                      class="avatar-md rounded-circle h-auto" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="d-flex justify-center items-center">
+          <div class="row">
+            <label for="">Photo de la pni</label>
+            <div class="col-lg-12 text-center mb-4">
+              <div class="position-relative d-inline-block">
+                <div class="position-absolute bottom-0 end-0">
+                  <label for="member-image-input" class="mb-0" data-bs-toggle="tooltip" data-bs-placement="right"
+                    title="Select Member Image">
+                    <div class="avatar-xs">
+                      <div class="avatar-title bg-light border rounded-circle text-muted cursor-pointer">
+                        <i class="bx bxs-image-alt"></i>
+                      </div>
+                    </div>
+                  </label>
+                  <input class="form-control d-none" id="member-image-input" type="file"
+                    accept="image/png, image/gif, image/jpeg"
+                    (change)="selectOnFile($event,'photo_profile','Thumbnail')">
+                  <!-- Bouton pour supprimer l'image -->
+                  @if (uploadedImage) {
+                  <div>
+                    <button type="button" class="btn btn-danger btn-sm mt-1" id="delete-image-btn"
+                      (click)="deleteImage()">
+                      <i class="bx bx-trash me-1"></i>
+                    </button>
+                  </div>
+                  }
+                </div>
+                <div class="avatar-lg">
+                  <div class="avatar-title bg-light rounded-circle">
+                    <!-- <img src="assets/images/users/user-dummy-img.jpg" id="member-img"
+                      class="avatar-md rounded-circle h-auto" /> -->
+                    <img [src]="imageToff ? imageToff : 'assets/images/users/user-dummy-img.jpg'"
+                      class="avatar-md rounded-circle h-auto" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <label for="">Photo de la place affaire</label>
+            <div class="col-lg-12 text-center mb-4">
+              <div class="position-relative d-inline-block">
+                <div class="position-absolute bottom-0 end-0">
+                  <label for="member-image-input" class="mb-0" data-bs-toggle="tooltip" data-bs-placement="right"
+                    title="Select Member Image">
+                    <div class="avatar-xs">
+                      <div class="avatar-title bg-light border rounded-circle text-muted cursor-pointer">
+                        <i class="bx bxs-image-alt"></i>
+                      </div>
+                    </div>
+                  </label>
+                  <input class="form-control d-none" id="member-image-input" type="file"
+                    accept="image/png, image/gif, image/jpeg"
+                    (change)="selectOnFile($event,'photo_profile','Thumbnail')">
+                  <!-- Bouton pour supprimer l'image -->
+                  @if (uploadedImage) {
+                  <div>
+                    <button type="button" class="btn btn-danger btn-sm mt-1" id="delete-image-btn"
+                      (click)="deleteImage()">
+                      <i class="bx bx-trash me-1"></i>
+                    </button>
+                  </div>
+                  }
+                </div>
+                <div class="avatar-lg">
+                  <div class="avatar-title bg-light rounded-circle">
+                    <!-- <img src="assets/images/users/user-dummy-img.jpg" id="member-img"
+                      class="avatar-md rounded-circle h-auto" /> -->
+                    <img [src]="imageToff ? imageToff : 'assets/images/users/user-dummy-img.jpg'"
+                      class="avatar-md rounded-circle h-auto" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+
+        <!-- Boutons de navigation -->
+        <div class="flex justify-center gap-4 mt-4">
+          <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
+            <span class="textForm">Précédent</span>
+          </button>
+          <button mat-raised-button class="submit-button" matStepperNext type="button">
+            <span class="textForm">Suivant</span>
+          </button>
+        </div>
+      </mat-step>
+
+      <!-- Fin description des elemennts-->
+
+      <mat-step label="Documents et détails supplémentaires">
+        <div class="flex  flex-col gap-2">
+          <!-- Photo PAP -->
+          <div class="row">
+            <label for="">Photo du Pap</label>
+            <div class="col-lg-12 text-center mb-4">
+              <div class="position-relative d-inline-block">
+                <div class="position-absolute bottom-0 end-0">
+                  <label for="member-image-input" class="mb-0" data-bs-toggle="tooltip" data-bs-placement="right"
+                    title="Select Member Image">
+                    <div class="avatar-xs">
+                      <div class="avatar-title bg-light border rounded-circle text-muted cursor-pointer">
+                        <i class="bx bxs-image-alt"></i>
+                      </div>
+                    </div>
+                  </label>
+                  <input class="form-control d-none" id="member-image-input" type="file"
+                    accept="image/png, image/gif, image/jpeg"
+                    (change)="selectOnFile($event,'photo_profile','Thumbnail')">
+                  <!-- Bouton pour supprimer l'image -->
+                  @if (uploadedImage) {
+                  <div>
+                    <button type="button" class="btn btn-danger btn-sm mt-1" id="delete-image-btn"
+                      (click)="deleteImage()">
+                      <i class="bx bx-trash me-1"></i>
+                    </button>
+                  </div>
+                  }
+                </div>
+                <div class="avatar-lg">
+                  <div class="avatar-title bg-light rounded-circle">
+                    <!-- <img src="assets/images/users/user-dummy-img.jpg" id="member-img"
+                      class="avatar-md rounded-circle h-auto" /> -->
+                    <img [src]="imageToff ? imageToff : 'assets/images/users/user-dummy-img.jpg'"
+                      class="avatar-md rounded-circle h-auto" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class=" flex gap-2">
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Statut PAP</mat-label>
+              <input class="typeTitle" matInput type="text" name="statutPap" formControlName="statutPap" />
+              <mat-error *ngIf="initForm.get('statutPap')?.hasError('required')">
+                Le champ est obligatoire
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Vulnerabilité</mat-label>
+              <input class="typeTitle" matInput type="text" name="vulnerabilite" formControlName="vulnerabilite" />
+              <mat-error *ngIf="initForm.get('vulnerabilite')?.hasError('required')">
+                Le champ est obligatoire
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="flex gap-2">
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Type de piece d'identification</mat-label>
+              <input class="typeTitle" matInput type="text" name="typePni" formControlName="typePni" />
+              <mat-error *ngIf="initForm.get('typePni')?.hasError('required')">
+                Le champ est obligatoire
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Numéro de piéce</mat-label>
+              <input class="typeTitle" matInput type="text" name="numeroPni" formControlName="numeroPni" />
+              <mat-error *ngIf="initForm.get('numeroPni')?.hasError('required')">
+                Le champ est obligatoire
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="flex gap-2">
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Surnom</mat-label>
+              <input class="typeTitle" matInput type="text" name="surnom" formControlName="surnom" />
+              <mat-error *ngIf="initForm.get('surnom')?.hasError('required')">
+                Le champ est obligatoire
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Numéro de téléphone</mat-label>
+              <input class="typeTitle" matInput type="text" name="numeroTelephone" formControlName="numeroTelephone" />
+              <mat-error *ngIf="initForm.get('numeroTelephone')?.hasError('required')">
+                Le champ est obligatoire
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- <div class=" flex gap-2">
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor"> Nombre de membre familial</mat-label>
+              <input class="typeTitle" matInput type="text" name="membreFoyer" formControlName="membreFoyer" />
+              <mat-error *ngIf="initForm.get('membreFoyer')?.hasError('required')">
+                Le champ est obligatoire
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Nombre de membre familial handicapé</mat-label>
+              <input class="typeTitle" matInput type="text" name="membreFoyerHandicape" formControlName="membreFoyerHandicape" />
+              <mat-error *ngIf="initForm.get('membreFoyerHandicape')?.hasError('required')">
+                Le champ est obligatoire
+              </mat-error>
+            </mat-form-field>
+          </div> -->
+          <div class="flex gap-2">
+            <!-- Informations supplémentaires -->
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Informations Etendues</mat-label>
+              <textarea class="typeTitle" matInput name="informationsEtendues"
+                formControlName="informationsEtendues"></textarea>
+            </mat-form-field>
+          </div>
+
+        </div>
+
+        <!-- Boutons de navigation -->
+        <div class="flex justify-center gap-4 mt-4">
+          <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
+            <span class="textForm">Précédent</span>
+          </button>
+
+          <!-- <button [disabled]="loader" mat-raised-button class="submit-button" (click)="checkRecap(action)">
+            <span class="textForm">{{ labelButton }}</span>
+          </button> -->
+          <button matStepperNext mat-raised-button class="submit-button">
+            <span class="textForm">Suivant</span>
+          </button>
+        </div>
+      </mat-step>
+
+
+
+      <mat-step label="Récapitulatif">
+        <mat-accordion>
+          <!-- Section 1 : Informations personnelles -->
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <div class="flex justify-between w-full items-center">
+                <span class="font-semibold text-lg">Informations personnelles</span>
+                <button mat-icon-button (click)="goToStep(0)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            </mat-expansion-panel-header>
+            <div class="p-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div><strong>Nom :</strong> {{ initForm.get('nom')?.value }}</div>
+                <div><strong>Prénom :</strong> {{ initForm.get('prenom')?.value }}</div>
+                <div><strong>Date de naissance :</strong> {{ initForm.get('dateNaissance')?.value | date: 'dd/MM/yyyy'
+                  }}</div>
+                <div><strong>Sexe :</strong> {{ initForm.get('sexe')?.value }}</div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+
+          <!-- Section 2 : Informations sur la parcelle -->
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <div class="flex justify-between w-full items-center">
+                <span class="font-semibold text-lg">Informations sur la parcelle</span>
+                <button mat-icon-button (click)="goToStep(1)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            </mat-expansion-panel-header>
+            <div class="p-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div><strong>Code PAP :</strong> {{ initForm.get('codePap')?.value }}</div>
+                <div><strong>Commune :</strong> {{ initForm.get('commune')?.value }}</div>
+                <div><strong>Superficie :</strong> {{ initForm.get('superficie')?.value }}</div>
+                <div><strong>Nombre de parcelles :</strong> {{ initForm.get('nombrePlaceAffaire')?.value }}</div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+
+          <!-- Section 3 : Informations supplémentaires -->
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <div class="flex justify-between w-full items-center">
+                <span class="font-semibold text-lg">Informations supplémentaires</span>
+                <button mat-icon-button (click)="goToStep(2)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            </mat-expansion-panel-header>
+            <div class="p-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div><strong>Numéro de téléphone :</strong> {{ initForm.get('numeroTelephone')?.value }}</div>
+                <div><strong>Statut PAP :</strong> {{ initForm.get('statutPap')?.value }}</div>
+                <div><strong>Vulnérabilité :</strong> {{ initForm.get('vulnerabilite')?.value }}</div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <div class="">
+          <mat-progress-spinner *ngIf="loader" class="circle-loader" color="#000000" [mode]="'indeterminate'"
+            [strokeWidth]="4" [value]="2" [diameter]="30">
+          </mat-progress-spinner>
+        </div>
+
+        <div class="flex justify-center gap-4 mt-3">
+          <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
+            <span class="textForm">Retour</span>
+          </button>&nbsp;
+          <button [disabled]="loader" mat-raised-button class="submit-button" (click)="checkRecap(action)">
+            <span class="textForm">{{ labelButton }}</span>
+          </button>
+        </div>
+      </mat-step>
+
+    </mat-stepper>
+  </form>
+</div>

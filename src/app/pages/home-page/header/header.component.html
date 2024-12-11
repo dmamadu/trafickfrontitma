@@ -1,0 +1,27 @@
+<header class="header">
+  <div class="container">
+    <div class="navbar">
+      <!-- Logo -->
+      <a href="/" class="logo">
+        <img src="assets/images/logo_itma_png.png" alt="Logo">
+      </a>
+
+      <!-- Menu burger pour écrans mobiles -->
+      <button class="navbar-toggler" (click)="toggleMenu()">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Menu principal -->
+      <nav class="nav-links" [ngClass]="{'show': isMenuOpen}">
+        <ul>
+          <li><a href="#">Accueil</a></li>
+          <li><a href="#">Qui sommes-nous ?</a></li>
+          <li><a href="#">Nous contacter</a></li>
+          <li><a href="#">Adresse</a></li>
+          <li><a  routerLink="/auth"  >Se connecter</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+

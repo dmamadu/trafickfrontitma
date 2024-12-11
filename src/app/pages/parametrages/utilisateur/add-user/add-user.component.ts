@@ -103,15 +103,10 @@ export class AddUserComponent {
       this.labelButton = "Ajouter ";
     } else if (_data?.action == "edit") {
       this.labelButton = "Modifier ";
-      this.imageToff=_data.data.imageUrl
+      this.imageToff = _data.data.imageUrl;
       this.id = _data.data.id;
-      //this.initForm.get('fonction_id').setValue(_data.data.fonction.id);
-      //this.onCategoryChange(_data.data.categorie.id);
       this.initForms(_data.data);
       const imageToEdit = _data.data.image;
-
-      // console.log("is",_data.data.image.type);
-
       if (imageToEdit) {
         document.querySelectorAll("#member-img").forEach((element: any) => {
           element.src = this.getImageFromBase64(
@@ -186,9 +181,10 @@ export class AddUserComponent {
       role_id: this.fb.control(donnees ? donnees?.role[0].id : null, [
         Validators.required,
       ]),
-      imageUrl: this.fb.control(donnees ?  this.urlImage +  donnees?.imageUrl : null, [
-        Validators.required,
-      ]),
+      imageUrl: this.fb.control(
+        donnees ? this.urlImage + donnees?.imageUrl : null,
+        [Validators.required]
+      ),
       contact: this.fb.control(donnees ? donnees?.contact : null, [
         Validators.required,
       ]),
@@ -220,7 +216,7 @@ export class AddUserComponent {
   updateItems() {
     console.log(this.initForm.value);
     this.snackbar
-      .showConfirmation(`Voulez-vous vraiment modifier ce consultant `)
+      .showConfirmation(`Voulez-vous vraiment modifier cet utilisateur `)
       .then((result) => {
         if (result["value"] == true) {
           this.loader = true;
@@ -286,9 +282,6 @@ export class AddUserComponent {
     this.clientService.saveStoreFile("store-file", formData).subscribe(
       (resp) => {
         if (resp) {
-          console.log("====================================");
-          console.log(resp);
-          console.log("====================================");
           this.noImage = resp["urlprod"];
           this.initForm.get(name).setValue(this.noImage);
           this.loaderImg = false;
@@ -322,12 +315,9 @@ export class AddUserComponent {
   }
 
   deleteImage() {
-    // Logique pour supprimer l'image sélectionnée
-    // Par exemple, réinitialisation de l'image à une image par défaut
     document
       .getElementById("member-img")
       .setAttribute("src", "assets/images/users/user-dummy-img.jpg");
-    // Réinitialisation de l'input de type fichier pour effacer la sélection
     const inputElement = document.getElementById(
       "member-image-input"
     ) as HTMLInputElement;
@@ -336,27 +326,13 @@ export class AddUserComponent {
   }
 
   saveConsultant() {
-    // if (this.uploadedImage) {
-    //   return this.moservice
-    //     .uploadImage(this.uploadedImage, this.uploadedImage.name)
-    //     .subscribe((ima: Image) => {
-    //       this.addItems(ima);
-    //     });
-    // } else {
-    //   return this.addItems();
-    // }
     this.addItems();
   }
 
   addItems() {
     console.log(this.initForm.value);
-
-    // const consultantRequest = this.initForm.value;
-    // if (image) {
-    //   consultantRequest.image = image;
-    // }
     this.snackbar
-      .showConfirmation(`Voulez-vous vraiment ajouter ce consultant `)
+      .showConfirmation(`Voulez-vous vraiment ajouter cet utilisateur `)
       .then((result) => {
         if (result["value"] == true) {
           this.loader = true;
@@ -365,7 +341,7 @@ export class AddUserComponent {
             (resp) => {
               if (resp["status"] == 200) {
                 this.snackbar.openSnackBar(
-                  "Consultant  ajouté avec succés",
+                  "Utilisateur  ajouté avec succés",
                   "OK",
                   ["mycssSnackbarGreen"]
                 );
@@ -380,7 +356,12 @@ export class AddUserComponent {
             (error) => {
               this.loader = false;
               this.changeDetectorRefs.markForCheck();
-              this.snackbar.showErrors(error);
+              this.snackbar.openSnackBar(
+                "Une erreur s'est produite , veillez réessayez",
+                "OK",
+                ["mycssSnackbarRed"]
+              );
+            //  this.snackbar.showErrors(error);
             }
           );
         }
@@ -398,7 +379,6 @@ export class AddUserComponent {
       const index = file.name.lastIndexOf(".");
       const strsubstring = file.name.substring(index, file.name.length);
       const ext = strsubstring;
-      // Verification de l'extension du ficihier est valide
       if (accept.indexOf(strsubstring) === -1) {
         this.snackbar.openSnackBar(
           "Ce fichier " + file.name + " n'est " + extension,
@@ -407,7 +387,6 @@ export class AddUserComponent {
         );
         return;
       } else {
-        // recuperation du fichier et conversion en base64
         const reader = new FileReader();
         reader.onload = (e: any) => {
           if (type === "photo_profile") {
@@ -436,8 +415,6 @@ export class AddUserComponent {
             console.log(resp);
             this.imageToff = `${this.urlImage + resp["data"]}`;
             this.initForm.get("imageUrl").setValue(this.imageToff);
-            // Fermez le dialogue et renvoyez l'URL de la signature
-            // this.matDialogRef.close(signatureUrl);
           }
         },
         (error) => {
@@ -446,15 +423,6 @@ export class AddUserComponent {
         }
       );
   }
-
-  // roles: string[] = [
-  //   "Chef de mission",
-  //   "Spécialiste en réinstallation",
-  //   "Spécialiste en gestion des parties prenantes",
-  //   "Spécialiste en Genre et Inclusions Sociale",
-  //   "Spécialiste en base de données et SIG",
-  //   "Animateurs communautaires",
-  // ];
 
   getRole() {
     return this.parentService
@@ -499,9 +467,7 @@ export class AddUserComponent {
         }
       );
   }
-
   filteredProfils: any[] = [];
-
   onCategoryChange(categorieId: number) {
     this.filteredProfils = this.profils.filter(
       (profil) => profil.categorie.id === categorieId
