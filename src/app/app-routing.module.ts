@@ -31,7 +31,7 @@ const routes: Routes = [
       import("./extrapages/extrapages.module").then((m) => m.ExtrapagesModule),
     canActivate: [AuthGuard],
   },
-  { path: "crypto-ico-landing", component: CyptolandingComponent },
+  { path: "home", component: CyptolandingComponent },
   { path: "**", component: Page404Component },
 
 ];
