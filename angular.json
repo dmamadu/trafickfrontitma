@@ -50,6 +50,7 @@
               "src/assets"
             ],
             "styles": [
+               "src/styles/tailwind.scss",
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "node_modules/chartist/dist/index.css",
               "./node_modules/ngx-ui-switch/ui-switch.component.css",
@@ -63,8 +64,7 @@
               "node_modules/slick-carousel/slick/slick.scss",
               "node_modules/slick-carousel/slick/slick-theme.scss",
               "src/styles/vendors.scss",
-              "src/styles/styles.scss",
-              "src/styles/tailwind.scss"
+              "src/styles/styles.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
