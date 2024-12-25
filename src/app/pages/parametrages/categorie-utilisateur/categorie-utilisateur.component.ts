@@ -163,7 +163,7 @@ export class CategorieUtilisateurComponent  implements OnInit {
     console.log(information);
     this.snackbar.openModal(
       AddCategorieComponent,
-      "50rem",
+      "35rem",
       "edit",
       "",
       information,
@@ -206,7 +206,7 @@ export class CategorieUtilisateurComponent  implements OnInit {
   addItems(): void {
     this.snackbar.openModal(
       AddCategorieComponent,
-      "55rem",
+      "35rem",
       "new",
       "",
       this.datas,

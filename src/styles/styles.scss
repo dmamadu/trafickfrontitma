@@ -5,6 +5,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~dropzone/dist/min/dropzone.min.css';
 @import "./variables.scss";
+@import "./tailwind.scss";
 
 .modal-holder {
   animation-name: example;
@@ -1052,12 +1053,12 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
 }
 
 .backToolbar {
-  background: #159604 !important;
+  background: #00316c !important;
 
 }
 
 .c_formulaire {
-  border: 30px solid #159604;
+  border: 30px solid #00316c;
 
 }
 
@@ -2220,7 +2221,7 @@ body .light .mat-tab-nav-bar.mat-primary .mat-ink-bar {
   background-color: transparent !important;;
 }
 .mat-mdc-table  th {
-  color: green;
+  color: #011340;
   font-weight: 600;
 }
 
@@ -2228,4 +2229,24 @@ body .light .mat-tab-nav-bar.mat-primary .mat-ink-bar {
 .mat-mdc-table  td {
   color: black;
   font-weight: 500;
+}
+
+
+
+
+
+
+
+///style by mamadou
+.couleurPrimary {
+  color: #134b86;
+}
+
+.bgPrimaire{
+  background-color: #011340;
+  color: white !important;;
+}
+
+.bgPrimaire:hover{
+  background-color: #00316c;
 }

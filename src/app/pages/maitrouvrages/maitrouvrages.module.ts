@@ -15,9 +15,25 @@ import { UIModule } from "src/app/shared/ui/ui.module";
 import { WidgetModule } from "src/app/shared/widget/widget.module";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { NgMultiSelectDropDownModule } from "ng-multiselect-dropdown";
+import { TableauComponent } from "../../shared/tableau/tableau.component";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { MatPaginatorIntl } from "@angular/material/paginator";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 
 @NgModule({
   declarations: [MoprofileComponent, MolistComponent],
+  providers: [
+      {
+        provide: MatDialogRef,
+        useValue: [],
+      },
+      { provide: MAT_DIALOG_DATA, useValue: {} },
+      { provide: MatPaginatorIntl },
+      {
+        provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+        useValue: { appearance: "outline" },
+      },
+    ],
   imports: [
     CommonModule,
     MaitrouvragesRoutingModule,
@@ -34,7 +50,8 @@ import { NgMultiSelectDropDownModule } from "ng-multiselect-dropdown";
     BsDropdownModule,
     ModalModule,
     AngularMaterialModule,
-    NgMultiSelectDropDownModule
-  ],
+    NgMultiSelectDropDownModule,
+    TableauComponent
+],
 })
 export class MaitrouvragesModule {}

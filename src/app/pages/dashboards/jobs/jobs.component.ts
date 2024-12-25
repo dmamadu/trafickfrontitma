@@ -34,6 +34,7 @@ export class JobsComponent implements OnInit {
   lengthPip: number;
   lenghtDocument: number
   lengthPlainte: number;
+  lengthRencontre: number
 
   listPlainte: any[] = [];
   listDocument: any[] = [];
@@ -90,7 +91,8 @@ export class JobsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUserConnected();
-    this.getPap();
+   // this.getPap();
+   this.loadAllCategories();
     this.getPip();
     this.getPlainte();
     this.getDocument();
@@ -100,41 +102,40 @@ export class JobsComponent implements OnInit {
   getUserConnected() {
     this.userConnected = this.localService.getDataJson("user");
 
-    if (this.userConnected.image) {
-      this.imageUserConnected = this.utilService.getImageFromBase64(
-        this.userConnected.image.type,
-        this.userConnected.image.image
-      );
-    } else {
-      this.imageUserConnected = "assets/images/user.png";
-    }
+    // if (this.userConnected.image) {
+    //   this.imageUserConnected = this.utilService.getImageFromBase64(
+    //     this.userConnected.image.type,
+    //     this.userConnected.image.image
+    //   );
+    // } else {
+    //   this.imageUserConnected = "assets/images/user.png";
+    // }
   }
 
-  getPap() {
-    return this.parentService
-      .list("personneAffectes", this.pageSize, this.offset)
-      .subscribe(
-        (data: any) => {
-          this.loadData = false;
-          if (data["responseCode"] == 200) {
-            this.listPap = data.data;
-            this.lengthPap = this.listPap.length;
+  // getPap() {
+  //   return this.parentService
+  //     .list("personneAffectes", this.pageSize, this.offset)
+  //     .subscribe(
+  //       (data: any) => {
+  //         this.loadData = false;
+  //         if (data["responseCode"] == 200) {
+  //           this.listPap = data.data;
+  //           this.lengthPap = this.listPap.length;
+  //           this.classifyVulnerability();
+  //           this.vulnerabilityChart.series = [
+  //             this.vulnerabilityCounts.vulnerable,
+  //             this.vulnerabilityCounts.nonVulnerable,
+  //           ];
+  //         } else {
+  //           this.loadData = false;
+  //         }
+  //       },
+  //       (err) => {
+  //         console.log(err);
+  //       }
+  //     );
+  // }
 
-            // Classifier les données après les avoir récupérées
-            this.classifyVulnerability();
-            this.vulnerabilityChart.series = [
-              this.vulnerabilityCounts.vulnerable,
-              this.vulnerabilityCounts.nonVulnerable,
-            ];
-          } else {
-            this.loadData = false;
-          }
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-  }
 
   classifyVulnerability(): void {
     if (this.listPap && this.listPap.length > 0) {
@@ -156,13 +157,13 @@ export class JobsComponent implements OnInit {
   }
 
   public vulnerabilityChart = {
-    series: [], // Les données du graphique seront définies dynamiquement
+    series: [],
     chart: {
-      type: "pie", // Graphique en secteurs
+      type: "pie",
       height: 350,
     },
-    labels: ["Vulnérable", "Non Vulnérable"], // Les étiquettes pour les différents statuts
-    colors: ["#dc3545", "#28a745"], // Couleurs pour chaque statut
+    labels: ["Vulnérable", "Non Vulnérable"],
+    colors: ["#dc3545", "#28a745"],
     legend: {
       position: "bottom",
     },
@@ -202,13 +203,8 @@ export class JobsComponent implements OnInit {
             this.loadData = false;
             this.lengthPlainte = data.length;
             this.listPlainte = data.data;
-
             console.log("listePlainte", this.listPlainte);
-
-            // Appel de la méthode de classification des plaintes après le remplissage de `listPlainte`
             this.classifyComplaints();
-
-            // Mise à jour du graphique avec les nouvelles données
             this.complaintChart.series = [
               this.complaintCounts.resolu,
               this.complaintCounts.enAttente,
@@ -417,6 +413,7 @@ export class JobsComponent implements OnInit {
             this.loadData = false;
             console.log(data);
             this.lisRencontre = data["data"];
+            this.lengthRencontre=this.lisRencontre.length;
             console.log(data);
           } else {
             this.loadData = false;
@@ -427,4 +424,66 @@ export class JobsComponent implements OnInit {
         }
       );
   }
+  getPapByCategory(category: string) {
+    return this.parentService
+      .list(category, this.pageSize, this.offset)
+      .subscribe(
+        (data: any) => {
+          this.loadData = false;
+          if (data["responseCode"] === 200) {
+            const currentList = data.data;
+            console.log(`Liste récupérée pour la catégorie ${category}:`, currentList);
+            this.listPap = [...this.listPap, ...currentList];
+            this.lengthPap += currentList.length;
+            console.log("Longueur totale des PAP:", this.lengthPap);
+            this.updateVulnerabilityCounts(currentList);
+           // this.updatePieChart();
+          } else {
+            console.error(`Erreur lors de la récupération des PAP pour ${category}`);
+          }
+        },
+        (err) => {
+          console.error(`Erreur réseau pour la catégorie ${category}:`, err);
+        }
+      );
+  }
+
+  updateVulnerabilityCounts(list: any[]): void {
+    list.forEach((pap) => {
+      if (pap.statutVulnerable === "Oui") {
+        this.vulnerabilityCounts.vulnerable++;
+      } else if (pap.statutVulnerable === "Non") {
+        this.vulnerabilityCounts.nonVulnerable++;
+      }
+    });
+  }
+
+
+
+  // updatePieChart() {
+  //   this.pieChart.series = [
+  //     this.papEconomiqueCount,
+  //     this.papAgricoleCount,
+  //     this.databasePapPlaceAffaireCount,
+  //   ];
+
+
+  // }
+
+  loadAllCategories() {
+    this.listPap = [];
+    this.lengthPap = 0;
+    this.vulnerabilityCounts = { vulnerable: 0, nonVulnerable: 0 };
+   // this.papAgricoleCount = 0;
+    //this.databasePapPlaceAffaireCount = 0;
+    //this.papEconomiqueCount = 0;
+    const categories = ["papAgricole", "databasePapPlaceAffaire", "papEconomique"];
+    categories.forEach((category) => {
+      this.getPapByCategory(category);
+    });
+  }
+
+
+
+
 }

@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <app-page-title title="Liste des projets" [breadcrumbItems]="breadCrumbItems" style="color: green;"></app-page-title>
+  <app-page-title title="Liste des projets" [breadcrumbItems]="breadCrumbItems" ></app-page-title>
 
   <div class="row">
     <div class="col-lg-12">
@@ -18,97 +18,21 @@
             <!-- end col -->
             <div class="col-sm-auto">
               <div class="text-sm-end">
-                <a routerLink="/projects/create" class="btn btn-success btn-rounded" id="addProject-btn"><i
+                <a routerLink="/projects/create" class="btn bgPrimaire btn-rounded" id="addProject-btn"><i
                     class="mdi mdi-plus me-1"></i> Créer un project</a>
               </div>
             </div>
             <!-- end col -->
           </div>
-          <!-- end row -->
-          <!-- end row -->
-          <div class="table-responsive">
-            <table class="table align-middle table-nowrap table-hover dt-responsive nowrap w-100" id="userList-table">
-              <thead class="table-light">
-                <tr>
-                  <th scope="col" style="width: 40px;">#</th>
-                  <th scope="col">Libelle</th>
-                  <th scope="col">Catégorie</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Date début</th>
-                  <th scope="col" style="width: 200px;">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (data of filteredProjects; track $index) {
-                <tr>
-                  <td>
-                    @if(data.profile){
-                    <div>
-                      <!-- <img class="rounded-circle avatar-xs" [src]="getImageFromBase64(data.image.type,data.image.image)" alt=""> -->
-                    </div>
-                    }@else {
-                    <div class="avatar-xs">
-                      <span class="avatar-title rounded-circle">
-
-                          <img class="rounded-circle avatar-xs"
-                          [src]="data.imageUrl" alt="">
-
-                      </span>
-                    </div>}
-                  </td>
-                  <td>
-                    <p class="text-muted mb-0">{{data.libelle}} </p>
-                  </td>
-                  <td>{{data.categorie}}</td>
-                  <td>{{data.status}}</td>
-                  <td>
-                    {{data.datedebut}}
-                  </td>
-
-                  <td>
-                    <ul class="list-inline font-size-20 contact-links mb-0">
-
-                      <li class="list-inline-item px-2">
-                        <a href="javascript:void(0);" tooltip="Detail du projet"
-                          [routerLink]="['/overview', data.id]"><i class="bx bx-info-circle"></i></a>
-                      </li>
-                      <li class="list-inline-item">
-                        <div dropdown class="dropdown">
-                          <a dropdownToggle href="javascript: void(0);" class="dropdown-toggle card-drop px-2 show"
-                            aria-expanded="true"> <i class="mdi mdi-dots-horizontal font-size-18"></i> </a>
-                          <ul *dropdownMenu class="dropdown-menu dropdown-menu-end show"
-                            style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 31.25px);"
-                            placement="bottom-end">
-                            <li><a href="javascript:void(0);" (click)="selectItem(data)" class="dropdown-item edit-list"
-                                data-edit-id="8"><i class="mdi mdi-pencil font-size-16 text-success me-1"></i> Edit</a>
-                            </li>
-                            <li><a href="javascript:void(0);" (click)="delet(data.id)"
-                                class="dropdown-item remove-list" data-remove-id="8"><i
-                                  class="mdi mdi-trash-can font-size-16 text-danger me-1"></i> Delete</a></li>
-                          </ul>
-                        </div>
-                      </li>
-                    </ul>
-                  </td>
-                </tr>}
-              </tbody>
-            </table>
-          </div>
-
         </div>
       </div>
-      <!-- end row -->
-      <div class="row">
-        <div class="col-lg-12">
-          <ul class="pagination pagination-rounded justify-content-center mt-4">
-            <pagination class="pagination-wrap hstack gap-2" [totalItems]="returnedArray?.length" [itemsPerPage]="10"
-              (pageChanged)="pageChanged($event)"></pagination>
-          </ul>
-        </div>
-      </div>
-      <!-- end row -->
-
     </div>
+  </div>
+
+  <div style="z-index: 0" class="pt-3">
+    <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" [total]="length"
+      [coleurEntete]="headers" [entete]="headers" [data]="filteredProjects" [actions]="btnActions"
+      (changePage)="pageChanged($event)"></tableau>
   </div>
 
 </div>

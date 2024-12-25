@@ -18,6 +18,7 @@ import { EntenteCompensationService } from "../entente.compensation.service";
 import { LocalService } from "src/app/core/services/local.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { AddEntenteComponent } from "../add-entente/add-entente.component";
+import { AjoutEntenteComponent } from "../ajout-entente/ajout-entente.component";
 
 @Component({
   selector: "app-list-entente",
@@ -160,7 +161,7 @@ export class ListEntenteComponent implements OnInit {
 
   addItems(): void {
     this.snackbar.openModal(
-      AddEntenteComponent,
+      AjoutEntenteComponent,
       "60rem",
       "new",
       "",

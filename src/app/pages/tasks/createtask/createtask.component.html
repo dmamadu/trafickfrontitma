@@ -13,27 +13,26 @@
         <div class="card-body">
           <div data-repeater-list="outer-group" class="outer">
             <div data-repeater-item class="outer">
-              <div class="mb-4">
+              <div class="mb-2">
                 <mat-form-field class="w-full" appearance="outline">
                   <mat-label>Libelle</mat-label>
                   <input matInput formControlName="libelle" placeholder="libelle...">
+                  <mat-icon matSuffix class="secondary-text">code</mat-icon>
+                  <mat-error>Le champ est obligatoire</mat-error>
                 </mat-form-field>
               </div>
-              <div class="row mb-4">
-                <div class="">
+              <div class="row ">
                   <mat-form-field class="w-full" appearance="outline">
                     <mat-label>Description</mat-label>
-                    <textarea matInput formControlName="description" placeholder="Décrivez ici..." rows="5"></textarea>
+                    <textarea matInput formControlName="description" placeholder="Décrivez ici..." rows="3"></textarea>
                     <mat-error>Le champ est obligatoire</mat-error>
                   </mat-form-field>
-                </div>
               </div>
-
-
-              <div class="form-group row mb-2" style="display: flex; align-items: center;">
+              <div>
                 <label class="col-form-label col-lg-2">Date estimée</label>
-
-                <div class="col-lg-5">
+              </div>
+              <div class="form-group row " style="display: flex; align-items: center;">
+                <div class="col-lg-6">
                   <mat-form-field appearance="outline" class="w-full">
                     <mat-label>Date de début</mat-label>
                     <input matInput [matDatepicker]="picker1" formControlName="dateDebut">
@@ -42,8 +41,7 @@
                     <mat-error>Le champ est obligatoire</mat-error>
                   </mat-form-field>
                 </div>
-
-                <div class="col-lg-5">
+                <div class="col-lg-6">
                   <mat-form-field appearance="outline" class="w-full">
                     <mat-label>Date de fin</mat-label>
                     <input matInput [matDatepicker]="picker2" formControlName="dateFin">
@@ -86,10 +84,10 @@
           </div>
           <div class="justify-content-end flex items-center flex-row">
             <div class="mx-2">
-              <button type="submit" class="btn btn-primary" (click)="checkRecap(action)">{{ labelButton }}</button>
+              <button type="submit" class="btn btn-success w-[100px]" (click)="checkRecap(action)">{{ labelButton }}</button>
             </div>
             <div class="">
-              <button class="btn btn-danger cursor-pointer" (click)="annuler()">Annuler</button>
+              <button class="btn btn-danger cursor-pointer w-[100px]" (click)="annuler()">Annuler</button>
             </div>
           </div>
 

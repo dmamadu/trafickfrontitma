@@ -856,18 +856,18 @@ export const MENU: MenuItem[] = [
     ],
   },
 
-  // {
-  //   id: 95,
-  //   label: "Entente Compensation",
-  //   icon: "bxs-detail",
-  //   subItems: [
-  //     {
-  //       id: 103,
-  //       label: "Liste",
-  //       "icon": "bx-list-ul",
-  //       link: "/ententeCompensation/list",
-  //       parentId: 95,
-  //     },
+  {
+    id: 95,
+    label: "Entente Compensation",
+    icon: "bxs-detail",
+    subItems: [
+      {
+        id: 103,
+        label: "Liste",
+        "icon": "bx-list-ul",
+        link: "/ententeCompensation/list",
+        parentId: 95,
+      },
   // {
   //   id: 104,
   //   label: "Ajouter",
@@ -882,8 +882,8 @@ export const MENU: MenuItem[] = [
   //   link: "/ententeCompensation/detail",
   //   parentId: 95,
   // }
-  //   ],
-  // },
+    ],
+  },
 
   {
     id: 96,

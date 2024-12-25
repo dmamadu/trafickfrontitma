@@ -163,7 +163,7 @@ export class RoleComponent implements OnInit{
     console.log(information);
     this.snackbar.openModal(
       AddRoleComponent,
-      "50rem",
+      "35rem",
       "edit",
       "",
       information,
@@ -211,7 +211,7 @@ export class RoleComponent implements OnInit{
   addItems(): void {
     this.snackbar.openModal(
       AddRoleComponent,
-      "55rem",
+      "35rem",
       "new",
       "",
       this.datas,

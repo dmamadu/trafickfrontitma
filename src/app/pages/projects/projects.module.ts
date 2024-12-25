@@ -35,6 +35,7 @@ import { ModalModule } from "ngx-bootstrap/modal";
 import { UpdateComponent } from './update/update.component';
 import { NgxPaginationModule } from "ngx-pagination";
 import { NgxDocViewerModule } from "ngx-doc-viewer";
+import { TableauComponent } from "src/app/shared/tableau/tableau.component";
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -69,6 +70,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     ModalModule.forRoot(),
     NgxDocViewerModule,
     NgxPaginationModule,
+    TableauComponent
 
   ],
   providers: [

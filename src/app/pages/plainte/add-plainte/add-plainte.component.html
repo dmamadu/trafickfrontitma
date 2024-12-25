@@ -38,9 +38,10 @@
           </mat-form-field>
           <mat-form-field class=" w-1/2 mt-2" fxFlex="100" appearance="outline">
             <mat-label disabled value="" selected class="enteteccColor">Date d'enregistrement</mat-label>
-            <input class="typeTitle" matInput type="date" name="dateEnregistrement"
+            <input class="typeTitle" matInput [matDatepicker]="picker"  name="dateEnregistrement"
               formControlName="dateEnregistrement" />
-            <mat-icon matSuffix class="secondary-text">date</mat-icon>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
             <mat-error>Le champs est oligatoire</mat-error>
           </mat-form-field>
         </div>
@@ -50,7 +51,7 @@
         <div class="w-full mb-3">
           <div class="titleRecap">Avez vous été recensé pour le dedommagement ?</div>
           <mat-radio-group aria-label="Select an option" class="grid grid-cols-2 gap-4" color="primary"
-           formControlName="isRecensed">
+            formControlName="isRecensed">
             <mat-radio-button value="true">Oui</mat-radio-button>
             <mat-radio-button value="false">Non</mat-radio-button>
           </mat-radio-group>
@@ -83,8 +84,7 @@
           <mat-form-field class=" w-full mt-2" appearance="outline">
             <mat-label disabled value="" selected class="enteteccColor">Code du pap</mat-label>
 
-            <input class="typeTitle" matInput type="text" name="codePap"
-              formControlName="codePap" />
+            <input class="typeTitle" matInput type="text" name="codePap" formControlName="codePap" />
             <mat-icon matSuffix class="enteteccColor">storage</mat-icon>
             <mat-error>Le champs est obligatoire</mat-error>
           </mat-form-field>
@@ -126,12 +126,10 @@
         <div class="flex gap-2">
           <mat-form-field class="w-1/2 mt-2" fxFlex="50" appearance="outline">
             <mat-label class="enteteccColor">Date de naissance</mat-label>
-            <input class="enteteccColor" [max]="minBirthDay" autocomplete="off" matInput [matDatepicker]="picker"
-              formControlName="dateNaissance" type="date" />
-            <mat-datepicker-toggle matSuffix [for]="picker">
-              <mat-icon matDatepickerToggleIcon class="enteteccColor">calendar_today</mat-icon>
-            </mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
+            <input class="enteteccColor" [matDatepicker]="picker2" autocomplete="off" matInput
+              formControlName="dateNaissance"  />
+            <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
             <mat-error>Le champ est obligatoire</mat-error>
           </mat-form-field>
 
@@ -156,8 +154,8 @@
           <mat-form-field class=" w-1/2 mt-2" fxFlex="100" appearance="outline">
             <mat-label disabled value="" selected class="enteteccColor">Situation matrimoniale</mat-label>
             <mat-select formControlName="situationMatrimoniale" class="enteteccColor">
-              <mat-option  class="enteteccColor"
-                *ngFor="let situationMatrimoniale of situationsMatrimoniales" [value]="situationMatrimoniale">
+              <mat-option class="enteteccColor" *ngFor="let situationMatrimoniale of situationsMatrimoniales"
+                [value]="situationMatrimoniale">
                 {{ situationMatrimoniale }}
               </mat-option>
             </mat-select>
@@ -190,7 +188,7 @@
 
         <section class="example-section">
           <label class="">Avez vous des documents pouvant nous aider:</label>
-          <mat-radio-group  formControlName="hasDocument">
+          <mat-radio-group formControlName="hasDocument">
             <mat-radio-button class="" value="1">Oui</mat-radio-button>
             <mat-radio-button class="" value="0">Non</mat-radio-button>
           </mat-radio-group>
@@ -199,8 +197,9 @@
           <div class="flex justify-center">
             <div class="cursor-pointer" matTooltip="Charger des images ou des documents">
               <img (click)="photoP.click()" class="w-32 h-32" [src]="signature" alt="Upload">
-              <input hidden #photoP class="use-avatar" (change)="selectOnFile($event,'photo_profile','Thumbnail')" type="file" id="file" required accept="image/png, image/PNG, image/jpg, image/JPG, image/jpeg, image/JPEG, .pdf , .PDF , .doc , .DOC , .docx , .DOCX , .docm , .DOCM"
-              />
+              <input hidden #photoP class="use-avatar" (change)="selectOnFile($event,'photo_profile','Thumbnail')"
+                type="file" id="file" required
+                accept="image/png, image/PNG, image/jpg, image/JPG, image/jpeg, image/JPEG, .pdf , .PDF , .doc , .DOC , .docx , .DOCX , .docm , .DOCM" />
             </div>
           </div>
           <div *ngIf="uploadedFiles.length > 0">
@@ -250,7 +249,7 @@
 
 
 
-<!--
+      <!--
       <mat-step label="Récapitulatif">
         <mat-accordion>
           <div class="flex flex-col w-full p-8">
@@ -503,7 +502,8 @@
                 <div class="flex flex-col w-full">
                   <div class="flex items-center mt-2 grid grid-cols-2 recapCss">
                     <span>Date de naissance : </span>
-                    <span class="leading-none font-bold">{{ initForm?.get('dateNaissance')?.value | date:'dd-MM-yyyy' }}</span>
+                    <span class="leading-none font-bold">{{ initForm?.get('dateNaissance')?.value | date:'dd-MM-yyyy'
+                      }}</span>
                   </div>
                   <div class="flex items-center mt-2 grid grid-cols-2 recapCss">
                     <span>Lieu de naissance : </span>
@@ -550,15 +550,15 @@
               </mat-expansion-panel-header>
               <hr class="w-full border-t my-6">
               <!-- <div class="flex flex-auto w-full mt-2 cSize"> -->
-                <!-- Affichage des images des documents -->
-                <div >
-                  <h3>Fichiers sélectionnés :</h3>
-                  <ul>
-                    <li *ngFor="let url of documentUrls">
-                      <img [src]="url" alt="Image" style="max-width: 200px; max-height: 200px;">
-                    </li>
-                  </ul>
-                </div>
+              <!-- Affichage des images des documents -->
+              <div>
+                <h3>Fichiers sélectionnés :</h3>
+                <ul>
+                  <li *ngFor="let url of documentUrls">
+                    <img [src]="url" alt="Image" style="max-width: 200px; max-height: 200px;">
+                  </li>
+                </ul>
+              </div>
 
             </mat-expansion-panel>
           </div>

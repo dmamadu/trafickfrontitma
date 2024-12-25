@@ -1,76 +1,68 @@
 <div class="container-fluid">
-  <div class="row mb-4">
-    <div class="col-lg-12">
-      <div class="d-flex align-items-center">
-        @if (imageUserConnected) {
-        <img [src]="imageUserConnected" alt="" class="avatar-sm rounded">
-        }
-        <div class="ms-3 flex-grow-1">
-          <h5 class="mb-2 card-title">Hello, {{userConnected.firstname}} {{userConnected.lastname}}</h5>
-          <p class="text-muted mb-0"></p>
-        </div>
 
-      </div>
-    </div><!--end col-->
-  </div><!--end row-->
-
+  <h1 class="couleurPrimary py-3">Statistiques des données</h1>
   <div class="row">
-    <div class="col-lg-3">
+    <!-- Colonne Personnes Affectées -->
+    <div class="col-12 col-sm-6 col-lg-3 mb-3">
       <div class="card">
-        <div class="card-body">
+        <div class="card-body text-center">
           <h4>{{lengthPap}}</h4>
           <p>Personnes affectées</p>
         </div>
-
-
-
-
       </div>
-    </div><!--end col-->
-    <div class="col-lg-3">
-      <div class="card ">
-        <div class="card-body">
-          <h4> {{lengthPip}}</h4>
-          <p>Parties intérésseés</p>
+    </div>
+
+    <!-- Colonne Parties Intéressées -->
+    <div class="col-12 col-sm-6 col-lg-3 mb-3">
+      <div class="card">
+        <div class="card-body text-center">
+          <h4>{{lengthPip}}</h4>
+          <p>Parties intéressées</p>
         </div>
-
-
-
       </div>
-    </div><!--end col-->
-    <div class="col-lg-3">
-      <div class="card ">
-        <div class="card-body">
-          <h4> {{lengthPlainte}}</h4>
+    </div>
+
+    <!-- Colonne Nombre de Plaintes -->
+    <div class="col-12 col-sm-6 col-lg-3 mb-3">
+      <div class="card">
+        <div class="card-body text-center">
+          <h4>{{lengthPlainte}}</h4>
           <p>Nombre de plaintes</p>
         </div>
-
-
-
-
       </div>
-    </div><!--end col-->
-    <div class="col-lg-3">
-      <div class="card ">
-        <div class="card-body">
-          <h4> 12</h4>
+    </div>
+
+    <!-- Colonne Nombre de Consultations -->
+    <div class="col-12 col-sm-6 col-lg-3 mb-3">
+      <div class="card">
+        <div class="card-body text-center">
+          <h4>{{lengthRencontre}}</h4>
           <p>Nombre de consultations</p>
         </div>
-
       </div>
-    </div><!--end col-->
-  </div><!--end row-->
+    </div>
+  </div>
 
 
+
+
+
+
+
+
+
+<div>
+  <h1 class="couleurPrimary py-3">Statistiques</h1>
+</div>
   <div class="dashboard">
     <div class="">
-      <h2 class="titre">Statistiques des Plaintes</h2>
+      <h2 class="titre couleurPrimary">Statistiques des Plaintes</h2>
       <apx-chart [series]="complaintChart.series" [chart]="complaintChart.chart" [labels]="complaintChart.labels"
         [colors]="complaintChart.colors" [legend]="complaintChart.legend">
       </apx-chart>
     </div>
     <div>
-      <h2 class="titre">Statistiques des pap</h2>
+      <h2 class="titre couleurPrimary">Statistiques des pap</h2>
       <apx-chart [series]="vulnerabilityChart.series" [chart]="vulnerabilityChart.chart"
         [labels]="vulnerabilityChart.labels" [colors]="vulnerabilityChart.colors" [legend]="vulnerabilityChart.legend">
       </apx-chart>
@@ -78,9 +70,8 @@
   </div>
   <div class="d-flex justify-between my-3 ">
     <div class="mx-2">
-      <label class="titre">Liste des documents enregistrés</label>
-      <!-- <ngx-doc-viewer [url]="'/assets/files/Projet_bon_ami_Guinee.pdf'" viewer="pdf" style="width:500px; height:400px;">
-      </ngx-doc-viewer> -->
+      <label class="titre couleurPrimary">Liste des documents enregistrés</label>
+
       <table class="table table-nowrap align-middle table-hover mb-0">
         <tbody>
           <tr *ngFor="let item of listDocument; let i = index">
@@ -111,13 +102,13 @@
       </table>
     </div>
     <div>
-      <label for="" class="titre">Délimitation de la zone impacté par le projet</label>
+      <label for="" class="titre couleurPrimary" >Délimitation de la zone impacté par le projet</label>
       <img src="assets/images/villageImpacte.png" alt="" srcset="" height="300px">
     </div>
   </div>
-  <div  class="d-flex justify-between mt-5">
+  <div class="d-flex justify-between mt-5">
     <div>
-      <label for="" class="titre">Résumé des rencontres menées dans le cadre de l’élaboration du PAR</label>
+      <label for="" class="titre couleurPrimary">Résumé des rencontres menées dans le cadre de l’élaboration du PAR</label>
       <table class="table">
         <thead>
           <tr>
@@ -146,7 +137,8 @@
     </div>
 
     <div>
-      <label for="" class="titre">Estimation des coûts et budget du PAR 3 pour le dédommagement des biens affectés</label>
+      <label for="" class="titre couleurPrimary">Estimation des coûts et budget du PAR 3 pour le dédommagement des biens
+        affectés</label>
       <table class="table">
         <thead>
           <tr>
@@ -182,7 +174,13 @@
         </tbody>
       </table>
     </div>
+
+
   </div>
 
 
 </div>
+
+
+
+<!-- container-fluid -->

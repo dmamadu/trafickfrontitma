@@ -144,6 +144,7 @@ export class ListTacheComponent implements OnInit {
   headers: any = [];
   btnActions: any = [];
 
+
   constructor(
     private changeDetectorRefs: ChangeDetectorRef,
     private _router: Router,

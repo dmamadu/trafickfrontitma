@@ -74,21 +74,29 @@
       </mat-form-field>
     </div>
     <div class="flex gap-2">
-      <mat-form-field class=" w-1/2 mt-2" fxFlex="100" appearance="outline">
+      <mat-form-field class=" w-1/2 mt-2"  appearance="outline">
         <mat-label disabled value="" selected class="enteteccColor">Email</mat-label>
         <input class="typeTitle" matInput type="email" name="email" formControlName="email" />
         <mat-icon matSuffix class="secondary-text">email</mat-icon>
         <mat-error>Le champs est oligatoire</mat-error>
       </mat-form-field>
-      <mat-form-field class=" w-1/2 mt-2" fxFlex="100" appearance="outline">
+      <!-- <mat-form-field class=" w-1/2 mt-2" fxFlex="100" appearance="outline">
         <mat-label disabled value="" selected class="enteteccColor">Adresse</mat-label>
         <input class="typeTitle" matInput type="text" name="locality" formControlName="locality" />
         <mat-icon matSuffix class="secondary-text">home</mat-icon>
         <mat-error>Le champs est oligatoire</mat-error>
+      </mat-form-field> -->
+      <mat-form-field  class=" w-1/2 mt-2 telephone" appearance="outline">
+        <ngx-mat-intl-tel-input [preferredCountries]="['sn', 'fr']" [enablePlaceholder]="true" [enableSearch]="true"
+          name="contact" describedBy="Téléphone WhatsApp"
+          formControlName="contact"></ngx-mat-intl-tel-input>
+          <mat-icon matSuffix class="secondary-text">phone</mat-icon>
+        <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
     </div>
+
     <div class="flex gap-2">
-      <mat-form-field class="w-full mt-2" appearance="outline">
+      <mat-form-field class="w-1/2 mt-2" appearance="outline">
         <mat-label class="enteteccColor">Role</mat-label>
         <mat-select formControlName="role_id">
           <mat-option *ngFor="let role of roles" [value]="role.id">
@@ -98,9 +106,7 @@
         <mat-icon matSuffix class="secondary-text">code</mat-icon>
         <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
-    </div>
-    <div class="flex gap-2">
-      <mat-form-field class="w-full mt-2" appearance="outline">
+      <mat-form-field class="w-1/2 mt-2" appearance="outline">
         <mat-label class="enteteccColor">Niveau</mat-label>
         <mat-select formControlName="categorie_id" (selectionChange)="onCategoryChange($event.value)">
           <mat-option *ngFor="let categorie of categories" [value]="categorie.id">
@@ -110,8 +116,8 @@
         <mat-icon matSuffix class="secondary-text">code</mat-icon>
         <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
-    </div>
 
+    </div>
     <div class="flex gap-2">
       <mat-form-field class="w-full mt-2" appearance="outline" >
         <mat-label class="enteteccColor">Fonctions</mat-label>
@@ -131,17 +137,6 @@
       </mat-form-field>
     </div>
 
-
-
-    <div class="flex gap-2">
-      <mat-form-field  class=" w-full mt-2 telephone" appearance="outline">
-        <ngx-mat-intl-tel-input [preferredCountries]="['sn', 'fr']" [enablePlaceholder]="true" [enableSearch]="true"
-          name="contact" describedBy="Téléphone WhatsApp"
-          formControlName="contact"></ngx-mat-intl-tel-input>
-          <mat-icon matSuffix class="secondary-text">phone</mat-icon>
-        <mat-error>Le champs est obligatoire</mat-error>
-      </mat-form-field>
-    </div>
     <div class="flex justify-center gap-4">
       <button mat-raised-button class="submit-buttonRed" type="button">
         <span class="textForm">Retour</span>

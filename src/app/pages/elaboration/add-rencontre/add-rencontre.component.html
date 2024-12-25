@@ -12,7 +12,8 @@
   <div class="col-lg-12 text-center mb-4">
     <div class="position-relative d-inline-block">
       <div class="position-absolute bottom-0 end-0">
-        <label for="document-image-input" class="mb-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Select Document Image">
+        <label for="document-image-input" class="mb-0" data-bs-toggle="tooltip" data-bs-placement="right"
+          title="Select Document Image">
           <div class="avatar-xs">
             <div class="avatar-title bg-light border rounded-circle text-muted cursor-pointer">
               <i class="bx bxs-image-alt"></i>
@@ -21,8 +22,8 @@
         </label>
         <!-- <input class="form-control d-none" id="document-image-input" type="file" accept="*" (change)="selectOnFile($event, '', 'Thumbnail')"> -->
         <input class="form-control d-none" value="" id="document-image-input" type="file"
-        accept="image/png, image/PNG, image/jpg, image/JPG, image/jpeg, image/JPEG, .pdf , .PDF , .doc , .DOC , .docx , .DOCX , .docm , .DOCM"
-        (change)="selectOnFile($event)">
+          accept="image/png, image/PNG, image/jpg, image/JPG, image/jpeg, image/JPEG, .pdf , .PDF , .doc , .DOC , .docx , .DOCX , .docm , .DOCM"
+          (change)="selectOnFile($event)">
 
         <!-- Bouton pour supprimer l'image -->
         <div *ngIf="uploadedImage">
@@ -34,7 +35,8 @@
 
       <div class="avatar-lg">
         <div class="avatar-title bg-light rounded-circle">
-          <img [src]="imageToff ? imageToff : 'assets/images/users/user-dummy-img.jpg'" class="avatar-md rounded-circle h-auto" />
+          <img [src]="imageToff ? imageToff : 'assets/images/users/user-dummy-img.jpg'"
+            class="avatar-md rounded-circle h-auto" />
         </div>
       </div>
     </div>
@@ -48,12 +50,12 @@
       <mat-form-field class="w-full mt-2" appearance="outline">
         <mat-label class="enteteccColor">Libellés</mat-label>
         <input class="typeTitle" matInput type="text" name="libelle" formControlName="libelle" />
-        <mat-icon matSuffix class="secondary-text">label</mat-icon>
+        <mat-icon matSuffix class="secondary-text">code</mat-icon>
         <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
     </div>
 
-    <div class="gap-2 hidden" >
+    <div class="gap-2 hidden">
       <mat-form-field class="w-full mt-2" appearance="outline">
         <mat-label class="enteteccColor">URL du Document</mat-label>
         <input class="typeTitle" matInput type="url" name="urlDocument" formControlName="urlDocument" />
@@ -66,12 +68,12 @@
     <div class="flex gap-2">
       <mat-form-field class="w-full mt-2" appearance="outline">
         <mat-label class="enteteccColor">Date de la rencontre</mat-label>
-        <input  matInput type="date" formControlName="date" placeholder="Choisir une date" />
-
-        <mat-error >Le champ est obligatoire</mat-error>
+        <input matInput [matDatepicker]="picker" formControlName="date" placeholder="Choisir une date" />
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-error>Le champ est obligatoire</mat-error>
       </mat-form-field>
     </div>
-
 
     <div class="flex justify-center gap-4">
       <button mat-raised-button class="submit-buttonRed" type="button">
@@ -83,6 +85,3 @@
     </div>
   </form>
 </div>
-
-
-

@@ -29,6 +29,13 @@ import { IDropdownSettings } from "ng-multiselect-dropdown";
 import { UtilsService } from "src/app/shared/utils/utils.service";
 import { User } from "src/app/store/Authentication/auth.models";
 import { LocalService } from "src/app/core/services/local.service";
+import { MatSort } from "@angular/material/sort";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatTableDataSource } from "@angular/material/table";
+import { ButtonAction } from "src/app/shared/tableau/tableau.component";
+import { SnackBarService } from "src/app/shared/core/snackBar.service";
+import { AddUserComponent } from "../../parametrages/utilisateur/add-user/add-user.component";
+import { CoreService } from "src/app/shared/core/core.service";
 
 @Component({
   selector: "app-molist",
@@ -36,20 +43,16 @@ import { LocalService } from "src/app/core/services/local.service";
   styleUrl: "./molist.component.css",
 })
 export class MolistComponent implements OnInit {
-  // bread crumb items
   breadCrumbItems: Array<{}>;
   term: any;
   contactsList: any;
-  // Table data
   total: Observable<number>;
   createMoForm!: UntypedFormGroup;
   submitted = false;
   contacts: any;
   files: File[] = [];
   endItem: any;
-
   listMo: Mo[] = [];
-
   @ViewChild("newContactModal", { static: false })
   newContactModal?: ModalDirective;
   @ViewChild("removeItemModal", { static: false })
@@ -67,15 +70,61 @@ export class MolistComponent implements OnInit {
   settings: IDropdownSettings = {};
   form!: FormGroup;
   selectedItems: any[] = [];
+  user: User;
 
-  user:User
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  informations: any;
+  displayedColumns: any;
+  searchList: any;
+  codeEnvoye: number; //code envoye par notre menu
+  hasList: boolean;
+  hasAdd: boolean;
+  hasUpdate: boolean;
+  hasDelete: boolean;
+  hasDetail: boolean;
+  length = 100;
+  searchForm: UntypedFormGroup;
+  dialogRef: any;
+  dataSource: MatTableDataSource<any>;
+  datas = [];
+  currentIndex;
+  loadData: boolean = false;
+  exporter: boolean = false;
+  isCollapsed: boolean = false;
+  isSearch2: boolean = false;
+  isSearch: boolean = false;
+  deleteUser: boolean = false;
+  rechercher = "";
+  showLoader = "isNotShow";
+  message = "";
+  config: any;
+  isLoading: boolean = false;
+  pageSizeOptions = [5, 10, 25, 100, 500, 1000];
+  pageSize: number = 10;
+  pageIndex: number = 0;
+  //constantes = CONSTANTES;
+  userConnecter;
+  offset: number = 0;
+  title: string = "Gestion des produits";
+  url: string = "users/by_role?roleName=utilisateur";
+  panelOpenState = false;
+  img;
+  image;
+  privilegeByRole: any;
+  privilegeForPage: number = 2520;
+  headers: any = [];
+  btnActions: any = [];
+
   constructor(
     private formBuilder: FormBuilder,
     private moservice: MoService,
     public store: Store,
+    private coreService: CoreService,
     public toastr: ToastrService,
-  //  private utilsService: UtilsService,
-    private localService: LocalService
+    //  private utilsService: UtilsService,
+    private localService: LocalService,
+    private snackbar: SnackBarService
   ) {}
 
   myImage: string;
@@ -84,12 +133,11 @@ export class MolistComponent implements OnInit {
     return base64Representation;
   }
 
-  //getImageFromBase64=this.utilsService.getImageFromBase64(imageType: string, imageName: number[]);
   ngOnInit() {
-    this.user=this.localService.getDataJson("user");
+    this.headers = this.createHeader();
+    this.btnActions = this.createActions();
+    this.user = this.localService.getDataJson("user");
     console.log("user local data: ", this.user);
-
-
     this.breadCrumbItems = [
       { label: "Maitres d'ouvrages" },
       { label: "Listes", active: true },
@@ -98,6 +146,8 @@ export class MolistComponent implements OnInit {
       this.fetchMo();
       document.getElementById("elmLoader")?.classList.add("d-none");
     }, 1200);
+
+
 
     this.createMoForm = this.formBuilder.group({
       id: [""],
@@ -366,29 +416,6 @@ export class MolistComponent implements OnInit {
     reader.readAsDataURL(file);
   }
 
-  // updateUser() {
-
-  //   const projectRequest = this.createMoForm.value;
-  //   if (this.uploadedImage) {
-  //     return this.moservice
-  //       .updateImage(
-  //         this.uploadedImage,
-  //         this.uploadedImage.name,
-  //         this.createMoForm.get("id").value
-  //       )
-  //       .subscribe(
-  //         (ima: Image) => {
-  //           projectRequest.image = ima;
-  //           this.updateUserDetails(projectRequest);
-  //         },
-  //         (err) => {
-  //           console.log(err);
-  //         }
-  //       );
-  //   } else {
-  //     this.updateUserDetails(projectRequest);
-  //   }
-  // }
   updateUser() {
     const projectRequest = this.createMoForm.value;
 
@@ -442,7 +469,7 @@ export class MolistComponent implements OnInit {
       );
   }
 
-  deleteUser(userId: number) {
+  deleteUsers(userId: number) {
     this.moservice.delete<ResponseData<Mo>>(userId, "users/deleteMo").subscribe(
       (data: ResponseData<any>) => {
         console.log(data.message);
@@ -462,6 +489,108 @@ export class MolistComponent implements OnInit {
       .all<ResponseData<Project[]>>("projects/all")
       .subscribe((data: ResponseData<Project[]>) => {
         this.projectlist = data.data;
+      });
+  }
+
+  createHeader() {
+    return [
+      {
+        th: "Nom",
+        td: "lastname",
+      },
+      {
+        th: "PRENOM",
+        td: "firstname",
+      },
+      {
+        th: "Email",
+        td: "email",
+      },
+      {
+        th: "Role",
+        td: "sous_role",
+      },
+
+      {
+        th: "Numéro téléphone ",
+        td: "contact",
+      },
+    ];
+  }
+
+  createActions(): ButtonAction[] {
+    return [
+      {
+        icon: "bxs-edit",
+        couleur: "green",
+        size: "icon-size-4",
+        title: "Modifier",
+        isDisabled: this.hasUpdate,
+        action: (element?) => this.updateItems(element),
+      },
+      {
+        icon: "bxs-trash-alt",
+        couleur: "red",
+        size: "icon-size-4",
+        title: "Supprimer",
+        isDisabled: this.hasDelete,
+        action: (element?) => this.supprimerItems(element.id, element),
+      },
+      {
+        icon: "bxs-info-circle",
+        couleur: "#00bfff	",
+        size: "icon-size-4",
+        title: "détail",
+        isDisabled: this.hasDelete,
+        action: (element?) => this.detailItems(element.id, element),
+      },
+    ];
+  }
+  detailItems(id: any, element: any) {
+    throw new Error("Method not implemented.");
+  }
+  updateItems(information): void {
+    console.log(information);
+    this.snackbar.openModal(
+      AddUserComponent,
+      "50rem",
+      "edit",
+      "",
+      information,
+      "",
+      () => {
+        // this.getList();
+      }
+    );
+  }
+
+  //cette fonction permet de supprimer
+  supprimerItems(id, information) {
+    console.log("====================================");
+    console.log(id);
+    console.log("====================================");
+    this.snackbar
+      .showConfirmation("Voulez-vous vraiment supprimer ce utilisateur?")
+      .then((result) => {
+        if (result["value"] == true) {
+          this.deleteUser = true;
+          this.currentIndex = information;
+          this.showLoader = "isShow";
+          const message = "utilisateur  supprimé";
+          this.coreService.deleteItem(id, "users/deleteMo").subscribe(
+            (resp) => {
+              this.showLoader = "isNotShow";
+              if (resp["responseCode"] == 200) {
+                // this.getUsers();
+              }
+            },
+            (error) => {
+              this.showLoader = "isNotShow";
+              this.deleteUser = false;
+              this.snackbar.showErrors(error);
+            }
+          );
+        }
       });
   }
 }

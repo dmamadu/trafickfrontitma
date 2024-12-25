@@ -35,6 +35,7 @@ export class MiseEnOeuvreComponent implements OnInit {
   dialogRef: any;
   dataSource: MatTableDataSource<any>;
   datas = [];
+  lengthPap: number;
   deleteUser: boolean = false;
   currentIndex;
   loadData: boolean = false;
@@ -48,7 +49,7 @@ export class MiseEnOeuvreComponent implements OnInit {
   config: any;
   isLoading: boolean = false;
   pageSizeOptions = [5, 10, 25, 100, 500, 1000];
-  pageSize: number = 10;
+  pageSize: number = 10000000;
   pageIndex: number = 0;
   userConnecter;
   offset: number = 0;
@@ -65,17 +66,17 @@ export class MiseEnOeuvreComponent implements OnInit {
   btnActions: any = [];
   currentUser: any;
 
-  // Propriétés pour stocker les résultats du comptage
   countByCategory = {};
   countByVulnerabilityStatus = {};
   countBySex = {};
 
-  constructor(private papService: PapService,
-    private parentService: ServiceParent,
+  constructor(
+    private papService: PapService,
+    private parentService: ServiceParent
   ) {}
 
   ngOnInit(): void {
-    this.getPap();
+    this.loadAllCategories();
   }
 
   getPartiAffecte() {}
@@ -84,30 +85,14 @@ export class MiseEnOeuvreComponent implements OnInit {
   papDeplacement: number = 50;
   papVulnerables: number = 20;
 
-  // Statut des dossiers individuel
   dossiersIncomplets: number = 10;
   dossiersComplets: number = 90;
   ententesCompensation: number = 70;
   dossiersTransmis: number = 80;
   papPayees: number = 65;
 
-  // Données des catégories PAP
-  pieChart = {
-    series: [40, 30, 20, 10],
-    chart: {
-      type: "pie",
-      width: 380,
-    },
-    labels: ["Opérateurs économiques", "Agricoles", "Transports", "Autres"],
-    colors: ["#FF5733", "#33FF57", "#3357FF", "#FF33A1"],
-    legend: {
-      position: "bottom",
-    },
-  };
-
-  // Données des PAP vulnérables et non vulnérables
   vulnerableChart = {
-    series: [60, 40],
+    series: [20, 40],
     chart: {
       type: "pie",
       width: 380,
@@ -119,18 +104,17 @@ export class MiseEnOeuvreComponent implements OnInit {
     },
   };
 
-  categories = ["Opérateurs économiques", "Agricoles", "Transports", "Autres"];
+  categories = ["Opérateurs économiques", "Agricoles", "Places affaires"];
 
-  // Graphique en barres empilées (effectif féminin et masculin)
   barChart = {
     series: [
       {
         name: "Effectif féminin",
-        data: [20, 15, 10, 25],
+        data: [],
       },
       {
         name: "Effectif masculin",
-        data: [30, 35, 40, 25],
+        data: [],
       },
     ],
     chart: {
@@ -139,7 +123,7 @@ export class MiseEnOeuvreComponent implements OnInit {
       stacked: true,
     },
     xaxis: {
-      categories: this.categories,
+      categories: ["Agricole", "Place d'affaire", "Économique"],
     },
     colors: ["#FF5733", "#33FF57"],
     legend: {
@@ -152,12 +136,11 @@ export class MiseEnOeuvreComponent implements OnInit {
     },
   };
 
-  // Graphique en colonnes (compensations totales)
   compensationChart = {
     series: [
       {
         name: "Total des compensations",
-        data: [100000, 80000, 60000, 90000],
+        data: [100000, 80000, 60000],
       },
     ],
     chart: {
@@ -176,55 +159,155 @@ export class MiseEnOeuvreComponent implements OnInit {
     },
   };
 
-  getPap(): void {
-    this.parentService
-      .list("personneAffectes", this.pageSize, this.offset)
-      .subscribe(
-        (data: any) => {
-          this.loadData = false;
-          if (data["responseCode"] == 200) {
-            this.datas = data["data"];
-            // Après avoir récupéré les données, lancez les comptages
-            this.countElementsByCategory();
-            this.countElementsByVulnerabilityStatus();
-            this.countElementsBySex();
-          } else {
-            this.dataSource = new MatTableDataSource();
-          }
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-  }
-
-  // Comptage des éléments par catégorie
   countElementsByCategory(): void {
     this.countByCategory = this.datas.reduce((acc, item) => {
       acc[item.categorie] = (acc[item.categorie] || 0) + 1;
       return acc;
     }, {});
-    console.log("Count by category:", this.countByCategory);
   }
 
-  // Comptage des éléments par statut de vulnérabilité
   countElementsByVulnerabilityStatus(): void {
     this.countByVulnerabilityStatus = this.datas.reduce((acc, item) => {
       acc[item.statutVulnerable] = (acc[item.statutVulnerable] || 0) + 1;
       return acc;
     }, {});
-    console.log(
-      "Count by vulnerability status:",
-      this.countByVulnerabilityStatus
-    );
   }
 
-  // Comptage des éléments par sexe
   countElementsBySex(): void {
     this.countBySex = this.datas.reduce((acc, item) => {
       acc[item.sexe] = (acc[item.sexe] || 0) + 1;
       return acc;
     }, {});
-    console.log("Count by sex:", this.countBySex);
+  }
+
+  papAgricoleCount: number = 0;
+  databasePapPlaceAffaireCount: number = 0;
+  papEconomiqueCount: number = 0;
+
+  pieChart = {
+    series: [0, 0, 0],
+    chart: {
+      type: "pie",
+      width: 380,
+    },
+    labels: ["Opérateurs économiques", "Agricoles", "Places affaires"],
+    colors: ["#FF5733", "#33FF57", "#3357FF"],
+    legend: {
+      position: "bottom",
+    },
+  };
+
+  getPapByCategory(category: string) {
+    return this.parentService
+      .list(category, this.pageSize, this.offset)
+      .subscribe(
+        (data: any) => {
+          this.loadData = false;
+          if (data["responseCode"] === 200) {
+            const currentList = data.data;
+            console.log(
+              `Liste récupérée pour la catégorie ${category}:`,
+              currentList
+            );
+            this.listPap = [...this.listPap, ...currentList];
+            this.lengthPap += currentList.length;
+            if (category === "papAgricole") {
+              this.papAgricoleCount += currentList.length;
+            } else if (category === "databasePapPlaceAffaire") {
+              this.databasePapPlaceAffaireCount += currentList.length;
+            } else if (category === "papEconomique") {
+              this.papEconomiqueCount += currentList.length;
+            }
+            this.updateSexCounts(category, currentList);
+            this.updateVulnerabilityCounts(currentList);
+            this.updatePieChart();
+            this.updateBarChart();
+          } else {
+            console.error(
+              `Erreur lors de la récupération des PAP pour ${category}`
+            );
+          }
+        },
+        (err) => {
+          console.error(`Erreur réseau pour la catégorie ${category}:`, err);
+        }
+      );
+  }
+
+  updateSexCounts(category: string, list: any[]): void {
+    const maleCount = list.filter((pap) => pap.sexe === "Masculin").length;
+    const femaleCount = list.filter((pap) => (pap.sexe === "Féminin" || "Feminim")).length;
+
+    if (!this.sexCounts) {
+      this.sexCounts = {
+        papAgricole: { male: 0, female: 0 },
+        databasePapPlaceAffaire: { male: 0, female: 0 },
+        papEconomique: { male: 0, female: 0 },
+      };
+    }
+
+    this.sexCounts[category].male += maleCount;
+    this.sexCounts[category].female += femaleCount;
+  }
+
+  updateVulnerabilityCounts(list: any[]): void {
+    list.forEach((pap) => {
+      if (pap.statutVulnerable === "Oui") {
+        this.vulnerabilityCounts.vulnerable++;
+      } else if (pap.statutVulnerable === "Non") {
+        this.vulnerabilityCounts.nonVulnerable++;
+      }
+    });
+  }
+
+  updatePieChart() {
+    this.pieChart.series = [
+      this.papEconomiqueCount,
+      this.papAgricoleCount,
+      this.databasePapPlaceAffaireCount,
+    ];
+  }
+
+  updateBarChart() {
+    this.barChart.series = [
+      {
+        name: "Effectif féminin",
+        data: [
+          this.sexCounts.papAgricole.female,
+          this.sexCounts.databasePapPlaceAffaire.female,
+          this.sexCounts.papEconomique.female,
+        ],
+      },
+      {
+        name: "Effectif masculin",
+        data: [
+          this.sexCounts.papAgricole.male,
+          this.sexCounts.databasePapPlaceAffaire.male,
+          this.sexCounts.papEconomique.male,
+        ],
+      },
+    ];
+  }
+
+  loadAllCategories() {
+    this.listPap = [];
+    this.lengthPap = 0;
+    this.vulnerabilityCounts = { vulnerable: 0, nonVulnerable: 0 };
+    this.papAgricoleCount = 0;
+    this.databasePapPlaceAffaireCount = 0;
+    this.papEconomiqueCount = 0;
+    this.sexCounts = {
+      papAgricole: { male: 0, female: 0 },
+      databasePapPlaceAffaire: { male: 0, female: 0 },
+      papEconomique: { male: 0, female: 0 },
+    };
+    const categories = [
+      "papAgricole",
+      "databasePapPlaceAffaire",
+      "papEconomique",
+    ];
+    categories.forEach((category) => {
+      this.getPapByCategory(category);
+    });
   }
 }

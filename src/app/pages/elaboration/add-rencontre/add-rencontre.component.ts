@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, ViewChild } from "@angular/core";
 import {
   UntypedFormGroup,
   UntypedFormBuilder,
@@ -22,13 +22,18 @@ import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/an
 import { Image } from "src/app/shared/models/image.model";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatDatepickerModule } from "@angular/material/datepicker";
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { FlatpickrModule } from "angularx-flatpickr/lib/flatpickr.module";
+import {provideNativeDateAdapter} from '@angular/material/core';
 
 @Component({
   selector: "app-add-rencontre",
   standalone: true,
-  imports: [AngularMaterialModule, MatDatepickerModule, MatNativeDateModule],
+  imports: [AngularMaterialModule],
+  providers: [provideNativeDateAdapter()],
   templateUrl: "./add-rencontre.component.html",
   styleUrl: "./add-rencontre.component.css",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddRencontreComponent {
   panelOpenState = false;
@@ -423,3 +428,4 @@ export class AddRencontreComponent {
 
 
 }
+

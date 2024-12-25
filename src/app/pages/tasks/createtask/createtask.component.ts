@@ -16,18 +16,13 @@ import {
   FormsModule,
   ReactiveFormsModule,
   UntypedFormArray,
-  UntypedFormBuilder,
   UntypedFormControl,
   UntypedFormGroup,
   Validators,
 } from "@angular/forms";
 
 import * as ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import {
-  addtasklist,
-  fetchtasklistData,
-  updatetasklist,
-} from "src/app/store/Tasks/tasks.action";
+import {provideNativeDateAdapter} from '@angular/material/core';
 import { selectData } from "src/app/store/Tasks/tasks-selector";
 import { memberList } from "src/app/core/data";
 
@@ -84,6 +79,7 @@ import { UIModule } from "src/app/shared/ui/ui.module";
     MatButtonModule,
   ],
   styleUrls: ["./createtask.component.scss"],
+  providers: [provideNativeDateAdapter()],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
@@ -136,32 +132,12 @@ export class CreatetaskComponent implements OnInit {
 
   usersToUpdate: any = [];
   ngOnInit() {
-   // this.tacheToUpdate = this.localService.getDataJson("tacheToUpdate");
-   // console.log(this.localService.getDataJson("tacheToUpdate"));
-    // if (this.tacheToUpdate !== null) {
-    //   this.initForms(this.tacheToUpdate);
-    //   this.id = this.tacheToUpdate.id;
-    //   this.labelButton = "modifier ";
-    //   this.action = "edit";
-
-    //   this.usersToUpdate = this.tacheToUpdate.utilisateurs;
-    //   // this.usersToUpdate.forEach(user => {
-    //   //     this.assignListFormArray.push(this.fb.control(user));
-    //   // });
-    //   console.log(this.usersToUpdate);
-    // } else {
-    //   this.action = "new";
-    //   this.initForms();
-    // }
     this.fetchMo();
     this.breadCrumbItems = [
       { label: "Taches" },
       { label: "Création d'une tache", active: true },
     ];
-
     this.hidden = true;
-
-    // this.store.dispatch(fetchtasklistData());
     this.store.select(selectData).subscribe((data) => {
       this.memberLists = memberList;
     });
@@ -293,9 +269,7 @@ export class CreatetaskComponent implements OnInit {
                   "mycssSnackbarGreen",
                 ]);
                 this.loader = false;
-                this._router.navigate(["tasks/liste"]);
-                //this.matDialogRef.close(resp["data"]);
-                // this.changeDetectorRefs.markForCheck();
+                this._router.navigate(["tasks/liste"])
               } else {
                 this.loader = false;
                 this.changeDetectorRefs.markForCheck();
@@ -313,7 +287,6 @@ export class CreatetaskComponent implements OnInit {
 
   checkRecap(type) {
     console.log(type);
-
     if (type == "new") {
       this.addItems();
     } else if (type == "edit") {
@@ -358,7 +331,5 @@ export class CreatetaskComponent implements OnInit {
 
   annuler() {
     this.initForm.reset();
-  //  this.labelButton = "Créer une tache";
-   // this.localService.removeData("tacheToUpdate");
   }
 }

@@ -300,6 +300,24 @@ export class CoreService {
         );
   }
 
+  getPapByCodePap(type: string, codePap: string): Observable<any> {
+    let endpoint = '';
+    switch (type) {
+      case 'economique':
+        endpoint = 'papEconomique';
+        break;
+      case 'agricole':
+        endpoint = 'papAgricole';
+        break;
+      case 'placeAffaire':
+        endpoint = 'databasePapPlaceAffaire';
+        break;
+      default:
+        throw new Error('Type invalide : ' + type);
+    }
+    return this._httpClient.get<any>(`${environment.apiURL}/${endpoint}/by-code-pap/${codePap}`);
+  }
+
     balanceGeneral(url,item): Observable<any> {
         return this._httpClient.post(environment.apiURL + url, item).pipe(
             switchMap((response: any) => of(response))

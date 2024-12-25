@@ -233,7 +233,7 @@ export class CategorieDossierComponent {
   addItems(): void {
     this.snackbar.openModal(
       AddCategorieDossierComponent,
-      "55rem",
+      "35rem",
       "new",
       "",
       this.datas,

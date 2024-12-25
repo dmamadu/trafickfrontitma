@@ -134,7 +134,7 @@ export class RencontreComponent {
   addItems(): void {
     this.snackbar.openModal(
       AddRencontreComponent,
-      "55rem",
+      "45rem",
       "new",
       "",
       this.datas,

@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Inject,
@@ -34,6 +35,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
 import { environment } from "src/environments/environment";
+import {provideNativeDateAdapter} from '@angular/material/core';
 
 @Component({
   selector: "app-add-plainte",
@@ -50,6 +52,7 @@ import { environment } from "src/environments/environment";
     MatNativeDateModule,
   ],
   providers: [
+    provideNativeDateAdapter(),
     { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
     // { provide: DateAdapter, useClass: MatNativeDateModule },
     { provide: MatPaginatorIntl },
@@ -57,6 +60,7 @@ import { environment } from "src/environments/environment";
     MatDatepickerModule,
   ],
   styleUrl: "./add-plainte.component.css",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddPlainteComponent implements OnInit {
   panelOpenState = false;

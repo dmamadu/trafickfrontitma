@@ -1,5 +1,5 @@
 <div>
-  <app-page-title title="Liste des personnes affectées par le projet" [breadcrumbItems]="breadCrumbItems" style="color: green;"></app-page-title>
+  <app-page-title title="Liste des personnes affectées par le projet" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 </div>
 <div class=" row mb-2">
   <div class="col-sm">
@@ -19,10 +19,10 @@
           <button (click)="exportAs('excel')">
             <img src="assets/images/xlsx-icon.png" alt="default image" class="c_icon">
           </button>
-      <button type="submit" class="btn btn-success" (click)="addItems()"> <i class="mdi mdi-plus me-1"></i> Ajouter un
+      <button type="submit" class="btn bgPrimaire" (click)="addItems()"> <i class="mdi mdi-plus me-1"></i> Ajouter un
         pap</button>
         <div class="flex items-center justify-center">
-          <select class="h-10 btn btn-success rounded-sm p-2 text-white"
+          <select class="h-10 btn bgPrimaire rounded-sm p-2 text-white"
                   [(ngModel)]="selectedOption" (change)="onOptionSelected()">
             <option value="">Que souhaitez-vous importer?</option>
             <option value="batiments">Bâtiment</option>
@@ -35,7 +35,7 @@
           </select>
         </div>
 
-      <button type="submit" class="btn btn-success" (click)="triggerFileUpload()" [disabled]="!selectedOption"> <i
+      <button type="submit" class="btn bgPrimaire" (click)="triggerFileUpload()" [disabled]="!selectedOption"> <i
           class="mdi mdi-file-excel me-1">Importer un fichier excel</i>
       </button>
     </div>

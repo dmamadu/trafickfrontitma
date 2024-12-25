@@ -171,7 +171,7 @@ export class FonctionUtilisateurComponent implements OnInit {
     console.log(information);
     this.snackbar.openModal(
       AddFonctionUtilisateurComponent,
-      "50rem",
+      "45rem",
       "edit",
       "",
       information,
@@ -219,7 +219,7 @@ export class FonctionUtilisateurComponent implements OnInit {
   addItems(): void {
     this.snackbar.openModal(
       AddFonctionUtilisateurComponent,
-      "55rem",
+      "45rem",
       "new",
       "",
       this.datas,

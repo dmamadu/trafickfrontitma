@@ -1,6 +1,6 @@
 <div class="flex flex-col flex-auto min-w-0">
   <button
-    class="px-4 mb-2 w-[120px] py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded shadow-md flex items-center justify-center space-x-2 transition-all duration-300"
+    class="px-4 mb-2 w-[120px] py-2 bgPrimaire  text-white font-semibold rounded shadow-md flex items-center justify-center space-x-2 transition-all duration-300"
     onclick="history.back()">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
       class="w-6 h-6">
@@ -49,22 +49,22 @@
       <div class="hidden lg:flex h-8 mx-8 border-l-2"></div>
       <div class="flex items-center mt-6 lg:mt-0 space-x-6">
         <div class="flex flex-col">
-          <button (click)="signatureClient()" class="c_btnAccount_attribut c_btnAccountF h-10 w-10 rounded-full"
+          <button (click)="signatureClient()" class="c_btnAccount_attribut bgPrimaire h-10 w-10 rounded-full"
             matTooltip="Voir Signature pap">
             <i class="bx bx-pencil"></i>
           </button>
         </div>
       </div>
       <div class="flex items-center mt-8 mb-4  justify-between">
-        <button class="fuse-mat-button-rounded  bg-green-500 p-2 rounded-md text-white mx-1 "
+        <button class="fuse-mat-button-rounded  bgPrimaire p-2 rounded-md text-white mx-1 "
           matTooltip="dédommager client" (click)="changeClient('dedommage',infosPap.id)">
           <i class="bx bx-user-check" style="color: #FFFFFF !important;"></i>
           <span class="ml-2">Dédommager</span>
         </button>
-        <button type="submit" class="btn btn-success  " (click)="triggerFileUpload()"> <i
+        <button type="submit" class="btn bgPrimaire  " (click)="triggerFileUpload()"> <i
             class="mdi mdi-file-excel me-1">Importer une plainte</i>
         </button>
-        <button type="submit" class="btn btn-success mx-1" (click)="addItems()"> <i
+        <button type="submit" class="btn bgPrimaire mx-1" (click)="addItems()"> <i
             class="mdi mdi-file-excel me-1">Formuler une plainte</i>
         </button>
         <input type="file" id="file-upload" (change)="fileUpload($event)" name="fileUpload" accept=".xls,.xlsx"
@@ -140,15 +140,6 @@
                     (changePage)="pageChanged($event)"></tableau>
                 </div>
               </div>
-
-              <!-- <div *ngSwitchCase="'entente'">
-                          <div style="z-index: 0" class="pt-3">
-                            <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" [total]="length"
-                              [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
-                              (changePage)="pageChanged($event)"></tableau>
-                          </div>
-                        </div> -->
-
             </div>
 
           </div>

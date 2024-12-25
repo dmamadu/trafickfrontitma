@@ -11,6 +11,7 @@ import { SharedService } from "../shared.service";
 import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { ModalDirective } from "ngx-bootstrap/modal";
+import { ButtonAction } from "src/app/shared/tableau/tableau.component";
 
 @Component({
   selector: "app-projectlist",
@@ -30,7 +31,16 @@ export class ProjectlistComponent implements OnInit {
   endItem: any = 12;
   returnedArray: any;
   projectlist: any = [];
-
+  hasDelete: boolean;
+  hasUpdate: boolean;
+  hasDetail: boolean;
+  isLoading: boolean = false;
+  pageSizeOptions = [5, 10, 25, 100, 500, 1000];
+  pageSize: number = 10;
+  pageIndex: number = 0;
+  headers: any = [];
+  btnActions: any = [];
+  length = 100;
   removeItemModal?: ModalDirective;
   @ViewChild("removeItemModal", { static: false })
   deleteId: any;
@@ -43,12 +53,14 @@ export class ProjectlistComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+
+    this.headers = this.createHeader();
+    this.btnActions = this.createActions();
+    this.loadProject();
     this.breadCrumbItems = [
       { label: "Projects" },
       { label: "Projects List", active: true },
     ];
-
-    this.loadProject();
   }
 
   pageChanged(event: PageChangedEvent): void {
@@ -128,4 +140,60 @@ export class ProjectlistComponent implements OnInit {
       this.filteredProjects = this.projectlist;
     }
   }
+
+
+    createHeader() {
+      return [
+        {
+          th: "Libelle",
+          td: "libelle",
+        },
+        {
+          th: "Catégorie",
+          td: "categorie",
+        },
+        {
+          th: "Status",
+          td: "statut",
+        },
+        {
+          th: "Date début",
+          td: "date_debut",
+        },
+      ];
+    }
+
+    createActions(): ButtonAction[] {
+      return [
+        {
+          icon: "bxs-edit",
+          couleur: "green",
+          size: "icon-size-4",
+          title: "Modifier",
+          isDisabled: this.hasUpdate,
+          action: (element?) => this.selectItem(element),
+        },
+        {
+          icon: "bxs-trash-alt",
+          couleur: "red",
+          size: "icon-size-4",
+          title: "Supprimer",
+          isDisabled: this.hasDelete,
+          action: (element?) => this.delet(element.id),
+        },
+        {
+          icon: "bxs-info-circle",
+          couleur: "#00bfff	",
+          size: "icon-size-4",
+          title: "détail",
+          isDisabled: this.hasDelete,
+          action: (element?) => this.redirectToOverview(element.id),
+        },
+      ];
+    }
+
+  redirectToOverview(id: number): void {
+    this.router.navigate(['/overview', id]);
+  }
+
 }
