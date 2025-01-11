@@ -130,6 +130,8 @@ export class TableauComponent implements OnInit {
         return "badge-blue";
       } else if (element.statut === "VALIDE") {
         return "badge-success";
+       } else if (element.statut == "Inprogress" || element.statu == "Inprogress") {
+        return "badge-blue";
       }
       return "badge-blue";
     }

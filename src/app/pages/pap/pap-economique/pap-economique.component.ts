@@ -47,11 +47,12 @@ import { AddPapPlaceAffaireComponent } from "../pap-place-affaire/add-pap-place-
 import { AddPapEconomiqueComponent } from "./add-pap-economique/add-pap-economique.component";
 
 @Component({
-  selector: 'app-pap-economique',
+  selector: "app-pap-economique",
   standalone: true,
-  templateUrl: './pap-economique.component.html',
-  styleUrl: './pap-economique.component.css',
+  templateUrl: "./pap-economique.component.html",
+  styleUrl: "./pap-economique.component.css",
   providers: [
+    DatePipe,
     {
       provide: MatDialogRef,
       useValue: [],
@@ -75,8 +76,6 @@ import { AddPapEconomiqueComponent } from "./add-pap-economique/add-pap-economiq
   ],
 })
 export class PapEconomiqueComponent {
-
-
   [x: string]: any;
 
   listPap: Pap[];
@@ -205,9 +204,7 @@ export class PapEconomiqueComponent {
     this.getPapEconomique();
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
-
   }
-
 
   createHeader() {
     return [
@@ -233,7 +230,6 @@ export class PapEconomiqueComponent {
       },
     ];
   }
-
 
   createActions(): ButtonAction[] {
     return [
@@ -265,6 +261,7 @@ export class PapEconomiqueComponent {
   }
 
   getPapEconomique() {
+    this.loadData = true;
     return this.parentService
       .list("papEconomique", this.pageSize, this.offset)
       .subscribe(
@@ -277,7 +274,7 @@ export class PapEconomiqueComponent {
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
             this.datas = data["data"];
-           this.length = data["length"];
+            this.length = data["length"];
             console.log("length", this.length);
             this._changeDetectorRef.markForCheck();
           } else {
@@ -645,52 +642,53 @@ export class PapEconomiqueComponent {
   }
 
   importData() {
-      const dataToSend = this.dataExcel.map((item) => ({
-        ...item,
-        projectId: +this.currentUser.projects[0]?.id,
-      }));
+    this.loadData = true;
+    console.log("test");
 
-      console.log(dataToSend);
-      return this.papService
-        .add("papEconomique", dataToSend)
-        .subscribe(
-          (data: any) => {
-            console.log(data);
-            this.toastr.success(data.message);
-            this.dataExcel = [];
+    const dataToSend = this.dataExcel.map((item) => ({
+      ...item,
+      projectId: +this.currentUser.projects[0]?.id,
+    }));
 
-            this.getPapEconomique();
-          },
-          (err) => {
-            console.log(err);
-            this.toastr.error(err);
-          }
-        );
-
+    console.log(dataToSend);
+    return this.papService.add("papEconomique", dataToSend).subscribe(
+      (data: any) => {
+        console.log(data);
+        this.toastr.success(data.message);
+        this.dataExcel = [];
+        this.loadData = false;
+        this.getPapEconomique();
+      },
+      (err) => {
+        console.log(err);
+        this.toastr.error(err);
+        this.loadData = false;
+      },
+      () => {
+        this.loadData = false;
+      }
+    );
   }
 
-  importDatas(params:string) {
+  importDatas(params: string) {
     return this.papService.add(`${params} `, this.dataExcel).subscribe(
-      (data:any) => {
+      (data: any) => {
         console.log("====================================");
         console.log(data);
         console.log("====================================");
         this.toastr.success(data.message);
-        this.selectedOption=""
-      this.resetDataFromExcel()
-
+        this.selectedOption = "";
+        this.resetDataFromExcel();
       },
       (err) => {
         console.log("====================================");
         console.log(err);
         console.log("====================================");
         this.toastr.error(err);
-        this.resetDataFromExcel()
+        this.resetDataFromExcel();
       }
     );
   }
-
-
 
   onOptionSelected() {
     console.log("Valeur sélectionnée :", this.selectedOption);
@@ -702,5 +700,4 @@ export class PapEconomiqueComponent {
     this.sharedService.setSelectedItem(information);
     this._router.navigate(["pap/detail"]);
   }
-
 }

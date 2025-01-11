@@ -1,4 +1,5 @@
 <div class="container-fluid">
+  <app-page-title title="Création d'un projet" ></app-page-title>
   <form action="" [formGroup]="projectForm" (ngSubmit)="save()">
     <div class="row">
       <div class="col-lg-8">
@@ -30,41 +31,7 @@
               </div>
               }
             </div>
-            <div class="mb-3">
-              <label class="form-label">Logo</label>
-              <div class="text-center">
-                <div class="position-relative d-inline-block">
-                  <div class="position-absolute bottom-0 end-0">
-                    <label for="project-image-input" class="mb-0" data-bs-toggle="tooltip" data-bs-placement="right"
-                      title="Select Image">
-                      <div class="avatar-xs">
-                        <div
-                          class="avatar-title bg-light border rounded-circle text-muted cursor-pointer shadow font-size-16">
-                          <i class='bx bxs-image-alt'></i>
-                        </div>
-                      </div>
-                    </label>
-                    <input class="form-control d-none" value="" id="project-image-input" type="file"
-                      accept="image/png, image/PNG, image/jpg, image/JPG, image/jpeg, image/JPEG, .pdf , .PDF , .doc , .DOC , .docx , .DOCX , .docm , .DOCM"
-                      (change)="selectOnFile($event,'photo_profile','Thumbnail')">
-                  </div>
-                  <div class="avatar-lg">
-                    <div class="avatar-title bg-light rounded-circle">
-                      <img [src]="imageProjet" class="avatar-md h-auto rounded-circle" />
-                    </div>
-                  </div>
-                </div>
-                <!-- Bouton pour supprimer l'image -->
-                @if (uploadedImage) {
-                <div>
-                  <button type="button" class="btn btn-danger btn-sm mt-1" id="delete-image-btn"
-                    (click)="deleteImage()">
-                    <i class="bx bx-trash me-1"></i>
-                  </button>
-                </div>
-                }
-              </div>
-            </div>
+
             <div class="relative">
               <div class="mb-3">
                 <label for="projectdesc-input" class="form-label">Description</label>
@@ -150,7 +117,7 @@
                       </div>
                       <div class="col-md-2">
                         <div class="mt-2 mt-md-0 d-grid">
-                          <input type="button" class="btn btn-primary inner" value="Delete"
+                          <input type="button" class="btn btn-danger inner" value="Delete"
                             (click)="deleteMember($index)" />
                         </div>
                       </div>
@@ -161,12 +128,13 @@
               </form>
               <div class="row justify-content-end">
                 <div class="col-lg-10">
-                  <input data-repeater-create type="button" class="btn btn-success inner" value="Ajouter une norme"
+                  <input data-repeater-create type="button" class="btn bgPrimaire inner" value="Ajouter une norme"
                     (click)="addMember()" [disabled]="form.invalid" />
                 </div>
               </div>
             </div>
-            <div>
+
+            <!-- <div>
               <label class="form-label">Fichiers attachés</label>
               <dropzone class="dropzone" [config]="dropzoneConfig" [message]="'Drop files here or click to upload.'"
                 (success)="onUploadSuccess($event)">
@@ -201,7 +169,7 @@
                   </div>
                 </li>
               </ul>
-            </div>
+            </div> -->
 
 
           </div>
@@ -228,7 +196,7 @@
               </select>
               <div class="invalid-feedback">Please select project status.</div>
             </div>
-            <div class="relative">
+            <!-- <div class="relative">
               <div class="mb-4">
                 <label class="form-label" for="project-visibility-input">Catégorie</label>
                 <input matInput id="libelle-input" [matAutocomplete]="autoDepatement" (change)="updateForm($event)"
@@ -256,7 +224,7 @@
                 }
               </div>
               }
-            </div>
+            </div> -->
           </div>
           <!-- end card body -->
         </div>

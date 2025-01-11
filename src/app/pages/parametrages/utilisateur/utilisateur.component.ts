@@ -25,6 +25,7 @@ import { AddUserComponent } from './add-user/add-user.component';
   selector: 'app-utilisateur',
   standalone: true,
   providers: [
+    DatePipe,
     {
       provide: MatDialogRef,
       useValue: [],
@@ -96,21 +97,13 @@ throw new Error('Method not implemented.');
   )[];
 
   constructor(
-    private changeDetectorRefs: ChangeDetectorRef,
-    private _router: Router,
-    private datePipe: DatePipe,
+
     private snackbar: SnackBarService,
-    private _matDialog: MatDialog,
     private papService: PapService,
-    private parentService: ServiceParent,
     public matDialogRef: MatDialogRef<PapAddComponent>,
     private _changeDetectorRef: ChangeDetectorRef,
     public toastr: ToastrService,
-    private sharedService: SharedService,
-    private localService: LocalService,
-    private coreService: CoreService,
-    private route: ActivatedRoute,
-    private router: Router
+    private coreService: CoreService
   ) {}
   ngOnInit(): void {
     this.headers = this.createHeader();
@@ -125,12 +118,9 @@ throw new Error('Method not implemented.');
 
 
   getUsers() {
+    this.loadData = true;
     return this.papService.all("users/all").subscribe(
       (data: any) => {
-        this.loadData = false;
-        console.log('====================================');
-        console.log(data);
-        console.log('====================================');
         if (data["status"] == 200) {
           this.loadData = false;
           console.log(data);
@@ -176,14 +166,6 @@ throw new Error('Method not implemented.');
     this.offset = this.pageIndex;
     this.getUsers();
   }
-
-
-
-
-
-
-
-
 
 
   createHeader() {
@@ -271,7 +253,7 @@ throw new Error('Method not implemented.');
           this.currentIndex = information;
           this.showLoader = "isShow";
           const message = "utilisateur  supprimé";
-          this.coreService.deleteItem(id, "users/deleteMo").subscribe(
+          this.coreService.deleteItem(id, "users").subscribe(
             (resp) => {
               this.showLoader = "isNotShow";
               if (resp["responseCode"] ==200) {

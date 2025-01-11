@@ -42,6 +42,7 @@ import { CoreService } from "src/app/shared/core/core.service";
   styleUrl: "./pip-list.component.css",
   standalone: true,
   providers: [
+    DatePipe,
     {
       provide: MatDialogRef,
       useValue: [],
@@ -56,9 +57,8 @@ import { CoreService } from "src/app/shared/core/core.service";
   imports: [
     TableauComponent,
     UIModule,
-    AngularMaterialModule,
-    DatatableComponent,
-  ],
+    AngularMaterialModule
+],
 })
 export class PipListComponent implements OnInit {
   [x: string]: any;
@@ -210,7 +210,7 @@ export class PipListComponent implements OnInit {
 
   getPip() {
     this.loadData=true;
-   
+
       if (this.lien === "pip/ong") {
         return this.parentService
           .liste("partie-interesse", this.pageSize, this.offset, "ONG")

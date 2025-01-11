@@ -32,13 +32,13 @@ export class JobsComponent implements OnInit {
 
   lengthPap: number;
   lengthPip: number;
-  lenghtDocument: number
+  lenghtDocument: number;
   lengthPlainte: number;
-  lengthRencontre: number
+  lengthRencontre: number;
 
   listPlainte: any[] = [];
   listDocument: any[] = [];
-  lisRencontre:any[] = [];
+  lisRencontre: any[] = [];
 
   public listPap: any[] = [];
   public vulnerabilityCounts = {
@@ -55,7 +55,7 @@ export class JobsComponent implements OnInit {
     private projectService: ProjectService,
     private snackbar: SnackBarService
   ) {
-    this.currentUser=this.localService.getDataJson("user");
+    this.currentUser = this.localService.getDataJson("user");
   }
 
   jobViewChart: ChartType;
@@ -72,27 +72,26 @@ export class JobsComponent implements OnInit {
   DetailProject = {
     fichiers: [
       {
-        fichierUrl: 'https://example.com/fichier1.doc',
-        fichierName: 'Document 1',
+        fichierUrl: "https://example.com/fichier1.doc",
+        fichierName: "Document 1",
       },
       {
-        fichierUrl: 'https://example.com/fichier2.pdf',
-        fichierName: 'Report 2024',
+        fichierUrl: "https://example.com/fichier2.pdf",
+        fichierName: "Report 2024",
       },
       {
-        fichierUrl: 'https://example.com/fichier3.ppt',
-        fichierName: 'Presentation Final',
-      }
-    ]
+        fichierUrl: "https://example.com/fichier3.ppt",
+        fichierName: "Presentation Final",
+      },
+    ],
   };
-
 
   @ViewChild("chart", { static: false }) chart: ChartComponent;
 
   ngOnInit(): void {
     this.getUserConnected();
-   // this.getPap();
-   this.loadAllCategories();
+    // this.getPap();
+    this.loadAllCategories();
     this.getPip();
     this.getPlainte();
     this.getDocument();
@@ -135,7 +134,6 @@ export class JobsComponent implements OnInit {
   //       }
   //     );
   // }
-
 
   classifyVulnerability(): void {
     if (this.listPap && this.listPap.length > 0) {
@@ -220,7 +218,7 @@ export class JobsComponent implements OnInit {
       );
   }
 
-  getDocument(){
+  getDocument() {
     return this.parentService
       .list("documents", this.pageSize, this.offset)
       .subscribe(
@@ -229,7 +227,7 @@ export class JobsComponent implements OnInit {
           if (data["responseCode"] == 200) {
             console.log("list des documents");
             this.loadData = false;
-            this.listDocument=data["data"]
+            this.listDocument = data["data"];
             this.lenghtDocument = data.length;
             console.log(data);
           } else {
@@ -394,14 +392,8 @@ export class JobsComponent implements OnInit {
   }
 
   getFileName(url: string): string {
-    return url.substring(url.lastIndexOf('/') + 1);
+    return url.substring(url.lastIndexOf("/") + 1);
   }
-
-
-
-
-
-
 
   getRencontres() {
     return this.projectService
@@ -413,7 +405,7 @@ export class JobsComponent implements OnInit {
             this.loadData = false;
             console.log(data);
             this.lisRencontre = data["data"];
-            this.lengthRencontre=this.lisRencontre.length;
+            this.lengthRencontre = this.lisRencontre.length;
             console.log(data);
           } else {
             this.loadData = false;
@@ -432,14 +424,18 @@ export class JobsComponent implements OnInit {
           this.loadData = false;
           if (data["responseCode"] === 200) {
             const currentList = data.data;
-            console.log(`Liste récupérée pour la catégorie ${category}:`, currentList);
+            console.log(
+              `Liste récupérée pour la catégorie ${category}:`,
+              currentList
+            );
             this.listPap = [...this.listPap, ...currentList];
             this.lengthPap += currentList.length;
             console.log("Longueur totale des PAP:", this.lengthPap);
             this.updateVulnerabilityCounts(currentList);
-           // this.updatePieChart();
           } else {
-            console.error(`Erreur lors de la récupération des PAP pour ${category}`);
+            console.error(
+              `Erreur lors de la récupération des PAP pour ${category}`
+            );
           }
         },
         (err) => {
@@ -458,32 +454,17 @@ export class JobsComponent implements OnInit {
     });
   }
 
-
-
-  // updatePieChart() {
-  //   this.pieChart.series = [
-  //     this.papEconomiqueCount,
-  //     this.papAgricoleCount,
-  //     this.databasePapPlaceAffaireCount,
-  //   ];
-
-
-  // }
-
   loadAllCategories() {
     this.listPap = [];
     this.lengthPap = 0;
     this.vulnerabilityCounts = { vulnerable: 0, nonVulnerable: 0 };
-   // this.papAgricoleCount = 0;
-    //this.databasePapPlaceAffaireCount = 0;
-    //this.papEconomiqueCount = 0;
-    const categories = ["papAgricole", "databasePapPlaceAffaire", "papEconomique"];
+    const categories = [
+      "papAgricole",
+      "databasePapPlaceAffaire",
+      "papEconomique",
+    ];
     categories.forEach((category) => {
       this.getPapByCategory(category);
     });
   }
-
-
-
-
 }

@@ -46,11 +46,12 @@ import { PapAgricoleComponent } from "../pap-agricole/pap-agricole.component";
 import { AddPapPlaceAffaireComponent } from "./add-pap-place-affaire/add-pap-place-affaire.component";
 
 @Component({
-  selector: 'app-pap-place-affaire',
+  selector: "app-pap-place-affaire",
   standalone: true,
-  templateUrl: './pap-place-affaire.component.html',
-  styleUrl: './pap-place-affaire.component.css',
+  templateUrl: "./pap-place-affaire.component.html",
+  styleUrl: "./pap-place-affaire.component.css",
   providers: [
+    DatePipe,
     {
       provide: MatDialogRef,
       useValue: [],
@@ -68,14 +69,10 @@ import { AddPapPlaceAffaireComponent } from "./add-pap-place-affaire/add-pap-pla
     UIModule,
     AngularMaterialModule,
     DatatableComponent,
-    JuristAppComponent,
-    BatimentComponent,
     FormsModule,
   ],
 })
 export class PapPlaceAffaireComponent {
-
-
   [x: string]: any;
 
   listPap: Pap[];
@@ -204,9 +201,7 @@ export class PapPlaceAffaireComponent {
     this.getPapPlaceAffaire();
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
-
   }
-
 
   createHeader() {
     return [
@@ -232,7 +227,6 @@ export class PapPlaceAffaireComponent {
       },
     ];
   }
-
 
   createActions(): ButtonAction[] {
     return [
@@ -264,6 +258,7 @@ export class PapPlaceAffaireComponent {
   }
 
   getPapPlaceAffaire() {
+    this.loadData = true;
     return this.parentService
       .list("databasePapPlaceAffaire", this.pageSize, this.offset)
       .subscribe(
@@ -276,7 +271,7 @@ export class PapPlaceAffaireComponent {
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
             this.datas = data["data"];
-           this.length = data["length"];
+            this.length = data["length"];
             console.log("length", this.length);
             this._changeDetectorRef.markForCheck();
           } else {
@@ -644,51 +639,46 @@ export class PapPlaceAffaireComponent {
   }
 
   importData() {
-      const dataToSend = this.dataExcel.map((item) => ({
-        ...item,
-        projectId: +this.currentUser.projects[0]?.id,
-      }));
+    this.loadData = true;
+    const dataToSend = this.dataExcel.map((item) => ({
+      ...item,
+      projectId: +this.currentUser.projects[0]?.id,
+    }));
 
-      console.log(dataToSend);
-      return this.papService
-        .add("databasePapPlaceAffaire", dataToSend)
-        .subscribe(
-          (data: any) => {
-            console.log(data);
-            this.toastr.success(data.message);
-            this.dataExcel = [];
-
-            this.getPapPlaceAffaire();
-          },
-          (err) => {
-            this.toastr.error(err);
-          }
-        );
-
+    return this.papService.add("databasePapPlaceAffaire", dataToSend).subscribe(
+      (data: any) => {
+        console.log(data);
+        this.toastr.success(data.message);
+        this.dataExcel = [];
+        this.getPapPlaceAffaire();
+        this.loadData = false;
+      },
+      (err) => {
+        this.loadData = false;
+        this.toastr.error(err);
+      }
+    );
   }
 
-  importDatas(params:string) {
+  importDatas(params: string) {
     return this.papService.add(`${params} `, this.dataExcel).subscribe(
-      (data:any) => {
+      (data: any) => {
         console.log("====================================");
         console.log(data);
         console.log("====================================");
         this.toastr.success(data.message);
-        this.selectedOption=""
-      this.resetDataFromExcel()
-
+        this.selectedOption = "";
+        this.resetDataFromExcel();
       },
       (err) => {
         console.log("====================================");
         console.log(err);
         console.log("====================================");
         this.toastr.error(err);
-        this.resetDataFromExcel()
+        this.resetDataFromExcel();
       }
     );
   }
-
-
 
   onOptionSelected() {
     console.log("Valeur sélectionnée :", this.selectedOption);
@@ -700,5 +690,4 @@ export class PapPlaceAffaireComponent {
     this.sharedService.setSelectedItem(information);
     this._router.navigate(["pap/detail"]);
   }
-
 }

@@ -1,35 +1,40 @@
-import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { ServiceParent } from 'src/app/core/services/serviceParent';
-import { AngularMaterialModule } from 'src/app/shared/angular-materiel-module/angular-materiel-module';
-import { CoreService } from 'src/app/shared/core/core.service';
-import { SnackBarService } from 'src/app/shared/core/snackBar.service';
-import { TableauComponent, ButtonAction } from 'src/app/shared/tableau/tableau.component';
-import { UIModule } from 'src/app/shared/ui/ui.module';
-import { AddCategorieComponent } from '../../categorie-utilisateur/add-categorie/add-categorie.component';
-import { AddCategorieDossierComponent } from './add-categorie-dossier/add-categorie-dossier.component';
+import { DatePipe } from "@angular/common";
+import {
+  ChangeDetectorRef,
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  ViewChild,
+} from "@angular/core";
+import { UntypedFormGroup } from "@angular/forms";
+import { MatDialog } from "@angular/material/dialog";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatSort } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
+import { Router } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
+import { ServiceParent } from "src/app/core/services/serviceParent";
+import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
+import { CoreService } from "src/app/shared/core/core.service";
+import { SnackBarService } from "src/app/shared/core/snackBar.service";
+import {
+  TableauComponent,
+  ButtonAction,
+} from "src/app/shared/tableau/tableau.component";
+import { UIModule } from "src/app/shared/ui/ui.module";
+import { AddCategorieComponent } from "../../categorie-utilisateur/add-categorie/add-categorie.component";
+import { AddCategorieDossierComponent } from "./add-categorie-dossier/add-categorie-dossier.component";
 
 @Component({
-  selector: 'app-categorie-dossier',
+  selector: "app-categorie-dossier",
   standalone: true,
-  imports: [TableauComponent,
-    UIModule,
-    AngularMaterialModule,
-  ],
+  imports: [TableauComponent, UIModule, AngularMaterialModule],
+  providers: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './categorie-dossier.component.html',
-  styleUrl: './categorie-dossier.component.css'
+  templateUrl: "./categorie-dossier.component.html",
+  styleUrl: "./categorie-dossier.component.css",
 })
 export class CategorieDossierComponent {
-
- url:string = 'categorieDocuments'
+  url: string = "categorieDocuments";
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -69,28 +74,21 @@ export class CategorieDossierComponent {
   headers: any = [];
   btnActions: any = [];
 
-
   breadCrumbItems: (
     | { label: string; active?: undefined }
     | { label: string; active: boolean }
   )[];
 
-
-  roles: any[]=[];
+  roles: any[] = [];
   ngOnInit(): void {
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
     this.getcatégories();
   }
 
-
-
-
   filterTable($event: any) {
     throw new Error("Method not implemented.");
   }
-
-
 
   createHeader() {
     return [
@@ -102,7 +100,6 @@ export class CategorieDossierComponent {
         th: "Libelle",
         td: "libelle",
       },
-
     ];
   }
 
@@ -124,26 +121,21 @@ export class CategorieDossierComponent {
         isDisabled: this.hasDelete,
         action: (element?) => this.supprimerItems(element.id, element),
       },
-
     ];
   }
 
-
-  constructor( private changeDetectorRefs: ChangeDetectorRef,
+  constructor(
+    private changeDetectorRefs: ChangeDetectorRef,
     private parentService: ServiceParent,
     private _router: Router,
     private datePipe: DatePipe,
     private snackbar: SnackBarService,
     private _matDialog: MatDialog,
     private coreService: CoreService,
-  //  public matDialogRef: MatDialogRef<>,
+    //  public matDialogRef: MatDialogRef<>,
     private _changeDetectorRef: ChangeDetectorRef,
-    public toastr: ToastrService,
-    ){
-
-  }
-
-
+    public toastr: ToastrService
+  ) {}
 
   getcatégories() {
     return this.parentService
@@ -172,15 +164,6 @@ export class CategorieDossierComponent {
       );
   }
 
-
-
-
-
-
-
-
-
-
   updateItems(information): void {
     console.log(information);
     this.snackbar.openModal(
@@ -198,23 +181,15 @@ export class CategorieDossierComponent {
 
   //cette catégorie permet de supprimer
   supprimerItems(id, information) {
-    console.log("====================================");
-    console.log(id);
-    console.log("====================================");
     this.snackbar
       .showConfirmation("Voulez-vous vraiment supprimer cette catégorie?")
       .then((result) => {
         if (result["value"] == true) {
           this.deleteUser = true;
           this.currentIndex = information;
-          this.showLoader = "isShow";
-          const message = "catégorie  supprimée";
           this.coreService.deleteItem(id, "categorieDocuments").subscribe(
             (resp) => {
-              this.showLoader = "isNotShow";
-              if (resp["responseCode"]==200) {
               this.getcatégories();
-              }
               this.snackbar.openSnackBar(
                 "catégorie  supprimée avec succés",
                 "OK",
@@ -222,7 +197,6 @@ export class CategorieDossierComponent {
               );
             },
             (error) => {
-              this.showLoader = "isNotShow";
               this.deleteUser = false;
               this.snackbar.showErrors(error);
             }
@@ -254,6 +228,4 @@ export class CategorieDossierComponent {
     this.offset = this.pageIndex;
     this.getcatégories();
   }
-
-
 }

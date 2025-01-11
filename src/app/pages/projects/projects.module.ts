@@ -55,7 +55,6 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     CommonModule,
     ProjectsRoutingModule,
     UIModule,
-    BsDropdownModule.forRoot(),
     TooltipModule.forRoot(),
     NgApexchartsModule,
     FormsModule,

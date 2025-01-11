@@ -56,7 +56,6 @@ import { DetailPlainteComponent } from './detail-plainte/detail-plainte.componen
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBar, MatProgressBarModule } from '@angular/material/progress-bar';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FormModule } from './pages/form/form.module';
 import { CommonModule } from '@angular/common';
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -69,7 +68,7 @@ export function createTranslateLoader(http: HttpClient): any {
     DetailPlainteComponent,
   ],
   imports: [
-    CommonModule, FormModule, ReactiveFormsModule, BrowserModule,MatProgressBarModule,MatProgressBar,MatProgressSpinnerModule,
+    CommonModule, ReactiveFormsModule, BrowserModule,MatProgressBarModule,MatProgressBar,MatProgressSpinnerModule,
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,

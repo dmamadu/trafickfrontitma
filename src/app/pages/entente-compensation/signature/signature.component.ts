@@ -23,7 +23,7 @@ export class SignatureComponent {
   loaderImg: boolean = false;
   infosPap: any;
   noImage;
-  urlImage = environment.apiURL + "image/getFile/";
+  urlImage = environment.apiUrl + "image/getFile/";
   signatureUrlSubject: Subject<string> = new Subject<string>();
   constructor(
     public matDialogRef: MatDialogRef<SignatureComponent>,

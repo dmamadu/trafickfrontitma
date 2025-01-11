@@ -33,6 +33,7 @@ import { CoreService } from "src/app/shared/core/core.service";
   styleUrl: "./list.component.css",
   standalone: true,
   providers: [
+    DatePipe,
     {
       provide: MatDialogRef,
       useValue: [],

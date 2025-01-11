@@ -107,7 +107,7 @@ export class AddPlainteComponent implements OnInit {
   categoriePartieInteresses: any;
   uploadedImage!: File;
   imageURL: string | undefined;
-  urlImage = environment.apiURL + "image/getFile/";
+  urlImage = environment.apiUrl + "image/getFile/";
   readonly labelPosition = model<"before" | "after">("after");
   categories: any[] = [
     { id: "1", libelle: "Agricole" },
@@ -452,9 +452,6 @@ export class AddPlainteComponent implements OnInit {
   }
 
   addItems() {
-    console.log("====================================");
-    console.log(this.initForm.value);
-    console.log("====================================");
     this.snackbar
       .showConfirmation(`Voulez-vous vraiment crée cette plainte `)
       .then((result) => {

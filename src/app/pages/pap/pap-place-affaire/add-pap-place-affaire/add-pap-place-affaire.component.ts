@@ -99,7 +99,7 @@ export class AddPapPlaceAffaireComponent {
   listeNoire: boolean = false;
   currentUser: any;
 
-  urlImage = environment.apiURL + "image/getFile/";
+  urlImage = environment.apiUrl + "image/getFile/";
 
   uploadedImage!: File;
 

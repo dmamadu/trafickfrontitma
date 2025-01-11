@@ -1,5 +1,6 @@
 <div>
-  <app-page-title title="Liste des Pap place affaires affectées par le projet" [breadcrumbItems]="breadCrumbItems" ></app-page-title>
+  <app-page-title title="Barémes de compensations des  Pap Agricoles "
+    [breadcrumbItems]="breadCrumbItems"></app-page-title>
 </div>
 <div class=" row mb-2">
   <div class="col-sm">
@@ -13,14 +14,8 @@
   </div>
   <div class="col-sm-auto">
     <div class="d-flex flex-wrap gap-2">
-
-      <button (click)="exportAs('pdf')"> <img src="assets/images/pdf-icon.png" alt="default image"
-          class="c_icon"></button>
-          <button (click)="exportAs('excel')">
-            <img src="assets/images/xlsx-icon.png" alt="default image" class="c_icon">
-          </button>
       <button type="submit" class="btn bgPrimaire" (click)="addItems()"> <i class="mdi mdi-plus me-1"></i> Ajouter un
-        pap place affaire</button>
+        pap agricole</button>
 
       <button type="submit" class="btn bgPrimaire" (click)="triggerFileUpload()"> <i
           class="mdi mdi-file-excel me-1">Importer un fichier excel</i>
@@ -45,8 +40,8 @@
 
 <app-loader-custom *ngIf="loadData"></app-loader-custom>
 
-<div style="z-index: 0" class="pt-3">
+<!-- <div style="z-index: 0" class="pt-3">
   <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" [total]="length"
     [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
     (changePage)="pageChanged($event)" *ngIf="!loadData"></tableau>
-</div>
+</div> -->

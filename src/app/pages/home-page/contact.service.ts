@@ -10,6 +10,6 @@ export class ContactService {
   constructor(private http: HttpClient) {}
   sendContactForm(formData: any): Observable<any> {
     // const url = 'localhost:8080/mailusers';
-    return this.http.post<any>(environment.apiURL + "mailusers", formData);
+    return this.http.post<any>(environment.apiUrl + "mailusers", formData);
   }
 }

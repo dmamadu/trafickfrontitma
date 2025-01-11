@@ -36,6 +36,7 @@ import { ButtonAction } from "src/app/shared/tableau/tableau.component";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { AddUserComponent } from "../../parametrages/utilisateur/add-user/add-user.component";
 import { CoreService } from "src/app/shared/core/core.service";
+import { AddMaitreOuvrageComponent } from "../add-maitre-ouvrage/add-maitre-ouvrage.component";
 
 @Component({
   selector: "app-molist",
@@ -593,4 +594,22 @@ export class MolistComponent implements OnInit {
         }
       });
   }
+
+
+
+  addItems(): void {
+    this.snackbar.openModal(
+      AddMaitreOuvrageComponent,
+      "55rem",
+      "new",
+      "auto",
+      this.datas,
+      "",
+      () => {
+        this.fetchMo();
+      }
+    );
+  }
+
+
 }

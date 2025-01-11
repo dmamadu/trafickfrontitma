@@ -7,17 +7,17 @@ import {
   Validators,
 } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
-import { FormModule } from "src/app/pages/form/form.module";
 import { ComplaintServiceService } from "../complaint-service.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { ContactService } from "../contact.service";
 import { MatProgressBar, MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { UIModule } from "../../../shared/ui/ui.module";
 
 @Component({
   selector: "app-main-content",
   standalone: true,
-  imports: [CommonModule, FormModule, ReactiveFormsModule, BrowserModule,MatProgressBarModule,MatProgressBar,MatProgressSpinnerModule],
+  imports: [CommonModule, ReactiveFormsModule, BrowserModule, MatProgressBarModule, MatProgressSpinnerModule, UIModule],
   templateUrl: "./main-content.component.html",
   styleUrl: "./main-content.component.css",
 })
@@ -84,6 +84,7 @@ export class MainContentComponent implements OnInit {
     console.log(this.complaintForm.value);
     if (this.complaintForm.valid) {
       const complaintData = this.complaintForm.value;
+      this.loader=true;
       this.complaintService.submitComplaint(complaintData).subscribe(
         (response) => {
           console.log("Réponse du serveur :", response);
@@ -93,11 +94,14 @@ export class MainContentComponent implements OnInit {
             "OK",
             ["mycssSnackbarGreen"]
           );
+          this.loader=false;
         },
         (error) => {
           console.error("Erreur lors de l'envoi de la plainte :", error);
           this.snackbar.showErrors(error);
+          this.loader=false;
         }
+
       );
     } else {
       this.snackbar.openSnackBar("Veuillez remplir correctement tous les champs.", "OK", [

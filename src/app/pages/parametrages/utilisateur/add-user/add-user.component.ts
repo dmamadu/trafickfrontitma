@@ -6,7 +6,6 @@ import {
 } from "@angular/forms";
 import {
   MAT_DIALOG_DATA,
-  MatDialog,
   MatDialogRef,
 } from "@angular/material/dialog";
 import { MatDrawer } from "@angular/material/sidenav";
@@ -15,7 +14,6 @@ import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/an
 import { CoreService } from "src/app/shared/core/core.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { Image } from "src/app/shared/models/image.model";
-import { MoService } from "src/app/core/services/mo.service";
 import { LocalService } from "src/app/core/services/local.service";
 import { environment } from "src/environments/environment";
 import { ClientVueService } from "src/app/pages/admin/client-vue/client-vue.service";
@@ -75,7 +73,7 @@ export class AddUserComponent {
   categoriePartieInteresses: any;
   uploadedImage!: File;
   imageURL: string | undefined;
-  urlImage = environment.apiURL + "image/getFile/";
+  urlImage = environment.apiUrl + "image/getFile/";
 
   roles: any[] = [];
   categories: any[] = [];
@@ -89,15 +87,12 @@ export class AddUserComponent {
     private snackbar: SnackBarService,
     private changeDetectorRefs: ChangeDetectorRef,
     private clientService: ClientVueService,
-    private moservice: MoService,
-    private _matDialog: MatDialog,
     private localService: LocalService,
     private clientServive: ClientVueService,
     private parentService: ServiceParent
   ) {
     this.currentUser = this.localService.getDataJson("user");
 
-    console.log("user connecter", this.currentUser);
     if (_data?.action == "new") {
       this.initForms();
       this.labelButton = "Ajouter ";
@@ -222,7 +217,7 @@ export class AddUserComponent {
           this.loader = true;
           const value = this.initForm.value;
           this.coreService
-            .updateItem(value, this.id, "users/updateConsultant")
+            .updateItem(value, this.id, "users/updateUser")
             .subscribe(
               (resp) => {
                 if (resp) {
@@ -361,7 +356,7 @@ export class AddUserComponent {
                 "OK",
                 ["mycssSnackbarRed"]
               );
-            //  this.snackbar.showErrors(error);
+              //  this.snackbar.showErrors(error);
             }
           );
         }

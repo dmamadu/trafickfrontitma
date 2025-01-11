@@ -24,7 +24,7 @@ export class SignatureClientComponent {
     loaderImg: boolean = false;
     infosPap: any;
     noImage;
-    urlImage=    environment.apiURL+'image/getFile/';
+    urlImage=    environment.apiUrl+'image/getFile/';
 
     constructor(
         public matDialogRef: MatDialogRef<SignatureClientComponent>, @Inject(MAT_DIALOG_DATA) _data,

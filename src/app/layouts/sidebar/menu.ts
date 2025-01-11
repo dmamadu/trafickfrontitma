@@ -613,7 +613,7 @@ export const MENU: MenuItem[] = [
             link: "/pap/papEconomique",
             parentId: 95,
           },
-        ]
+        ],
       },
       {
         id: 95,
@@ -719,55 +719,55 @@ export const MENU: MenuItem[] = [
   //   ],
   // },
 
-  {
-    id: 93,
-    label: "Consultants",
-    icon: "bxs-user-detail",
-    subItems: [
-      {
-        id: 102,
-        label: "Chef de mission",
-        icon: "bx-list-ul",
-        link: "/consultant/chef-de-mission", // Lien vers la liste des "Chef de mission"
-        parentId: 93,
-      },
-      {
-        id: 103,
-        label: "Spécialiste en réinstallation",
-        icon: "bx-list-ul",
-        link: "/consultant/specialiste-reinstallation", // Lien vers la liste des "Spécialiste en réinstallation"
-        parentId: 93,
-      },
-      {
-        id: 104,
-        label: "Spécialiste en gestion des parties prenantes",
-        icon: "bx-list-ul",
-        link: "/consultant/gestion-parties-prenantes", // Lien vers la liste des "Spécialiste en gestion des parties prenantes"
-        parentId: 93,
-      },
-      {
-        id: 105,
-        label: "Spécialiste en Genre et Inclusions Sociale",
-        icon: "bx-list-ul",
-        link: "/consultant/genre-inclusions-sociale", // Lien vers la liste des "Spécialiste en Genre et Inclusions Sociale"
-        parentId: 93,
-      },
-      {
-        id: 106,
-        label: "Spécialiste en base de données et SIG",
-        icon: "bx-list-ul",
-        link: "/consultant/base-de-donnees-sig", // Lien vers la liste des "Spécialiste en base de données et SIG"
-        parentId: 93,
-      },
-      {
-        id: 107,
-        label: "Animateurs communautaires",
-        icon: "bx-list-ul",
-        link: "/consultant/animateurs-communautaires", // Lien vers la liste des "Animateurs communautaires"
-        parentId: 93,
-      },
-    ],
-  },
+  // {
+  //   id: 93,
+  //   label: "Consultants",
+  //   icon: "bxs-user-detail",
+  //   subItems: [
+  //     {
+  //       id: 102,
+  //       label: "Chef de mission",
+  //       icon: "bx-list-ul",
+  //       link: "/consultant/chef-de-mission",
+  //       parentId: 93,
+  //     },
+  //     {
+  //       id: 103,
+  //       label: "Spécialiste en réinstallation",
+  //       icon: "bx-list-ul",
+  //       link: "/consultant/specialiste-reinstallation",
+  //       parentId: 93,
+  //     },
+  //     {
+  //       id: 104,
+  //       label: "Spécialiste en gestion des parties prenantes",
+  //       icon: "bx-list-ul",
+  //       link: "/consultant/gestion-parties-prenantes",
+  //       parentId: 93,
+  //     },
+  //     {
+  //       id: 105,
+  //       label: "Spécialiste en Genre et Inclusions Sociale",
+  //       icon: "bx-list-ul",
+  //       link: "/consultant/genre-inclusions-sociale",
+  //       parentId: 93,
+  //     },
+  //     {
+  //       id: 106,
+  //       label: "Spécialiste en base de données et SIG",
+  //       icon: "bx-list-ul",
+  //       link: "/consultant/base-de-donnees-sig",
+  //       parentId: 93,
+  //     },
+  //     {
+  //       id: 107,
+  //       label: "Animateurs communautaires",
+  //       icon: "bx-list-ul",
+  //       link: "/consultant/animateurs-communautaires",
+  //       parentId: 93,
+  //     },
+  //   ],
+  // },
   {
     id: 94,
     label: "Plaintes",
@@ -775,7 +775,7 @@ export const MENU: MenuItem[] = [
     subItems: [
       {
         id: 102,
-        label: "Phase d'Étude",
+        label: "Liste(Phase d'Étude)",
         icon: "bx-list-ul",
         link: "/plainte/list",
         parentId: 94,
@@ -864,24 +864,24 @@ export const MENU: MenuItem[] = [
       {
         id: 103,
         label: "Liste",
-        "icon": "bx-list-ul",
+        icon: "bx-list-ul",
         link: "/ententeCompensation/list",
         parentId: 95,
       },
-  // {
-  //   id: 104,
-  //   label: "Ajouter",
-  //   "icon": "bx-plus-circle",
-  //   link: "/ententeCompensation/add",
-  //   parentId: 95,
-  // },
-  // {
-  //   id: 105,
-  //   label: "Détail",
-  //   "icon": "bx-detail",
-  //   link: "/ententeCompensation/detail",
-  //   parentId: 95,
-  // }
+      // {
+      //   id: 104,
+      //   label: "Ajouter",
+      //   "icon": "bx-plus-circle",
+      //   link: "/ententeCompensation/add",
+      //   parentId: 95,
+      // },
+      // {
+      //   id: 105,
+      //   label: "Détail",
+      //   "icon": "bx-detail",
+      //   link: "/ententeCompensation/detail",
+      //   parentId: 95,
+      // }
     ],
   },
 
@@ -896,7 +896,7 @@ export const MENU: MenuItem[] = [
         icon: "bx-list-ul",
         link: "/rencontres",
         parentId: 96,
-       }
+      },
       // {
       //   id: 105,
       //   label: "Ajouter",
@@ -904,6 +904,74 @@ export const MENU: MenuItem[] = [
       //   link: "/ententeCompensation/add",
       //   parentId: 96,
       // },
+    ],
+  },
+
+  {
+    id: 97,
+    label: "Barémes de compensation",
+    icon: "bxs-user-detail",
+    subItems: [
+      {
+        id: 105,
+        label: "Pap Agricoles",
+        icon: "bxs-user-detail",
+       link: "/baremes/agricole",
+        parentId: 97,
+        // subItems: [
+        //   {
+        //     id: 115,
+        //     label: "Arbres",
+        //     icon: "bxs-tree",
+        //     link: "/baremes/agricole",
+        //     parentId: 97,
+        //   },
+        //   {
+        //     id: 116,
+        //     label: "Equipements",
+        //     icon: "bxs-briefcase",
+        //     link: "/pap/papPlaceAffaire",
+        //     parentId: 97,
+        //   },
+        //   {
+        //     id: 117,
+        //     label: "Revenues",
+        //     icon: "bxs-briefcase",
+        //     link: "/pap/papPlaceAffaire",
+        //     parentId: 97,
+        //   },
+        // ],
+      },
+      {
+        id: 106,
+        label: "Pap Economiques",
+        icon: "bxs-buildings",
+        link: "/baremes/economique",
+        parentId: 97,
+        // subItems: [
+        //   {
+        //     id: 118,
+        //     label: "Arbres",
+        //     icon: "bxs-buildings",
+        //     link: "/baremes/economique",
+        //     parentId: 97,
+        //   },
+        //   {
+        //     id: 119,
+        //     label: "Equipements",
+        //     icon: "bxs-heart",
+        //     link: "/pip/ong",
+        //     parentId: 97,
+        //   },
+        //   {
+        //     id: 120,
+        //     label: "revenues",
+        //     icon: "bxs-briefcase",
+        //     link: "/pip/entreprise",
+        //     parentId: 97,
+        //   },
+        // ],
+      },
     ],
   },
 ];

@@ -38,10 +38,10 @@ export class ServiceParent implements Resolve<any> {
   }
 
   list(url, max, offset): Observable<any[]> {
-    return this.http.get<any[]>(this.url+ `/${url}`+"?max=" + max + "&offset=" + offset);
+    return this.http.get<any[]>(this.url+ `${url}`+"?max=" + max + "&offset=" + offset);
   }
 
   liste(url, max, offset,categorieLibelle): Observable<any[]> {
-    return this.http.get<any[]>(this.url+ `/${url}`+"?max=" + max + "&offset="+offset+"&categorieLibelle="+categorieLibelle);
+    return this.http.get<any[]>(this.url+ `${url}`+"?max=" + max + "&offset="+offset+"&categorieLibelle="+categorieLibelle);
   }
 }

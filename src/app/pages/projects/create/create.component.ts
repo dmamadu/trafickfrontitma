@@ -36,7 +36,7 @@ import { environment } from "src/environments/environment";
 export class CreateComponent implements OnInit {
   suggestions$!: Observable<string[]>;
   listProject: Project[];
-  urlImage = environment.apiURL + "image/getFile/";
+  urlImage = environment.apiUrl + "image/getFile/";
   buttonText: string = "Créer le projet";
   constructor(
     private fb: FormBuilder,
@@ -47,46 +47,43 @@ export class CreateComponent implements OnInit {
     private clientServive: ClientVueService,
     private _changeDetectorRef: ChangeDetectorRef
   ) {
-    this.projectForm = this.fb.group({
-      id: [],
-      libelle: [
-        "",
-        [
-          Validators.required,
-          Validators.minLength(3),
-          Validators.maxLength(150),
+    this.projectForm = this.fb.group(
+      {
+        id: [],
+        libelle: [
+          "",
+          [
+            Validators.required,
+            Validators.minLength(3),
+            Validators.maxLength(150),
+          ],
         ],
-      ],
-      status: ["", Validators.required],
-      categorie: [
-        "",
-        [
-          Validators.required,
-          Validators.minLength(3),
-          Validators.maxLength(100),
+        status: ["", Validators.required],
+        categorie: [
+          "",
+          [
+            Validators.required,
+            Validators.minLength(3),
+            Validators.maxLength(100),
+          ],
         ],
-      ],
-      description: [
-        "",
-        [
-          Validators.required,
-          Validators.minLength(5),
-          Validators.maxLength(500),
+        description: [
+          "",
+          [
+            Validators.required,
+            Validators.minLength(5),
+            Validators.maxLength(500),
+          ],
         ],
-      ],
-      imageUrl: [
-        "",
-        [
-          Validators.required,
-          Validators.maxLength(500),
-        ],
-      ],
-      datedebut: ["", Validators.required],
-      datefin: ["", Validators.required],
-      // image: ["", Validators.required],
-      attachedFiles: [],
-      users: this.fb.array([]),
-    },{ validators: dateValidator() });
+        //imageUrl: ["", [Validators.required, Validators.maxLength(500)]],
+        datedebut: ["", Validators.required],
+        datefin: ["", Validators.required],
+        // image: ["", Validators.required],
+        // attachedFiles: [],
+        users: this.fb.array([]),
+      },
+      { validators: dateValidator() }
+    );
     this.suggestions$ = this.projectForm.get("categorie").valueChanges.pipe(
       debounceTime(200),
       switchMap((query) => of(["agricole", "miniére", "traveaux publiques"]))
@@ -191,7 +188,6 @@ export class CreateComponent implements OnInit {
   newProject: Project;
   newIdCat!: number;
 
-
   save() {
     // Cast vers HTMLButtonElement si c'est un bouton, sinon vers HTMLElement
     const updateBtn = document.getElementById(
@@ -219,8 +215,6 @@ export class CreateComponent implements OnInit {
   }
 
   addProject() {
-
-    // Vérifier si uploadImage est défini
     if (this.uploadedImage) {
       this.projectService
         .uploadImage(this.uploadedImage, this.uploadedImage.name)
@@ -234,7 +228,6 @@ export class CreateComponent implements OnInit {
           },
           (error) => {
             console.error("Error uploading image:", error);
-            // Continuer avec la création du projet même en cas d'erreur de téléchargement d'image
             const projectRequest = this.projectForm.value;
             this.createProject(projectRequest);
           }
@@ -250,50 +243,45 @@ export class CreateComponent implements OnInit {
   }
 
   createProject(projectRequest: any): void {
-    this.projectService
-      .add<ResponseData<Project>>("projects/createProject", projectRequest)
-      .subscribe(
-        (data: ResponseData<Project>) => {
-          console.log("Project created successfully:", data);
-          this.toastr.success(`${data.message}`);
-          this.router.navigate(["/projects/list"]);
-          // Upload attached files if there are any
-          const attachedFiles: File[] =
-            this.projectForm.get("attachedFiles").value;
+    this.snackbar
+      .showConfirmation("Voulez-vous vraiment créer le projet ?")
+      .then((result) => {
+        if (result["value"] == true) {
+          // Call to add the project
+          this.projectService
+            .add<ResponseData<Project>>(
+              "projects/createProject",
+              projectRequest
+            )
+            .subscribe(
+              (data: ResponseData<Project>) => {
+                console.log("Project created successfully:", data);
+                this.toastr.success(`${data.message}`);
+                const normeProject: NormeProject[] = this.members.value;
+                let saveNormeRequests = [];
 
-          if (this.uploadedFiles && this.uploadedFiles.length > 0) {
-            this.uploadedFiles.forEach((file) => {
-              this.projectService
-                .uploadFichiers(file.url, data.data.id)
-                .subscribe(
-                  (uploadedFile) => {
-                    console.log("File uploaded successfully:", uploadedFile);
-                  },
-                  (error) => {
-                    console.error("Error uploading file:", error);
-                  }
-                );
-            });
-          }
-          const normeProject: NormeProject[] = this.members.value;
-          normeProject.forEach((normeProject: any) => {
-            normeProject.project = data.data;
-            this.projectService
-              .saveNormeProjet(normeProject, data.data.id)
-              .subscribe(
-                (data) => {
-                  console.log(data);
-                },
-                (err) => {
-                  console.log(err);
-                }
-              );
-          });
-        },
-        (error) => {
-          console.error("Error creating project:", error);
+                normeProject.forEach((normeProject: any) => {
+                  normeProject.project = data.data;
+                  const saveRequest = this.projectService
+                    .saveNormeProjet(normeProject, data.data.id)
+                    .toPromise();
+                  saveNormeRequests.push(saveRequest);
+                });
+
+                Promise.all(saveNormeRequests)
+                  .then(() => {
+                    this.router.navigate(["/projects/list"]);
+                  })
+                  .catch((err) => {
+                    console.error("Error saving norme project:", err);
+                  });
+              },
+              (error) => {
+                console.error("Error creating project:", error);
+              }
+            );
         }
-      );
+      });
   }
 
   loadProject() {
@@ -334,8 +322,6 @@ export class CreateComponent implements OnInit {
 
   uploadedFiles: any[] = [];
   uploadFiles1: File[] = [];
-
-
 
   // File Remove
   removeFile(event: any) {
@@ -391,7 +377,7 @@ export class CreateComponent implements OnInit {
   listMo: Mo[] = [];
   fetchMo() {
     return this.projectService
-      .all<ResponseData<any[]>>("users/by_role?roleName=Super Admin")
+      .all<ResponseData<any[]>>("users/all")
       .subscribe((users: ResponseData<Mo[]>) => {
         this.listMo = users.data.map((user) => {
           return {
@@ -409,7 +395,6 @@ export class CreateComponent implements OnInit {
   }
 
   //update
-
 
   update(): void {
     const projectRequest = this.projectForm.value;
@@ -447,42 +432,6 @@ export class CreateComponent implements OnInit {
         (data: ResponseData<Project>) => {
           console.log("Project updated successfully:", data);
           this.toastr.success(`${data.message}`);
-          //  this.router.navigate(["/list"]);
-          // Upload attached files if there are any
-          const attachedFiles: File[] =
-            this.projectForm.get("attachedFiles").value;
-
-          if (attachedFiles && attachedFiles.length > 0) {
-            let filesArray = Array.from(attachedFiles); // Convertit l'objet FileList en tableau
-            let filenames = filesArray.map((file) => file.name); // Obtient les noms des fichiers
-            this.projectService
-              .uploadFiles(filesArray, filenames, data.data.id)
-              .subscribe(
-                (uploadedFilesNames) => {
-                  console.log(
-                    "Files uploaded successfully:",
-                    uploadedFilesNames
-                  );
-                },
-                (error) => {
-                  console.error("Error uploading files:", error);
-                }
-              );
-          } else {
-            this.projectService.delete(data.data.id, "file/delete").subscribe(
-              (next) => {
-                console.log("====================================");
-                console.log(next);
-                console.log("====================================");
-              },
-              (error) => {
-                console.log("====================================");
-                console.log(error);
-                console.log("====================================");
-              }
-            );
-          }
-
           if (data) {
             const normeProjects: NormeProject[] = this.members.value;
             normeProjects.forEach((normeProject: any) => {
@@ -552,30 +501,16 @@ export class CreateComponent implements OnInit {
 
   deleteImage() {
     this.uploadedImage = null;
-    this.toff = ''; // Reset to default image or empty string
-    const fileInput = document.getElementById('project-image-input') as HTMLInputElement;
+    this.toff = ""; // Reset to default image or empty string
+    const fileInput = document.getElementById(
+      "project-image-input"
+    ) as HTMLInputElement;
     if (fileInput) {
-      fileInput.value = '';
+      fileInput.value = "";
     }
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   selectOnFile(evt, type, name) {
-
     let accept = [];
     let extension = "";
     if (type === "photo_profile") {
@@ -609,8 +544,7 @@ export class CreateComponent implements OnInit {
     }
   }
 
-
-  imageProjet:any
+  imageProjet: any;
 
   saveStoreFile(file) {
     let formData = new FormData();
@@ -623,10 +557,11 @@ export class CreateComponent implements OnInit {
         (resp) => {
           if (resp) {
             console.log(resp);
-             this.imageProjet = `${this.urlImage + resp["data"]}`;
-             this.projectForm.get('imageUrl').setValue(this.imageProjet);
-            // Fermez le dialogue et renvoyez l'URL de la signature
-           // this.matDialogRef.close(signatureUrl);
+            this.imageProjet = `${this.urlImage + resp["data"]}`;
+            this.projectForm.get("imageUrl").setValue(this.imageProjet);
+            this.snackbar.openSnackBar("Image  joutée ", "OK", [
+              "mycssSnackbarGreen",
+            ]);
           }
         },
         (error) => {
@@ -636,14 +571,28 @@ export class CreateComponent implements OnInit {
       );
   }
 
-
-
   onUploadSuccess(event: any) {
     let accept = [];
     let extension = "";
 
-    accept = [".png", ".PNG", ".jpg", ".JPG", ".jpeg", ".JPEG", ".pdf", ".PDF", ".doc", ".DOC", ".docx", ".DOCX", ".xls", ".XLS", ".xlsx", ".XLSX"];
-
+    accept = [
+      ".png",
+      ".PNG",
+      ".jpg",
+      ".JPG",
+      ".jpeg",
+      ".JPEG",
+      ".pdf",
+      ".PDF",
+      ".doc",
+      ".DOC",
+      ".docx",
+      ".DOCX",
+      ".xls",
+      ".XLS",
+      ".xlsx",
+      ".XLSX",
+    ];
 
     for (const file of event) {
       const index = file.name.lastIndexOf(".");
@@ -669,41 +618,36 @@ export class CreateComponent implements OnInit {
     formData.append("file", file);
 
     // Envoyer le fichier au serveur
-    this.clientServive.saveStoreFile("image/uploadFileDossier", formData).subscribe(
-      (resp) => {
-        if (resp) {
-          console.log(resp);
+    this.clientServive
+      .saveStoreFile("image/uploadFileDossier", formData)
+      .subscribe(
+        (resp) => {
+          if (resp) {
+            console.log(resp);
 
-          // Récupérer l'URL du fichier depuis la réponse
-          const fileUrl = `${this.urlImage + resp["data"]}`;
+            // Récupérer l'URL du fichier depuis la réponse
+            const fileUrl = `${this.urlImage + resp["data"]}`;
 
-          // Ajouter l'URL au tableau uploadedFiles
-          this.uploadedFiles.push({
-            name: file.name,
-            size: file.size,
-            type: file.type,
-            url: fileUrl,
-          });
+            // Ajouter l'URL au tableau uploadedFiles
+            this.uploadedFiles.push({
+              name: file.name,
+              size: file.size,
+              type: file.type,
+              url: fileUrl,
+            });
 
+            this.projectForm.patchValue({
+              attachedFiles: fileUrl, // Mettez à jour avec l'ensemble des fichiers
+            });
 
-          this.projectForm.patchValue({
-            attachedFiles: fileUrl, // Mettez à jour avec l'ensemble des fichiers
-          });
-
-          // Optionnel : rafraîchir la vue si nécessaire
-          this._changeDetectorRef.detectChanges();
+            // Optionnel : rafraîchir la vue si nécessaire
+            this._changeDetectorRef.detectChanges();
+          }
+        },
+        (error) => {
+          console.log(error);
+          this.snackbar.showErrors(error);
         }
-      },
-      (error) => {
-        console.log(error);
-        this.snackbar.showErrors(error);
-      }
-    );
+      );
   }
-
-
-
-
-
-
 }

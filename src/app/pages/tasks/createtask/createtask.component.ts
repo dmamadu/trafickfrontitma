@@ -22,9 +22,8 @@ import {
 } from "@angular/forms";
 
 import * as ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import {provideNativeDateAdapter} from '@angular/material/core';
-import { selectData } from "src/app/store/Tasks/tasks-selector";
-import { memberList } from "src/app/core/data";
+import { provideNativeDateAdapter } from "@angular/material/core";
+import { DropzoneConfigInterface } from "ngx-dropzone-wrapper";
 
 import { Store } from "@ngrx/store";
 import { Mo, ResponseData } from "../../projects/project.model";
@@ -52,6 +51,7 @@ import { NgApexchartsModule } from "ng-apexcharts";
 import { DndModule } from "ngx-drag-drop";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { UIModule } from "src/app/shared/ui/ui.module";
+import { BsDropdownModule } from "ngx-bootstrap/dropdown";
 
 @Component({
   selector: "app-createtask",
@@ -77,6 +77,7 @@ import { UIModule } from "src/app/shared/ui/ui.module";
     MatCheckboxModule,
     MatIconModule,
     MatButtonModule,
+    BsDropdownModule,
   ],
   styleUrls: ["./createtask.component.scss"],
   providers: [provideNativeDateAdapter()],
@@ -137,10 +138,6 @@ export class CreatetaskComponent implements OnInit {
       { label: "Taches" },
       { label: "Création d'une tache", active: true },
     ];
-    this.hidden = true;
-    this.store.select(selectData).subscribe((data) => {
-      this.memberLists = memberList;
-    });
   }
 
   constructor(
@@ -155,15 +152,16 @@ export class CreatetaskComponent implements OnInit {
     private localService: LocalService,
     private _router: Router
   ) {
-    // this.action = "new";
+    this.action = _data.action;
     if (_data?.action == "new") {
       this.initForms();
       this.labelButton = "Ajouter ";
-      this.dialogTitle="Créer une tache"
+      this.dialogTitle = "Créer une tache";
     } else if (_data?.action == "edit") {
       this.labelButton = "Modifier ";
       this.id = _data.data.id;
-      this;this.dialogTitle="Modifier une tache"
+      this;
+      this.dialogTitle = "Modifier une tache";
       this.initForms(_data.data);
     }
   }
@@ -197,9 +195,6 @@ export class CreatetaskComponent implements OnInit {
     if (this.listMo[id].checked === "0") {
       this.listMo[id].checked = "1";
       this.assignList.push(this.listMo[id]);
-      console.log("====================================");
-      console.log("push", this.assignList);
-      console.log("====================================");
       this.assignListFormArray.push(this.fb.control(this.listMo[id]));
     } else {
       this.listMo[id].checked = "0";
@@ -215,7 +210,7 @@ export class CreatetaskComponent implements OnInit {
 
   fetchMo(): void {
     this.projectService
-      .all<ResponseData<any[]>>("users/by_role?roleName=Consultant")
+      .all<ResponseData<any[]>>("users/all")
       .subscribe((response: ResponseData<any[]>) => {
         console.log(response);
         if (this.tacheToUpdate !== null) {
@@ -269,7 +264,7 @@ export class CreatetaskComponent implements OnInit {
                   "mycssSnackbarGreen",
                 ]);
                 this.loader = false;
-                this._router.navigate(["tasks/liste"])
+                this._router.navigate(["tasks/liste"]);
               } else {
                 this.loader = false;
                 this.changeDetectorRefs.markForCheck();
@@ -287,6 +282,8 @@ export class CreatetaskComponent implements OnInit {
 
   checkRecap(type) {
     console.log(type);
+    console.log("hellecast");
+
     if (type == "new") {
       this.addItems();
     } else if (type == "edit") {

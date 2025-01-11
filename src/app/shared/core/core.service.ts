@@ -105,7 +105,7 @@ export class CoreService {
                     options = options.set(key, data[key]);
                 }
 
-                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiURL) + url, {params:options})
+                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiUrl) + url, {params:options})
                     .pipe(map((response) => {
                         response['list'] = response[this.constantes.RESPONSE_DATA];
                         return response;
@@ -120,7 +120,7 @@ export class CoreService {
                         newMap = {...newMap, ...{[key]: data.searchQuery[key]}};
                     }
                 }
-                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiURL) + url + '?isGlobal=' + data.isGlobal + '&searchQuery=' + encodeURIComponent(JSON.stringify(newMap)))
+                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiUrl) + url + '?isGlobal=' + data.isGlobal + '&searchQuery=' + encodeURIComponent(JSON.stringify(newMap)))
                     .pipe(map((response) => {
                         response['list'] = response[this.constantes.RESPONSE_DATA];
                         return response;
@@ -135,7 +135,7 @@ export class CoreService {
                     options = options.set(key, data[key]);
                 }
 
-                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiURL) + url, {params:options})
+                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiUrl) + url, {params:options})
                     .pipe(map((response) => {
                         // this._changeDetectorRef.markForCheck();
                         return {list: response[this.constantes.RESPONSE_DATA], total: response['total']};
@@ -150,7 +150,7 @@ export class CoreService {
                         newMap = {...newMap, ...{[key]: data.searchQuery[key]}};
                     }
                 }
-                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiURL) + url + '?isGlobal=' + data.isGlobal + '&' + type.label + '=' + type.name + '&searchQuery=' + encodeURIComponent(JSON.stringify(newMap)))
+                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiUrl) + url + '?isGlobal=' + data.isGlobal + '&' + type.label + '=' + type.name + '&searchQuery=' + encodeURIComponent(JSON.stringify(newMap)))
                     .pipe(map((response) => {
                         // this._changeDetectorRef.markForCheck();
                         return {list: response[this.constantes.RESPONSE_DATA], total: response['total']};
@@ -168,7 +168,7 @@ export class CoreService {
                     options = options.set(key, data[key]);
                 }
 
-                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiURL) + url, {params:options})
+                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiUrl) + url, {params:options})
                     .pipe(map((response) => {
                         response['list'] = response[this.constantes.RESPONSE_DATA];
                         return response;
@@ -183,7 +183,7 @@ export class CoreService {
                         newMap = {...newMap, ...{[key]: data.searchQuery[key]}};
                     }
                 }
-                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiURL) + url + '&isGlobal=' + data.isGlobal + '&searchQuery=' + encodeURIComponent(JSON.stringify(newMap)))
+                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiUrl) + url + '&isGlobal=' + data.isGlobal + '&searchQuery=' + encodeURIComponent(JSON.stringify(newMap)))
                     .pipe(map((response) => {
                         response['list'] = response[this.constantes.RESPONSE_DATA];
                         return response;
@@ -198,7 +198,7 @@ export class CoreService {
                     options = options.set(key, data[key]);
                 }
 
-                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiURL) + url, {params:options})
+                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiUrl) + url, {params:options})
                     .pipe(map((response) => {
                         // this._changeDetectorRef.markForCheck();
                         return {list: response[this.constantes.RESPONSE_DATA], total: response['total']};
@@ -213,7 +213,7 @@ export class CoreService {
                         newMap = {...newMap, ...{[key]: data.searchQuery[key]}};
                     }
                 }
-                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiURL) + url + '&isGlobal=' + data.isGlobal + '&' + type.label + '=' + type.name + '&searchQuery=' + encodeURIComponent(JSON.stringify(newMap)))
+                return this._httpClient.get((customBaseUrl ? customBaseUrl : environment.apiUrl) + url + '&isGlobal=' + data.isGlobal + '&' + type.label + '=' + type.name + '&searchQuery=' + encodeURIComponent(JSON.stringify(newMap)))
                     .pipe(map((response) => {
                         // this._changeDetectorRef.markForCheck();
                         return {list: response[this.constantes.RESPONSE_DATA], total: response['total']};
@@ -223,18 +223,18 @@ export class CoreService {
     }
 
     getListItemByCodeItem(code, url) {
-        return this._httpClient.get(environment.apiURL + url + '/' + code).pipe(response => response);
+        return this._httpClient.get(environment.apiUrl + url + '/' + code).pipe(response => response);
     }
 
     searchClientByNature(code, url) {
-        return this._httpClient.get(environment.apiURL + url + '/' + code.nature + '/' + code.numeroPiece).pipe(response => response);
+        return this._httpClient.get(environment.apiUrl + url + '/' + code.nature + '/' + code.numeroPiece).pipe(response => response);
     }
     searchClientCompteByNature(code, url) {
-        return this._httpClient.get(environment.apiURL + url + '/' + code.nature + '/' + code.numeroPiece+'?compte='+code.compte+'&typeTransaction='+code.typeTransaction).pipe(response => response);
+        return this._httpClient.get(environment.apiUrl + url + '/' + code.nature + '/' + code.numeroPiece+'?compte='+code.compte+'&typeTransaction='+code.typeTransaction).pipe(response => response);
     }
 
     searchClientByNatureMorale(code, url) {
-        return this._httpClient.get(environment.apiURL + url + '/' + code.ninea).pipe(response => response);
+        return this._httpClient.get(environment.apiUrl + url + '/' + code.ninea).pipe(response => response);
     }
 
     listFormulaire(url, params?) {
@@ -252,11 +252,11 @@ export class CoreService {
         for (const key of keys) {
             options = options.set(key, params[key]);
         }
-        return this._httpClient.get(environment.apiURL + url, {params: options})
+        return this._httpClient.get(environment.apiUrl + url, {params: options})
             .pipe(response => response);
     }
     addFileExtourne(data) {
-        return this._httpClient.post(environment.apiURL + 'extourner-transactions-par-fichier',data).pipe(
+        return this._httpClient.post(environment.apiUrl + 'extourner-transactions-par-fichier',data).pipe(
             switchMap((response: any) =>
                 // Return a new observable with the response
                 of(response)
@@ -264,7 +264,7 @@ export class CoreService {
         );
     }
     rapportBic(dateFormatee, url) {
-        return this._httpClient.get(environment.apiURL + url + dateFormatee, {responseType: 'blob'})
+        return this._httpClient.get(environment.apiUrl + url + dateFormatee, {responseType: 'blob'})
             .pipe(response => response);
     }
 
@@ -275,24 +275,24 @@ export class CoreService {
 
 
     addItem(item, url): Observable<any> {
-        return this._httpClient.post(environment.apiURL + url, item).pipe(
+        return this._httpClient.post(environment.apiUrl + url, item).pipe(
             switchMap((response: any) => of(response))
         );
     }
 
     updateItem(item, id, url): Observable<any> {
-        return this._httpClient.put(environment.apiURL + url + '/' + id, item).pipe(
+        return this._httpClient.put(environment.apiUrl + url + '/' + id, item).pipe(
             switchMap((response: any) => of(response))
         );
     }
     updateCompensation(item, url): Observable<any> {
-        return this._httpClient.get(environment.apiURL + url + '/' , item).pipe(
+        return this._httpClient.get(environment.apiUrl + url + '/' , item).pipe(
             switchMap((response: any) => of(response))
         );
     }
 
     list(url, offset, max, customBaseUrl?): Observable<any[]> {
-        return this._httpClient.get<any[]>((customBaseUrl ? customBaseUrl : environment.apiURL) + url + '?max=' + max + '&offset=' + offset + '&order=desc&sort=dateCreated').pipe(
+        return this._httpClient.get<any[]>((customBaseUrl ? customBaseUrl : environment.apiUrl) + url + '?max=' + max + '&offset=' + offset + '&order=desc&sort=dateCreated').pipe(
             tap((response) => {
                 this._modelLists.next(response);
 
@@ -315,11 +315,11 @@ export class CoreService {
       default:
         throw new Error('Type invalide : ' + type);
     }
-    return this._httpClient.get<any>(`${environment.apiURL}/${endpoint}/by-code-pap/${codePap}`);
+    return this._httpClient.get<any>(`${environment.apiUrl}/${endpoint}/by-code-pap/${codePap}`);
   }
 
     balanceGeneral(url,item): Observable<any> {
-        return this._httpClient.post(environment.apiURL + url, item).pipe(
+        return this._httpClient.post(environment.apiUrl + url, item).pipe(
             switchMap((response: any) => of(response))
         );
     }
@@ -338,13 +338,13 @@ export class CoreService {
         for (const key of keys) {
             options = options.set(key, params[key]);
         }
-        return this._httpClient.get(customBaseUrl ? customBaseUrl : environment.apiURL + url, {params: options})
+        return this._httpClient.get(customBaseUrl ? customBaseUrl : environment.apiUrl + url, {params: options})
             .pipe(response => response);
     }
 
     listv2(url, offset, max): Observable<any[]> {
 
-        return this._httpClient.get<any[]>(environment.apiURL + url + '&max=' + max + '&offset=' + offset + '&order=desc').pipe(
+        return this._httpClient.get<any[]>(environment.apiUrl + url + '&max=' + max + '&offset=' + offset + '&order=desc').pipe(
             tap((response) => {
                 this._modelLists.next(response);
 
@@ -353,7 +353,7 @@ export class CoreService {
     }
     listComptePoste(url, offset, max): Observable<any[]> {
 
-        return this._httpClient.get<any[]>(environment.apiURL + url + '?max=' + max + '&offset=' + offset + '&order=desc').pipe(
+        return this._httpClient.get<any[]>(environment.apiUrl + url + '?max=' + max + '&offset=' + offset + '&order=desc').pipe(
             tap((response) => {
                 this._modelLists.next(response);
 
@@ -362,7 +362,7 @@ export class CoreService {
     }
     listExercice(url ,offset, max): Observable<any[]> {
 
-        return this._httpClient.get<any[]>(environment.apiURL + url + '?max=' + max + '&offset=' + offset  +'&order=desc&sort=annee').pipe(
+        return this._httpClient.get<any[]>(environment.apiUrl + url + '?max=' + max + '&offset=' + offset  +'&order=desc&sort=annee').pipe(
             tap((response) => {
                 this._modelLists.next(response);
 
@@ -371,7 +371,7 @@ export class CoreService {
     }
     listv2Depot(url, offset, max): Observable<any[]> {
 
-        return this._httpClient.get<any[]>(environment.apiURL + url + '&max=' + max + '&offset=' + offset + '&order=desc&sort=dateCreated').pipe(
+        return this._httpClient.get<any[]>(environment.apiUrl + url + '&max=' + max + '&offset=' + offset + '&order=desc&sort=dateCreated').pipe(
             tap((response) => {
                 this._modelLists.next(response);
 
@@ -380,7 +380,7 @@ export class CoreService {
     }
   listRapport(url): Observable<any[]> {
 
-        return this._httpClient.get<any[]>(environment.apiURL + url ).pipe(
+        return this._httpClient.get<any[]>(environment.apiUrl + url ).pipe(
             tap((response) => {
                 this._modelLists.next(response);
 
@@ -390,13 +390,13 @@ export class CoreService {
 
     listCredit(url, offset, max, statut?): Observable<any[]> {
         if (statut != '') {
-            return this._httpClient.get<any[]>(environment.apiURL + url + '?max=' + max + '&offset=' + offset + '&order=desc' + '&statut=' + statut).pipe(
+            return this._httpClient.get<any[]>(environment.apiUrl + url + '?max=' + max + '&offset=' + offset + '&order=desc' + '&statut=' + statut).pipe(
                 tap((response) => {
                     this._modelLists.next(response);
                 })
             );
         } else {
-            return this._httpClient.get<any[]>(environment.apiURL + url + '?max=' + max + '&offset=' + offset + '&order=desc').pipe(
+            return this._httpClient.get<any[]>(environment.apiUrl + url + '?max=' + max + '&offset=' + offset + '&order=desc').pipe(
                 tap((response) => {
                     this._modelLists.next(response);
                 })
@@ -407,7 +407,7 @@ export class CoreService {
 
     lists(url, offset, max): Observable<any[]> {
 
-        return this._httpClient.get<any[]>(environment.apiURL + url + '&max=' + max + '&offset=' + offset + '&order=desc').pipe(
+        return this._httpClient.get<any[]>(environment.apiUrl + url + '&max=' + max + '&offset=' + offset + '&order=desc').pipe(
             tap((response) => {
                 this._modelLists.next(response);
 
@@ -417,7 +417,7 @@ export class CoreService {
 
     liste(url): Observable<any[]> {
 
-        return this._httpClient.get<any[]>(environment.apiURL + url).pipe(
+        return this._httpClient.get<any[]>(environment.apiUrl + url).pipe(
             tap((response) => {
                 this._modelLists.next(response);
 
@@ -432,11 +432,11 @@ export class CoreService {
         for (const key of keys) {
             params = params.set(key, data[key]);
         }
-        return this._httpClient.get(environment.apiURL + url, {params}).pipe(response => response);
+        return this._httpClient.get(environment.apiUrl + url, {params}).pipe(response => response);
     }
 
     deleteItem(item, url) {
-        return this._httpClient.delete(environment.apiURL + url + '/' + item, item)
+        return this._httpClient.delete(environment.apiUrl + url + '/' + item, item)
             .pipe(response => response);
     }
 
@@ -448,85 +448,67 @@ export class CoreService {
     }
 
     getElementByIdCaisse(id, url, offset, max) {
-        return this._httpClient.get(environment.apiURL + url + '/' + id + '?max=' + max + '&offset=' + offset + '&order=desc').pipe(response => response);
+        return this._httpClient.get(environment.apiUrl + url + '/' + id + '?max=' + max + '&offset=' + offset + '&order=desc').pipe(response => response);
     }
 
     getElement(id, url) {
-        return this._httpClient.get(environment.apiURL + url + '/' + id).pipe(response => response);
+        return this._httpClient.get(environment.apiUrl + url + '/' + id).pipe(response => response);
     }
     cloture(id, url) {
-        return this._httpClient.get(environment.apiURL + url  + id).pipe(response => response);
+        return this._httpClient.get(environment.apiUrl + url  + id).pipe(response => response);
     }
 
     cloturerCompte(compte) {
-        return this._httpClient.get(environment.apiURL + 'compte-cloturer' + '/' + compte.compteId + '/' + compte.abandonFrais)
+        return this._httpClient.get(environment.apiUrl + 'compte-cloturer' + '/' + compte.compteId + '/' + compte.abandonFrais)
             .pipe(response => response);
     }
     leverCompteInactif(url,compte) {
-        return this._httpClient.post(environment.apiURL + url, compte).pipe(
+        return this._httpClient.post(environment.apiUrl + url, compte).pipe(
             switchMap((response: any) => of(response))
         );
     }
 
     getSoldes(url) {
-        return this._httpClient.get(environment.apiURL + url )
+        return this._httpClient.get(environment.apiUrl + url )
             .pipe(response => response);
     }
     leverCompteDormant(compte) {
-        return this._httpClient.get(environment.apiURL + 'lever-compte-dormant' + '/' + compte.id )
+        return this._httpClient.get(environment.apiUrl + 'lever-compte-dormant' + '/' + compte.id )
             .pipe(response => response);
     }
 
     liberer(id) {
-        return this._httpClient.get(environment.apiURL + 'liberer-fonds' + '/' + id)
+        return this._httpClient.get(environment.apiUrl + 'liberer-fonds' + '/' + id)
             .pipe(response => response);
     }
 
-    listJobInstances(jobName) {
-        return this._httpClient.get(environment.batchApiURL + 'batches/operations/list?jobName=' + jobName)
-            .pipe(response => response);
-    }
 
-    start(jobName) {
-        return this._httpClient.get(environment.batchApiURL + 'batches/operations/start?jobName=' + jobName)
-            .pipe(response => response);
-    }
-
-    restart(jobName) {
-        return this._httpClient.get(environment.batchApiURL + 'batches/operations/restart?executionId=' + jobName)
-            .pipe(response => response);
-    }
-
-    stopper(jobName) {
-        return this._httpClient.get(environment.batchApiURL + 'batches/operations/stop?executionId=' + jobName)
-            .pipe(response => response);
-    }
 
     signataire(id) {
-        return this._httpClient.delete(environment.apiURL + 'signataire-client' + '/' + id)
+        return this._httpClient.delete(environment.apiUrl + 'signataire-client' + '/' + id)
             .pipe(response => response);
     }
 
     getElementByIdTransaction(item, url, offset, max, ig?, sq?): Observable<any[]> {
         if (ig && sq) {
-            return this._httpClient.post(environment.apiURL + url + '?max=' + max + '&offset=' + offset + '&order=desc&isGlobal=' + ig + '&searchQuery=' + sq, item).pipe(
+            return this._httpClient.post(environment.apiUrl + url + '?max=' + max + '&offset=' + offset + '&order=desc&isGlobal=' + ig + '&searchQuery=' + sq, item).pipe(
                 switchMap((response: any) => of(response))
             );
         } else {
-            return this._httpClient.post(environment.apiURL + url + '?max=' + max + '&offset=' + offset + '&order=desc', item).pipe(
+            return this._httpClient.post(environment.apiUrl + url + '?max=' + max + '&offset=' + offset + '&order=desc', item).pipe(
                 switchMap((response: any) => of(response))
             );
         }
     }
 
     getAttributComplementaire(item, url) {
-        return this._httpClient.post(environment.apiURL + url, item).pipe(
+        return this._httpClient.post(environment.apiUrl + url, item).pipe(
             switchMap((response: any) => of(response))
         );
     }
 
     updateAttributComplementaire(idAttributComplementaire, compte) {
-        return this._httpClient.put(environment.apiURL + 'attribut-complementaire/' + idAttributComplementaire, compte).pipe(
+        return this._httpClient.put(environment.apiUrl + 'attribut-complementaire/' + idAttributComplementaire, compte).pipe(
             switchMap((response: any) =>
                 // Return a new observable with the response
                 of(response)
@@ -541,78 +523,78 @@ export class CoreService {
      * @param url
      */
     extournerTransaction(data) {
-        return this._httpClient.post(environment.apiURL + 'extourner-transaction', data)
+        return this._httpClient.post(environment.apiUrl + 'extourner-transaction', data)
             .pipe(response => response);
     }
 
     annulerTransaction(data) {
-        return this._httpClient.post(environment.apiURL + 'annuler-transaction', data)
+        return this._httpClient.post(environment.apiUrl + 'annuler-transaction', data)
             .pipe(response => response);
     }
     rejeterDemand(data,url,id) {
-        return this._httpClient.post(environment.apiURL + url + id, data)
+        return this._httpClient.post(environment.apiUrl + url + id, data)
             .pipe(response => response);
     }
 
     validerTransaction(data, url) {
-        return this._httpClient.post(environment.apiURL + url, data)
+        return this._httpClient.post(environment.apiUrl + url, data)
             .pipe(response => response);
     }
     validerDemandeCred(data,id, url) {
-        return this._httpClient.get(environment.apiURL + url + '/' + id, data)
+        return this._httpClient.get(environment.apiUrl + url + '/' + id, data)
             .pipe(response => response);
     }
     aliderDemandeCredComite(data,id, url) {
-        return this._httpClient.post(environment.apiURL + url + '/' + id, data)
+        return this._httpClient.post(environment.apiUrl + url + '/' + id, data)
             .pipe(response => response);
     }
     validerDepot(url) {
-        return this._httpClient.get(environment.apiURL + url)
+        return this._httpClient.get(environment.apiUrl + url)
             .pipe(response => response);
     }
 
     bloquerDepot(id,data) {
-        return this._httpClient.post(environment.apiURL + 'depot-terme/debloquer/' + id, data)
+        return this._httpClient.post(environment.apiUrl + 'depot-terme/debloquer/' + id, data)
             .pipe(response => response);
     }
     rejetDemande(id,data) {
-        return this._httpClient.post(environment.apiURL + 'demandes-credits/rejeter/' + id, data)
+        return this._httpClient.post(environment.apiUrl + 'demandes-credits/rejeter/' + id, data)
             .pipe(response => response);
     }
     fermerExercice() {
-            return this._httpClient.get(environment.apiURL + 'fermer-exercice',{} )
+            return this._httpClient.get(environment.apiUrl + 'fermer-exercice',{} )
             .pipe(response => response);
     }
     detailExercice(data) {
-            return this._httpClient.get(environment.apiURL + 'detail-exercice/' + data,{} )
+            return this._httpClient.get(environment.apiUrl + 'detail-exercice/' + data,{} )
             .pipe(response => response);
     }
     rejetVirementPerm(id,data) {
-        return this._httpClient.post(environment.apiURL + 'virements-permanents/rejeter/' + id, data)
+        return this._httpClient.post(environment.apiUrl + 'virements-permanents/rejeter/' + id, data)
             .pipe(response => response);
     }
     validerAvance(id,data) {
-        return this._httpClient.post(environment.apiURL + 'depot-terme/avance/' + id, data)
+        return this._httpClient.post(environment.apiUrl + 'depot-terme/avance/' + id, data)
             .pipe(response => response);
     }
 
     bloquerCompte(id) {
-        return this._httpClient.get(environment.apiURL + 'compte-bloquer' + '/' + id)
+        return this._httpClient.get(environment.apiUrl + 'compte-bloquer' + '/' + id)
             .pipe(response => response);
     }
     bloquerDebloquerCompte(type,id) {
         let url = type=='bloquer' ? 'compte-bloquer' : 'compte-debloquer'
-        return this._httpClient.get(environment.apiURL + url + '/' + id)
+        return this._httpClient.get(environment.apiUrl + url + '/' + id)
             .pipe(response => response);
     }
 
     valider(data) {
-        return this._httpClient.post(environment.apiURL + 'remboursement-anticiper', data)
+        return this._httpClient.post(environment.apiUrl + 'remboursement-anticiper', data)
             .pipe(response => response);
     }
 
     lock(compte) {
-        return this._httpClient.put(environment.apiURL + 'compte-bloquer/' + compte?.id, compte).pipe(
+        return this._httpClient.put(environment.apiUrl + 'compte-bloquer/' + compte?.id, compte).pipe(
             switchMap((response: any) =>
                 // Return a new observable with the response
                 of(response)
@@ -620,7 +602,7 @@ export class CoreService {
         );
     }
     locked(url,compte) {
-        return this._httpClient.put(environment.apiURL + url+'/' + compte?.id, compte).pipe(
+        return this._httpClient.put(environment.apiUrl + url+'/' + compte?.id, compte).pipe(
             switchMap((response: any) =>
                 // Return a new observable with the response
                 of(response)
@@ -628,48 +610,41 @@ export class CoreService {
         );
     }
 
-    block(el) {
-        return this._httpClient.put(environment.batchApiURL + 'sequence/update-statut/' + el?.id, el).pipe(
-            switchMap((response: any) =>
-                // Return a new observable with the response
-                of(response)
-            )
-        );
-    }
+
 
     financer(item, id, url): Observable<any[]> {
-        return this._httpClient.post(environment.apiURL + url + '/' + id, item).pipe(
+        return this._httpClient.post(environment.apiUrl + url + '/' + id, item).pipe(
             switchMap((response: any) => of(response))
         );
     }
 
     fermetureInstitution(url, id): Observable<any> {
-        return this._httpClient.get(environment.apiURL + url + id).pipe(
+        return this._httpClient.get(environment.apiUrl + url + id).pipe(
             switchMap((response: any) => of(response))
         );
     }
     ouvFermetureAgence(url, id): Observable<any> {
-        return this._httpClient.get(environment.apiURL + url + id).pipe(
+        return this._httpClient.get(environment.apiUrl + url + id).pipe(
             switchMap((response: any) => of(response))
         );
     }
 
     ouvertureInstitution(url, id, data): Observable<any> {
-        return this._httpClient.post(environment.apiURL + url + id, data).pipe(
+        return this._httpClient.post(environment.apiUrl + url + id, data).pipe(
             switchMap((response: any) => of(response))
         );
     }
 
     getTransactionJour(id, url) {
-        return this._httpClient.get(environment.apiURL + url + id).pipe(response => response);
+        return this._httpClient.get(environment.apiUrl + url + id).pipe(response => response);
     }
 
     getAllTransaction(url) {
-        return this._httpClient.get(environment.apiURL + url).pipe(response => response);
+        return this._httpClient.get(environment.apiUrl + url).pipe(response => response);
     }
 
     getAllTransactions(url, offset, max, data): Observable<any> {
-        return this._httpClient.get(environment.apiURL + url + '&max=' + max + '&offset=' + offset + '&order=desc', data).pipe(
+        return this._httpClient.get(environment.apiUrl + url + '&max=' + max + '&offset=' + offset + '&order=desc', data).pipe(
             switchMap((response: any) => of(response))
         );
     }
@@ -697,7 +672,7 @@ export class CoreService {
 
     logout(url) {
 
-        return this._httpClient.get<any[]>(environment.apiURL + url).pipe(
+        return this._httpClient.get<any[]>(environment.apiUrl + url).pipe(
             tap((response) => {
                 this._modelLists.next(response);
 

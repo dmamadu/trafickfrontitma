@@ -198,11 +198,11 @@ export class MiseEnOeuvreComponent implements OnInit {
   };
 
   getPapByCategory(category: string) {
+    this.loadData = true;
     return this.parentService
       .list(category, this.pageSize, this.offset)
       .subscribe(
         (data: any) => {
-          this.loadData = false;
           if (data["responseCode"] === 200) {
             const currentList = data.data;
             console.log(
@@ -227,16 +227,20 @@ export class MiseEnOeuvreComponent implements OnInit {
               `Erreur lors de la récupération des PAP pour ${category}`
             );
           }
+          this.loadData = false;
         },
         (err) => {
           console.error(`Erreur réseau pour la catégorie ${category}:`, err);
+          this.loadData = false;
         }
       );
   }
 
   updateSexCounts(category: string, list: any[]): void {
     const maleCount = list.filter((pap) => pap.sexe === "Masculin").length;
-    const femaleCount = list.filter((pap) => (pap.sexe === "Féminin" || "Feminim")).length;
+    const femaleCount = list.filter(
+      (pap) => pap.sexe === "Féminin" || "Feminim"
+    ).length;
 
     if (!this.sexCounts) {
       this.sexCounts = {

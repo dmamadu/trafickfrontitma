@@ -31,17 +31,18 @@ export class ErrorInterceptor implements HttpInterceptor {
         }
         if (err.status === 400) {
           // auto logout if 401 response returned from api
-          this.toastr.error( `${err.error.message}`);
+         // this.toastr.error( `${err.error.message}`);
           //  this.authenticationService.logout();
          // location.reload();
         }
         if (err.status === 500) {
           // auto logout if 401 response returned from api
-          this.toastr.error("Une erreur s'est produite ,veillez réessayez plus tard");
+         // this.toastr.error("Une erreur s'est produite ,veillez réessayez plus tard");
           //  this.authenticationService.logout();
          // location.reload();
         }
-        const error = err.error.message || err.statusText;
+      //  const error = err.error.message || err.statusText;
+        const error = err.error;
         return throwError(error);
       })
     );

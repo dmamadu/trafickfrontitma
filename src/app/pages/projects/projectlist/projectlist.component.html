@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <app-page-title title="Liste des projets" [breadcrumbItems]="breadCrumbItems" ></app-page-title>
+  <app-page-title title="Liste des projets" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 
   <div class="row">
     <div class="col-lg-12">
@@ -10,7 +10,7 @@
               <div class="search-box me-2 d-inline-block">
                 <div class="position-relative">
                   <input type="text" class="form-control" autocomplete="off" id="searchTableList"
-                    placeholder="Search..."  (input)="filterTable($event)">
+                    placeholder="Search..." (input)="filterTable($event)">
                   <i class="bx bx-search-alt search-icon"></i>
                 </div>
               </div>
@@ -29,10 +29,12 @@
     </div>
   </div>
 
+  <app-loader-custom *ngIf="isLoading"></app-loader-custom>
+
   <div style="z-index: 0" class="pt-3">
     <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" [total]="length"
       [coleurEntete]="headers" [entete]="headers" [data]="filteredProjects" [actions]="btnActions"
-      (changePage)="pageChanged($event)"></tableau>
+      (changePage)="pageChanged($event)" *ngIf="!isLoading"></tableau>
   </div>
 
 </div>

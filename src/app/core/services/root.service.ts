@@ -23,37 +23,37 @@ export class RootService {
   };
 
   all<T>(next: string): Observable<T> {
-    return this.http.get<T>(this.url + `/${next}`);
+    return this.http.get<T>(this.url + `${next}`);
   }
 
   add<T>(next: string, data: any): Observable<T> {
-    return this.http.post<T>(this.url + `/${next}`, data);
+    return this.http.post<T>(this.url + `${next}`, data);
   }
   update<T, U>(next: string, data: U): Observable<T> {
-    return this.http.post<T>(this.url + `/${next}`, data);
+    return this.http.post<T>(this.url + `${next}`, data);
   }
 
   getById<T>(id: number, next: string) {
-    return this.http.get<T>(this.url + `/${next}/${id}`);
+    return this.http.get<T>(this.url + `${next}/${id}`);
   }
 
   delete<T>(id: number, next: string): Observable<T> {
     return this.http.delete<T>(
-      this.url + `/${next}` + `/${id}`,
+      this.url + `/${next}` + `${id}`,
       this.httpOptions
     );
   }
   uploadImage(file: File, filename: string): Observable<Image> {
     const imageFormData = new FormData();
     imageFormData.append("image", file, filename);
-    const url = `${this.url + "/image/upload"}`;
+    const url = `${this.url + "image/upload"}`;
     return this.http.post<Image>(url, imageFormData);
   }
 
   updateImage(file: File, filename: string, id: number): Observable<Image> {
     const imageFormData = new FormData();
     imageFormData.append("image", file, filename);
-    const url = this.url + "/image/update/" + `${id}`;
+    const url = this.url + "image/update/" + `${id}`;
     return this.http.put<Image>(url, imageFormData);
   }
 
@@ -63,7 +63,7 @@ export class RootService {
       .set('offset', offset.toString())
       .set('max', max.toString());
 
-    return this.http.get<T>(`${this.url}/${url}/by-codePap`, { params });
+    return this.http.get<T>(`${this.url}${url}/by-codePap`, { params });
   }
 
 
@@ -73,7 +73,7 @@ export class RootService {
       .set('codePap', codePap)
 
 
-    return this.http.get<T>(`${this.url}/${url}/by-codePap`, { params });
+    return this.http.get<T>(`${this.url}${url}/by-codePap`, { params });
   }
 
 

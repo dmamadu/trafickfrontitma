@@ -52,6 +52,7 @@ import { TasksRoutingModule } from "../tasks-routing.module";
   styleUrl: "./list.component.css",
   standalone: true,
   providers: [
+    DatePipe,
     {
       provide: MatDialogRef,
       useValue: [],

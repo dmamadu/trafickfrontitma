@@ -31,6 +31,7 @@ import { AddDossierComponent } from "./add-dossier/add-dossier.component";
   selector: "app-gestion-dossier",
   standalone: true,
   providers: [
+    DatePipe,
     {
       provide: MatDialogRef,
       useValue: [],
@@ -129,12 +130,10 @@ export class GestionDossierComponent {
     ];
   }
 
-
-
   addItems(): void {
     this.snackbar.openModal(
       AddDossierComponent,
-      "55rem",
+      "35rem",
       "new",
       "",
       this.datas,
@@ -169,11 +168,10 @@ export class GestionDossierComponent {
       {
         th: "Catégorie de Document",
         td: "categorie",
-        el:'libelle'
-      }
+        el: "libelle",
+      },
     ];
   }
-
 
   createActions(): ButtonAction[] {
     return [
@@ -215,7 +213,7 @@ export class GestionDossierComponent {
       information,
       "",
       () => {
-         this.getDossiers();
+        this.getDossiers();
       }
     );
   }
@@ -250,8 +248,8 @@ export class GestionDossierComponent {
       });
   }
 
-
   getDossiers() {
+    this.loadData = true;
     return this.parentService
       .list(this.url, this.pageSize, this.offset)
       .subscribe(

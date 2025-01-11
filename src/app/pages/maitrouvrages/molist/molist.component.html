@@ -1,116 +1,5 @@
-<!-- <div class="container-fluid">
-
-
-  <app-page-title title="Listes des maitres d'ouvrages" [breadcrumbItems]="breadCrumbItems" class="colorTitle"></app-page-title>
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-body">
-          <div class="row mb-2">
-            <div class="col-sm-4">
-              <div class="search-box me-2 mb-2 d-inline-block">
-                <div class="position-relative">
-                  <input type="text" class="form-control" id="searchTableList" placeholder="Search..."
-                    [(ngModel)]="term" (input)="filterTable($event)">
-                  <i class="bx bx-search-alt search-icon"></i>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-8">
-              <div class="text-sm-end">
-                <button type="button" data-bs-toggle="modal" (click)="newContactModal.show()"
-                  class="btn btn-success btn-rounded waves-effect waves-light addContact-modal mb-2"><i
-                    class="mdi mdi-plus me-1"></i> Ajout MO</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="table-responsive">
-            <table class="table align-middle table-nowrap table-hover dt-responsive nowrap w-100" id="userList-table">
-              <thead class="table-light">
-                <tr>
-                  <th scope="col" style="width: 40px;">#</th>
-                  <th scope="col">Nom complet</th>
-                  <th scope="col">Email</th>
-                  <th scope="col">Contact</th>
-                  <th scope="col">Adresse</th>
-
-                  <th scope="col" style="width: 200px;">Action</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                @for (data of filteredMo; track $index) {
-                <tr>
-                  <td>
-                    @if(data.profile){
-                    <div>
-
-                    </div>
-                    }@else {
-                    <div class="avatar-xs">
-                      <span class="avatar-title rounded-circle">
-                        @if (data.image) {
-                        <img class="rounded-circle avatar-xs"
-                          [src]="getImageFromBase64(data.image.type,data.image.image)" alt="">
-                        }
-                      </span>
-                    </div>}
-                  </td>
-                  <td>
-                    <p class="text-muted mb-0">{{data.firstname}} {{data.lastname}}</p>
-                  </td>
-                  <td>{{data.email}}</td>
-                  <td>{{data.contact}}</td>
-                  <td>
-                    {{data.locality}}
-                  </td>
-
-                  <td>
-                    <ul class="list-inline font-size-20 contact-links mb-0">
-
-                      <li class="list-inline-item px-2">
-                        <a href="javascript:void(0);" tooltip="Profile"
-                          [routerLink]="['/maitrouvrages/profile', data.id]"><i class="bx bx-user-circle"></i></a>
-                      </li>
-                      <li class="list-inline-item">
-                        <div dropdown class="dropdown">
-                          <a dropdownToggle href="javascript: void(0);" class="dropdown-toggle card-drop px-2 show"
-                            aria-expanded="true"> <i class="mdi mdi-dots-horizontal font-size-18"></i> </a>
-                          <ul *dropdownMenu class="dropdown-menu dropdown-menu-end show"
-                            style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 31.25px);"
-                            placement="bottom-end">
-                            <li><a href="javascript:void(0);" (click)="editUser($index)" class="dropdown-item edit-list"
-                                data-edit-id="8"><i class="mdi mdi-pencil font-size-16 text-success me-1"></i> Edit</a>
-                            </li>
-                            <li><a href="javascript:void(0);" (click)="removeUser(data.id)"
-                                class="dropdown-item remove-list" data-remove-id="8"><i
-                                  class="mdi mdi-trash-can font-size-16 text-danger me-1"></i> Delete</a></li>
-                          </ul>
-                        </div>
-                      </li>
-                    </ul>
-                  </td>
-                </tr>}
-              </tbody>
-            </table>
-          </div>
-          <div class="row">
-            <div class="col-lg-12">
-              <ul class="pagination pagination-rounded justify-content-center mt-4">
-                <pagination class="pagination-wrap hstack gap-2" [totalItems]="returnedArray?.length"
-                  [itemsPerPage]="10" (pageChanged)="pageChanged($event)"></pagination>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div> -->
-
 <div>
-  <app-page-title title="Liste des utilisateurs" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+  <app-page-title title="Liste des maitres d'ouvrages" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 </div>
 <div class=" row mb-2">
   <div class="col-sm">
@@ -124,8 +13,9 @@
   </div>
   <div class="col-sm-auto">
     <div class="d-flex flex-wrap gap-2">
-      <button type="submit" class="btn bgPrimaire" (click)="newContactModal.show()"> <i class="mdi mdi-plus me-1"></i> Ajouter un
-        utilisateur</button>
+      <button type="submit" class="btn bgPrimaire" (click)="addItems()"> <i class="mdi mdi-plus me-1"></i>
+        Ajouter un
+        maitre d'ouvrage</button>
 
     </div>
 
@@ -145,7 +35,7 @@
 
 
 <!-- Modal -->
-<div bsModal #newContactModal="bs-modal" class="modal fade" id="newContactModal" tabindex="-1"
+<div bsModal #newContactModal="bs-modal" class="modual fade" id="newContactModal" tabindex="-1"
   aria-labelledby="newContactModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -393,12 +283,7 @@
 </div>
 
 
-<!-- end newContactModal -->
-<div id="elmLoader" class="text-center">
-  <div class="spinner-border text-primary avatar-sm" role="status">
-    <span class="visually-hidden">Loading...</span>
-  </div>
-</div>
+
 
 <!-- removeItemModal -->
 <div bsModal #removeItemModal="bs-modal" class="modal fade" id="removeItemModal" tabindex="-1" aria-hidden="true">

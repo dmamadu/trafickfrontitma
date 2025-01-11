@@ -1,33 +1,39 @@
-import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { ServiceParent } from 'src/app/core/services/serviceParent';
-import { CoreService } from 'src/app/shared/core/core.service';
-import { SnackBarService } from 'src/app/shared/core/snackBar.service';
-import { ButtonAction, TableauComponent } from 'src/app/shared/tableau/tableau.component';
-import { AddFonctionUtilisateurComponent } from './add-fonction-utilisateur/add-fonction-utilisateur.component';
-import { AngularMaterialModule } from 'src/app/shared/angular-materiel-module/angular-materiel-module';
-import { UIModule } from 'src/app/shared/ui/ui.module';
+import { DatePipe } from "@angular/common";
+import {
+  ChangeDetectorRef,
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
+import { UntypedFormGroup } from "@angular/forms";
+import { MatDialog } from "@angular/material/dialog";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatSort } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
+import { Router } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
+import { ServiceParent } from "src/app/core/services/serviceParent";
+import { CoreService } from "src/app/shared/core/core.service";
+import { SnackBarService } from "src/app/shared/core/snackBar.service";
+import {
+  ButtonAction,
+  TableauComponent,
+} from "src/app/shared/tableau/tableau.component";
+import { AddFonctionUtilisateurComponent } from "./add-fonction-utilisateur/add-fonction-utilisateur.component";
+import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
+import { UIModule } from "src/app/shared/ui/ui.module";
 
 @Component({
-  selector: 'app-fonction-utilisateur',
+  selector: "app-fonction-utilisateur",
   standalone: true,
-  imports: [TableauComponent,
-    UIModule,
-    AngularMaterialModule,
-  ],
+  imports: [TableauComponent, UIModule, AngularMaterialModule],
+  providers: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './fonction-utilisateur.component.html',
-  styleUrl: './fonction-utilisateur.component.css'
+  templateUrl: "./fonction-utilisateur.component.html",
+  styleUrl: "./fonction-utilisateur.component.css",
 })
 export class FonctionUtilisateurComponent implements OnInit {
-
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   informations: any;
@@ -67,17 +73,12 @@ export class FonctionUtilisateurComponent implements OnInit {
   headers: any = [];
   btnActions: any = [];
 
-
-
-
-
-  roles: any[]=[];
+  roles: any[] = [];
   ngOnInit(): void {
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
     this.getFonctions();
   }
-
 
   createHeader() {
     return [
@@ -89,7 +90,6 @@ export class FonctionUtilisateurComponent implements OnInit {
         th: "Libelle",
         td: "libelle",
       },
-
     ];
   }
 
@@ -111,12 +111,11 @@ export class FonctionUtilisateurComponent implements OnInit {
         isDisabled: this.hasDelete,
         action: (element?) => this.supprimerItems(element.id, element),
       },
-
     ];
   }
 
-
-  constructor( private changeDetectorRefs: ChangeDetectorRef,
+  constructor(
+    private changeDetectorRefs: ChangeDetectorRef,
     private parentService: ServiceParent,
     private _router: Router,
     private datePipe: DatePipe,
@@ -124,14 +123,11 @@ export class FonctionUtilisateurComponent implements OnInit {
     private _matDialog: MatDialog,
     private coreService: CoreService,
     private _changeDetectorRef: ChangeDetectorRef,
-    public toastr: ToastrService,
-    ){
-
-  }
-
-
+    public toastr: ToastrService
+  ) {}
 
   getFonctions() {
+    this.loadData = true;
     return this.parentService
       .list(this.url, this.pageSize, this.offset)
       .subscribe(
@@ -157,15 +153,6 @@ export class FonctionUtilisateurComponent implements OnInit {
         }
       );
   }
-
-
-
-
-
-
-
-
-
 
   updateItems(information): void {
     console.log(information);
@@ -198,7 +185,7 @@ export class FonctionUtilisateurComponent implements OnInit {
           this.coreService.deleteItem(id, "fonctions").subscribe(
             (resp) => {
               this.showLoader = "isNotShow";
-              if (resp["responseCode"]==200) {
+              if (resp["responseCode"] == 200) {
                 this.getFonctions();
               }
               this.snackbar.openSnackBar(
@@ -240,5 +227,4 @@ export class FonctionUtilisateurComponent implements OnInit {
     this.offset = this.pageIndex;
     this.getFonctions();
   }
-
 }

@@ -12,6 +12,7 @@ import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { ModalDirective } from "ngx-bootstrap/modal";
 import { ButtonAction } from "src/app/shared/tableau/tableau.component";
+import { SnackBarService } from "src/app/shared/core/snackBar.service";
 
 @Component({
   selector: "app-projectlist",
@@ -48,12 +49,12 @@ export class ProjectlistComponent implements OnInit {
     public store: Store,
     private projectService: ProjectService,
     private sharedService: SharedService,
+    private snackbar: SnackBarService,
     private router: Router,
     public toastr: ToastrService
   ) {}
 
   ngOnInit() {
-
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
     this.loadProject();
@@ -71,6 +72,7 @@ export class ProjectlistComponent implements OnInit {
 
   filteredProjects: Project[] = [];
   loadProject() {
+    this.isLoading = true;
     return this.projectService
       .all<ResponseData<Project[]>>("projects/all")
       .subscribe((data: ResponseData<Project[]>) => {
@@ -79,6 +81,7 @@ export class ProjectlistComponent implements OnInit {
         console.log(this.projectlist);
         this.filteredProjects = this.projectlist;
         console.log("====================================");
+        this.isLoading = false;
       });
   }
 
@@ -97,20 +100,45 @@ export class ProjectlistComponent implements OnInit {
     this.router.navigate(["/projects/update"]);
   }
 
+  // delet(userId: number) {
+  //   this.projectService
+  //     .delete<ResponseData<Project>>(userId, "projects/delete")
+  //     .subscribe(
+  //       (data: ResponseData<any>) => {
+  //         console.log(data.message);
+  //         this.toastr.success(data.message);
+  //         this.filteredProjects = this.filteredProjects.filter(
+  //           (mo) => mo.id !== userId
+  //         );
+  //       },
+  //       (err) => {
+  //         console.log(err);
+  //         this.toastr.error("Error deleting user");
+  //       }
+  //     );
+  // }
+
   delet(userId: number) {
-    this.projectService
-      .delete<ResponseData<Project>>(userId, "projects/delete")
-      .subscribe(
-        (data: ResponseData<any>) => {
-          console.log(data.message);
-          this.toastr.success(data.message);
-          this.filteredProjects = this.filteredProjects.filter((mo) => mo.id !== userId);
-        },
-        (err) => {
-          console.log(err);
-          this.toastr.error("Error deleting user");
+    this.snackbar
+      .showConfirmation("Voulez-vous vraiment supprimer ce parti affecté ?")
+      .then((result) => {
+        if (result["value"] == true) {
+          const message = "Project  supprimé";
+          this.projectService
+            .delete<ResponseData<Project>>(userId, "projects/delete")
+            .subscribe((resp) => {
+              this.snackbar.openSnackBar(message + " avec succès", "OK", [
+                "mycssSnackbarGreen",
+                (this.filteredProjects = this.filteredProjects.filter(
+                  (mo) => mo.id !== userId
+                )),
+              ]),
+                (error) => {
+                  this.snackbar.showErrors(error);
+                };
+            });
         }
-      );
+      });
   }
 
   removeProjet(id: any) {
@@ -130,70 +158,61 @@ export class ProjectlistComponent implements OnInit {
   filterTable(event: any) {
     const searchValue = event.target.value.toLowerCase();
     if (searchValue) {
-      this.filteredProjects = this.projectlist.filter(project =>
-        project.libelle.toLowerCase().includes(searchValue) ||
-        project.categorie.toLowerCase().includes(searchValue) ||
-        project.status.toLowerCase().includes(searchValue) ||
-        project.datedebut.toLowerCase().includes(searchValue)
+      this.filteredProjects = this.projectlist.filter(
+        (project) =>
+          project.libelle.toLowerCase().includes(searchValue) ||
+          project.categorie.toLowerCase().includes(searchValue) ||
+          project.status.toLowerCase().includes(searchValue) ||
+          project.datedebut.toLowerCase().includes(searchValue)
       );
     } else {
       this.filteredProjects = this.projectlist;
     }
   }
 
-
-    createHeader() {
-      return [
-        {
-          th: "Libelle",
-          td: "libelle",
-        },
-        {
-          th: "Catégorie",
-          td: "categorie",
-        },
-        {
-          th: "Status",
-          td: "statut",
-        },
-        {
-          th: "Date début",
-          td: "date_debut",
-        },
-      ];
-    }
-
-    createActions(): ButtonAction[] {
-      return [
-        {
-          icon: "bxs-edit",
-          couleur: "green",
-          size: "icon-size-4",
-          title: "Modifier",
-          isDisabled: this.hasUpdate,
-          action: (element?) => this.selectItem(element),
-        },
-        {
-          icon: "bxs-trash-alt",
-          couleur: "red",
-          size: "icon-size-4",
-          title: "Supprimer",
-          isDisabled: this.hasDelete,
-          action: (element?) => this.delet(element.id),
-        },
-        {
-          icon: "bxs-info-circle",
-          couleur: "#00bfff	",
-          size: "icon-size-4",
-          title: "détail",
-          isDisabled: this.hasDelete,
-          action: (element?) => this.redirectToOverview(element.id),
-        },
-      ];
-    }
-
-  redirectToOverview(id: number): void {
-    this.router.navigate(['/overview', id]);
+  createHeader() {
+    return [
+      {
+        th: "Libelle",
+        td: "libelle",
+      },
+      {
+        th: "Date début",
+        td: "datedebut",
+      }
+    ];
   }
 
+  createActions(): ButtonAction[] {
+    return [
+      {
+        icon: "bxs-edit",
+        couleur: "green",
+        size: "icon-size-4",
+        title: "Modifier",
+        isDisabled: this.hasUpdate,
+        action: (element?) => this.selectItem(element),
+      },
+      {
+        icon: "bxs-trash-alt",
+        couleur: "red",
+        size: "icon-size-4",
+        title: "Supprimer",
+        isDisabled: this.hasDelete,
+        action: (element?) => this.delet(element.id),
+      },
+      {
+        icon: "bxs-info-circle",
+        couleur: "#00bfff	",
+        size: "icon-size-4",
+        title: "détail",
+        isDisabled: this.hasDelete,
+        action: (element?) => this.redirectToOverview(element.id),
+      },
+    ];
+  }
+
+  redirectToOverview(id: number): void {
+    this.router.navigate(["/overview", id]);
+  }
 }

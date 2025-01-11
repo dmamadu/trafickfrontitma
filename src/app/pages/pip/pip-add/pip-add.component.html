@@ -68,109 +68,114 @@
           <button mat-raised-button matDialogClose class="submit-buttonRed" matStepperPrevious type="button">
             <span class="textForm">Annuler</span>
           </button>&nbsp;
-          <button mat-raised-button class="submit-button" aria-label="VALIDER" matStepperNext type="button" >
-            <span class="textForm">Suivant</span>
-          </button>&nbsp;
-        </div>
-      </mat-step>
-      <mat-step label="Contact Principal">
-        <div class="flex gap-2">
-          <mat-form-field class=" w-1/2 mt-2" appearance="outline">
-            <mat-label disabled value="" selected class="enteteccColor">Nom </mat-label>
-            <input class="typeTitle" matInput type="text" name="typeIdentification"
-              formControlName="nomContactPrincipal" />
-            <mat-icon matSuffix class="enteteccColor">code</mat-icon>
-            <mat-error>Le champs est obligatoire</mat-error>
-          </mat-form-field>
-          <mat-form-field class=" w-1/2 mt-2" appearance="outline">
-            <mat-label class="enteteccColor">Prénom
-            </mat-label>
-            <input matInput type="text" name="prenomContactPrincipal" formControlName="prenomContactPrincipal" />
-            <mat-icon matSuffix class="secondary-text">code</mat-icon>
-            <mat-error
-              *ngIf="initForm.get('prenomContactPrincipal')?.touched && initForm.get('prenomContactPrincipal')?.errors?.required">ce
-              champs est requis</mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="flex gap-2">
-          <mat-form-field class=" w-1/2 mt-2" appearance="outline">
-            <mat-label disabled value="" selected class="enteteccColor">Adresse
-            </mat-label>
-            <input class="typeTitle" matInput type="text" name="adresseContactPrincipal"
-              formControlName="adresseContactPrincipal" />
-            <mat-icon matSuffix class="enteteccColor">home</mat-icon>
-            <mat-error>Le champs est obligatoire</mat-error>
-          </mat-form-field>
-          <mat-form-field class=" w-1/2 mt-2" appearance="outline">
-            <mat-label class="enteteccColor">Sexe
-            </mat-label>
-
-              <mat-select formControlName="sexe" class="enteteccColor">
-                <mat-option class="enteteccColor" *ngFor="let sexe of sexe" [value]="sexe?.id">
-                  {{ sexe?.name }}
-                </mat-option>
-              </mat-select>
-              <mat-icon matSuffix class="secondary-text">person</mat-icon>
-            <mat-error>Le champs est obligatoire</mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="flex gap-2">
-
-          <mat-form-field class=" w-1/2 mt-2" appearance="outline">
-            <mat-label class="enteteccColor">Date de naissance
-            </mat-label>
-            <input class="typeTitle" matInput type="text" name="dateNaissanceContactPrincipal"
-              formControlName="dateNaissanceContactPrincipal" />
-              <mat-icon matSuffix class="secondary-text">event</mat-icon>
-
-            <mat-error>Le champs est obligatoire</mat-error>
-          </mat-form-field>
-          <mat-form-field class=" w-1/2 mt-2" appearance="outline">
-            <mat-label class="enteteccColor">Lieu de naissance
-            </mat-label>
-            <input class="typeTitle" matInput type="text" name="lieuNaisasnceContactPrincipal"
-              formControlName="lieuNaisasnceContactPrincipal" />
-              <mat-icon matSuffix class="secondary-text">place</mat-icon>
-            <mat-error>Le champs est obligatoire</mat-error>
-          </mat-form-field>
-        </div>
-
-
-        <div class="flex gap-2">
-
-          <mat-form-field class=" w-1/2 mt-2" appearance="outline">
-            <mat-label class="enteteccColor">Email
-            </mat-label>
-            <input class="typeTitle" matInput type="text" name="emailContactPrincipal"
-              formControlName="emailContactPrincipal" />
-              <mat-icon matSuffix class="secondary-text">email</mat-icon>
-            <mat-error>Le champs est obligatoire</mat-error>
-          </mat-form-field>
-          <mat-form-field  class=" w-1/2 mt-2 telephone" fxFlex="50" appearance="outline">
-            <ngx-mat-intl-tel-input [preferredCountries]="['sn', 'fr']" [enablePlaceholder]="true" [enableSearch]="true"
-              name="telephoneContactPrincipal" describedBy="Téléphone WhatsApp"
-              formControlName="telephoneContactPrincipal"></ngx-mat-intl-tel-input>
-              <mat-icon matSuffix class="secondary-text">phone</mat-icon>
-            <mat-error>Le champs est obligatoire</mat-error>
-
-          </mat-form-field>
-        </div>
-
-
-        <div class="flex justify-center gap-4">
-          <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
-            <span class="textForm">Retour</span>
-          </button>&nbsp;
           <button mat-raised-button class="submit-button" aria-label="VALIDER" matStepperNext type="button">
             <span class="textForm">Suivant</span>
           </button>&nbsp;
         </div>
       </mat-step>
+      <mat-step label="Contacts Principals">
+        <label for="">Ajouter ici ses répresentants physiques</label>
+        <form [formGroup]="contactForm">
+          <div class="flex gap-2">
+            <!-- Champs du contact principal -->
+            <mat-form-field class="w-1/2 mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Nom</mat-label>
+              <input matInput type="text" formControlName="nomContactPrincipal" />
+              <mat-icon matSuffix class="enteteccColor">code</mat-icon>
+              <mat-error>Le champ est obligatoire</mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="w-1/2 mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Prénom</mat-label>
+              <input matInput type="text" formControlName="prenomContactPrincipal" />
+              <mat-icon matSuffix class="secondary-text">code</mat-icon>
+              <mat-error>Le champ est obligatoire</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Autres champs pour le contact principal -->
+          <div class="flex gap-2">
+            <mat-form-field class="w-1/2 mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Adresse</mat-label>
+              <input matInput type="text" formControlName="adresseContactPrincipal" />
+              <mat-icon matSuffix class="enteteccColor">home</mat-icon>
+              <mat-error>Le champ est obligatoire</mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="w-1/2 mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Sexe</mat-label>
+              <mat-select formControlName="sexeContactPrincipal">
+                <mat-option *ngFor="let sexe of sexeOptions" [value]="sexe?.id">{{ sexe?.name }}</mat-option>
+              </mat-select>
+              <mat-icon matSuffix class="secondary-text">person</mat-icon>
+              <mat-error>Le champ est obligatoire</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="flex gap-2">
+            <mat-form-field class="w-1/2 mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Email</mat-label>
+              <input matInput type="text" formControlName="emailContactPrincipal" />
+              <mat-icon matSuffix class="secondary-text">email</mat-icon>
+              <mat-error>Le champ est obligatoire</mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="w-1/2 mt-2 telephone" appearance="outline">
+              <input  matInput type="number"  formControlName="telephoneContactPrincipal">
+              <mat-icon matSuffix class="secondary-text">phone</mat-icon>
+              <mat-error>Le champ est obligatoire</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="flex justify-center gap-4">
+            <button mat-raised-button class="submit-button" (click)="addContact()" type="button">
+              {{ contacts.data.length > 0 ? 'Ajouter un autre' : 'Ajouter' }}
+            </button>
+          </div>
+
+          <!-- Tableau des contacts ajoutés -->
+          <div class="contact-table mt-4" style="height: 150px; overflow-y: auto;">
+            <table mat-table [dataSource]="contacts" style="width: 100%; table-layout: fixed;">
+              <ng-container matColumnDef="nom">
+                <th mat-header-cell *matHeaderCellDef> Nom </th>
+                <td mat-cell *matCellDef="let contact">{{ contact.nomContactPrincipal }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="prenom">
+                <th mat-header-cell *matHeaderCellDef> Prénom </th>
+                <td mat-cell *matCellDef="let contact">{{ contact.prenomContactPrincipal }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="email">
+                <th mat-header-cell *matHeaderCellDef> Email </th>
+                <td mat-cell *matCellDef="let contact">{{ contact.emailContactPrincipal }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="telephone">
+                <th mat-header-cell *matHeaderCellDef> Téléphone </th>
+                <td mat-cell *matCellDef="let contact">{{ contact.telephoneContactPrincipal }}</td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+          </div>
+
+          <div class="flex justify-center gap-4 mt-4">
+            <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
+              <span class="textForm">Retour</span>
+            </button>
+            <button mat-raised-button class="submit-button" aria-label="VALIDER" matStepperNext type="button">
+              <span class="textForm">Suivant</span>
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
       <mat-step label="Normes">
         <div class="flex gap-2">
-          <textarea name="" id="" formControlName="normes" class="typeTitle w-full"  placeholder="norme de l'organisation" matInput appearance="outline"></textarea >
+          <textarea name="" id="" formControlName="normes" class="typeTitle w-full"
+            placeholder="norme de l'organisation" matInput appearance="outline"></textarea>
         </div>
         <div class="flex justify-center gap-4">
           <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
@@ -220,12 +225,12 @@
                 </div>
                 <div class="flex items-center recapCss">
                   <span class="">Catégorie: </span>
-                  <span class="leading-none font-bold">{{ getCategorie(initForm?.get('categoriePartieInteresse')?.value) }}</span>
+                  <span class="leading-none font-bold">{{ getCategorie(initForm?.get('categoriePartieInteresse')?.value)
+                    }}</span>
                 </div>
               </div>
             </mat-expansion-panel>
-
-            <mat-expansion-panel class="" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
               <mat-expansion-panel-header class="w-full">
                 <div class="w-full flex rec">
                   <div class="titleRecap">Contact Principal</div>
@@ -234,42 +239,55 @@
                   </button>
                 </div>
               </mat-expansion-panel-header>
+
               <hr class="w-full border-t my-6">
-              <div class="grid grid-cols-2 gap-4 mt-2 cSize">
-                <div class="flex items-center recapCss">
-                  <span class="">Nom: </span>
-                  <span class="leading-none font-bold">{{ initForm?.get('nomContactPrincipal')?.value }}</span>
-                </div>
-                <div class="flex items-center recapCss">
-                  <span class="">Prénom: </span>
-                  <span class="leading-none font-bold">{{ initForm?.get('prenomContactPrincipal')?.value }}</span>
-                </div>
-                <div class="flex items-center recapCss">
-                  <span class="">Adresse: </span>
-                  <span class="leading-none font-bold">{{ initForm?.get('adresseContactPrincipal')?.value }}</span>
-                </div>
-                <div class="flex items-center recapCss">
-                  <span class="">Sexe: </span>
-                  <span class="leading-none font-bold">{{ initForm?.get('sexeContactPrincipal')?.value }}</span>
-                </div>
-                <div class="flex items-center recapCss">
-                  <span class="">Date de naissance: </span>
-                  <span class="leading-none font-bold">{{ initForm?.get('dateNaissanceContactPrincipal')?.value }}</span>
-                </div>
-                <div class="flex items-center recapCss">
-                  <span class="">Lieu de naissance: </span>
-                  <span class="leading-none font-bold">{{ initForm?.get('lieuNaisasnceContactPrincipal')?.value }}</span>
-                </div>
-                <div class="flex items-center recapCss">
-                  <span class="">Email: </span>
-                  <span class="leading-none font-bold">{{ initForm?.get('emailContactPrincipal')?.value }}</span>
-                </div>
-                <div class="flex items-center recapCss">
-                  <span class="">Téléphone: </span>
-                  <span class="leading-none font-bold">{{ initForm?.get('telephoneContactPrincipal')?.value }}</span>
-                </div>
+
+              <!-- Tableau des contacts -->
+              <div class="mt-2" class="contact-table">
+                <mat-table [dataSource]="contacts" class="" style="width: 100%;">
+                  <!-- Nom -->
+                  <ng-container matColumnDef="nom">
+                    <th mat-header-cell *matHeaderCellDef>Nom</th>
+                    <td mat-cell *matCellDef="let contact">{{ contact.nomContactPrincipal }}</td>
+                  </ng-container>
+
+                  <!-- Prénom -->
+                  <ng-container matColumnDef="prenom">
+                    <th mat-header-cell *matHeaderCellDef>Prénom</th>
+                    <td mat-cell *matCellDef="let contact">{{ contact.prenomContactPrincipal }}</td>
+                  </ng-container>
+
+                  <!-- Adresse -->
+                  <ng-container matColumnDef="adresse">
+                    <th mat-header-cell *matHeaderCellDef>Adresse</th>
+                    <td mat-cell *matCellDef="let contact">{{ contact.adresseContactPrincipal }}</td>
+                  </ng-container>
+
+                  <!-- Sexe -->
+                  <ng-container matColumnDef="sexe">
+                    <th mat-header-cell *matHeaderCellDef>Sexe</th>
+                    <td mat-cell *matCellDef="let contact">{{ contact.sexe }}</td>
+                  </ng-container>
+
+                  <!-- Email -->
+                  <ng-container matColumnDef="email">
+                    <th mat-header-cell *matHeaderCellDef>Email</th>
+                    <td mat-cell *matCellDef="let contact">{{ contact.emailContactPrincipal }}</td>
+                  </ng-container>
+
+                  <!-- Téléphone -->
+                  <ng-container matColumnDef="telephone">
+                    <th mat-header-cell *matHeaderCellDef>Téléphone</th>
+                    <td mat-cell *matCellDef="let contact">{{ contact.telephoneContactPrincipal }}</td>
+                  </ng-container>
+
+                  <!-- Lignes du tableau -->
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </mat-table>
               </div>
             </mat-expansion-panel>
+
 
             <mat-expansion-panel class="" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
               <mat-expansion-panel-header class="w-full">

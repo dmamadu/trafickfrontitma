@@ -79,7 +79,7 @@ export class AddDossierComponent {
   categoriePartieInteresses: any;
   uploadedImage!: File;
   imageURL: string | undefined;
-  urlImage = environment.apiURL + "image/getFile/";
+  urlImage = environment.apiUrl + "image/getFile/";
 
   roles: any[] = [];
   categories: any[] = [];

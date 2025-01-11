@@ -10,6 +10,6 @@ export class ComplaintServiceService {
   private apiUrl = "localhost:8081/complaints";
   constructor(private http: HttpClient) {}
   submitComplaint(complaintData: any): Observable<any> {
-    return this.http.post<any>(environment.apiURL+'complaints', complaintData);
+    return this.http.post<any>(environment.apiUrl+'complaints', complaintData);
   }
 }

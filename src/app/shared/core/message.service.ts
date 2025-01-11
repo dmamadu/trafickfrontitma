@@ -26,27 +26,27 @@ export class MessageService {
      */
 
     templateConsentementClient(data: any) {
-        return this._httpClient.post(environment.apiURL + 'templates-consentement/edition', data);
+        return this._httpClient.post(environment.apiUrl + 'templates-consentement/edition', data);
     }
  templateContratClient(data: any) {
-        return this._httpClient.post(environment.apiURL + 'depot-terme/edition', data);
+        return this._httpClient.post(environment.apiUrl + 'depot-terme/edition', data);
     }
 
     getTemplateConsentement() {
-        return this._httpClient.get(environment.apiURL + 'templates-consentement');
+        return this._httpClient.get(environment.apiUrl + 'templates-consentement');
     }
 
     modifierTemplateConsentement(data: any) {
-        return this._httpClient.put(environment.apiURL + 'templates-consentement1/' + data.id, data);
+        return this._httpClient.put(environment.apiUrl + 'templates-consentement1/' + data.id, data);
     }
 
 
 
     saveOrUpdateFile(data: any) {
         if (data['id']) {
-            return this._httpClient.put(environment.apiURL + 'documents/' + data['id'], data).pipe(response => response);
+            return this._httpClient.put(environment.apiUrl + 'documents/' + data['id'], data).pipe(response => response);
         } else {
-            return this._httpClient.post(environment.apiURL + 'documents', data).pipe(response => response);
+            return this._httpClient.post(environment.apiUrl + 'documents', data).pipe(response => response);
         }
 
     }
@@ -70,7 +70,7 @@ export class MessageService {
     }
 
     getElementById(id, url) {
-      return this._httpClient.get(environment.apiURL + url + '/' + id).pipe(response => response);
+      return this._httpClient.get(environment.apiUrl + url + '/' + id).pipe(response => response);
   }
 
 }

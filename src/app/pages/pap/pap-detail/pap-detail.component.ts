@@ -89,7 +89,7 @@ export class PapDetailComponent implements OnInit {
   dialogRef: any;
   loaderImg: boolean = false;
   attributComplementaires: any = [];
-  urlImage = environment.apiURL + "image/getFile/";
+  urlImage = environment.apiUrl + "image/getFile/";
 
   pageSizeOptions = [5, 10, 25, 100, 500, 1000];
   pageSize: number = 10;
@@ -674,9 +674,8 @@ export class PapDetailComponent implements OnInit {
         this.toastr.error("An error occurred during the import process.");
       }
     );
-    this.dataExcel=[]
+    this.dataExcel = [];
   }
-
 
   addItems(): void {
     this.snackbar.openModal(

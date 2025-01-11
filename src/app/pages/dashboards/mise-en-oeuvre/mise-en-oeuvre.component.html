@@ -1,5 +1,10 @@
-<div class="container">
-    <h1 class="couleurPrimary py-3">Statistiques dynamiques relatives à la mise en œuvre du PAR</h1>
+<div class="container" *ngIf="loadData">
+  <h1 class="couleurPrimary py-3">Statistiques dynamiques relatives à la mise en œuvre du PAR</h1>
+  <app-loader-custom ></app-loader-custom>
+</div>
+
+<div class="container" *ngIf="!loadData ">
+  <h1 class="couleurPrimary py-3">Statistiques dynamiques relatives à la mise en œuvre du PAR</h1>
   <div class="section-jobs">
     <h2 class="couleurPrimary">Statut des dossiers</h2>
     <div class="cards">

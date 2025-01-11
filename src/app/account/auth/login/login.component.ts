@@ -22,6 +22,7 @@ export class LoginComponent implements OnInit {
   error: any = "";
   returnUrl: string;
   fieldTextType!: boolean;
+  loader: boolean = false;
 
   // set the currenr year
   year: number = new Date().getFullYear();
@@ -53,6 +54,7 @@ export class LoginComponent implements OnInit {
    */
   onSubmit() {
     this.submitted = true;
+    this.loader = true;
     return this.authenticationService
       .login(this.f.email.value, this.f.password.value)
       .subscribe(
@@ -64,9 +66,11 @@ export class LoginComponent implements OnInit {
           this.router.navigate(["/dashboards/jobs"]);
         },
         (error) => {
+          console.log(error);
+
           this.submitted = false;
           //  console.error("Erreur lors de la tentative de connexion :", error);
-          this.toastr.error(`${error}`);
+          this.toastr.error(`Une erreur s'est produite ou veiillez vérifier vos identifiants`);
         }
       );
   }

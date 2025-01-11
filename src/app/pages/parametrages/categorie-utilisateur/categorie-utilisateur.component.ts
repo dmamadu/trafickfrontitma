@@ -1,35 +1,40 @@
-import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { ServiceParent } from 'src/app/core/services/serviceParent';
-import { CoreService } from 'src/app/shared/core/core.service';
-import { SnackBarService } from 'src/app/shared/core/snackBar.service';
-import { ButtonAction, TableauComponent } from 'src/app/shared/tableau/tableau.component';
-import { AddRoleComponent } from '../role/add-role/add-role.component';
-import { AddCategorieComponent } from './add-categorie/add-categorie.component';
-import { AngularMaterialModule } from 'src/app/shared/angular-materiel-module/angular-materiel-module';
-import { UIModule } from 'src/app/shared/ui/ui.module';
+import { DatePipe } from "@angular/common";
+import {
+  ChangeDetectorRef,
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
+import { UntypedFormGroup } from "@angular/forms";
+import { MatDialog } from "@angular/material/dialog";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatSort } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
+import { Router } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
+import { ServiceParent } from "src/app/core/services/serviceParent";
+import { CoreService } from "src/app/shared/core/core.service";
+import { SnackBarService } from "src/app/shared/core/snackBar.service";
+import {
+  ButtonAction,
+  TableauComponent,
+} from "src/app/shared/tableau/tableau.component";
+import { AddRoleComponent } from "../role/add-role/add-role.component";
+import { AddCategorieComponent } from "./add-categorie/add-categorie.component";
+import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
+import { UIModule } from "src/app/shared/ui/ui.module";
 
 @Component({
-  selector: 'app-categorie-utilisateur',
+  selector: "app-categorie-utilisateur",
   standalone: true,
-  imports: [TableauComponent,
-    UIModule,
-    AngularMaterialModule,
-  ],
+  imports: [TableauComponent, UIModule, AngularMaterialModule],
+  providers: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './categorie-utilisateur.component.html',
-  styleUrl: './categorie-utilisateur.component.css'
+  templateUrl: "./categorie-utilisateur.component.html",
+  styleUrl: "./categorie-utilisateur.component.css",
 })
-export class CategorieUtilisateurComponent  implements OnInit {
-
-
+export class CategorieUtilisateurComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   informations: any;
@@ -69,13 +74,12 @@ export class CategorieUtilisateurComponent  implements OnInit {
   headers: any = [];
   btnActions: any = [];
 
-  roles: any[]=[];
+  roles: any[] = [];
   ngOnInit(): void {
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
     this.getCategorie();
   }
-
 
   createHeader() {
     return [
@@ -87,7 +91,6 @@ export class CategorieUtilisateurComponent  implements OnInit {
         th: "Libelle",
         td: "libelle",
       },
-
     ];
   }
 
@@ -109,28 +112,24 @@ export class CategorieUtilisateurComponent  implements OnInit {
         isDisabled: this.hasDelete,
         action: (element?) => this.supprimerItems(element.id, element),
       },
-
     ];
   }
 
-
-  constructor( private changeDetectorRefs: ChangeDetectorRef,
+  constructor(
+    private changeDetectorRefs: ChangeDetectorRef,
     private parentService: ServiceParent,
     private _router: Router,
     private datePipe: DatePipe,
     private snackbar: SnackBarService,
     private _matDialog: MatDialog,
     private coreService: CoreService,
-  //  public matDialogRef: MatDialogRef<>,
+    //  public matDialogRef: MatDialogRef<>,
     private _changeDetectorRef: ChangeDetectorRef,
-    public toastr: ToastrService,
-    ){
-
-  }
-
-
+    public toastr: ToastrService
+  ) {}
 
   getCategorie() {
+    this.loadData = true;
     return this.parentService
       .list(this.url, this.pageSize, this.offset)
       .subscribe(
@@ -157,8 +156,6 @@ export class CategorieUtilisateurComponent  implements OnInit {
       );
   }
 
-
-
   updateItems(information): void {
     console.log(information);
     this.snackbar.openModal(
@@ -169,7 +166,7 @@ export class CategorieUtilisateurComponent  implements OnInit {
       information,
       "",
       () => {
-         this.getCategorie();
+        this.getCategorie();
       }
     );
   }
@@ -190,7 +187,7 @@ export class CategorieUtilisateurComponent  implements OnInit {
           this.coreService.deleteItem(id, "users/deleteMo").subscribe(
             (resp) => {
               this.showLoader = "isNotShow";
-              if (resp["responseCode"]==200) {
+              if (resp["responseCode"] == 200) {
                 this.getCategorie();
               }
             },
@@ -227,5 +224,4 @@ export class CategorieUtilisateurComponent  implements OnInit {
     this.offset = this.pageIndex;
     this.getCategorie();
   }
-
 }

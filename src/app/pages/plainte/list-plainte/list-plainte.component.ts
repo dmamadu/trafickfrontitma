@@ -37,6 +37,7 @@ import { ExportService } from "src/app/shared/core/export.service";
   templateUrl: "./list-plainte.component.html",
   standalone: true,
   providers: [
+    DatePipe,
     {
       provide: MatDialogRef,
       useValue: [],

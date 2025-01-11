@@ -26,8 +26,6 @@ import {
 } from "@angular/material/dialog";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import * as XLSX from "xlsx";
-import { Pap, ResponsePap } from "../pap.model";
-import { PapService } from "../pap.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { DatatableComponent } from "src/app/shared/datatable/datatable.component";
 import { ToastrService } from "ngx-toastr";
@@ -41,14 +39,15 @@ import { logoItma } from "src/app/shared/logoItma";
 import { ExportService } from "src/app/shared/core/export.service";
 import { RechercheService } from "src/app/core/services/recherche.service";
 import { JuristAppComponent } from "../../jurist-app/jurist-app.component";
-import { BatimentComponent } from "../batiment/batiment.component";
-import { AddPapAgricoleComponent } from "./add-pap-agricole/add-pap-agricole.component";
+import { AddPapAgricoleComponent } from "../../pap/pap-agricole/add-pap-agricole/add-pap-agricole.component";
+import { Pap } from "../../pap/pap.model";
+import { PapService } from "../../pap/pap.service";
+import { PapAgricoleComponent } from "../../pap/pap-agricole/pap-agricole.component";
+
 
 @Component({
-  selector: "app-pap-agricole",
+  selector: 'app-bareme-pap-agricole',
   standalone: true,
-  templateUrl: "./pap-agricole.component.html",
-  styleUrl: "./pap-agricole.component.css",
   providers: [
     DatePipe,
     {
@@ -71,8 +70,12 @@ import { AddPapAgricoleComponent } from "./add-pap-agricole/add-pap-agricole.com
     DatatableComponent,
     FormsModule,
   ],
+  templateUrl: './bareme-pap-agricole.component.html',
+  styleUrl: './bareme-pap-agricole.component.css'
 })
-export class PapAgricoleComponent {
+export class BaremePapAgricoleComponent {
+
+
   [x: string]: any;
 
   listPap: Pap[];
@@ -129,9 +132,7 @@ export class PapAgricoleComponent {
   constructor(
     private changeDetectorRefs: ChangeDetectorRef,
     private _router: Router,
-    private datePipe: DatePipe,
     private snackbar: SnackBarService,
-    private _matDialog: MatDialog,
     private papService: PapService,
     private parentService: ServiceParent,
     public matDialogRef: MatDialogRef<PapAgricoleComponent>,
@@ -139,9 +140,7 @@ export class PapAgricoleComponent {
     public toastr: ToastrService,
     private sharedService: SharedService,
     private localService: LocalService,
-    private coreService: CoreService,
-    private exportService: ExportService,
-    private rechercherService: RechercheService
+    private coreService: CoreService
   ) {
     this.currentUser = this.localService.getDataJson("user");
 
@@ -314,9 +313,6 @@ export class PapAgricoleComponent {
 
   //cette fonction permet de supprimer
   supprimerItems(id, information) {
-    console.log("====================================");
-    console.log(id);
-    console.log("====================================");
     this.snackbar
       .showConfirmation("Voulez-vous vraiment supprimer ce parti affecté ?")
       .then((result) => {
@@ -359,267 +355,12 @@ export class PapAgricoleComponent {
     this.isCollapsed = !this.isCollapsed;
   }
 
-  //cette fonction permet d'exporter la liste sous format excel ou pdf
-  exportAs(format) {
-    let nom = this.informations.titleFile;
-    let value = [];
-    this.parentService.list("personneAffectes", 1000000000, 0).subscribe(
-      (resp) => {
-        if (resp["responseCode"] == 200) {
-          value = resp["data"];
-          if (value.length != 0) {
-            let user = { prenom: "admin", nom: "admin" };
-            if (format == "pdf") {
-              let donne = this.exempleGenPdfHeaderFooter(
-                user.prenom + " " + user.nom,
-                nom
-              );
-              var doc = donne.doc;
-              var col = this.informations.tabFileHead;
-              var rows = [];
-              for (const item of value) {
-                const itemCurrent = item;
-                const tabField = [];
-                const elementKeys = Object.keys(item);
-                let i = 0;
 
-                for (const field of this.informations.tabFileBody) {
-                  for (const element of elementKeys) {
-                    if (field === element) {
-                      if (
-                        [
-                          "createdAt",
-                          "dateNaiss",
-                          "dateCirculation",
-                          "dateDepart",
-                          "dateDarriver",
-                        ].includes(field)
-                      ) {
-                        // Si le champ est une date, formater et ajouter à tabField
-                        tabField.push(
-                          moment(itemCurrent[field]).format("DD/MM/YYYY") || ""
-                        );
-                      } else {
-                        if (
-                          typeof itemCurrent[field] === "object" &&
-                          itemCurrent[field] !== null
-                        ) {
-                          // Si c'est un objet non null, ajouter 'libelle' ou 'nom'
-                          tabField.push(
-                            itemCurrent[field]["libelle"] ||
-                              itemCurrent[field]["nom"] ||
-                              itemCurrent[field]["description"] ||
-                              itemCurrent[field]["libellePays"]
-                          );
-                        } else {
-                          // Sinon, ajouter la valeur ou une chaîne vide
-                          tabField.push(itemCurrent[field] || "");
-                        }
-                      }
-                    }
-                  }
-                  i++;
-                }
-                // Ajouter tabField au tableau des lignes
-                rows.push(tabField);
-              }
 
-              autoTable(doc, { head: [col], body: rows });
-              doc.save(nom + ".pdf");
-              this.snackbar.openSnackBar("Téléchargement réussi", "OK", [
-                "mycssSnackbarGreen",
-              ]);
-              this.exporter = false;
-            } else if (format == "excel") {
-              var col = this.informations.tabFileHead;
-              var rows = [];
-              var itemCurrent;
-              for (var item of value) {
-                itemCurrent = item;
-                let tabField = [];
-                let elementKeys = Object.keys(item);
-                let i = 0;
-                for (let field of this.informations.tabFileBody) {
-                  for (let element of elementKeys) {
-                    if (element.toString() == field.toString()) {
-                      if (
-                        field == "createdAt" ||
-                        field == "dateNaiss" ||
-                        field == "dateCirculation" ||
-                        field == "dateDepart" ||
-                        field == "dateDarriver"
-                      )
-                        tabField.push({
-                          [this.informations.tabFileHead[i]]:
-                            moment(itemCurrent[field]).format("DD/MM/YYYY") ||
-                            "",
-                        });
-                      else {
-                        if (
-                          typeof itemCurrent[field] === "object" &&
-                          itemCurrent[field] !== null
-                        ) {
-                          let fieldValue =
-                            itemCurrent[field]["libelle"] ||
-                            itemCurrent[field]["nom"] ||
-                            itemCurrent[field]["libellePays"] ||
-                            "";
-                          let fieldName = this.informations.tabFileHead[i];
 
-                          tabField.push({
-                            [fieldName]: fieldValue,
-                          });
-                        } else {
-                          tabField.push({
-                            [this.informations.tabFileHead[i]]:
-                              itemCurrent[field] || "",
-                          });
-                        }
-                      }
-                    }
-                  }
-                  i++;
-                }
-                rows.push(Object.assign({}, ...tabField));
-              }
-              this.exportService.exportAsExcelFile(
-                this.exportService.preFormatLoanInfo(rows),
-                nom
-              );
-              this.snackbar.openSnackBar("Téléchargement réussi", "OK", [
-                "mycssSnackbarGreen",
-              ]);
-              this.exporter = false;
-            }
-          } else {
-            this.snackbar.openSnackBar("La liste est vide!!!", "OK", [
-              "mycssSnackbarRed",
-            ]);
-          }
-        } else {
-          this.loadData = false;
-        }
-      },
-      (error) => {
-        this.snackbar.showErrors(error);
-      }
-    );
-  }
-
-  exempleGenPdfHeaderFooter(userName, fileName) {
-    const toDay = new Date();
-    let marginX = 0;
-    const doc = new jsPDF();
-    const totalPagesExp = "{total_pages_count_string}";
-    doc.setFillColor(0, 0, 255);
-    const columns = [
-      "                     ",
-      fileName,
-      " Date du :" + this.datePipe.transform(toDay, "dd/MM/yyyy"),
-    ];
-    const rows = [];
-    autoTable(doc, {
-      head: [columns],
-      body: rows,
-      theme: "grid",
-      margin: {
-        top: 10,
-      },
-      didDrawCell: function (data) {
-        if (data.row.section === "head" && data.column.index === 1) {
-          data.cell.styles.textColor = [51, 22, 183];
-          data.cell.styles.fontSize = 10;
-          data.cell.styles.valign = "middle";
-          data.cell.styles.fillColor = [216, 78, 75];
-        }
-        if (data.row.section === "head" && data.column.index === 0) {
-          doc.addImage(
-            logoItma,
-            "JPEG",
-            data.cell.x + 2,
-            data.cell.y + 2,
-            30,
-            15
-          );
-        }
-      },
-      didDrawPage: function (data) {
-        marginX = data.settings.margin.left;
-        // Header
-        doc.setFontSize(10);
-        doc.setTextColor(255);
-      },
-      styles: {
-        lineColor: [0, 0, 0],
-        lineWidth: 0.3,
-        textColor: [51, 122, 183],
-      },
-      headStyles: {
-        fillColor: [255, 255, 255],
-        fontSize: 10,
-        fontStyle: "normal",
-        valign: "middle",
-        textColor: 0,
-        minCellHeight: 20,
-      },
-      willDrawCell: function (data) {
-        if (data.row.section === "head") {
-          doc.setTextColor(51, 122, 183);
-        }
-        if (data.row.section === "head" && data.column.index === 1) {
-          doc.setFontSize(10);
-        }
-      },
-    });
-    return { doc: doc, marginX: marginX, totalPagesExp: totalPagesExp };
-  }
-
-  record(item) {}
-
-  addItems(): void {
-    this.snackbar.openModal(
-      AddPapAgricoleComponent,
-      "45rem",
-      "new",
-      "auto",
-      this.datas,
-      "",
-      () => {
-        this.getPapAgricole();
-      }
-    );
-  }
 
   convertedJson: string;
 
-  fileUpload(event: any) {
-    console.log(event.target.files);
-    const selectedFile = event.target.files[0];
-    const fileReader = new FileReader();
-    fileReader.readAsBinaryString(selectedFile);
-    fileReader.onload = (event: any) => {
-      console.log(event);
-      let binaryData = event.target.result;
-      let workbook = XLSX.read(binaryData, { type: "binary" });
-      workbook.SheetNames.forEach((sheet) => {
-        const worksheet = workbook.Sheets[sheet];
-        const data: any[][] = XLSX.utils.sheet_to_json(worksheet, {
-          header: 1,
-        }) as any[][];
-        const headers = data[0];
-        this.headings = headers;
-        const jsonData = data.slice(1).map((row: any[]) => {
-          let obj: any = {};
-          headers.forEach((header: string, index: number) => {
-            obj[header] = row[index];
-          });
-          return obj;
-        });
-        this.dataExcel = jsonData;
-        //this.convertedJson = JSON.stringify(jsonData, undefined, 4);
-      });
-    };
-  }
 
   headings = [];
   dataExcel = [];
@@ -692,4 +433,5 @@ export class PapAgricoleComponent {
     this.sharedService.setSelectedItem(information);
     this._router.navigate(["pap/detail"]);
   }
+
 }

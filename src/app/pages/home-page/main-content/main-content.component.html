@@ -98,17 +98,23 @@
           </div>
 
           <!-- Bouton de soumission -->
-          <button type="submit" class="submit-btn" (click)="submitComplaint()">Envoyer la plainte</button>
+          <button type="submit" class="submit-btn" (click)="submitComplaint()">
+            <mat-progress-spinner class="circle-loader" color="accent" [mode]="'indeterminate'"
+            [strokeWidth]="4" [diameter]="30"></mat-progress-spinner>
+
+            Envoyer la plainte
+          </button>
         </form>
       </div>
     </div>
   </section>
 
+<!-- app.component.html -->
+
 
 
   <!-- Section Nous Contacter -->
   <!-- Section Nous Contacter -->
-
 
   <section class="contact">
     <div class="contact-container">
@@ -117,6 +123,8 @@
         <p>Nous serions ravis d'échanger avec vous ! Remplissez le formulaire ci-dessous, et notre équipe vous répondra
           dans les plus brefs délais.</p>
       </div>
+  <app-loader-custom ></app-loader-custom>
+
       <div class="contact-form">
         <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
           <!-- Champ Motif -->

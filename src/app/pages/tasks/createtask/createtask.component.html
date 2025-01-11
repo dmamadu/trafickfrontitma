@@ -53,7 +53,7 @@
               </div>
 
 
-              <div class="form-group mb-1">
+              <!-- <div class="form-group mb-1">
                 <label class="col-form-label">Assigné<span class="text-danger">*</span></label>
                 <ul class="list-unstyled user-list validate" id="taskassignee">
                   @for(data of listMo;track $index){
@@ -67,6 +67,50 @@
                   </li>
                   }
                 </ul>
+              </div> -->
+              <div class="mb-3 position-relative">
+
+                <label for="task-assign-input" class="form-label">Assigné à</label>
+                <div *ngIf="assignList && assignList.length > 0" class="d-flex flex-wrap mb-2">
+                  <ng-container *ngFor="let data of assignList; let i = index">
+                    <div class="d-flex align-items-center me-3">
+                      @if (data.image) {
+                      <img [src]="getImageFromBase64(data.image.type,data.image.image)" alt=""
+                        class="rounded-circle avatar-xs me-2">
+                      }
+                      <span>{{ data.lastname }}</span>
+                    </div>
+                  </ng-container>
+                </div>
+                <div class="select-element" id="select-element" dropdown>
+                  <button class="btn btn-light w-100 d-flex justify-content-between" dropdownToggle type="button"
+                    data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                    <span>Assigné à <b id="total-assignee" class="mx-1">{{assignList?.length}}</b> Members</span>
+                    <i class="mdi mdi-chevron-down"></i>
+                  </button>
+                  <div class="dropdown-menu w-100" *dropdownMenu>
+                    <ngx-simplebar style="max-height: 172px">
+                      <ul class="list-unstyled mb-0 assignto-list">
+                        <ng-container *ngFor="let data of listMo; let i = index">
+                          <li>
+                            <a class="dropdown-item d-flex align-items-center"
+                              [ngClass]="{'active': data.checked === '1'}" href="javascript:void(0);"
+                              (click)="slectMember(i)">
+                              <!-- <div class="avatar-xs flex-shrink-0 me-2">
+                                @if (data.image) {
+                                <img [src]="getImageFromBase64(data.image.type,data.image.image)" alt=""
+                                  class="img-fluid rounded-circle" />
+                                }
+
+                              </div> -->
+                              <div class="flex-grow-1">{{ data.lastname }}</div>
+                            </a>
+                          </li>
+                        </ng-container>
+                      </ul>
+                    </ngx-simplebar>
+                  </div>
+                </div>
               </div>
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Status<span class="text-danger">*</span></mat-label>

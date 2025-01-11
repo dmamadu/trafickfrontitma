@@ -24,7 +24,6 @@ import { CoreService } from "src/app/shared/core/core.service";
 import { CONSTANTES } from "src/app/shared/models/constantes";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
-import { AddproductComponent } from "../../ecommerce/addproduct/addproduct.component";
 import { MatSort } from "@angular/material/sort";
 import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";

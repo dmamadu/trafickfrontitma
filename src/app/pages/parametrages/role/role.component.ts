@@ -1,35 +1,46 @@
-import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { ServiceParent } from 'src/app/core/services/serviceParent';
-import { SnackBarService } from 'src/app/shared/core/snackBar.service';
-import { AddRoleComponent } from './add-role/add-role.component';
-import { CoreService } from 'src/app/shared/core/core.service';
-import { ButtonAction, TableauComponent } from 'src/app/shared/tableau/tableau.component';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { ExportService } from 'src/app/shared/core/export.service';
-import { UIModule } from 'src/app/shared/ui/ui.module';
-import { AngularMaterialModule } from 'src/app/shared/angular-materiel-module/angular-materiel-module';
+import { DatePipe } from "@angular/common";
+import {
+  ChangeDetectorRef,
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  NO_ERRORS_SCHEMA,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
+import { UntypedFormGroup } from "@angular/forms";
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from "@angular/material/dialog";
+import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
+import { MatSort } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
+import { Router } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
+import { ServiceParent } from "src/app/core/services/serviceParent";
+import { SnackBarService } from "src/app/shared/core/snackBar.service";
+import { AddRoleComponent } from "./add-role/add-role.component";
+import { CoreService } from "src/app/shared/core/core.service";
+import {
+  ButtonAction,
+  TableauComponent,
+} from "src/app/shared/tableau/tableau.component";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import { ExportService } from "src/app/shared/core/export.service";
+import { UIModule } from "src/app/shared/ui/ui.module";
+import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 
 @Component({
-  selector: 'app-role',
+  selector: "app-role",
   standalone: true,
-  imports: [TableauComponent,
-    UIModule,
-    AngularMaterialModule,
-  ],
+  imports: [TableauComponent, UIModule, AngularMaterialModule],
+  providers: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './role.component.html',
-  styleUrl: './role.component.css',
+  templateUrl: "./role.component.html",
+  styleUrl: "./role.component.css",
 })
-export class RoleComponent implements OnInit{
-
+export class RoleComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   informations: any;
@@ -69,13 +80,12 @@ export class RoleComponent implements OnInit{
   headers: any = [];
   btnActions: any = [];
 
-  roles: any[]=[];
+  roles: any[] = [];
   ngOnInit(): void {
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
     this.getRole();
   }
-
 
   createHeader() {
     return [
@@ -87,7 +97,6 @@ export class RoleComponent implements OnInit{
         th: "Libelle",
         td: "name",
       },
-
     ];
   }
 
@@ -109,28 +118,24 @@ export class RoleComponent implements OnInit{
         isDisabled: this.hasDelete,
         action: (element?) => this.supprimerItems(element.id, element),
       },
-
     ];
   }
 
-
-  constructor( private changeDetectorRefs: ChangeDetectorRef,
+  constructor(
+    private changeDetectorRefs: ChangeDetectorRef,
     private parentService: ServiceParent,
     private _router: Router,
     private datePipe: DatePipe,
     private snackbar: SnackBarService,
     private _matDialog: MatDialog,
     private coreService: CoreService,
-  //  public matDialogRef: MatDialogRef<>,
+    //  public matDialogRef: MatDialogRef<>,
     private _changeDetectorRef: ChangeDetectorRef,
-    public toastr: ToastrService,
-    ){
-
-  }
-
-
+    public toastr: ToastrService
+  ) {}
 
   getRole() {
+    this.loadData = true;
     return this.parentService
       .list(this.url, this.pageSize, this.offset)
       .subscribe(
@@ -157,8 +162,6 @@ export class RoleComponent implements OnInit{
       );
   }
 
-
-
   updateItems(information): void {
     console.log(information);
     this.snackbar.openModal(
@@ -169,7 +172,7 @@ export class RoleComponent implements OnInit{
       information,
       "",
       () => {
-         this.getRole();
+        this.getRole();
       }
     );
   }
@@ -187,17 +190,13 @@ export class RoleComponent implements OnInit{
           this.coreService.deleteItem(id, "roles/deleteRole").subscribe(
             (resp) => {
               this.showLoader = "isNotShow";
-              if (resp["responseCode"]==200) {
+              if (resp["responseCode"] == 200) {
                 this.getRole();
               }
 
-              this.snackbar.openSnackBar(
-                "role  supprimé avec succés",
-                "OK",
-                ["mycssSnackbarGreen"]
-              );
-
-
+              this.snackbar.openSnackBar("role  supprimé avec succés", "OK", [
+                "mycssSnackbarGreen",
+              ]);
             },
             (error) => {
               this.showLoader = "isNotShow";
@@ -232,5 +231,4 @@ export class RoleComponent implements OnInit{
     this.offset = this.pageIndex;
     this.getRole();
   }
-
 }

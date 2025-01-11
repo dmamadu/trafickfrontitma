@@ -58,7 +58,7 @@ export class PlainteDetailComponent {
   loaderImg: boolean = false;
   attributComplementaires: any = [];
 
- urlImage=    environment.apiURL+'image/getFile/';
+ urlImage=    environment.apiUrl+'image/getFile/';
 
 
  //urlImage=     'http://localhost:8080/image/getFile/';

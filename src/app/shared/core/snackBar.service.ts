@@ -40,7 +40,7 @@ export class SnackBarService {
             });
         }else{
             this.matSnackBar.open(message, action, {
-                duration: 1000,
+                duration: 50000,
                 panelClass: className
             });
         }
@@ -71,25 +71,62 @@ export class SnackBarService {
     }
 
     //open modal add and edit
-    openModal(composant: any, widthSize: string, actionType: string, heightSize?: string, dataValue?: any, dataValueOther?: any, callBack?: Function): void {
-        const dialogRef = this._matDialog.open(composant, {
-            autoFocus: true,
-            width: widthSize,
-            height: heightSize,
-            panelClass: 'event-form-dialog',
-            disableClose: true,
-            data: {
-                action: actionType,
-                data: dataValue,
-                dataOther: dataValueOther
-            }
-        });
-        dialogRef.afterClosed().subscribe(() => {
-            if (callBack) {
-                callBack();
-            }
-        });
+    // openModal(composant: any, widthSize: string, actionType: string, heightSize?: string, dataValue?: any, dataValueOther?: any, callBack?: Function): void {
+    //     const dialogRef = this._matDialog.open(composant, {
+    //         autoFocus: true,
+    //         width: widthSize,
+    //         height: heightSize,
+    //         panelClass: 'event-form-dialog',
+    //         disableClose: true,
+    //         data: {
+    //             action: actionType,
+    //             data: dataValue,
+    //             dataOther: dataValueOther
+    //         }
+    //     });
+    //     dialogRef.afterClosed().subscribe(() => {
+    //         if (callBack) {
+    //             callBack();
+    //         }
+    //     });
+    // }
+
+    openModal(
+      composant: any,
+      widthSize: string,
+      actionType: string,
+      heightSize: string = '',
+      dataValue?: any,
+      dataValueOther?: any,
+      callBack?: Function
+    ): void {
+      const screenHeight = window.innerHeight;
+      const maxHeight = screenHeight * 0.85;
+
+      const height = heightSize === '' ? 'auto' : heightSize;
+      const width = widthSize === '' ? 'auto' : widthSize;
+
+      const dialogRef = this._matDialog.open(composant, {
+        autoFocus: true,
+        width: width,
+        height: height !== 'auto' ? height : `${maxHeight}px`,
+        panelClass: 'event-form-dialog',
+        disableClose: true,
+        data: {
+          action: actionType,
+          data: dataValue,
+          dataOther: dataValueOther
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(() => {
+        if (callBack) {
+          callBack();
+        }
+      });
     }
+
+
 
     openModalTransaction(composant: any, widthSize: string, actionType: string, infos?, dataValue?: any, dataValueOther?, dataOtherValue?, callBack?: Function): void {
         const dialogRef = this._matDialog.open(composant, {

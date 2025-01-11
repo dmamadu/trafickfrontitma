@@ -30,6 +30,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { DatePipe } from "@angular/common";
+
 import {
   DateAdapter,
   MAT_DATE_LOCALE,
@@ -37,6 +38,7 @@ import {
 } from "@angular/material/core";
 import { Router } from "@angular/router";
 import { LocalService } from "src/app/core/services/local.service";
+import { MatTableDataSource } from "@angular/material/table";
 
 @Component({
   selector: "app-pap-add",
@@ -109,7 +111,6 @@ export class PipAddComponent implements OnInit {
   lien: string;
   currentUser: any;
 
-
   constructor(
     public matDialogRef: MatDialogRef<PipAddComponent>,
     @Inject(MAT_DIALOG_DATA) _data,
@@ -125,9 +126,9 @@ export class PipAddComponent implements OnInit {
     console.log(_data.data.pays);
     console.log("====================================");
 
-    this.currentUser=this.localService.getDataJson("user");
+    this.currentUser = this.localService.getDataJson("user");
 
-    console.log("user connecter",this.currentUser)
+    console.log("user connecter", this.currentUser);
     if (_data?.action == "new") {
       this.initForms();
       this.labelButton = "Ajouter ";
@@ -157,6 +158,7 @@ export class PipAddComponent implements OnInit {
     // Extraire une partie spécifique de l'URL
     this.lien = this.lienBrute.substring(1, this.lienBrute.length);
     console.log("URL modifiée:", this.lien);
+    this.createContactForm();
   }
 
   goToStep(index) {
@@ -186,51 +188,16 @@ export class PipAddComponent implements OnInit {
         donnees ? donnees?.categoriePartieInteresse.id : null,
         [Validators.required]
       ),
-
-//second step
-      nomContactPrincipal: this.fb.control(donnees ? donnees?.nomContactPrincipal : null, [
-          Validators.required,
-        ]),
-        prenomContactPrincipal: this.fb.control(donnees ? donnees?.prenomContactPrincipal : null, [
-          Validators.required,
-        ]),
-        adresseContactPrincipal: this.fb.control(donnees ? donnees?.adresseContactPrincipal : null, [
-          Validators.required,
-        ]),
-        sexeContactPrincipal: this.fb.control(
-          donnees ? donnees?.sexeContactPrincipal : null,
-          [Validators.required]
-        ),
-        dateNaissanceContactPrincipal: this.fb.control(donnees ? donnees?.dateNaissanceContactPrincipal : null, [
-          Validators.required,
-        ]),
-        lieuNaisasnceContactPrincipal: this.fb.control(
-          donnees
-            ? donnees?.lieuNaisasnceContactPrincipal: null,
-          [Validators.required]
-        ),
-        emailContactPrincipal: this.fb.control(
-          donnees
-            ? donnees?.emailContactPrincipal: null,
-          [Validators.required]
-        ),
-        telephoneContactPrincipal: this.fb.control(
-          donnees
-            ? donnees?.telephoneContactPrincipal: null,
-          [Validators.required]
-        ),
-        //step 3
-        normes: this.fb.control(
-          donnees
-            ? donnees?.normes
-            : null,
-          [Validators.required]
-        ),
-        //projet
-        project_id: this.fb.control(this.currentUser.projects ? this.currentUser.projects[0]?.id   : null, [
-          Validators.required,
-        ]),
-
+      //step 3
+      normes: this.fb.control(donnees ? donnees?.normes : null, [
+        Validators.required,
+      ]),
+      //projet
+      project_id: this.fb.control(
+        this.currentUser.projects ? this.currentUser.projects[0]?.id : null,
+        [Validators.required]
+      ),
+      contacts: [[]],
     });
   }
 
@@ -239,8 +206,6 @@ export class PipAddComponent implements OnInit {
     this.initForm.get("dateDelivrancePiece").setValue(null);
     this.initForm.get("dateValiditePiece").setValue(null);
   }
-
-
 
   firstStep() {
     if (
@@ -257,22 +222,22 @@ export class PipAddComponent implements OnInit {
     }
   }
 
-  secondStep() {
-    if (
-      this.initForm.get("nomContactPrincipal").invalid ||
-      this.initForm.get("prenomContactPrincipal").invalid ||
-      this.initForm.get("adresseContactPrincipal").invalid ||
-      this.initForm.get("sexeContactPrincipal").invalid ||
-      this.initForm.get("dateNaissanceContactPrincipal").invalid ||
-      this.initForm.get("lieuNaisasnceContactPrincipal").invalid ||
-      this.initForm.get("emailContactPrincipal").invalid ||
-      this.initForm.get("telephoneContactPrincipal").invalid
-    ) {
-      return false;
-    } else {
-      return true;
-    }
-  }
+  // secondStep() {
+  //   if (
+  //     this.initForm.get("nomContactPrincipal").invalid ||
+  //     this.initForm.get("prenomContactPrincipal").invalid ||
+  //     this.initForm.get("adresseContactPrincipal").invalid ||
+  //     this.initForm.get("sexeContactPrincipal").invalid ||
+  //     this.initForm.get("dateNaissanceContactPrincipal").invalid ||
+  //     this.initForm.get("lieuNaisasnceContactPrincipal").invalid ||
+  //     this.initForm.get("emailContactPrincipal").invalid ||
+  //     this.initForm.get("telephoneContactPrincipal").invalid
+  //   ) {
+  //     return false;
+  //   } else {
+  //     return true;
+  //   }
+  // }
 
   thirdStep() {
     if (this.initForm.get("normes").invalid) {
@@ -281,9 +246,6 @@ export class PipAddComponent implements OnInit {
       return true;
     }
   }
-
-
-
 
   get phoneValue() {
     return this.initForm.controls["numeroTelephonePersonneContact"];
@@ -296,31 +258,17 @@ export class PipAddComponent implements OnInit {
     }
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
   getCategoriePartieInteresses() {
     this.coreService.list("categoriesPip", 0, 10000).subscribe((response) => {
       if (response["responseCode"] === 200) {
         this.categoriePartieInteresses = response["data"];
-        console.log('====================================');
+        console.log("====================================");
         console.log(this.categoriePartieInteresses);
-        console.log('====================================');
+        console.log("====================================");
         this.changeDetectorRefs.markForCheck();
       }
     });
   }
-
-
 
   checkValidity(g: UntypedFormGroup) {
     Object.keys(g.controls).forEach((key) => {
@@ -334,14 +282,17 @@ export class PipAddComponent implements OnInit {
     });
   }
 
-
-
   addItems() {
+    this.initForm.get("contacts")?.setValue(this.contacts.data);
     console.log("====================================");
     console.log(this.initForm.value);
     console.log("====================================");
     this.snackbar
-      .showConfirmation( `Voulez-vous vraiment ajouter ce ${this.getCategorie(this.initForm?.get('categoriePartieInteresse')?.value)} ? `)
+      .showConfirmation(
+        `Voulez-vous vraiment ajouter ce ${this.getCategorie(
+          this.initForm?.get("categoriePartieInteresse")?.value
+        )} ? `
+      )
       .then((result) => {
         if (result["value"] == true) {
           this.loader = true;
@@ -372,7 +323,11 @@ export class PipAddComponent implements OnInit {
 
   updateItems() {
     this.snackbar
-      .showConfirmation(`Voulez-vous vraiment modifier ce ${this.getCategorie(this.initForm?.get('categoriePartieInteresse')?.value)}?  `)
+      .showConfirmation(
+        `Voulez-vous vraiment modifier ce ${this.getCategorie(
+          this.initForm?.get("categoriePartieInteresse")?.value
+        )}?  `
+      )
       .then((result) => {
         if (result["value"] == true) {
           this.loader = true;
@@ -382,9 +337,13 @@ export class PipAddComponent implements OnInit {
               if (resp) {
                 this.loader = false;
                 this.matDialogRef.close(resp);
-                this.snackbar.openSnackBar(`${this.getCategorie(this.initForm?.get('categoriePartieInteresse')?.value)} modifiée avec succés `, "OK", [
-                  "mycssSnackbarGreen",
-                ]);
+                this.snackbar.openSnackBar(
+                  `${this.getCategorie(
+                    this.initForm?.get("categoriePartieInteresse")?.value
+                  )} modifiée avec succés `,
+                  "OK",
+                  ["mycssSnackbarGreen"]
+                );
               } else {
                 this.loader = false;
                 this.snackbar.openSnackBar(resp["message"], "OK", [
@@ -418,19 +377,60 @@ export class PipAddComponent implements OnInit {
     }
   }
 
-
-
-
-
-
   getCategorie(value: any) {
     if (this.categoriePartieInteresses) {
-      const liste = this.categoriePartieInteresses.filter((type) => type.id == value);
+      const liste = this.categoriePartieInteresses.filter(
+        (type) => type.id == value
+      );
       return liste.length != 0 ? liste[0]?.libelle : value;
     }
   }
 
+  contactForm: FormGroup;
+  sexeOptions = [
+    { id: "M", name: "Masculin" },
+    { id: "F", name: "Féminin" },
+  ];
+  displayedColumns: string[] = ["nom", "prenom", "email", "telephone"];
+  contacts = new MatTableDataSource<any>();
 
+  // Fonction pour créer le formulaire
+  createContactForm() {
+    this.contactForm = this.fb.group({
+      nomContactPrincipal: ["", Validators.required],
+      prenomContactPrincipal: ["", Validators.required],
+      adresseContactPrincipal: ["", Validators.required],
+      sexeContactPrincipal: ["", Validators.required],
+      emailContactPrincipal: ["", [Validators.required, Validators.email]],
+      telephoneContactPrincipal: ["", Validators.required],
+    });
+  }
 
+  // Fonction pour ajouter un contact
 
+  addContact(): void {
+    this.contactForm.markAllAsTouched();
+
+    if (this.contactForm.valid) {
+      const newContact = this.contactForm.value;
+
+      // Ajoutez le nouveau contact à la source de données
+      this.contacts.data = [...this.contacts.data, newContact]; // Mettez à jour l'objet "data"
+
+      // Réinitialiser le formulaire
+      this.contactForm.reset();
+      this.contactForm.setValue({
+        nomContactPrincipal: "",
+        prenomContactPrincipal: "",
+        adresseContactPrincipal: "",
+        sexeContactPrincipal: "",
+        emailContactPrincipal: "",
+        telephoneContactPrincipal: "",
+      });
+
+      console.log(this.contacts.data); // Affiche le tableau mis à jour
+    } else {
+      console.log("Le formulaire est invalide");
+    }
+  }
 }
