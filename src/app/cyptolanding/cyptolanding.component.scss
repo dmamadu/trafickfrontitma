@@ -338,6 +338,9 @@
   color: black;
   margin-bottom: 8px;
 }
+.form-group input{
+  padding: 10px !important;
+}
 
 .form-group input,
 .form-group select,
@@ -542,6 +545,7 @@
   width: 600px;
   max-width: 90%;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  height: auto;
 }
 
 .modal-content h3 {
@@ -553,30 +557,31 @@
 .close-btn {
   background: transparent;
   border: none;
-  font-size: 30px;
+  font-size: 35px;
   color: #333;
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 6px;
+  right: 20px;
   cursor: pointer;
+  align-content: center;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .form-group label {
   font-size: 16px;
   color: black;
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .form-group select,
 .form-group textarea {
   width: 100%;
   padding: 12px;
-  font-size: 16px;
+  font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #fafafa;
@@ -624,4 +629,8 @@
   color: red;
   font-size: 12px;
   margin-top: 5px;
+}
+
+.network-link a{
+  font-size: 1.5em;
 }
