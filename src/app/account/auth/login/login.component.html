@@ -220,12 +220,19 @@
                 </div> -->
 
 
-                <div class="mt-3 d-grid">
-                  <button class="btn btn-primary" type="submit" [disabled]="loginForm.invalid">
-                    <mat-progress-spinner *ngIf="submitted" class="circle-loader" color="accent" [mode]="'indeterminate'"
-                    [strokeWidth]="4" [diameter]="30"></mat-progress-spinner>
-                  <span *ngIf="!submitted">Envoyer</span>
+                <div class="mt-3 flex justify-center items-center gap-0.5">
+                  <button class="btn btn-info flex-1">
+                    <a routerLink="/home" href="javascript: void(0);">
+                      Retour à la page d'accueille
+                    </a>
                   </button>
+                  <button class="btn btn-primary flex justify-center items-center flex-1" type="submit" [disabled]="loginForm.invalid">
+                    <mat-progress-spinner *ngIf="submitted" class="circle-loader" color="accent" [mode]="'indeterminate'"
+                    [strokeWidth]="2" [diameter]="15"></mat-progress-spinner>
+
+                  <span *ngIf="!submitted">Se connecter</span>
+                  </button>
+
                 </div>
 
                 <div class="mt-4 text-center">
