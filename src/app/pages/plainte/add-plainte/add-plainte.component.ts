@@ -21,7 +21,6 @@ import {
 import { MatDrawer } from "@angular/material/sidenav";
 import { MatStepper } from "@angular/material/stepper";
 import { LocalService } from "src/app/core/services/local.service";
-import { MoService } from "src/app/core/services/mo.service";
 import { CoreService } from "src/app/shared/core/core.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { ClientVueService } from "../../admin/client-vue/client-vue.service";
@@ -35,7 +34,9 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatIconModule } from "@angular/material/icon";
 import { environment } from "src/environments/environment";
-import {provideNativeDateAdapter} from '@angular/material/core';
+import { provideNativeDateAdapter } from "@angular/material/core";
+import { SignatureComponent } from "../../entente-compensation/signature/signature.component";
+import { UIModule } from "../../../shared/ui/ui.module";
 
 @Component({
   selector: "app-add-plainte",
@@ -50,11 +51,11 @@ import {provideNativeDateAdapter} from '@angular/material/core';
     MatNativeDateModule,
     MatDatepickerModule,
     MatNativeDateModule,
-  ],
+    UIModule
+],
   providers: [
     provideNativeDateAdapter(),
     { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
-    // { provide: DateAdapter, useClass: MatNativeDateModule },
     { provide: MatPaginatorIntl },
     SnackBarService,
     MatDatepickerModule,
@@ -71,62 +72,35 @@ export class AddPlainteComponent implements OnInit {
   initForm: UntypedFormGroup;
   labelButton: string;
   suffixe: string = " une plainte";
-  countries: any;
   signature = "";
-
-  nrSelect;
-  situationsMatrimoniales: string[] ;
+  situationsMatrimoniales: string[];
   typeIdentifications: any = [];
-  capaciteJuridiques: any;
-  dateDelivrance;
-  regimeMatrimoniaux: any;
-  professions: any;
-  loader: boolean;
+  loader: boolean=false;
   action: string;
-  minBirthDay: any;
   today = new Date();
-  loaderss = false;
-  fields: any;
   canAdd: boolean;
-  dataCheck;
-  url = "users/createConsultant";
-  hasPhoneError: boolean;
-  currentValue: any;
-  countryChange: boolean = false;
-  eventNumber: any;
-  isFocus: unknown;
-  noImage = "";
   errorCNI;
-  newDate = new Date();
   emailPattern =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  isValidOnWhatsApp: boolean = true;
   ng2TelOptions;
-  idPiece;
-  listeNoire: boolean = false;
   categoriePartieInteresses: any;
   uploadedImage!: File;
   imageURL: string | undefined;
   urlImage = environment.apiUrl + "image/getFile/";
-  readonly labelPosition = model<"before" | "after">("after");
-  categories: any[] = [
-    { id: "1", libelle: "Agricole" },
-    { id: "2", libelle: "Miniere" },
-  ];
+
   sexe = [
     { id: "1", value: "Masculin" },
     { id: "2", value: "Feminin" },
   ];
 
+
   ngOnInit(): void {
-    this.getListPays();
     this.situationsMatrimoniales = [
       "Célibataire",
       "Marié(e)",
       "Divorcé(e)",
       "Veuf/Veuve",
     ];
-    //this.getListSituationsMatrimoniales();
   }
   constructor(
     public matDialogRef: MatDialogRef<AddComponent>,
@@ -135,11 +109,8 @@ export class AddPlainteComponent implements OnInit {
     private coreService: CoreService,
     private snackbar: SnackBarService,
     private changeDetectorRefs: ChangeDetectorRef,
-    private clientService: ClientVueService,
-    private moservice: MoService,
     private _matDialog: MatDialog,
     private localService: LocalService,
-    private _changeDetectorRef: ChangeDetectorRef,
     private clientServive: ClientVueService
   ) {
     this.currentUser = this.localService.getDataJson("user");
@@ -153,8 +124,6 @@ export class AddPlainteComponent implements OnInit {
       this.id = _data.data.id;
       this.initForms(_data.data);
       const imageToEdit = _data.data.image;
-      // console.log("is",_data.data.image.type);
-
       if (imageToEdit) {
         document.querySelectorAll("#member-img").forEach((element: any) => {
           element.src = this.getImageFromBase64(
@@ -218,9 +187,24 @@ export class AddPlainteComponent implements OnInit {
         donnees ? donnees?.dateEnregistrement : null,
         [Validators.required]
       ),
-      isRecensed: this.fb.control(donnees ? donnees?.isRecensed : null, [
-        Validators.required,
-      ]),
+      isRecensed: this.fb.control(donnees ? donnees?.isRecensed : null, []),
+      isSignedFileRecensement: this.fb.control(
+        donnees ? donnees?.isSignedFileRecensement : null,
+        []
+      ),
+      dateRecensement: this.fb.control(
+        donnees ? donnees?.dateRecensement : null,
+        [Validators.required]
+      ),
+
+      natureBienAffecte: this.fb.control(
+        donnees ? donnees?.natureBienAffecte : null,
+        [Validators.required]
+      ),
+      emplacementBienAffecte: this.fb.control(
+        donnees ? donnees?.emplacementBienAffecte : null,
+        [Validators.required]
+      ),
       typeIdentification: this.fb.control(
         donnees ? donnees?.typeIdentification : null,
         [Validators.required]
@@ -230,13 +214,7 @@ export class AddPlainteComponent implements OnInit {
         [Validators.required]
       ),
       //secondStep
-      date_of_birth: this.fb.control(donnees ? donnees?.date_of_birth : null, [
-        Validators.required,
-      ]),
-      place_of_birth: this.fb.control(
-        donnees ? donnees?.place_of_birth : null,
-        [Validators.required]
-      ),
+
       projectId: this.fb.control(
         this.currentUser.projects ? this.currentUser.projects[0]?.id : null,
         [Validators.required]
@@ -254,14 +232,12 @@ export class AddPlainteComponent implements OnInit {
       codePap: this.fb.control(donnees ? donnees?.codePap : null, [
         Validators.required,
       ]),
-      dateNaissance: this.fb.control(donnees ? donnees?.dateNaissance : null, [
-        Validators.required,
-      ]),
-      lieuNaissance: this.fb.control(donnees ? donnees?.lieuNaissance : null, [
+
+      vulnerabilite: this.fb.control(donnees ? donnees?.vulnerabilite : null, [
         Validators.required,
       ]),
 
-      vulnerabilite: this.fb.control(donnees ? donnees?.vulnerabilite : null, [
+      email: this.fb.control(donnees ? donnees?.email : null, [
         Validators.required,
       ]),
 
@@ -288,6 +264,14 @@ export class AddPlainteComponent implements OnInit {
         donnees && donnees.documentUrls
           ? donnees.documentUrls.map((url) => this.fb.control(url))
           : [],
+        [Validators.required]
+      ),
+      urlSignaturePap: this.fb.control(
+        donnees ? donnees?.urlSignaturePap : null,
+        [Validators.required]
+      ),
+      urlSignatureResponsable: this.fb.control(
+        donnees ? donnees?.urlSignatureResponsable : null,
         [Validators.required]
       ),
     });
@@ -318,14 +302,14 @@ export class AddPlainteComponent implements OnInit {
           this.loader = true;
           const value = this.initForm.value;
           this.coreService
-            .updateItem(value, this.id, "users/updateConsultant")
+            .updateItem(value, this.id, "plaintes")
             .subscribe(
               (resp) => {
                 if (resp) {
                   this.loader = false;
                   this.matDialogRef.close(resp);
                   this.snackbar.openSnackBar(
-                    "Consultant  modifié avec succés",
+                    "Plainte  modifié avec succés",
                     "OK",
                     ["mycssSnackbarGreen"]
                   );
@@ -337,7 +321,6 @@ export class AddPlainteComponent implements OnInit {
                 }
               },
               (error) => {
-                this.loader = false;
                 this.loader = false;
                 this.snackbar.showErrors(error);
               }
@@ -389,34 +372,26 @@ export class AddPlainteComponent implements OnInit {
 
   fileSelected;
   loaderImg = false;
+  dialogRef: any;
 
-  // saveFile(file, type, name) {
-  //   let formData = new FormData();
-  //   formData.append("file", file);
+  signatureClient(val: string): void {
+    this.dialogRef = this._matDialog.open(SignatureComponent, {
+      autoFocus: true,
+      width: "35rem",
+      panelClass: "event-form-dialog",
+      disableClose: true,
+      data: {
+        action: "new",
+      },
+    });
+    this.dialogRef.afterClosed().subscribe((signatureUrl) => {
+      if (signatureUrl) {
+        this.initForm.get(val).setValue(signatureUrl);
+      }
+    });
+  }
 
-  //   this.loaderImg = true;
-  //   this.changeDetectorRefs.detectChanges();
-  //   const dataFile = { file: file };
-  //   this.clientService.saveStoreFile("store-file", formData).subscribe(
-  //     (resp) => {
-  //       if (resp) {
-  //         this.noImage = resp["urlprod"];
-  //         this.initForm.get(name).setValue(this.noImage);
-  //         this.loaderImg = false;
-  //         this.changeDetectorRefs.detectChanges();
-  //         this.snackbar.openSnackBar("Fichier chargé avec succès", "OK", [
-  //           "mycssSnackbarGreen",
-  //         ]);
-  //       }
-  //     },
-  //     (error) => {
-  //       this.loaderImg = false;
-  //       this.snackbar.showErrors(error);
-  //     }
-  //   );
-  // }
 
-  // Fin file sun telecom
 
   fileChange(event: any) {
     let fileList: any = event.target as HTMLInputElement;
@@ -452,6 +427,7 @@ export class AddPlainteComponent implements OnInit {
   }
 
   addItems() {
+    console.log(this.initForm.value);
     this.snackbar
       .showConfirmation(`Voulez-vous vraiment crée cette plainte `)
       .then((result) => {
@@ -476,9 +452,6 @@ export class AddPlainteComponent implements OnInit {
             },
             (error) => {
               this.loader = false;
-              console.log("====================================");
-              console.log(error);
-              console.log("====================================");
               this.changeDetectorRefs.markForCheck();
               this.snackbar.showErrors(error);
             }
@@ -487,28 +460,11 @@ export class AddPlainteComponent implements OnInit {
       });
   }
 
-  getNationalite(value: any) {
-    if (this.countries) {
-      const liste = this.countries.filter((type) => type.id == value);
-      return liste.length != 0 ? liste[0]?.nationalite : value;
-    }
-  }
 
 
 
-  getcapaciteJuridique(value: any) {
-    if (this.capaciteJuridiques) {
-      const liste = this.capaciteJuridiques.filter((type) => type.id == value);
-      return liste.length != 0 ? liste[0]?.libelle : value;
-    }
-  }
 
-  getpays(value: any) {
-    if (this.countries) {
-      const liste = this.countries.filter((type) => type.id == value);
-      return liste.length != 0 ? liste[0]?.nom : value;
-    }
-  }
+
 
   gettypeIdentification(value: any) {
     if (this.typeIdentifications) {
@@ -517,113 +473,16 @@ export class AddPlainteComponent implements OnInit {
     }
   }
 
-  firstStep() {
-    if (
-      this.initForm.get("prenom").invalid ||
-      this.initForm.get("nom").invalid ||
-      this.initForm.get("dateNaissance").invalid ||
-      this.initForm.get("lieuNaissance").invalid ||
-      this.initForm.get("departementNaissance").invalid ||
-      this.initForm.get("pays").invalid ||
-      this.initForm.get("nationalite").invalid ||
-      this.initForm.get("situationMatrimoniale").invalid ||
-      this.initForm.get("capaciteJuridique").invalid ||
-      this.initForm.get("nonVoyant").invalid ||
-      this.initForm.get("illettre").invalid ||
-      this.initForm.get("descriptionBienAffecte").invalid
-    ) {
-      return false;
-    } else {
-      return true;
-    }
-  }
 
-  secondStep() {
-    if (
-      this.initForm.get("typeIdentification").invalid ||
-      this.initForm.get("numeroIdentification").invalid ||
-      this.initForm.get("dateDelivrancePiece").invalid ||
-      this.initForm.get("dateValiditePiece").invalid ||
-      this.initForm.get("paysDelivrancePiece").invalid ||
-      this.initForm.get("lieuDelivrancePiece").invalid ||
-      this.initForm.get("prenomPere").invalid ||
-      this.initForm.get("prenomMere").invalid ||
-      this.initForm.get("nomMere").invalid ||
-      this.initForm.get("prenomPersonneContact").invalid ||
-      this.initForm.get("nomPersonneContact").invalid ||
-      this.initForm.get("emailPersonneContact").invalid ||
-      this.initForm.get("numeroTelephonePersonneContact").invalid
-    ) {
-      return false;
-    } else {
-      return true;
-    }
-  }
 
-  getListPays() {
-    this.coreService.list("pays", 0, 10000).subscribe((response) => {
-      if (response["responseCode"] === 200) {
-        this.countries = response["data"];
-        console.log("countries", this.countries);
 
-        this.nrSelect = response["data"]
-          .filter((el) => el.codeAlpha2 == "SN" || el.codeAlpha2 == "SEN")
-          .map((e) => e.id)[0];
-        this.initForm.get("pays").setValue(this.nrSelect);
 
-        this.changeDetectorRefs.markForCheck();
-      }
-    });
-  }
 
-  getListSituationsMatrimoniales() {
-    this.coreService
-      .list("situation-matrimoniale", 0, 10000)
-      .subscribe((response) => {
-        console.log(response);
-        // alert("Please select")
 
-        if (response["responseCode"] === 200) {
-          this.situationsMatrimoniales = response["data"];
-          this.changeDetectorRefs.markForCheck();
-        }
-      });
-  }
 
-  getRegimeBySituation(situation) {
-    if (situation) {
-      this.regimeMatrimoniaux = situation.regimesMatrimonials;
-    }
-  }
 
-  getListtypeIdentifications() {
-    this.coreService.list("nature-piece", 0, 10000).subscribe((response) => {
-      if (response["responseCode"] === 200) {
-        this.typeIdentifications = response["data"];
-        this.changeDetectorRefs.markForCheck();
-      }
-    });
-  }
 
-  getListCapaciteJuridiques() {
-    this.coreService
-      .list("capacite-juridique", 0, 10000)
-      .subscribe((response) => {
-        if (response["responseCode"] === 200) {
-          this.capaciteJuridiques = response["data"];
-          this.changeDetectorRefs.markForCheck();
-        }
-      });
-  }
 
-  getListProfession() {
-    this.coreService.list("profession", 0, 10000).subscribe((response) => {
-      if (response) {
-        this.professions = response["data"];
-        this.changeDetectorRefs.markForCheck();
-      }
-    });
-  }
 
   // checkValidity(g: UntypedFormGroup) {
   //   Object.keys(g.controls).forEach((key) => {
@@ -640,35 +499,7 @@ export class AddPlainteComponent implements OnInit {
   goToStep(index) {
     this.myStepper.selectedIndex = index;
   }
-  listNoire(event?) {
-    this.listeNoire = true;
-    const montant = 0;
-    const compte = 0;
-    this.changeDetectorRefs.markForCheck();
-    const data = {
-      compte: compte,
-      montant: montant,
-    };
-    if (montant && compte) {
-      this.coreService.addItem(data, "verifier-liste-noire").subscribe(
-        (response) => {
-          if (response["responseCode"] === 200) {
-            this.listeNoire = true;
-          } else if (response["responseCode"] === 400) {
-            this.listeNoire = false;
-          }
-        },
-        (error) => {
-          if (error.status == 400) {
-            this.listeNoire = false;
-            this.changeDetectorRefs.markForCheck();
-          } else if (error.status == 200) {
-            this.listeNoire = true;
-          }
-        }
-      );
-    }
-  }
+
   uploadedFiles: File[] = [];
   selectOnFile1(event: any, type: string, format: string): void {
     const files = event.target.files;

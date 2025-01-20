@@ -83,7 +83,6 @@ export class ListPlainteComponent implements OnInit {
   dialogRef: any;
   dataSource: MatTableDataSource<any>;
   datas = [];
-  deleteUser: boolean = false;
   currentIndex;
   loadData: boolean = false;
   exporter: boolean = false;
@@ -102,7 +101,7 @@ export class ListPlainteComponent implements OnInit {
   userConnecter;
   offset: number = 0;
   title: string = "Gestion des produits";
-  url: string = "users/by_role?roleName=Consultant";
+  //url: string = "users/by_role?roleName=plainte";
   panelOpenState = false;
   img;
   image;
@@ -199,6 +198,7 @@ export class ListPlainteComponent implements OnInit {
   }
 
   getPlainte() {
+    this.loadData=true;
     return this.parentService
       .list("plaintes", this.pageSize, this.offset)
       .subscribe(
@@ -220,6 +220,7 @@ export class ListPlainteComponent implements OnInit {
           }
         },
         (err) => {
+          this.loadData = false;
           console.log(err);
         }
       );
@@ -253,33 +254,38 @@ export class ListPlainteComponent implements OnInit {
 
   //cette fonction permet de supprimer
   supprimerItems(id, information) {
-    console.log("====================================");
-    console.log(id);
-    console.log("====================================");
     this.snackbar
-      .showConfirmation("Voulez-vous vraiment supprimer ce consultant?")
+      .showConfirmation("Voulez-vous vraiment supprimer cette plainte?")
       .then((result) => {
         if (result["value"] == true) {
-          this.deleteUser = true;
           this.currentIndex = information;
           this.showLoader = "isShow";
-          const message = "Consultant  supprimé";
-          this.coreService.deleteItem(id, "users/deleteMo").subscribe(
-            (resp) => {
-              this.showLoader = "isNotShow";
-              if (resp["200"]) {
+          this.coreService.deleteItem(id, "plaintes").subscribe(
+            (resp: any) => {
+              if (resp && resp["responseCode"] == '200') {
                 this.getPlainte();
+                this.snackbar.openSnackBar(
+                  "Plainte supprimée avec succès",
+                  "OK",
+                  ["mycssSnackbarGreen"]
+                );
+              } else {
+                console.error('Unexpected response structure', resp);
+                this.snackbar.openSnackBar(
+                  "Une erreur s'est produite lors de la suppression de la plainte.",
+                  "OK",
+                  ["mycssSnackbarRed"]
+                );
               }
             },
             (error) => {
-              this.showLoader = "isNotShow";
-              this.deleteUser = false;
               this.snackbar.showErrors(error);
             }
           );
         }
       });
   }
+
 
   filterList() {
     this.isCollapsed = !this.isCollapsed;
@@ -300,7 +306,7 @@ export class ListPlainteComponent implements OnInit {
       "55rem",
       "new",
       "",
-      this.datas,
+     // this.datas,
       "",
       () => {
         this.getPlainte();
@@ -328,21 +334,7 @@ export class ListPlainteComponent implements OnInit {
     }
   }
 
-  // importData() {
-  //   return this.papService
-  //     .add("plaintes/importer", this.dataExcel)
-  //     .subscribe(
-  //       (data: any) => {
-  //         console.log(data);
-  //         this.toastr.success(data.message);
-  //         this.dataExcel = [];
-  //         this.getPlainte();
-  //       },
-  //       (err) => {
-  //         this.toastr.error(err);
-  //       }
-  //     );
-  // }
+
   invalidComplaints: any[] = [];
   importData() {
     this.papService.add("plaintes/importer", this.dataExcel).subscribe(

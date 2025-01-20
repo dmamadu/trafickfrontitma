@@ -7,7 +7,6 @@ import {
   Output,
   ChangeDetectorRef,
 } from "@angular/core";
-import { member } from "./data";
 import { DropzoneConfigInterface } from "ngx-dropzone-wrapper";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
@@ -18,7 +17,6 @@ import { ResponseData } from "src/app/shared/models/Projet.model";
 import { ToastrService } from "ngx-toastr";
 import { Image } from "src/app/shared/models/image.model";
 import { Router } from "@angular/router";
-import { SharedService } from "../shared.service";
 import { dateValidator } from "src/app/shared/validator/datevalidator";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { ClientVueService } from "../../admin/client-vue/client-vue.service";
@@ -34,9 +32,13 @@ import { environment } from "src/environments/environment";
  * Projects-create component
  */
 export class CreateComponent implements OnInit {
+
+  imageToff: any;
+
   suggestions$!: Observable<string[]>;
   listProject: Project[];
   urlImage = environment.apiUrl + "image/getFile/";
+  isloading :boolean = false;
   buttonText: string = "Créer le projet";
   constructor(
     private fb: FormBuilder,
@@ -59,14 +61,7 @@ export class CreateComponent implements OnInit {
           ],
         ],
         status: ["", Validators.required],
-        categorie: [
-          "",
-          [
-            Validators.required,
-            Validators.minLength(3),
-            Validators.maxLength(100),
-          ],
-        ],
+
         description: [
           "",
           [
@@ -75,18 +70,14 @@ export class CreateComponent implements OnInit {
             Validators.maxLength(500),
           ],
         ],
-        //imageUrl: ["", [Validators.required, Validators.maxLength(500)]],
+        imageUrl: ["", [Validators.required, Validators.maxLength(500)]],
         datedebut: ["", Validators.required],
         datefin: ["", Validators.required],
         // image: ["", Validators.required],
         // attachedFiles: [],
         users: this.fb.array([]),
-      },
-      { validators: dateValidator() }
-    );
-    this.suggestions$ = this.projectForm.get("categorie").valueChanges.pipe(
-      debounceTime(200),
-      switchMap((query) => of(["agricole", "miniére", "traveaux publiques"]))
+      }
+      // { validators: dateValidator() }
     );
   }
   get assignListFormArray(): FormArray {
@@ -243,45 +234,65 @@ export class CreateComponent implements OnInit {
   }
 
   createProject(projectRequest: any): void {
-    this.snackbar
-      .showConfirmation("Voulez-vous vraiment créer le projet ?")
-      .then((result) => {
-        if (result["value"] == true) {
-          // Call to add the project
-          this.projectService
-            .add<ResponseData<Project>>(
-              "projects/createProject",
-              projectRequest
-            )
-            .subscribe(
-              (data: ResponseData<Project>) => {
-                console.log("Project created successfully:", data);
-                this.toastr.success(`${data.message}`);
-                const normeProject: NormeProject[] = this.members.value;
-                let saveNormeRequests = [];
+    this.projectForm.markAllAsTouched();
+    if (this.projectForm.valid) {
+      this.isloading = true;
+      this.snackbar
+        .showConfirmation("Voulez-vous vraiment créer le projet ?")
+        .then((result) => {
+          if (result["value"] == true) {
+            // Call to add the project
+            this.projectService
+              .add<ResponseData<Project>>(
+                "projects/createProject",
+                projectRequest
+              )
+              .subscribe(
+                (data: ResponseData<Project>) => {
+                  console.log("Project created successfully:", data);
+                  this.toastr.success(`${data.message}`);
+                  const normeProject: NormeProject[] = this.members.value;
+                  let saveNormeRequests = [];
 
-                normeProject.forEach((normeProject: any) => {
-                  normeProject.project = data.data;
-                  const saveRequest = this.projectService
-                    .saveNormeProjet(normeProject, data.data.id)
-                    .toPromise();
-                  saveNormeRequests.push(saveRequest);
-                });
-
-                Promise.all(saveNormeRequests)
-                  .then(() => {
-                    this.router.navigate(["/projects/list"]);
-                  })
-                  .catch((err) => {
-                    console.error("Error saving norme project:", err);
+                  normeProject.forEach((normeProject: any) => {
+                    normeProject.project = data.data;
+                    const saveRequest = this.projectService
+                      .saveNormeProjet(normeProject, data.data.id)
+                      .toPromise();
+                    saveNormeRequests.push(saveRequest);
                   });
-              },
-              (error) => {
-                console.error("Error creating project:", error);
-              }
-            );
+
+                  Promise.all(saveNormeRequests)
+                    .then(() => {
+                      this.router.navigate(["/projects/list"]);
+                      this.toastr.success(`Projet crée avec succés`);
+                    })
+                    .catch((err) => {
+                      console.error("Error saving norme project:", err);
+                      this.toastr.error(
+                        `Une erreur s'est produite ,veillez réessayez`
+                      );
+                    });
+                    this.isloading = false;
+                },
+                (error) => {
+                  console.error("Error creating project:", error);
+                  this.toastr.error(`Une erreur s'est produite`);
+                  this.isloading = false;
+                }
+              );
+          }
+        });
+    } else {
+      console.log("Le formulaire est invalide !");
+      for (const controlName in this.projectForm.controls) {
+        const control = this.projectForm.get(controlName);
+        if (control?.invalid && control?.touched) {
+          console.log(`Le champ ${controlName} est invalide.`);
+          console.log(control?.errors);
         }
-      });
+      }
+    }
   }
 
   loadProject() {
@@ -385,6 +396,7 @@ export class CreateComponent implements OnInit {
             checked: "0",
           };
         });
+        console.log(users.data);
       });
   }
 

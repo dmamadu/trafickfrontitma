@@ -2,7 +2,7 @@ export const environment = {
   production: false,
   defaultauth: "fakebackend",
   //apiUrl: "https://solutiondigitale.sunuresto.com/",
-  //apiUrl: "http://localhost:8081/",
+ // apiUrl: "http://localhost:8081/",
  apiUrl:"https://solutiondigitale.sunuresto.com/",
   //baseUrl: 'http://localhost:4200',
    // production: false,

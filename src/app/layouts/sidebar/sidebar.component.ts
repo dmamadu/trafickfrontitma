@@ -86,54 +86,73 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
    * Activate the parent dropdown
    */
   _activateMenuDropdown() {
+    // Réinitialiser toutes les classes 'mm-active' et 'mm-show'
     this._removeAllClass('mm-active');
     this._removeAllClass('mm-show');
+
     const links = document.getElementsByClassName('side-nav-link-ref');
     let menuItemEl = null;
-    // tslint:disable-next-line: prefer-for-of
-    const paths = [];
-    for (let i = 0; i < links.length; i++) {
-      paths.push(links[i]['pathname']);
-    }
-    var itemIndex = paths.indexOf(window.location.pathname);
+
+    // Recueillir les chemins des liens du menu
+    const paths = Array.from(links).map(link => link['pathname']);
+
+    // Vérifier si l'élément correspondant à l'URL actuelle existe dans le tableau de chemins
+    const itemIndex = paths.indexOf(window.location.pathname);
+
     if (itemIndex === -1) {
+      // Si aucune correspondance exacte n'est trouvée, essayer avec le chemin parent
       const strIndex = window.location.pathname.lastIndexOf('/');
-      const item = window.location.pathname.substr(0, strIndex).toString();
-      menuItemEl = links[paths.indexOf(item)];
+      const parentPath = window.location.pathname.substr(0, strIndex);
+      menuItemEl = links[paths.indexOf(parentPath)];
     } else {
+      // Trouver l'élément correspondant à l'URL actuelle
       menuItemEl = links[itemIndex];
     }
+
     if (menuItemEl) {
+      // Ajouter la classe 'active' à l'élément correspondant
       menuItemEl.classList.add('active');
-      const parentEl = menuItemEl.parentElement;
-      if (parentEl) {
+
+      let parentEl = menuItemEl.parentElement;
+
+      // Activer les parents si nécessaire
+      while (parentEl && parentEl.id !== 'side-menu') {
         parentEl.classList.add('mm-active');
-        const parent2El = parentEl.parentElement.closest('ul');
-        if (parent2El && parent2El.id !== 'side-menu') {
+        const parent2El = parentEl.closest('ul');
+
+        if (parent2El) {
           parent2El.classList.add('mm-show');
-          const parent3El = parent2El.parentElement;
-          if (parent3El && parent3El.id !== 'side-menu') {
+          const parent3El = parent2El.closest('li');
+
+          if (parent3El) {
             parent3El.classList.add('mm-active');
             const childAnchor = parent3El.querySelector('.has-arrow');
             const childDropdown = parent3El.querySelector('.has-dropdown');
-            if (childAnchor) { childAnchor.classList.add('mm-active'); }
-            if (childDropdown) { childDropdown.classList.add('mm-active'); }
-            const parent4El = parent3El.parentElement;
-            if (parent4El && parent4El.id !== 'side-menu') {
+
+            // Vérifier et activer les classes des enfants
+            if (childAnchor) {
+              childAnchor.classList.add('mm-active');
+            }
+            if (childDropdown) {
+              childDropdown.classList.add('mm-active');
+            }
+
+            const parent4El = parent3El.closest('li');
+            if (parent4El) {
               parent4El.classList.add('mm-show');
-              const parent5El = parent4El.parentElement;
-              if (parent5El && parent5El.id !== 'side-menu') {
-                parent5El.classList.add('mm-active');
-                const childanchor = parent5El.querySelector('.is-parent');
-                if (childanchor && parent5El.id !== 'side-menu') { childanchor.classList.add('mm-active'); }
+              const childAnchor2 = parent4El.querySelector('.is-parent');
+              if (childAnchor2) {
+                childAnchor2.classList.add('mm-active');
               }
             }
           }
         }
+
+        parentEl = parentEl.parentElement;
       }
     }
-
   }
+
 
   /**
    * Initialize
@@ -151,49 +170,5 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
   hasItems(item: MenuItem) {
     return item.subItems !== undefined ? item.subItems.length > 0 : false;
   }
-
-
-
-  url: string = "categories";
-
-
-
-
-  getCategorie() {
-    return this.parentService
-      .list(this.url, 1000, 0)
-      .subscribe(
-        (data: any) => {
-          if (data["responseCode"] == 200) {
-            this.datas = data["data"];
-            // Mise à jour dynamique du menu
-            this.updateMenuWithCategories(this.datas);
-
-          } else {
-            console.log("Erreur lors de la récupération des catégories");
-          }
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-  }
-
-
-  updateMenuWithCategories(categories: any[]) {
-    const gestionUtilisateurs = MENU.find(item => item.id === 95);
-
-    if (gestionUtilisateurs) {
-      const subItems = categories.map(categorie => ({
-        id: categorie.id,
-        label: categorie.libelle,
-        icon: "bx-list-ul",
-        link: `/categories/${categorie.id}`,
-        parentId: gestionUtilisateurs.id
-      }));
-      gestionUtilisateurs.subItems = [...gestionUtilisateurs.subItems, ...subItems];
-    }
-  }
-
 
 }

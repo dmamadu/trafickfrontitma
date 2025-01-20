@@ -39,10 +39,8 @@ import autoTable from "jspdf-autotable";
 import jsPDF from "jspdf";
 import { logoItma } from "src/app/shared/logoItma";
 import { ExportService } from "src/app/shared/core/export.service";
-import { RechercheService } from "src/app/core/services/recherche.service";
-import { JuristAppComponent } from "../../jurist-app/jurist-app.component";
-import { BatimentComponent } from "../batiment/batiment.component";
 import { AddPapAgricoleComponent } from "./add-pap-agricole/add-pap-agricole.component";
+import { LoaderComponent } from "../../../shared/loader/loader.component";
 
 @Component({
   selector: "app-pap-agricole",
@@ -70,7 +68,8 @@ import { AddPapAgricoleComponent } from "./add-pap-agricole/add-pap-agricole.com
     AngularMaterialModule,
     DatatableComponent,
     FormsModule,
-  ],
+    LoaderComponent
+],
 })
 export class PapAgricoleComponent {
   [x: string]: any;
@@ -114,13 +113,13 @@ export class PapAgricoleComponent {
   userConnecter;
   offset: number = 0;
   title: string = "Gestion des partis affectés";
-  url: string = "personneAffectes";
+  url: string = "papAgricole";
   panelOpenState = false;
   img;
 
   image;
-  privilegeByRole: any; //liste des codes recu de l'api lors de la connexion
-  privilegeForPage: number = 2520; //code privilege envoye pour afficher la page
+  privilegeByRole: any;
+  privilegeForPage: number = 2520;
   privilegePage;
   headers: any = [];
   btnActions: any = [];
@@ -141,7 +140,6 @@ export class PapAgricoleComponent {
     private localService: LocalService,
     private coreService: CoreService,
     private exportService: ExportService,
-    private rechercherService: RechercheService
   ) {
     this.currentUser = this.localService.getDataJson("user");
 
@@ -260,7 +258,7 @@ export class PapAgricoleComponent {
   getPapAgricole() {
     this.loadData = true;
     return this.parentService
-      .list("papAgricole", this.pageSize, this.offset)
+      .list(this.url, this.pageSize, this.offset)
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -281,6 +279,7 @@ export class PapAgricoleComponent {
           }
         },
         (err) => {
+          this.loadData = false;
           console.log(err);
         }
       );
@@ -314,9 +313,6 @@ export class PapAgricoleComponent {
 
   //cette fonction permet de supprimer
   supprimerItems(id, information) {
-    console.log("====================================");
-    console.log(id);
-    console.log("====================================");
     this.snackbar
       .showConfirmation("Voulez-vous vraiment supprimer ce parti affecté ?")
       .then((result) => {
@@ -331,6 +327,8 @@ export class PapAgricoleComponent {
               this.coreService
                 .list(this.url, this.offset, this.pageSize)
                 .subscribe((resp: any) => {
+                  console.log(resp);
+
                   const data = resp["data"] || resp;
                   this.dataSource = new MatTableDataSource(data);
                   this.dataSource.paginator = this.paginator;
@@ -646,7 +644,6 @@ export class PapAgricoleComponent {
       projectId: +this.currentUser.projects[0]?.id,
     }));
 
-    console.log(dataToSend);
     return this.papService.add("papAgricole", dataToSend).subscribe(
       (data: any) => {
         console.log(data);
@@ -657,6 +654,8 @@ export class PapAgricoleComponent {
       },
       (err) => {
         this.loadData = false;
+        console.log(err);
+
         this.toastr.error(err);
       }
     );

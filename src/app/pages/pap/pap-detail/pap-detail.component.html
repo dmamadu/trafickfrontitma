@@ -1,30 +1,19 @@
 <div class="flex flex-col flex-auto min-w-0">
-  <button
-    class="px-4 mb-2 w-[120px] py-2 bgPrimaire  text-white font-semibold rounded shadow-md flex items-center justify-center space-x-2 transition-all duration-300"
-    onclick="history.back()">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-      class="w-6 h-6">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-    </svg>
-    <span>Retour</span>
-  </button>
-
-
   <div class="flex flex-col shadow bg-card">
     <div>
       <img class="h-24 lg:h-24 object-cover w-full" src="../../../../assets/images/41.jpg" alt="Cover image">
     </div>
     <div class="d-flex justify-between items-center ">
-      <div class="-mt-26 lg:-mt-22 rounded-full cursor-pointer relative" matTooltip="Charger l'image du client"
+      <div class="rounded-full cursor-pointer relative" matTooltip="Charger l'image du client" style="margin-left: 50px; margin-top: 5px;"
         (click)="photoP.click()">
         <ng-container>
-          <img class="w-32 h-32 rounded-full ring-4 ring-bg-card background_avatarNoImage" [src]="imagePath || noImage"
+          <img class="w-20 h-20 rounded-full ring-4 ring-bg-card background_avatarNoImage" [src]="imagePath || noImage"
             alt="">
         </ng-container>
-        <ng-container *ngIf="noImage === ''">
+        <!-- <ng-container *ngIf="noImage === ''">
           <h1 class="w-26 h-26 rounded-full object-center ring-4 ring-bg-card background_avatar">
             {{getFirstElementWord(infosClient?.intitule)}}</h1>
-        </ng-container>
+        </ng-container> -->
         <input hidden #photoP class="use-avatar" (change)="selectOnFile($event,'photo_profile','Thumbnail')" type="file"
           id="file" required
           accept="image/png, image/PNG, image/jpg, image/JPG, image/jpeg, image/JPEG, .pdf , .PDF , .doc , .DOC , .docx , .DOCX , .docm , .DOCM" />
@@ -34,6 +23,15 @@
           </mat-progress-spinner>
         </div>
       </div>
+      <!-- <button
+      class="px-4 mb-2 w-[120px] py-2 bgPrimaire  text-white font-semibold rounded shadow-md flex items-center justify-center space-x-2 transition-all duration-300"
+      onclick="history.back()">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+        class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+      <span>Retour</span>
+    </button> -->
 
       <div class="flex flex-col items-center lg:items-start mt-4 lg:mt-0 lg:ml-8">
         <div class="text-secondary">Id Pap</div>

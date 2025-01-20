@@ -53,7 +53,7 @@ export class ProjectService extends RootService {
   }
 
   getRencontreByProjectId(projectId: number): Observable<any> {
-    const url = `${this.url}/rencontres/project/${projectId}`;
+    const url = `${this.url}rencontres/project/${projectId}`;
     return this.http.get<any>(url);
   }
 }

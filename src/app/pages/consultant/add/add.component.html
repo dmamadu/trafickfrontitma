@@ -9,24 +9,6 @@
 </mat-toolbar>
 
 
-<!--
-
-<div class="fuse-mat-dense myFile w-full">
-  <div class="c-img">
-      <button mat-button class="use-avatar" type="button" mat-raised-button
-              (click)="fileInput.click()">
-          <mat-icon class="s-32" svgIcon="cloud_upload"></mat-icon> &nbsp;Photo
-      </button>
-      <input hidden #fileInput class="use-avatar" (change)="selectOnFile($event,'logo','photo')"
-             type="file" id="file" required />
-      <div *ngIf="!fileSelected && loaderss" class="textError">{{ errorFile }}</div>
-  </div>
-  <div class="textOk mt-3" *ngIf="noImage!=''">
-      <img class="w-40 h-5"
-           [src]="noImage" alt="attribut complementaire">
-  </div>
-
-</div> -->
 
    <!-- Image Section -->
    <div class="row">
@@ -107,7 +89,7 @@
     </div>
     <div class="flex gap-2">
       <mat-form-field class="w-full mt-2" appearance="outline">
-        <mat-label class="enteteccColor">Role</mat-label>
+        <mat-label class="enteteccColor">Fonctions</mat-label>
         <mat-select formControlName="sous_role">
           <mat-option *ngFor="let role of roles" [value]="role">
             {{ role }}
@@ -118,6 +100,18 @@
       </mat-form-field>
     </div>
 
+    <div class="flex gap-2">
+      <mat-form-field class="w-full mt-2" appearance="outline">
+        <mat-label class="enteteccColor">Organes Réprésentées</mat-label>
+        <mat-select formControlName="sous_role">
+          <mat-option *ngFor="let role of organes" [value]="role">
+            {{ role }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix class="secondary-text">code</mat-icon>
+        <mat-error>Le champs est obligatoire</mat-error>
+      </mat-form-field>
+    </div>
 
     <div class="flex gap-2">
       <mat-form-field  class=" w-full mt-2 telephone" appearance="outline">

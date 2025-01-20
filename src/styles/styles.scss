@@ -1451,7 +1451,7 @@ hr {
 
 
 #heighContentRightId {
-  height: 878px;
+ // height: 878px;
 }
 
 .custom_ajouter {
@@ -2255,4 +2255,9 @@ body .light .mat-tab-nav-bar.mat-primary .mat-ink-bar {
 .event-form-dialog .mat-dialog-container {
   max-height: 80vh; /* Hauteur maximale de 80% de l'écran */
   overflow-y: auto; /* Active le défilement vertical si le contenu dépasse */
+}
+
+
+.modalIndex{
+  z-index: 1002;
 }

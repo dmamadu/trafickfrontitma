@@ -154,7 +154,7 @@ export class MiseEnOeuvreComponent implements OnInit {
     dataLabels: {
       enabled: true,
       formatter: function (val) {
-        return val + " €";
+        return val + " CFA";
       },
     },
   };

@@ -1,8 +1,6 @@
 import {
   ChangeDetectorRef,
   Component,
-  inject,
-  OnInit,
   ViewChild,
 } from "@angular/core";
 import {
@@ -17,32 +15,25 @@ import { FormsModule, UntypedFormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
 import { DatePipe } from "@angular/common";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
-import { TesterComponent } from "../../tester/tester.component";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import {
   MAT_DIALOG_DATA,
-  MatDialog,
   MatDialogRef,
 } from "@angular/material/dialog";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
-import * as XLSX from "xlsx";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { DatatableComponent } from "src/app/shared/datatable/datatable.component";
 import { ToastrService } from "ngx-toastr";
 import { SharedService } from "../../projects/shared.service";
 import { LocalService } from "src/app/core/services/local.service";
 import { CoreService } from "src/app/shared/core/core.service";
-import * as moment from "moment";
-import autoTable from "jspdf-autotable";
-import jsPDF from "jspdf";
-import { logoItma } from "src/app/shared/logoItma";
 import { ExportService } from "src/app/shared/core/export.service";
-import { RechercheService } from "src/app/core/services/recherche.service";
-import { JuristAppComponent } from "../../jurist-app/jurist-app.component";
 import { AddPapAgricoleComponent } from "../../pap/pap-agricole/add-pap-agricole/add-pap-agricole.component";
 import { Pap } from "../../pap/pap.model";
 import { PapService } from "../../pap/pap.service";
 import { PapAgricoleComponent } from "../../pap/pap-agricole/pap-agricole.component";
+import { DetailBaremeComponent } from "../detail-bareme/detail-bareme.component";
+import { AddBaremeAgricoleComponent } from "./add-bareme-agricole/add-bareme-agricole.component";
 
 
 @Component({
@@ -117,7 +108,7 @@ export class BaremePapAgricoleComponent {
   userConnecter;
   offset: number = 0;
   title: string = "Gestion des partis affectés";
-  url: string = "personneAffectes";
+  url: string = "baremeArbres";
   panelOpenState = false;
   img;
 
@@ -145,49 +136,9 @@ export class BaremePapAgricoleComponent {
     this.currentUser = this.localService.getDataJson("user");
 
     console.log("user connecter", this.currentUser);
-    this.informations = {
-      exportFile: ["excel", "pdf"],
-      titleFile: "liste des pap",
-      code: "01410",
-      tabHead: ["Prénom", "Nom", "Nationalité"],
-      tabFileHead: [
-        "Prénom",
-        "Nom",
-        "Nationalité",
-        "Numéro identification",
-        "Téléphone",
-        "Situation Matrimoniale",
-        "Statut",
-        "Pays",
-        "Région",
-        "Localité de résidance",
-      ],
-      searchFields: [],
-      tabBody: ["prenom", "nom", "nationalite"],
-      tabFileBody: [
-        "prenom",
-        "nom",
-        "nationalite",
-        "numeroIdentification",
-        "numeroTelephone",
-        "situationMatrimoniale",
-        "statutPap",
-        "pays",
-        "region",
-        "localiteResidence",
-      ],
-      action: [
-        { name: "modifier", icon: "edit", color: "primary" },
-        {
-          name: "supprimer",
-          icon: "delete",
-          color: "red",
-        },
-        { name: "detail", icon: "detail", color: "red" },
-      ],
-    };
+
     //
-    this.displayedColumns = this.informations.tabBody;
+    //this.displayedColumns = this.informations.tabBody;
   }
 
   selectedOption: string = "";
@@ -197,7 +148,7 @@ export class BaremePapAgricoleComponent {
       { label: "Pap" },
       { label: "Pap List", active: true },
     ];
-    this.getPapAgricole();
+    this.getBaremeArbre();
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
   }
@@ -205,24 +156,24 @@ export class BaremePapAgricoleComponent {
   createHeader() {
     return [
       {
-        th: "CODE PAP",
-        td: "codePap",
+        th: "Espéces",
+        td: "espece",
       },
       {
-        th: "CODE PARCELLE",
-        td: "codeParcelle",
+        th: "Prix Arbre productif",
+        td: "prixArbreProductif",
       },
       {
-        th: "PRENOM",
-        td: "prenom",
+        th: "Prix Arbre Non Productif",
+        td: "prixArbreNonProductif",
       },
       {
-        th: "NOM",
-        td: "nom",
+        th: "Prix par kg",
+        td: "prixParKg",
       },
       {
-        th: "NUMERO TELEPHONE",
-        td: "numeroTelephone",
+        th: "Age début production",
+        td: "ageDebutProduction",
       },
     ];
   }
@@ -251,15 +202,15 @@ export class BaremePapAgricoleComponent {
         size: "icon-size-4",
         title: "détail",
         isDisabled: this.hasDelete,
-        action: (element?) => this.detailItems(element.id, element),
+        action: (element?) => this.detailItems(element),
       },
     ];
   }
 
-  getPapAgricole() {
+  getBaremeArbre() {
     this.loadData = true;
     return this.parentService
-      .list("papAgricole", this.pageSize, this.offset)
+      .list(this.url, this.pageSize, this.offset)
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -293,13 +244,13 @@ export class BaremePapAgricoleComponent {
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
     this.offset = this.pageIndex;
-    this.getPapAgricole();
+    this.getBaremeArbre();
   }
 
   updateItems(information): void {
     console.log(information);
     this.snackbar.openModal(
-      AddPapAgricoleComponent,
+      AddBaremeAgricoleComponent,
       "50rem",
       "edit",
       "",
@@ -314,7 +265,7 @@ export class BaremePapAgricoleComponent {
   //cette fonction permet de supprimer
   supprimerItems(id, information) {
     this.snackbar
-      .showConfirmation("Voulez-vous vraiment supprimer ce parti affecté ?")
+      .showConfirmation("Voulez-vous vraiment supprimer cette bareme ?")
       .then((result) => {
         if (result["value"] == true) {
           this.deleteUser = true;
@@ -388,12 +339,12 @@ export class BaremePapAgricoleComponent {
     }));
 
     console.log(dataToSend);
-    return this.papService.add("papAgricole", dataToSend).subscribe(
+    return this.papService.add(this.url, dataToSend).subscribe(
       (data: any) => {
         console.log(data);
         this.toastr.success(data.message);
         this.dataExcel = [];
-        this.getPapAgricole();
+        this.getBaremeArbre();
         this.loadData = false;
       },
       (err) => {
@@ -406,9 +357,6 @@ export class BaremePapAgricoleComponent {
   importDatas(params: string) {
     return this.papService.add(`${params} `, this.dataExcel).subscribe(
       (data: any) => {
-        console.log("====================================");
-        console.log(data);
-        console.log("====================================");
         this.toastr.success(data.message);
         this.selectedOption = "";
         this.resetDataFromExcel();
@@ -427,11 +375,19 @@ export class BaremePapAgricoleComponent {
     console.log("Valeur sélectionnée :", this.selectedOption);
   }
 
-  detailItems(id, information) {
-    console.log(information);
-    this.localService.saveDataJson("pap", information);
-    this.sharedService.setSelectedItem(information);
-    this._router.navigate(["pap/detail"]);
-  }
+    detailItems(information): void {
+        console.log(information);
+        this.snackbar.openModal(
+          DetailBaremeComponent,
+          "45rem",
+          "",
+          "38rem",
+          information,
+          "",
+          () => {
+            this.getTaches();
+          }
+        );
+      }
 
 }

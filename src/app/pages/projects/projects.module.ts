@@ -55,6 +55,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     CommonModule,
     ProjectsRoutingModule,
     UIModule,
+    BsDropdownModule.forRoot(),
     TooltipModule.forRoot(),
     NgApexchartsModule,
     FormsModule,
@@ -69,7 +70,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     ModalModule.forRoot(),
     NgxDocViewerModule,
     NgxPaginationModule,
-    TableauComponent
+    TableauComponent,
+    BsDropdownModule
 
   ],
   providers: [

@@ -131,7 +131,6 @@ export class PapListComponent implements OnInit {
     private _router: Router,
     private datePipe: DatePipe,
     private snackbar: SnackBarService,
-    private _matDialog: MatDialog,
     private papService: PapService,
     private parentService: ServiceParent,
     public matDialogRef: MatDialogRef<PapAddComponent>,
@@ -140,8 +139,7 @@ export class PapListComponent implements OnInit {
     private sharedService: SharedService,
     private localService: LocalService,
     private coreService: CoreService,
-    private exportService: ExportService,
-    private rechercherService: RechercheService
+    private exportService: ExportService
   ) {
     this.currentUser = this.localService.getDataJson("user");
 

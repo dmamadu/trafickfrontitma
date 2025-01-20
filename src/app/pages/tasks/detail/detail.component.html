@@ -1,7 +1,11 @@
-<div class="container-fluid">
-  <!-- start page title -->
-  <app-page-title title="Détails d'une tache" [breadcrumbItems]="breadCrumbItems" class="colorTitle" style="color: green;"></app-page-title>
-  <!-- end page title -->
+<div class="">
+
+  <div class="bgPrimaire py-3  px-1 d-flex items-center justify-between">
+    <label for="" class="text-xl">Détail d'une tache</label>
+    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
 
   <div class="row">
     <div class="col-lg-8">
@@ -9,35 +13,35 @@
         <div class="card-body">
           <div class="d-flex">
             <div class="flex-grow-1 overflow-hidden">
-            <h5 class="font-size-15 ">Libellé :</h5>
+              <h5 class="font-size-15 ">Libellé :</h5>
               <p class="text-truncate font-size-15">{{tache.libelle}}</p>
             </div>
           </div>
 
           <h5 class="font-size-15 mt-4">Description :</h5>
 
-          <p class="text-muted">{{tache.description}}</p>
+          <p class="">{{tache.description}}</p>
           <div class="row task-dates">
             <div class="col-sm-4 col-6">
               <div class="mt-4">
                 <h5 class=""><i class="bx bx-calendar me-1"></i> Start Date</h5>
-                <p class="text-muted mb-0">{{tache.dateDebut}}</p>
+                <p class=" mb-0">{{tache.dateDebut}}</p>
               </div>
             </div>
 
             <div class="col-sm-4 col-6">
               <div class="mt-4">
                 <h5 class=""><i class="bx bx-calendar-check "></i> Due Date</h5>
-                <p class="text-muted mb-0">{{tache.dateFin}}</p>
+                <p class=" mb-0">{{tache.dateFin}}</p>
               </div>
             </div>
           </div>
           <div class="my-2">
             <h5 for="">Statut : </h5>
             <span>{{tache.statut}}</span>
-             </div>
+          </div>
         </div>
-        </div>
+      </div>
 
 
     </div>
@@ -46,7 +50,7 @@
     <div class="col-lg-4">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title mb-4 " style="color: green;">Personnes imputées</h4>
+          <h2 class="card-title mb-4  text-xl font-bold">Personnes imputées</h2>
 
           <div class="table-responsive">
             <table class="table align-middle table-nowrap">
@@ -63,7 +67,6 @@
                   </td>
                 </tr>
                 }
-
               </tbody>
             </table>
           </div>

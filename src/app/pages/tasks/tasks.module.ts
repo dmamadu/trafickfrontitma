@@ -14,9 +14,6 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TasksRoutingModule } from './tasks-routing.module';
 import { UIModule } from '../../shared/ui/ui.module';
 
-import { ListComponent } from './list/list.component';
-import { KanbanboardComponent } from './kanbanboard/kanbanboard.component';
-import { CreatetaskComponent } from './createtask/createtask.component';
 import { AngularMaterialModule } from 'src/app/shared/angular-materiel-module/angular-materiel-module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,7 +26,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
-  declarations: [ListComponent, KanbanboardComponent],
+  declarations: [],
   imports: [
     CommonModule,
     FormsModule,

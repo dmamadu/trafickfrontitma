@@ -42,6 +42,7 @@ import { TesterComponent } from './tester/tester.component';
 import { RoleComponent } from './parametrages/role/role.component';
 import { CategorieUtilisateurComponent } from './parametrages/categorie-utilisateur/categorie-utilisateur.component';
 import { AddCategorieComponent } from './parametrages/categorie-utilisateur/add-categorie/add-categorie.component';
+import { TasksRoutingModule } from "./tasks/tasks-routing.module";
 
 
 @NgModule({
@@ -58,7 +59,7 @@ import { AddCategorieComponent } from './parametrages/categorie-utilisateur/add-
     HttpClientModule,
     ProjectsModule,
     UIModule,
-    TasksModule,
+    TasksRoutingModule,
     UiModule,
     FormsModule,
     TablesModule,

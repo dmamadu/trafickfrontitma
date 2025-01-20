@@ -1,5 +1,5 @@
 <div>
-  <app-page-title title="Barémes de compensations des  Pap Agricoles "
+  <app-page-title title="Barémes de compensations des arbres "
     [breadcrumbItems]="breadCrumbItems"></app-page-title>
 </div>
 <div class=" row mb-2">
@@ -14,9 +14,6 @@
   </div>
   <div class="col-sm-auto">
     <div class="d-flex flex-wrap gap-2">
-      <button type="submit" class="btn bgPrimaire" (click)="addItems()"> <i class="mdi mdi-plus me-1"></i> Ajouter un
-        pap agricole</button>
-
       <button type="submit" class="btn bgPrimaire" (click)="triggerFileUpload()"> <i
           class="mdi mdi-file-excel me-1">Importer un fichier excel</i>
       </button>
@@ -40,8 +37,8 @@
 
 <app-loader-custom *ngIf="loadData"></app-loader-custom>
 
-<!-- <div style="z-index: 0" class="pt-3">
+<div style="z-index: 0" class="pt-3">
   <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" [total]="length"
-    [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
-    (changePage)="pageChanged($event)" *ngIf="!loadData"></tableau>
-</div> -->
+    [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions" (changePage)="pageChanged($event)"
+    *ngIf="!loadData"></tableau>
+</div>

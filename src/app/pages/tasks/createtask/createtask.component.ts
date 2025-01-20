@@ -95,7 +95,7 @@ export class CreatetaskComponent implements OnInit {
   form = new UntypedFormGroup({
     member: new UntypedFormArray([new UntypedFormControl("")]),
   });
-  loader: boolean;
+  loader: boolean=false;
   hidden: boolean;
   selected: any;
   initForm: UntypedFormGroup;
@@ -103,8 +103,6 @@ export class CreatetaskComponent implements OnInit {
   action = "";
   labelButton: string = "Créer une tache";
   url = "taches";
-  @Input() fromDate: Date;
-  @Input() toDate: Date;
   @Output() dateRangeSelected: EventEmitter<{}> = new EventEmitter();
   memberLists: any;
   tacheToUpdate: any = null;
@@ -248,10 +246,8 @@ export class CreatetaskComponent implements OnInit {
   }
 
   addItems() {
-    console.log("====================================");
-    console.log(this.initForm.value);
-    console.log("====================================");
-    this.snackbar
+    if(this.initForm.valid){
+      this.snackbar
       .showConfirmation("Voulez-vous vraiment créé cette tache ?")
       .then((result) => {
         if (result["value"] == true) {
@@ -264,7 +260,7 @@ export class CreatetaskComponent implements OnInit {
                   "mycssSnackbarGreen",
                 ]);
                 this.loader = false;
-                this._router.navigate(["tasks/liste"]);
+                this.matDialogRef.close(resp["data"]);
               } else {
                 this.loader = false;
                 this.changeDetectorRefs.markForCheck();
@@ -278,12 +274,14 @@ export class CreatetaskComponent implements OnInit {
           );
         }
       });
+    }else{
+
+    }
+
+
   }
 
   checkRecap(type) {
-    console.log(type);
-    console.log("hellecast");
-
     if (type == "new") {
       this.addItems();
     } else if (type == "edit") {

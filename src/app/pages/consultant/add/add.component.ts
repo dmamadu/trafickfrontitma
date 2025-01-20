@@ -20,6 +20,7 @@ import { MoService } from "src/app/core/services/mo.service";
 import { ResponseData } from "../../projects/project.model";
 import { LocalService } from "src/app/core/services/local.service";
 import { environment } from "src/environments/environment";
+import { ServiceParent } from "src/app/core/services/serviceParent";
 
 @Component({
   selector: "app-add",
@@ -60,7 +61,7 @@ export class AddComponent {
   countryChange: boolean = false;
   eventNumber: any;
   isFocus: unknown;
-  noImage = '';
+  noImage = "";
   errorCNI;
   newDate = new Date();
   emailPattern =
@@ -75,7 +76,6 @@ export class AddComponent {
   urlImage = environment.apiUrl + "image/getFile/";
 
   constructor(
-
     public matDialogRef: MatDialogRef<AddComponent>,
     @Inject(MAT_DIALOG_DATA) _data,
     private fb: UntypedFormBuilder,
@@ -83,14 +83,15 @@ export class AddComponent {
     private snackbar: SnackBarService,
     private changeDetectorRefs: ChangeDetectorRef,
     private clientService: ClientVueService,
+    private parentService: ServiceParent,
     private moservice: MoService,
     private _matDialog: MatDialog,
     private localService: LocalService,
-    private clientServive: ClientVueService,
+    private clientServive: ClientVueService
   ) {
-    this.currentUser=this.localService.getDataJson("user");
+    this.currentUser = this.localService.getDataJson("user");
 
-    console.log("user connecter",this.currentUser)
+    console.log("user connecter", this.currentUser);
     if (_data?.action == "new") {
       this.initForms();
       this.labelButton = "Ajouter ";
@@ -98,8 +99,8 @@ export class AddComponent {
       this.labelButton = "Modifier ";
       this.id = _data.data.id;
       this.initForms(_data.data);
-      const imageToEdit = _data.data.image
-     // console.log("is",_data.data.image.type);
+      const imageToEdit = _data.data.image;
+      // console.log("is",_data.data.image.type);
 
       if (imageToEdit) {
         document.querySelectorAll("#member-img").forEach((element: any) => {
@@ -115,7 +116,6 @@ export class AddComponent {
         const file = this.base64ToFile(image, imageToEdit.name);
         this.uploadedImage = file;
       }
-
     }
 
     this.action = _data?.action;
@@ -129,12 +129,10 @@ export class AddComponent {
     this.initForm.get("statutVulnerable")?.setValue(value);
   }
 
-
   getImageFromBase64(imageType: string, imageName: number[]): string {
     const base64Representation = "data:" + imageType + ";base64," + imageName;
     return base64Representation;
   }
-
 
   base64ToFile(base64String: string, fileName: string): File {
     const arr = base64String.split(",");
@@ -148,11 +146,9 @@ export class AddComponent {
     return new File([u8arr], fileName, { type: mime });
   }
 
-
-   currentUser :any
+  currentUser: any;
   ngOnInit(): void {
-
-
+    this.getPip();
   }
 
   initForms(donnees?) {
@@ -164,26 +160,27 @@ export class AddComponent {
         Validators.required,
       ]),
       email: this.fb.control(donnees ? donnees?.email : null, [
-        Validators.required,Validators.email
+        Validators.required,
+        Validators.email,
       ]),
       locality: this.fb.control(donnees ? donnees?.locality : null, [
         Validators.required,
       ]),
 
-      project_id: this.fb.control(this.currentUser.projects ? this.currentUser.projects[0]?.id   : null, [
+      project_id: this.fb.control(
+        this.currentUser.projects ? this.currentUser.projects[0]?.id : null,
+        [Validators.required]
+      ),
+      sous_role: this.fb.control(donnees ? donnees?.sous_role : null, [
         Validators.required,
       ]),
-      sous_role: this.fb.control(donnees ? donnees?.sous_role:null, [
-        Validators.required,
-      ]),
-      imageUrl: this.fb.control(donnees ? donnees?.imageUrl:null, [
+      imageUrl: this.fb.control(donnees ? donnees?.imageUrl : null, [
         Validators.required,
       ]),
       contact: this.fb.control(donnees ? donnees?.contact : null, [
         Validators.required,
       ]),
     });
-
   }
 
   get phoneValue() {
@@ -202,53 +199,49 @@ export class AddComponent {
     });
   }
 
-
-
-
   updateItems() {
     console.log(this.initForm.value);
     this.snackbar
-      .showConfirmation(
-        `Voulez-vous vraiment modifier ce consultant `
-      )
+      .showConfirmation(`Voulez-vous vraiment modifier ce consultant `)
       .then((result) => {
         if (result["value"] == true) {
           this.loader = true;
           const value = this.initForm.value;
-          this.coreService.updateItem(value, this.id, "users/updateConsultant").subscribe(
-            (resp) => {
-              if (resp) {
+          this.coreService
+            .updateItem(value, this.id, "users/updateConsultant")
+            .subscribe(
+              (resp) => {
+                if (resp) {
+                  this.loader = false;
+                  this.matDialogRef.close(resp);
+                  this.snackbar.openSnackBar(
+                    "Consultant  modifié avec succés",
+                    "OK",
+                    ["mycssSnackbarGreen"]
+                  );
+                } else {
+                  this.loader = false;
+                  this.snackbar.openSnackBar(resp["message"], "OK", [
+                    "mycssSnackbarRed",
+                  ]);
+                }
+              },
+              (error) => {
                 this.loader = false;
-                this.matDialogRef.close(resp);
-                this.snackbar.openSnackBar(
-                   "Consultant  modifié avec succés",
-                  "OK",
-                  ["mycssSnackbarGreen"]
-                );
-              } else {
                 this.loader = false;
-                this.snackbar.openSnackBar(resp["message"], "OK", [
-                  "mycssSnackbarRed",
-                ]);
+                this.snackbar.showErrors(error);
               }
-            },
-            (error) => {
-              this.loader = false;
-              this.loader = false;
-              this.snackbar.showErrors(error);
-            }
-          );
+            );
         }
       });
   }
 
   checkRecap(type) {
-      if (type == "new") {
-        this.saveConsultant();
-      } else if (type == "edit") {
-        this.updateItems();
-      }
-
+    if (type == "new") {
+      this.saveConsultant();
+    } else if (type == "edit") {
+      this.updateItems();
+    }
   }
 
   getCategorie(value: any) {
@@ -260,95 +253,120 @@ export class AddComponent {
     }
   }
 
+  //file sun telecom
 
+  fileSelected;
+  loaderImg = false;
 
+  saveFile(file, type, name) {
+    let formData = new FormData();
+    formData.append("file", file);
 
-
-
-
-
-
-
-
-//file sun telecom
-
-fileSelected;
-loaderImg = false;
-
-
-saveFile(file, type, name) {
-  let formData = new FormData();
-  formData.append('file', file);
-
-  this.loaderImg = true;
-  this.changeDetectorRefs.detectChanges();
-  const dataFile = {'file': file};
-  this.clientService.saveStoreFile('store-file', formData).subscribe((resp) => {
-      if (resp) {
-        console.log('====================================');
-        console.log(resp);
-        console.log('====================================');
-          this.noImage = resp['urlprod'];
+    this.loaderImg = true;
+    this.changeDetectorRefs.detectChanges();
+    const dataFile = { file: file };
+    this.clientService.saveStoreFile("store-file", formData).subscribe(
+      (resp) => {
+        if (resp) {
+          console.log("====================================");
+          console.log(resp);
+          console.log("====================================");
+          this.noImage = resp["urlprod"];
           this.initForm.get(name).setValue(this.noImage);
           this.loaderImg = false;
           this.changeDetectorRefs.detectChanges();
-          this.snackbar.openSnackBar('Fichier chargé avec succès', 'OK', ['mycssSnackbarGreen']);
+          this.snackbar.openSnackBar("Fichier chargé avec succès", "OK", [
+            "mycssSnackbarGreen",
+          ]);
+        }
+      },
+      (error) => {
+        this.loaderImg = false;
+        this.snackbar.showErrors(error);
       }
-  }, (error) => {
-      this.loaderImg = false;
-      this.snackbar.showErrors(error);
-  });
-}
+    );
+  }
 
+  // Fin file sun telecom
 
-// Fin file sun telecom
+  fileChange(event: any) {
+    let fileList: any = event.target as HTMLInputElement;
+    let file: File = fileList.files[0];
+    this.uploadedImage = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imageURL = reader.result as string;
+      document.querySelectorAll("#member-img").forEach((element: any) => {
+        element.src = this.imageURL;
+      });
+    };
+    reader.readAsDataURL(file);
+  }
 
+  deleteImage() {
+    // Logique pour supprimer l'image sélectionnée
+    // Par exemple, réinitialisation de l'image à une image par défaut
+    document
+      .getElementById("member-img")
+      .setAttribute("src", "assets/images/users/user-dummy-img.jpg");
+    // Réinitialisation de l'input de type fichier pour effacer la sélection
+    const inputElement = document.getElementById(
+      "member-image-input"
+    ) as HTMLInputElement;
+    inputElement.value = "";
+    this.uploadedImage = null;
+  }
 
+  // getPip() {
 
+  //     if (this.lien === "pip/ong") {
+  //       return this.parentService
+  //         .liste("partie-interesse", this.pageSize, this.offset, "ONG")
+  //         .subscribe(
+  //           (data: any) => {
+  //             this.loadData = false;
+  //             if (data["responseCode"] == 200) {
+  //               console.log(data);
+  //               this.loadData = false;
+  //               console.log(data);
+  //               this.dataSource = new MatTableDataSource(data["data"]);
+  //               this.dataSource.paginator = this.paginator;
+  //               this.dataSource.sort = this.sort;
+  //               this.datas = data["data"];
+  //               this.length = data["length"];
+  //               console.log("length", this.length);
+  //               this._changeDetectorRef.markForCheck();
+  //             } else {
+  //               this.loadData = false;
+  //               this.dataSource = new MatTableDataSource();
+  //             }
+  //           },
+  //           (err) => {
+  //             console.log(err);
+  //           }
+  //         );
+  //     }
+  //   }
 
-fileChange(event: any) {
-  let fileList: any = event.target as HTMLInputElement;
-  let file: File = fileList.files[0];
-  this.uploadedImage = event.target.files[0];
-  const reader = new FileReader();
-  reader.onload = () => {
-    this.imageURL = reader.result as string;
-    document.querySelectorAll("#member-img").forEach((element: any) => {
-      element.src = this.imageURL;
-    });
-  };
-  reader.readAsDataURL(file);
-}
+  organes:any[]=[]
+  getPip() {
+    this.parentService.list("partie-interesse", 10000, 0).subscribe(
+        (data: any) => {
+          if (data && data["response"] && data["response"]['data']) {
+            console.log(data);
+            this.organes = data["response"]['data'];
+          } else {
+            console.error('La structure de la réponse est incorrecte:', data);
+          }
+        },
+        (error) => {
+          // Cette partie se déclenche en cas d'erreur dans l'appel HTTP
+          console.log("Une erreur est survenue lors de la récupération des données.");
+        }
+      );
+  }
 
-
-
-deleteImage() {
-  // Logique pour supprimer l'image sélectionnée
-  // Par exemple, réinitialisation de l'image à une image par défaut
-  document
-    .getElementById("member-img")
-    .setAttribute("src", "assets/images/users/user-dummy-img.jpg");
-  // Réinitialisation de l'input de type fichier pour effacer la sélection
-  const inputElement = document.getElementById(
-    "member-image-input"
-  ) as HTMLInputElement;
-  inputElement.value = "";
-  this.uploadedImage = null;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-saveConsultant() {
+  saveConsultant() {
     if (this.uploadedImage) {
       return this.moservice
         .uploadImage(this.uploadedImage, this.uploadedImage.name)
@@ -358,52 +376,45 @@ saveConsultant() {
     } else {
       return this.addItems();
     }
-}
-
-
-
-
-
-
-
-addItems(image?: Image) {
-  console.log(this.initForm.value);
-  const consultantRequest = this.initForm.value;
-  if (image) {
-    consultantRequest.image = image;
   }
-     this.snackbar
-       .showConfirmation(
-         `Voulez-vous vraiment ajouter ce consultant ` )
-       .then((result) => {
-         if (result["value"] == true) {
-           this.loader = true;
-           const value = consultantRequest;
-           this.coreService.addItem(value, "users/createConsultant").subscribe(
-             (resp) => {
-               if (resp["status"] == 200) {
-                 this.snackbar.openSnackBar("Consultant  ajouté avec succés", "OK", [
-                   "mycssSnackbarGreen",
-                 ]);
-                 this.loader = false;
-                 this.matDialogRef.close(resp["data"]);
-                 this.changeDetectorRefs.markForCheck();
-               } else {
-                 this.loader = false;
-                 this.changeDetectorRefs.markForCheck();
-               }
-             },
-             (error) => {
-               this.loader = false;
-               this.changeDetectorRefs.markForCheck();
-               this.snackbar.showErrors(error);
-             }
-           );
-         }
-       });
-   }
 
-
+  addItems(image?: Image) {
+    console.log(this.initForm.value);
+    const consultantRequest = this.initForm.value;
+    if (image) {
+      consultantRequest.image = image;
+    }
+    this.snackbar
+      .showConfirmation(`Voulez-vous vraiment ajouter ce consultant `)
+      .then((result) => {
+        if (result["value"] == true) {
+          this.loader = true;
+          const value = consultantRequest;
+          this.coreService.addItem(value, "users/createConsultant").subscribe(
+            (resp) => {
+              if (resp["status"] == 200) {
+                this.snackbar.openSnackBar(
+                  "Consultant  ajouté avec succés",
+                  "OK",
+                  ["mycssSnackbarGreen"]
+                );
+                this.loader = false;
+                this.matDialogRef.close(resp["data"]);
+                this.changeDetectorRefs.markForCheck();
+              } else {
+                this.loader = false;
+                this.changeDetectorRefs.markForCheck();
+              }
+            },
+            (error) => {
+              this.loader = false;
+              this.changeDetectorRefs.markForCheck();
+              this.snackbar.showErrors(error);
+            }
+          );
+        }
+      });
+  }
 
   //  editUser(id: any) {
   //   this.submitted = false;
@@ -416,21 +427,13 @@ addItems(image?: Image) {
   //   updateBtn.innerHTML = "Update";
   //   this.createMoForm.patchValue(this.listMo[id]);
 
-
-
   //   this.selectedProjects = this.listMo[id].projects;
 
   //   console.log(this.selectedProjects);
   //   this.updateSelectedProjects();
   // }
 
-
-
-
-
-
   selectOnFile(evt, type, name) {
-
     let accept = [];
     let extension = "";
     if (type === "photo_profile") {
@@ -464,8 +467,7 @@ addItems(image?: Image) {
     }
   }
 
-
-  imageToff:any
+  imageToff: any;
 
   saveStoreFile(file) {
     let formData = new FormData();
@@ -478,10 +480,10 @@ addItems(image?: Image) {
         (resp) => {
           if (resp) {
             console.log(resp);
-             this.imageToff = `${this.urlImage + resp["data"]}`;
-             this.initForm.get('imageUrl').setValue(this.imageToff);
+            this.imageToff = `${this.urlImage + resp["data"]}`;
+            this.initForm.get("imageUrl").setValue(this.imageToff);
             // Fermez le dialogue et renvoyez l'URL de la signature
-           // this.matDialogRef.close(signatureUrl);
+            // this.matDialogRef.close(signatureUrl);
           }
         },
         (error) => {
@@ -492,18 +494,11 @@ addItems(image?: Image) {
   }
 
   roles: string[] = [
-    'Chef de mission',
-    'Spécialiste en réinstallation',
-    'Spécialiste en gestion des parties prenantes',
-    'Spécialiste en Genre et Inclusions Sociale',
-    'Spécialiste en base de données et SIG',
-    'Animateurs communautaires'
+    "Chef de mission",
+    "Spécialiste en réinstallation",
+    "Spécialiste en gestion des parties prenantes",
+    "Spécialiste en Genre et Inclusions Sociale",
+    "Spécialiste en base de données et SIG",
+    "Animateurs communautaires",
   ];
-
-
-
-
-
-
-
 }

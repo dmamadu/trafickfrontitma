@@ -51,7 +51,7 @@
             <mat-error>Le champs est obligatoire</mat-error>
           </mat-form-field>
 
-          <mat-form-field class=" w-1/2 mt-2" fxFlex="100" appearance="outline">
+          <!-- <mat-form-field class=" w-1/2 mt-2" fxFlex="100" appearance="outline">
             <mat-label disabled value="" selected class="enteteccColor">Catégorie </mat-label>
             <mat-select formControlName="categoriePartieInteresse" class="enteteccColor">
               <mat-option class="enteteccColor" *ngFor="let categorie of categoriePartieInteresses"
@@ -61,7 +61,7 @@
             </mat-select>
             <mat-icon matSuffix class="enteteccColor">storage</mat-icon>
             <mat-error>Le champs est oligatoire</mat-error>
-          </mat-form-field>
+          </mat-form-field> -->
         </div>
 
         <div class="flex justify-center gap-4">
@@ -121,7 +121,7 @@
             </mat-form-field>
 
             <mat-form-field class="w-1/2 mt-2 telephone" appearance="outline">
-              <input  matInput type="number"  formControlName="telephoneContactPrincipal">
+              <input matInput type="number" formControlName="telephoneContactPrincipal">
               <mat-icon matSuffix class="secondary-text">phone</mat-icon>
               <mat-error>Le champ est obligatoire</mat-error>
             </mat-form-field>
@@ -174,10 +174,11 @@
 
       <mat-step label="Normes">
         <div class="flex gap-2">
-          <textarea name="" id="" formControlName="normes" class="typeTitle w-full"
-            placeholder="norme de l'organisation" matInput appearance="outline"></textarea>
+          <textarea name="" id="" [rows]="7" formControlName="normes" class="typeTitle w-full"
+            placeholder="norme de l'organisation" matInput appearance="outline"
+            style="border: 1px solid black; padding: 10px; border-radius: 5px;"></textarea>
         </div>
-        <div class="flex justify-center gap-4">
+        <div class="flex justify-center gap-4 mt-3">
           <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
             <span class="textForm">Retour</span>
           </button>&nbsp;
@@ -223,11 +224,11 @@
                   <span class="">Localisation: </span>
                   <span class="leading-none font-bold">{{ initForm?.get('localisation')?.value }}</span>
                 </div>
-                <div class="flex items-center recapCss">
+                <!-- <div class="flex items-center recapCss">
                   <span class="">Catégorie: </span>
                   <span class="leading-none font-bold">{{ getCategorie(initForm?.get('categoriePartieInteresse')?.value)
                     }}</span>
-                </div>
+                </div> -->
               </div>
             </mat-expansion-panel>
             <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">

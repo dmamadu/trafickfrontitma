@@ -44,6 +44,7 @@ import { JuristAppComponent } from "../../jurist-app/jurist-app.component";
 import { BatimentComponent } from "../batiment/batiment.component";
 import { PapAgricoleComponent } from "../pap-agricole/pap-agricole.component";
 import { AddPapPlaceAffaireComponent } from "./add-pap-place-affaire/add-pap-place-affaire.component";
+import { LoaderComponent } from "../../../shared/loader/loader.component";
 
 @Component({
   selector: "app-pap-place-affaire",
@@ -70,7 +71,8 @@ import { AddPapPlaceAffaireComponent } from "./add-pap-place-affaire/add-pap-pla
     AngularMaterialModule,
     DatatableComponent,
     FormsModule,
-  ],
+    LoaderComponent
+],
 })
 export class PapPlaceAffaireComponent {
   [x: string]: any;
@@ -84,7 +86,7 @@ export class PapPlaceAffaireComponent {
   informations: any;
   displayedColumns: any;
   searchList: any;
-  codeEnvoye: number; //code envoye par notre menu
+  codeEnvoye: number;
   hasList: boolean;
   hasAdd: boolean;
   hasUpdate: boolean;
@@ -119,8 +121,8 @@ export class PapPlaceAffaireComponent {
   img;
 
   image;
-  privilegeByRole: any; //liste des codes recu de l'api lors de la connexion
-  privilegeForPage: number = 2520; //code privilege envoye pour afficher la page
+  privilegeByRole: any;
+  privilegeForPage: number = 2520;
   privilegePage;
   headers: any = [];
   btnActions: any = [];
@@ -141,7 +143,6 @@ export class PapPlaceAffaireComponent {
     private localService: LocalService,
     private coreService: CoreService,
     private exportService: ExportService,
-    private rechercherService: RechercheService
   ) {
     this.currentUser = this.localService.getDataJson("user");
 
@@ -260,7 +261,7 @@ export class PapPlaceAffaireComponent {
   getPapPlaceAffaire() {
     this.loadData = true;
     return this.parentService
-      .list("databasePapPlaceAffaire", this.pageSize, this.offset)
+      .list(this.url, this.pageSize, this.offset)
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -280,6 +281,7 @@ export class PapPlaceAffaireComponent {
           }
         },
         (err) => {
+          this.loadData = false;
           console.log(err);
         }
       );
@@ -313,9 +315,6 @@ export class PapPlaceAffaireComponent {
 
   //cette fonction permet de supprimer
   supprimerItems(id, information) {
-    console.log("====================================");
-    console.log(id);
-    console.log("====================================");
     this.snackbar
       .showConfirmation("Voulez-vous vraiment supprimer ce parti affecté ?")
       .then((result) => {
@@ -655,6 +654,8 @@ export class PapPlaceAffaireComponent {
       },
       (err) => {
         this.loadData = false;
+        console.log(err);
+
         this.toastr.error(err);
       }
     );

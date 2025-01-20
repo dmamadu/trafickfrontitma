@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <app-page-title title="Création d'un projet" ></app-page-title>
+  <app-page-title title="Création d'un projet"></app-page-title>
   <form action="" [formGroup]="projectForm" (ngSubmit)="save()">
     <div class="row">
       <div class="col-lg-8">
@@ -7,6 +7,44 @@
           <div class="card-body">
             <input type="hidden" class="form-control" id="formAction" name="formAction" value="add">
             <input type="hidden" class="form-control" id="project-id-input">
+            <div class="row">
+              <div class="col-lg-12 text-center mb-4">
+                <div class="position-relative d-inline-block">
+                  <label for="" class="text-xl font-bold my-2 text-black">Logo</label>
+                  <div class="position-absolute bottom-0 end-0">
+                    <label for="member-image-input" class="mb-0" data-bs-toggle="tooltip" data-bs-placement="right"
+                      title="Select Member Image">
+                      <div class="avatar-xs">
+                        <div class="avatar-title bg-light border rounded-circle text-muted cursor-pointer">
+                          <i class="bx bxs-image-alt"></i>
+                        </div>
+                      </div>
+                    </label>
+                    <input class="form-control d-none" id="member-image-input" type="file"
+                      accept="image/png, image/gif, image/jpeg"
+                      (change)="selectOnFile($event,'photo_profile','Thumbnail')">
+                    @if (uploadedImage) {
+                    <div>
+                      <button type="button" class="btn btn-danger btn-sm mt-1" id="delete-image-btn"
+                        (click)="deleteImage()">
+                        <i class="bx bx-trash me-1"></i>
+                      </button>
+                    </div>
+                    }
+
+
+                  </div>
+                  <div class="avatar-lg">
+                    <div class="avatar-title bg-light rounded-circle">
+                      <!-- <img src="assets/images/users/user-dummy-img.jpg" id="member-img"
+                        class="avatar-md rounded-circle h-auto" /> -->
+                      <img [src]="imageToff ? imageToff : 'assets/images/users/user-dummy-img.jpg'"
+                        class="avatar-md rounded-circle h-auto" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="relative">
               <div class="mb-4">
                 <label for="libelle-input" class="form-label">Libellé</label>
@@ -278,6 +316,7 @@
     </div>
     <!-- end col -->
 
+    <app-loader-custom *ngIf="isloading"></app-loader-custom>
     <div class="col-lg-8">
       <div class="text-end mb-4">
         <button type="submit" id="addContact-btn" class="btn bg-[#245363] text-white hover:bg-[#93C5AF]"> {{ buttonText

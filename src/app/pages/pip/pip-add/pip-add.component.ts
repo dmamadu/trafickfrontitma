@@ -106,10 +106,11 @@ export class PipAddComponent implements OnInit {
   ng2TelOptions;
   idPiece;
   listeNoire: boolean = false;
-  categoriePartieInteresses: any;
+  //categories: any;
   lienBrute: string;
   lien: string;
   currentUser: any;
+  dernierSegment: string;
 
   constructor(
     public matDialogRef: MatDialogRef<PipAddComponent>,
@@ -118,7 +119,6 @@ export class PipAddComponent implements OnInit {
     private coreService: CoreService,
     private snackbar: SnackBarService,
     private changeDetectorRefs: ChangeDetectorRef,
-    private _matDialog: MatDialog,
     private router: Router,
     private localService: LocalService
   ) {
@@ -152,12 +152,14 @@ export class PipAddComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getCategoriePartieInteresses();
+    // this.getcategories();
 
     this.lienBrute = this.router.url;
     // Extraire une partie spécifique de l'URL
     this.lien = this.lienBrute.substring(1, this.lienBrute.length);
     console.log("URL modifiée:", this.lien);
+    let segments = this.lien.split("/");
+    this.dernierSegment = segments[segments.length - 1];
     this.createContactForm();
   }
 
@@ -184,10 +186,9 @@ export class PipAddComponent implements OnInit {
       localisation: this.fb.control(donnees ? donnees?.localisation : null, [
         Validators.required,
       ]),
-      categoriePartieInteresse: this.fb.control(
-        donnees ? donnees?.categoriePartieInteresse.id : null,
-        [Validators.required]
-      ),
+      categorie: this.fb.control(donnees ? donnees?.categorie : null, [
+        Validators.required,
+      ]),
       //step 3
       normes: this.fb.control(donnees ? donnees?.normes : null, [
         Validators.required,
@@ -214,30 +215,13 @@ export class PipAddComponent implements OnInit {
       this.initForm.get("courielPrincipal").invalid ||
       this.initForm.get("adresse").invalid ||
       this.initForm.get("localisation").invalid ||
-      this.initForm.get("categoriePartieInteresse").invalid
+      this.initForm.get("categorie").invalid
     ) {
       return false;
     } else {
       return true;
     }
   }
-
-  // secondStep() {
-  //   if (
-  //     this.initForm.get("nomContactPrincipal").invalid ||
-  //     this.initForm.get("prenomContactPrincipal").invalid ||
-  //     this.initForm.get("adresseContactPrincipal").invalid ||
-  //     this.initForm.get("sexeContactPrincipal").invalid ||
-  //     this.initForm.get("dateNaissanceContactPrincipal").invalid ||
-  //     this.initForm.get("lieuNaisasnceContactPrincipal").invalid ||
-  //     this.initForm.get("emailContactPrincipal").invalid ||
-  //     this.initForm.get("telephoneContactPrincipal").invalid
-  //   ) {
-  //     return false;
-  //   } else {
-  //     return true;
-  //   }
-  // }
 
   thirdStep() {
     if (this.initForm.get("normes").invalid) {
@@ -251,24 +235,24 @@ export class PipAddComponent implements OnInit {
     return this.initForm.controls["numeroTelephonePersonneContact"];
   }
 
-  getNationalite(value: any) {
-    if (this.countries) {
-      const liste = this.countries.filter((type) => type.id == value);
-      return liste.length != 0 ? liste[0]?.nationalite : value;
-    }
-  }
+  // getNationalite(value: any) {
+  //   if (this.countries) {
+  //     const liste = this.countries.filter((type) => type.id == value);
+  //     return liste.length != 0 ? liste[0]?.nationalite : value;
+  //   }
+  // }
 
-  getCategoriePartieInteresses() {
-    this.coreService.list("categoriesPip", 0, 10000).subscribe((response) => {
-      if (response["responseCode"] === 200) {
-        this.categoriePartieInteresses = response["data"];
-        console.log("====================================");
-        console.log(this.categoriePartieInteresses);
-        console.log("====================================");
-        this.changeDetectorRefs.markForCheck();
-      }
-    });
-  }
+  // getcategories() {
+  //   this.coreService.list("categoriesPip", 0, 10000).subscribe((response) => {
+  //     if (response["responseCode"] === 200) {
+  //       this.categories = response["data"];
+  //       console.log("====================================");
+  //       console.log(this.categories);
+  //       console.log("====================================");
+  //       this.changeDetectorRefs.markForCheck();
+  //     }
+  //   });
+  // }
 
   checkValidity(g: UntypedFormGroup) {
     Object.keys(g.controls).forEach((key) => {
@@ -284,15 +268,12 @@ export class PipAddComponent implements OnInit {
 
   addItems() {
     this.initForm.get("contacts")?.setValue(this.contacts.data);
-    console.log("====================================");
+    this.initForm.get("categorie").setValue(this.dernierSegment)
+
     console.log(this.initForm.value);
-    console.log("====================================");
+
     this.snackbar
-      .showConfirmation(
-        `Voulez-vous vraiment ajouter ce ${this.getCategorie(
-          this.initForm?.get("categoriePartieInteresse")?.value
-        )} ? `
-      )
+      .showConfirmation(`Voulez-vous vraiment ajouter ce pip ? `)
       .then((result) => {
         if (result["value"] == true) {
           this.loader = true;
@@ -324,9 +305,8 @@ export class PipAddComponent implements OnInit {
   updateItems() {
     this.snackbar
       .showConfirmation(
-        `Voulez-vous vraiment modifier ce ${this.getCategorie(
-          this.initForm?.get("categoriePartieInteresse")?.value
-        )}?  `
+        `Voulez-vous vraiment modifier ce pip?
+         `
       )
       .then((result) => {
         if (result["value"] == true) {
@@ -339,7 +319,7 @@ export class PipAddComponent implements OnInit {
                 this.matDialogRef.close(resp);
                 this.snackbar.openSnackBar(
                   `${this.getCategorie(
-                    this.initForm?.get("categoriePartieInteresse")?.value
+                    this.initForm?.get("categorie")?.value
                   )} modifiée avec succés `,
                   "OK",
                   ["mycssSnackbarGreen"]
@@ -378,10 +358,8 @@ export class PipAddComponent implements OnInit {
   }
 
   getCategorie(value: any) {
-    if (this.categoriePartieInteresses) {
-      const liste = this.categoriePartieInteresses.filter(
-        (type) => type.id == value
-      );
+    if (this.categories) {
+      const liste = this.categories.filter((type) => type.id == value);
       return liste.length != 0 ? liste[0]?.libelle : value;
     }
   }
