@@ -40,10 +40,10 @@
             </mat-form-field>
             <mat-form-field class=" w-1/2 mt-2" fxFlex="100" appearance="outline">
               <mat-label disabled value="" selected class="enteteccColor">Date d'enregistrement</mat-label>
-              <input class="typeTitle" matInput [matDatepicker]="picker" name="dateEnregistrement"
+              <input class="typeTitle" matInput [matDatepicker]="picker1" name="dateEnregistrement"
                 formControlName="dateEnregistrement" />
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
+              <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
               <mat-error>Le champs est oligatoire</mat-error>
             </mat-form-field>
           </div>
@@ -203,12 +203,23 @@
 
           <div class="flex gap-2">
             <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Code du Pap</mat-label>
+              <input matInput name="codePap" formControlName="codePap">
+              <mat-icon matSuffix class="secondary-text">code</mat-icon>
+              <mat-error>Le champ est obligatoire</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="flex gap-2">
+            <mat-form-field class="w-full mt-2" appearance="outline">
               <mat-label class="enteteccColor">Commentaire sur vulnérabilité</mat-label>
               <textarea matInput name="vulnerabilite" formControlName="vulnerabilite"></textarea>
               <mat-icon matSuffix class="secondary-text">code</mat-icon>
               <mat-error>Le champ est obligatoire</mat-error>
             </mat-form-field>
           </div>
+
+
 
 
           <div class="flex justify-center gap-4">
@@ -235,11 +246,11 @@
           <section class="example-section">
             <label class="">Avez vous des documents pouvant nous aider:</label>
             <mat-radio-group formControlName="hasDocument">
-              <mat-radio-button class="" value="1">Oui</mat-radio-button>
-              <mat-radio-button class="" value="0">Non</mat-radio-button>
+              <mat-radio-button class="" value="true">Oui</mat-radio-button>
+              <mat-radio-button class="" value="false">Non</mat-radio-button>
             </mat-radio-group>
           </section>
-          <div class="p-5" *ngIf="initForm.get('hasDocument').value == '1'">
+          <div class="p-5" *ngIf="initForm.get('hasDocument').value == 'true'">
             <div class="flex justify-center">
               <div class="cursor-pointer" matTooltip="Charger des images ou des documents">
                 <img (click)="photoP.click()" class="w-32 h-32" [src]="signature" alt="Upload">
@@ -579,6 +590,7 @@
 
       </mat-stepper>
     </form>
+    <app-loader-data *ngIf="isLoading"></app-loader-data>
   </div>
 
 

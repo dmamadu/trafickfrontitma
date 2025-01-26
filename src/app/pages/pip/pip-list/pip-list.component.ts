@@ -28,9 +28,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import * as XLSX from "xlsx";
 import { PipAddComponent } from "../pip-add/pip-add.component";
 import { Pap, ResponsePap } from "../pip.model";
-import { PapService } from "../pap.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
-import { DatatableComponent } from "src/app/shared/datatable/datatable.component";
 import { ToastrService } from "ngx-toastr";
 import { SharedService } from "../../projects/shared.service";
 import { LocalService } from "src/app/core/services/local.service";
@@ -120,17 +118,13 @@ export class PipListComponent implements OnInit {
   constructor(
     private changeDetectorRefs: ChangeDetectorRef,
     private _router: Router,
-    private datePipe: DatePipe,
     private snackbar: SnackBarService,
-    private _matDialog: MatDialog,
-    private papService: PapService,
     private parentService: ServiceParent,
     public matDialogRef: MatDialogRef<PipAddComponent>,
     private _changeDetectorRef: ChangeDetectorRef,
     public toastr: ToastrService,
     private sharedService: SharedService,
     private localService: LocalService,
-    private route: ActivatedRoute,
     private router: Router,
     private coreService: CoreService
   ) {}
@@ -174,7 +168,7 @@ export class PipListComponent implements OnInit {
       },
       {
         th: "Catégorie",
-        td: "categoriePartieInteresse",
+        td: "categorie",
       },
     ];
   }

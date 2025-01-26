@@ -379,12 +379,12 @@ export class AddPapPlaceAffaireComponent {
     this.changeDetectorRefs.detectChanges();
     const dataFile = { file: file };
     this.clientServive
-      .saveStoreFile("image/uploadFileDossier", formData)
+      .saveStoreFile(formData)
       .subscribe(
         (resp) => {
           if (resp) {
             console.log(resp);
-            this.imageToff = `${this.urlImage + resp["data"]}`;
+            this.imageToff = `${this.urlImage + resp["fileName"]}`;
             this.initForm.get("photoPap").setValue(this.imageToff);
           }
         },

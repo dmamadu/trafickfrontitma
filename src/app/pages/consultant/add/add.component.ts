@@ -21,13 +21,14 @@ import { ResponseData } from "../../projects/project.model";
 import { LocalService } from "src/app/core/services/local.service";
 import { environment } from "src/environments/environment";
 import { ServiceParent } from "src/app/core/services/serviceParent";
+import { LoaderComponent } from "../../../shared/loader/loader.component";
 
 @Component({
   selector: "app-add",
   templateUrl: "./add.component.html",
   styleUrl: "./add.component.css",
   standalone: true,
-  imports: [AngularMaterialModule],
+  imports: [AngularMaterialModule, LoaderComponent],
 })
 export class AddComponent {
   panelOpenState = false;
@@ -73,7 +74,9 @@ export class AddComponent {
   categoriePartieInteresses: any;
   uploadedImage!: File;
   imageURL: string | undefined;
-  urlImage = environment.apiUrl + "image/getFile/";
+  //urlImage = environment.apiUrl + "image/getFile/";
+
+  urlImage = environment.apiUrl + "fileAws/download/";
 
   constructor(
     public matDialogRef: MatDialogRef<AddComponent>,
@@ -85,9 +88,9 @@ export class AddComponent {
     private clientService: ClientVueService,
     private parentService: ServiceParent,
     private moservice: MoService,
-    private _matDialog: MatDialog,
     private localService: LocalService,
-    private clientServive: ClientVueService
+    private clientServive: ClientVueService,
+    private _changeDetectorRef: ChangeDetectorRef,
   ) {
     this.currentUser = this.localService.getDataJson("user");
 
@@ -102,20 +105,7 @@ export class AddComponent {
       const imageToEdit = _data.data.image;
       // console.log("is",_data.data.image.type);
 
-      if (imageToEdit) {
-        document.querySelectorAll("#member-img").forEach((element: any) => {
-          element.src = this.getImageFromBase64(
-            imageToEdit.type,
-            imageToEdit.image
-          );
-        });
-        const image: any = this.getImageFromBase64(
-          imageToEdit.type,
-          imageToEdit.image
-        );
-        const file = this.base64ToFile(image, imageToEdit.name);
-        this.uploadedImage = file;
-      }
+
     }
 
     this.action = _data?.action;
@@ -129,26 +119,14 @@ export class AddComponent {
     this.initForm.get("statutVulnerable")?.setValue(value);
   }
 
-  getImageFromBase64(imageType: string, imageName: number[]): string {
-    const base64Representation = "data:" + imageType + ";base64," + imageName;
-    return base64Representation;
-  }
 
-  base64ToFile(base64String: string, fileName: string): File {
-    const arr = base64String.split(",");
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], fileName, { type: mime });
-  }
+
+
 
   currentUser: any;
   ngOnInit(): void {
     this.getPip();
+    this.getFonctions();
   }
 
   initForms(donnees?) {
@@ -171,7 +149,10 @@ export class AddComponent {
         this.currentUser.projects ? this.currentUser.projects[0]?.id : null,
         [Validators.required]
       ),
-      sous_role: this.fb.control(donnees ? donnees?.sous_role : null, [
+      fonction_id: this.fb.control(donnees ? donnees?.fonction_id : null, [
+        Validators.required,
+      ]),
+      partieInteresse_id: this.fb.control(donnees ? donnees?.partieInteresse_id : null, [
         Validators.required,
       ]),
       imageUrl: this.fb.control(donnees ? donnees?.imageUrl : null, [
@@ -265,7 +246,7 @@ export class AddComponent {
     this.loaderImg = true;
     this.changeDetectorRefs.detectChanges();
     const dataFile = { file: file };
-    this.clientService.saveStoreFile("store-file", formData).subscribe(
+    this.clientService.saveStoreFile(formData).subscribe(
       (resp) => {
         if (resp) {
           console.log("====================================");
@@ -304,12 +285,9 @@ export class AddComponent {
   }
 
   deleteImage() {
-    // Logique pour supprimer l'image sélectionnée
-    // Par exemple, réinitialisation de l'image à une image par défaut
     document
       .getElementById("member-img")
       .setAttribute("src", "assets/images/users/user-dummy-img.jpg");
-    // Réinitialisation de l'input de type fichier pour effacer la sélection
     const inputElement = document.getElementById(
       "member-image-input"
     ) as HTMLInputElement;
@@ -317,50 +295,18 @@ export class AddComponent {
     this.uploadedImage = null;
   }
 
-  // getPip() {
-
-  //     if (this.lien === "pip/ong") {
-  //       return this.parentService
-  //         .liste("partie-interesse", this.pageSize, this.offset, "ONG")
-  //         .subscribe(
-  //           (data: any) => {
-  //             this.loadData = false;
-  //             if (data["responseCode"] == 200) {
-  //               console.log(data);
-  //               this.loadData = false;
-  //               console.log(data);
-  //               this.dataSource = new MatTableDataSource(data["data"]);
-  //               this.dataSource.paginator = this.paginator;
-  //               this.dataSource.sort = this.sort;
-  //               this.datas = data["data"];
-  //               this.length = data["length"];
-  //               console.log("length", this.length);
-  //               this._changeDetectorRef.markForCheck();
-  //             } else {
-  //               this.loadData = false;
-  //               this.dataSource = new MatTableDataSource();
-  //             }
-  //           },
-  //           (err) => {
-  //             console.log(err);
-  //           }
-  //         );
-  //     }
-  //   }
-
   organes:any[]=[]
   getPip() {
     this.parentService.list("partie-interesse", 10000, 0).subscribe(
         (data: any) => {
-          if (data && data["response"] && data["response"]['data']) {
+          if (data["responseCode"] == 200) {
             console.log(data);
-            this.organes = data["response"]['data'];
+            this.organes = data['data'];
           } else {
             console.error('La structure de la réponse est incorrecte:', data);
           }
         },
         (error) => {
-          // Cette partie se déclenche en cas d'erreur dans l'appel HTTP
           console.log("Une erreur est survenue lors de la récupération des données.");
         }
       );
@@ -379,6 +325,7 @@ export class AddComponent {
   }
 
   addItems(image?: Image) {
+    this.initForm.get("project_id").setValue(1);
     console.log(this.initForm.value);
     const consultantRequest = this.initForm.value;
     if (image) {
@@ -407,6 +354,8 @@ export class AddComponent {
               }
             },
             (error) => {
+              console.log(error);
+
               this.loader = false;
               this.changeDetectorRefs.markForCheck();
               this.snackbar.showErrors(error);
@@ -416,35 +365,19 @@ export class AddComponent {
       });
   }
 
-  //  editUser(id: any) {
-  //   this.submitted = false;
-  //   this.newContactModal?.show();
-  //   var modelTitle = document.querySelector(".modal-title") as HTMLAreaElement;
-  //   modelTitle.innerHTML = "Edit Profile";
-  //   var updateBtn = document.getElementById(
-  //     "addContact-btn"
-  //   ) as HTMLAreaElement;
-  //   updateBtn.innerHTML = "Update";
-  //   this.createMoForm.patchValue(this.listMo[id]);
 
-  //   this.selectedProjects = this.listMo[id].projects;
-
-  //   console.log(this.selectedProjects);
-  //   this.updateSelectedProjects();
-  // }
 
   selectOnFile(evt, type, name) {
     let accept = [];
     let extension = "";
     if (type === "photo_profile") {
-      accept = [".png", ".PNG", ".jpg", ".JPG"];
+      accept = [".png", ".PNG", ".jpg", ".JPG",".JPEG",".jpeg"];
       extension = "une image";
     }
     for (const file of evt.target.files) {
       const index = file.name.lastIndexOf(".");
       const strsubstring = file.name.substring(index, file.name.length);
       const ext = strsubstring;
-      // Verification de l'extension du ficihier est valide
       if (accept.indexOf(strsubstring) === -1) {
         this.snackbar.openSnackBar(
           "Ce fichier " + file.name + " n'est " + extension,
@@ -453,7 +386,6 @@ export class AddComponent {
         );
         return;
       } else {
-        // recuperation du fichier et conversion en base64
         const reader = new FileReader();
         reader.onload = (e: any) => {
           if (type === "photo_profile") {
@@ -474,31 +406,51 @@ export class AddComponent {
     formData.append("file", file);
     this.changeDetectorRefs.detectChanges();
     const dataFile = { file: file };
+    this.loader=true;
     this.clientServive
-      .saveStoreFile("image/uploadFileDossier", formData)
+      .saveStoreFile(formData)
       .subscribe(
         (resp) => {
           if (resp) {
             console.log(resp);
-            this.imageToff = `${this.urlImage + resp["data"]}`;
+            this.imageToff = `${this.urlImage + resp["fileName"]}`;
             this.initForm.get("imageUrl").setValue(this.imageToff);
+            this.snackbar.openSnackBar(
+              "Image chargé avec succées",
+              "OK",
+              ["mycssSnackbarGreen"]
+            );
             // Fermez le dialogue et renvoyez l'URL de la signature
             // this.matDialogRef.close(signatureUrl);
           }
+          this.loader=false;
         },
         (error) => {
+          this.loader=false;
           console.log(error);
           this.snackbar.showErrors(error);
         }
       );
   }
 
-  roles: string[] = [
-    "Chef de mission",
-    "Spécialiste en réinstallation",
-    "Spécialiste en gestion des parties prenantes",
-    "Spécialiste en Genre et Inclusions Sociale",
-    "Spécialiste en base de données et SIG",
-    "Animateurs communautaires",
-  ];
+  roles: string[] = [];
+
+
+    getFonctions() {
+      return this.parentService
+        .list('fonctions', 1000, 0)
+        .subscribe(
+          (data: any) => {
+            if (data["responseCode"] == 200) {
+              console.log(data);
+              this.roles = data["data"];
+              this._changeDetectorRef.markForCheck();
+            } else {
+            }
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
+    }
 }

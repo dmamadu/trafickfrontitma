@@ -38,7 +38,7 @@
                     <div class="avatar-title bg-light rounded-circle">
                       <!-- <img src="assets/images/users/user-dummy-img.jpg" id="member-img"
                         class="avatar-md rounded-circle h-auto" /> -->
-                      <img [src]="imageToff ? imageToff : 'assets/images/users/user-dummy-img.jpg'"
+                      <img [src]="imageProjet ? imageProjet : 'assets/images/users/user-dummy-img.jpg'"
                         class="avatar-md rounded-circle h-auto" />
                     </div>
                   </div>
@@ -92,15 +92,18 @@
               </div>
               }
             </div>
+            <div class="my-1" *ngIf="lengthMo==0">
+              <button type="submit"  class="btn bg-[#245363] text-white hover:bg-[#93C5AF]" (click)="addItems()"> Créer un Maitre d'ouvrages</button>
+            </div>
 
-            <div class="mb-3 position-relative">
+            <div class="mb-3 position-relative" *ngIf="lengthMo>0">
 
               <label for="task-assign-input" class="form-label">Assigné à</label>
               <div *ngIf="assignList && assignList.length > 0" class="d-flex flex-wrap mb-2">
                 <ng-container *ngFor="let data of assignList; let i = index">
                   <div class="d-flex align-items-center me-3">
                     @if (data.image) {
-                    <img [src]="getImageFromBase64(data.image.type,data.image.image)" alt=""
+                    <img [src]="data.imageUrl" alt=""
                       class="rounded-circle avatar-xs me-2">
                     }
                     <span>{{ data.lastname }}</span>
@@ -123,10 +126,9 @@
                             (click)="slectMember(i)">
                             <div class="avatar-xs flex-shrink-0 me-2">
                               @if (data.image) {
-                              <img [src]="getImageFromBase64(data.image.type,data.image.image)" alt=""
+                              <img [src]="data.imageUrl" alt=""
                                 class="img-fluid rounded-circle" />
                               }
-
                             </div>
                             <div class="flex-grow-1">{{ data.lastname }}</div>
                           </a>
@@ -316,7 +318,7 @@
     </div>
     <!-- end col -->
 
-    <app-loader-custom *ngIf="isloading"></app-loader-custom>
+    <app-loader-data *ngIf="isloading"></app-loader-data>
     <div class="col-lg-8">
       <div class="text-end mb-4">
         <button type="submit" id="addContact-btn" class="btn bg-[#245363] text-white hover:bg-[#93C5AF]"> {{ buttonText

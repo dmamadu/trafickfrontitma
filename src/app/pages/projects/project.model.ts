@@ -17,7 +17,7 @@ export interface Project {
   fichiers?: any[];
   imageUrl?: string;
   users: Mo[];
-  normeProjets?:NormeProject[];
+  normes?:NormeProject[];
 }
 export interface Proj {
   name?: string;

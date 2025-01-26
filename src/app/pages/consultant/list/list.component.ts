@@ -10,7 +10,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
-import { ActivatedRoute, Router } from "@angular/router";
+import {  Router } from "@angular/router";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import {
@@ -26,6 +26,7 @@ import { SharedService } from "../../projects/shared.service";
 import { LocalService } from "src/app/core/services/local.service";
 import { AddComponent } from "../add/add.component";
 import { CoreService } from "src/app/shared/core/core.service";
+import { LoaderComponent } from "../../../shared/loader/loader.component";
 
 @Component({
   selector: "app-list",
@@ -45,7 +46,7 @@ import { CoreService } from "src/app/shared/core/core.service";
       useValue: { appearance: "outline" },
     },
   ],
-  imports: [TableauComponent, UIModule, AngularMaterialModule],
+  imports: [TableauComponent, UIModule, AngularMaterialModule, LoaderComponent],
 })
 export class ListComponent implements OnInit {
   role: string;
@@ -61,30 +62,17 @@ export class ListComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   informations: any;
-  displayedColumns: any;
-  searchList: any;
   codeEnvoye: number; //code envoye par notre menu
-  hasList: boolean;
   hasAdd: boolean;
   hasUpdate: boolean;
   hasDelete: boolean;
   hasDetail: boolean;
   length = 100;
-  searchForm: UntypedFormGroup;
   dialogRef: any;
   dataSource: MatTableDataSource<any>;
   datas = [];
   deleteUser: boolean = false;
-  currentIndex;
   loadData: boolean = false;
-  exporter: boolean = false;
-  isCollapsed: boolean = false;
-  isSearch2: boolean = false;
-  isSearch: boolean = false;
-  rechercher = "";
-  showLoader = "isNotShow";
-  message = "";
-  config: any;
   isLoading: boolean = false;
   pageSizeOptions = [5, 10, 25, 100, 500, 1000];
   pageSize: number = 10;
@@ -94,59 +82,28 @@ export class ListComponent implements OnInit {
   offset: number = 0;
   title: string = "Gestion des produits";
   url: string = "users/by_role?roleName=Consultant";
-  panelOpenState = false;
-  img;
   image;
-  privilegeByRole: any; //liste des codes recu de l'api lors de la connexion
-  privilegeForPage: number = 2520; //code privilege envoye pour afficher la page
-  privilegePage;
   headers: any = [];
   btnActions: any = [];
 
   constructor(
-    private changeDetectorRefs: ChangeDetectorRef,
     private _router: Router,
-    private datePipe: DatePipe,
     private snackbar: SnackBarService,
-    private _matDialog: MatDialog,
     private papService: PapService,
-    private parentService: ServiceParent,
     public matDialogRef: MatDialogRef<PapAddComponent>,
     private _changeDetectorRef: ChangeDetectorRef,
     public toastr: ToastrService,
     private sharedService: SharedService,
     private localService: LocalService,
     private coreService: CoreService,
-    private route: ActivatedRoute,
-    private router: Router
   ) {}
   lienBrute: string;
   lien: string;
-  pathUrl: string;
+  pathUrl: string="consultant";
 
   ngOnInit(): void {
-    this.lienBrute = this.router.url;
-    this.lien = this.lienBrute.substring(12, this.lienBrute.length);
 
-    console.log("====================================");
-    console.log(this.lien);
-    console.log("====================================");
-
-    if (this.lien === "chef-de-mission") {
-      this.pathUrl = "Chef de mission";
-    } else if (this.lien === "specialiste-reinstallation") {
-      this.pathUrl = "Spécialiste en réinstallation";
-    } else if (this.lien === "gestion-parties-prenantes") {
-      this.pathUrl = "Spécialiste en gestion des parties prenantes";
-    } else if (this.lien === "genre-inclusions-sociale") {
-      this.pathUrl = "Spécialiste en Genre et Inclusions Sociale";
-    } else if (this.lien === "base-de-donnees-sig") {
-      this.pathUrl = "Spécialiste en base de données et SIG";
-    } else if (this.lien === "animateurs-communautaires") {
-      this.pathUrl = "Animateurs communautaires";
-    }
-
-    this.getConsultantBySousRole();
+    this.getConsultants();
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
 
@@ -170,11 +127,6 @@ export class ListComponent implements OnInit {
         th: "Email",
         td: "email",
       },
-      {
-        th: "Role",
-        td: "sous_role",
-      },
-
       {
         th: "Numéro téléphone ",
         td: "contact",
@@ -211,31 +163,7 @@ export class ListComponent implements OnInit {
     ];
   }
 
-  getPap() {
-    return this.parentService
-      .list("personneAffectes", this.pageSize, this.offset)
-      .subscribe(
-        (data: any) => {
-          this.loadData = false;
-          if (data["responseCode"] == 200) {
-            this.loadData = false;
-            console.log(data);
-            this.dataSource = new MatTableDataSource(data["data"]);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-            this.datas = data["data"];
-            this.length = data["length"];
-            this._changeDetectorRef.markForCheck();
-          } else {
-            this.loadData = false;
-            this.dataSource = new MatTableDataSource();
-          }
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-  }
+
 
   pageChanged(event) {
     console.log(event);
@@ -245,7 +173,7 @@ export class ListComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
     this.offset = this.pageIndex;
-    this.getPap();
+    this.getConsultants();
   }
 
   updateItems(information): void {
@@ -273,18 +201,14 @@ export class ListComponent implements OnInit {
       .then((result) => {
         if (result["value"] == true) {
           this.deleteUser = true;
-          this.currentIndex = information;
-          this.showLoader = "isShow";
           const message = "Consultant  supprimé";
           this.coreService.deleteItem(id, "users/deleteMo").subscribe(
             (resp) => {
-              this.showLoader = "isNotShow";
               if (resp["200"]) {
-                this.getConsultant();
+                this.getConsultants();
               }
             },
             (error) => {
-              this.showLoader = "isNotShow";
               this.deleteUser = false;
               this.snackbar.showErrors(error);
             }
@@ -294,7 +218,6 @@ export class ListComponent implements OnInit {
   }
 
   filterList() {
-    this.isCollapsed = !this.isCollapsed;
   }
 
   //cette fonction permet d'exporter la liste sous format excel ou pdf
@@ -316,7 +239,7 @@ export class ListComponent implements OnInit {
       this.datas,
       "",
       () => {
-        this.getConsultant();
+        this.getConsultants();
       }
     );
   }
@@ -349,7 +272,7 @@ export class ListComponent implements OnInit {
           console.log(data);
           this.toastr.success(data.message);
           this.dataExcel = [];
-          this.getPap();
+          this.getConsultants();
         },
         (err) => {
           this.toastr.error(err);
@@ -364,37 +287,14 @@ export class ListComponent implements OnInit {
     this._router.navigate(["consultant/detail"]);
   }
 
-  getConsultant() {
-    return this.papService.all("users/by_role?roleName=Consultant").subscribe(
-      (data: any) => {
-        this.loadData = false;
-        if (data["status"] == 200) {
-          this.loadData = false;
-          console.log(data);
-          this.dataSource = new MatTableDataSource(data["data"]);
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-          this.datas = data["data"];
-          this.length = data["length"];
-          console.log("length", this.length);
-          this._changeDetectorRef.markForCheck();
-        } else {
-          this.loadData = false;
-          this.dataSource = new MatTableDataSource();
-        }
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
-  }
 
-  getConsultantBySousRole() {
+
+  getConsultants() {
+    this.loadData = true;
     return this.papService
-      .all(`users/by_sous_role?roleName=${this.pathUrl}`)
+      .all(`users/by_role?roleName=${this.pathUrl}`)
       .subscribe(
         (data: any) => {
-          this.loadData = false;
           if (data["status"] == 200) {
             this.loadData = false;
             console.log(data);

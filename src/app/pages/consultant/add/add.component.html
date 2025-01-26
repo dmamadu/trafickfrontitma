@@ -90,9 +90,9 @@
     <div class="flex gap-2">
       <mat-form-field class="w-full mt-2" appearance="outline">
         <mat-label class="enteteccColor">Fonctions</mat-label>
-        <mat-select formControlName="sous_role">
-          <mat-option *ngFor="let role of roles" [value]="role">
-            {{ role }}
+        <mat-select formControlName="fonction_id">
+          <mat-option *ngFor="let role of roles" [value]="role.id">
+            {{ role.libelle }}
           </mat-option>
         </mat-select>
         <mat-icon matSuffix class="secondary-text">code</mat-icon>
@@ -103,9 +103,9 @@
     <div class="flex gap-2">
       <mat-form-field class="w-full mt-2" appearance="outline">
         <mat-label class="enteteccColor">Organes Réprésentées</mat-label>
-        <mat-select formControlName="sous_role">
-          <mat-option *ngFor="let role of organes" [value]="role">
-            {{ role }}
+        <mat-select formControlName="partieInteresse_id">
+          <mat-option *ngFor="let organe of organes" [value]="organe.id">
+            {{ organe.libelle }}
           </mat-option>
         </mat-select>
         <mat-icon matSuffix class="secondary-text">code</mat-icon>
@@ -131,4 +131,5 @@
       </button>
     </div>
   </form>
+  <app-loader-data *ngIf="loader"></app-loader-data>
 </div>

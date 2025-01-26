@@ -168,7 +168,7 @@ export class RoleComponent implements OnInit {
       AddRoleComponent,
       "35rem",
       "edit",
-      "",
+      "20rem",
       information,
       "",
       () => {
@@ -212,7 +212,7 @@ export class RoleComponent implements OnInit {
       AddRoleComponent,
       "35rem",
       "new",
-      "",
+      "20rem",
       this.datas,
       "",
       () => {

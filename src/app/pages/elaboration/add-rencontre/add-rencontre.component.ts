@@ -25,11 +25,12 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { FlatpickrModule } from "angularx-flatpickr/lib/flatpickr.module";
 import {provideNativeDateAdapter} from '@angular/material/core';
+import { LoaderComponent } from "../../../shared/loader/loader.component";
 
 @Component({
   selector: "app-add-rencontre",
   standalone: true,
-  imports: [AngularMaterialModule],
+  imports: [AngularMaterialModule, LoaderComponent],
   providers: [provideNativeDateAdapter()],
   templateUrl: "./add-rencontre.component.html",
   styleUrl: "./add-rencontre.component.css",
@@ -43,7 +44,7 @@ export class AddRencontreComponent {
   id: string;
   initForm: UntypedFormGroup;
   labelButton: string;
-  suffixe: string = " un dossier";
+  suffixe: string = " une rencontre";
   countries: any;
 
   pageSize: number = 100;
@@ -101,11 +102,8 @@ export class AddRencontreComponent {
     private snackbar: SnackBarService,
     private changeDetectorRefs: ChangeDetectorRef,
     private clientService: ClientVueService,
-    private moservice: MoService,
-    private _matDialog: MatDialog,
     private localService: LocalService,
     private clientServive: ClientVueService,
-    private parentService: ServiceParent
   ) {
     this.currentUser = this.localService.getDataJson("user");
 
@@ -118,21 +116,7 @@ export class AddRencontreComponent {
       this.imageToff = _data.data.urlDocument;
       this.id = _data.data.id;
       this.initForms(_data.data);
-      const imageToEdit = _data.data.image;
-      if (imageToEdit) {
-        document.querySelectorAll("#member-img").forEach((element: any) => {
-          element.src = this.getImageFromBase64(
-            imageToEdit.type,
-            imageToEdit.image
-          );
-        });
-        const image: any = this.getImageFromBase64(
-          imageToEdit.type,
-          imageToEdit.image
-        );
-        const file = this.base64ToFile(image, imageToEdit.name);
-        this.uploadedImage = file;
-      }
+
     }
 
     this.action = _data?.action;
@@ -146,22 +130,7 @@ export class AddRencontreComponent {
     this.initForm.get("statutVulnerable")?.setValue(value);
   }
 
-  getImageFromBase64(imageType: string, imageName: number[]): string {
-    const base64Representation = "data:" + imageType + ";base64," + imageName;
-    return base64Representation;
-  }
 
-  base64ToFile(base64String: string, fileName: string): File {
-    const arr = base64String.split(",");
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], fileName, { type: mime });
-  }
 
   currentUser: any;
   ngOnInit(): void {
@@ -257,7 +226,7 @@ export class AddRencontreComponent {
     this.loaderImg = true;
     this.changeDetectorRefs.detectChanges();
     const dataFile = { file: file };
-    this.clientService.saveStoreFile("store-file", formData).subscribe(
+    this.clientService.saveStoreFile(formData).subscribe(
       (resp) => {
         if (resp) {
           console.log("====================================");
@@ -403,7 +372,7 @@ export class AddRencontreComponent {
     formData.append("file", file);
 
     this.clientServive
-      .saveStoreFile("image/uploadFileDossier", formData)
+      .saveStoreFile(formData)
       .subscribe(
         (resp) => {
           if (resp) {

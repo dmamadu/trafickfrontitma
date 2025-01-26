@@ -390,12 +390,12 @@ export class PapDetailComponent implements OnInit {
     this._changeDetectorRef.detectChanges();
     const dataFile = { file: file };
     this.clientServive
-      .saveStoreFile("image/uploadFileDossier", formData)
+      .saveStoreFile(formData)
       .subscribe(
         (resp) => {
           if (resp) {
             console.log(resp);
-            this.noImageStore = resp["data"];
+            this.noImageStore = resp["fileName"];
             console.log(this.noImageStore);
 
             this.saveFile(this.noImageStore);

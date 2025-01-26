@@ -282,7 +282,7 @@ saveFile(file, type, name) {
   this.loaderImg = true;
   this.changeDetectorRefs.detectChanges();
   const dataFile = {'file': file};
-  this.clientService.saveStoreFile('store-file', formData).subscribe((resp) => {
+  this.clientService.saveStoreFile(formData).subscribe((resp) => {
       if (resp) {
           this.noImage = resp['urlprod'];
           this.initForm.get(name).setValue(this.noImage);

@@ -115,12 +115,8 @@ export class FonctionUtilisateurComponent implements OnInit {
   }
 
   constructor(
-    private changeDetectorRefs: ChangeDetectorRef,
     private parentService: ServiceParent,
-    private _router: Router,
-    private datePipe: DatePipe,
     private snackbar: SnackBarService,
-    private _matDialog: MatDialog,
     private coreService: CoreService,
     private _changeDetectorRef: ChangeDetectorRef,
     public toastr: ToastrService
@@ -160,7 +156,7 @@ export class FonctionUtilisateurComponent implements OnInit {
       AddFonctionUtilisateurComponent,
       "45rem",
       "edit",
-      "",
+      "20rem",
       information,
       "",
       () => {
@@ -208,7 +204,7 @@ export class FonctionUtilisateurComponent implements OnInit {
       AddFonctionUtilisateurComponent,
       "45rem",
       "new",
-      "",
+      "20rem",
       this.datas,
       "",
       () => {

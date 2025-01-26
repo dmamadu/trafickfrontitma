@@ -31,3 +31,4 @@
     [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
     (changePage)="pageChanged($event)"></tableau>
 </div>
+<app-loader-data *ngIf="loadData"></app-loader-data>

@@ -9,15 +9,17 @@
         <div class="card-body">
           <div class="d-flex">
             <div class="flex-shrink-0 me-4">
-              <!-- <img
-                [src]="DetailProject?.image ? getImageFromBase64(DetailProject.image.type, DetailProject.image.image) : 'assets/images/companies/img-1.png'"
-                alt="" class="avatar-sm"> -->
               <img [src]="DetailProject?.imageUrl ? DetailProject.imageUrl : 'assets/images/companies/img-1.png'" alt=""
                 class="avatar-sm">
             </div>
 
             <div class="flex-grow-1 overflow-hidden">
               <h5 class="text-truncate font-size-15">{{DetailProject.libelle}}</h5>
+            </div>
+
+            <div class="mx-3 my-2" >
+              <label for="" class="text-black font-bold">Etat : </label>
+              <span class="mx-1">{{  DetailProject.status}}</span>
             </div>
           </div>
 
@@ -74,43 +76,7 @@
   <!-- end row -->
 
   <div class="row">
-    <div class="col-lg-6">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title mb-4 colorTitle">Fichiers liés</h4>
-          <div class="table-responsive">
-            <table class="table table-nowrap align-middle table-hover mb-0">
-              <tbody>
-                <tr *ngFor="let item of DetailProject.fichiers; let i = index">
-                  <td style="width: 45px;">
-                    <div class="avatar-sm">
-                      <span class="avatar-title rounded-circle bg-primary-subtle text-primary font-size-24">
-                        <i class="bx bxs-file-doc"></i>
-                      </span>
-                    </div>
-                  </td>
-                  <td>
-                    <h5 class="font-size-14 mb-1">
-                      <a [href]="item.fichierUrl" class="text-dark" target="_blank">
-                        {{ getFileName(item.fichierUrl) }}
-                      </a>
-                    </h5>
-                  </td>
-                  <td>
-                    <div class="text-center">
-                      <a [href]="item.fichierUrl" target="_blank" class="text-dark">
-                        <i class="bx bx-download h3 m-0"></i>
-                      </a>
-                    </div>
-                  </td>
 
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- end col -->
 
@@ -119,7 +85,7 @@
         <div class="card-body">
           <h4 class="card-title mb-4 colorTitle">Normes du projets</h4>
 
-          @for (item of DetailProject.normeProjets; track $index) {
+          @for (item of DetailProject.normes; track $index) {
           <div class="d-flex mb-4">
             <div class="flex-grow-1">
               <h5 class="font-size-13 mb-1">{{item.titre}}</h5>

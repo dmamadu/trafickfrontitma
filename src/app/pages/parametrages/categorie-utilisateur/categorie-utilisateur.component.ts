@@ -162,7 +162,7 @@ export class CategorieUtilisateurComponent implements OnInit {
       AddCategorieComponent,
       "35rem",
       "edit",
-      "",
+      "20rem",
       information,
       "",
       () => {
@@ -205,7 +205,7 @@ export class CategorieUtilisateurComponent implements OnInit {
       AddCategorieComponent,
       "35rem",
       "new",
-      "",
+      "20rem",
       this.datas,
       "",
       () => {

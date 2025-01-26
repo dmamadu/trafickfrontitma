@@ -100,7 +100,7 @@ export class SignatureClientComponent {
       formData.append("file", file);
       this._changeDetectorRef.detectChanges();
       const dataFile = { file: file };
-      this.clientServive.saveStoreFile("image/uploadFileDossier", formData).subscribe(
+      this.clientServive.saveStoreFile(formData).subscribe(
         (resp) => {
           if (resp) {
           console.log(resp);

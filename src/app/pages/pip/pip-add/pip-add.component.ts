@@ -268,7 +268,7 @@ export class PipAddComponent implements OnInit {
 
   addItems() {
     this.initForm.get("contacts")?.setValue(this.contacts.data);
-    this.initForm.get("categorie").setValue(this.dernierSegment)
+   this.initForm.get("categorie").setValue(this.dernierSegment);
 
     console.log(this.initForm.value);
 

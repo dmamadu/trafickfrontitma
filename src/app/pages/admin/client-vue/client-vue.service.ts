@@ -173,8 +173,8 @@ export class ClientVueService {
         );
     }
 
-    saveStoreFile(url, data) {
-        return this._httpClient.post(environment.apiUrl + url, data).pipe(
+    saveStoreFile(data) {
+        return this._httpClient.post(environment.apiUrl + "fileAws/upload", data).pipe(
             switchMap((response: any) => of(response))
         );
     }

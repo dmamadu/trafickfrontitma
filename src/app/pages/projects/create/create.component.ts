@@ -7,7 +7,6 @@ import {
   Output,
   ChangeDetectorRef,
 } from "@angular/core";
-import { DropzoneConfigInterface } from "ngx-dropzone-wrapper";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { Observable, debounceTime, of, switchMap } from "rxjs";
@@ -17,10 +16,10 @@ import { ResponseData } from "src/app/shared/models/Projet.model";
 import { ToastrService } from "ngx-toastr";
 import { Image } from "src/app/shared/models/image.model";
 import { Router } from "@angular/router";
-import { dateValidator } from "src/app/shared/validator/datevalidator";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { ClientVueService } from "../../admin/client-vue/client-vue.service";
 import { environment } from "src/environments/environment";
+import { AddMaitreOuvrageComponent } from "../../maitrouvrages/add-maitre-ouvrage/add-maitre-ouvrage.component";
 
 @Component({
   selector: "app-create",
@@ -32,13 +31,12 @@ import { environment } from "src/environments/environment";
  * Projects-create component
  */
 export class CreateComponent implements OnInit {
-
   imageToff: any;
 
   suggestions$!: Observable<string[]>;
   listProject: Project[];
-  urlImage = environment.apiUrl + "image/getFile/";
-  isloading :boolean = false;
+  urlImage = environment.apiUrl + "fileAws/download/";
+  isloading: boolean = false;
   buttonText: string = "Créer le projet";
   constructor(
     private fb: FormBuilder,
@@ -89,9 +87,7 @@ export class CreateComponent implements OnInit {
   }
   // bread crumb items
   breadCrumbItems: Array<{}>;
-  selected: any;
   hidden: boolean;
-  files: File[] = [];
   assignMember: any;
   projectForm: FormGroup;
 
@@ -114,7 +110,6 @@ export class CreateComponent implements OnInit {
       { label: "Create New", active: true },
     ];
     this.fetchMo();
-    this.selected = "";
     this.hidden = true;
     this.assignMember = this.listMo;
     this.loadProject();
@@ -126,19 +121,6 @@ export class CreateComponent implements OnInit {
 
   // File Upload
   imageURL: any;
-  onSelect(event: any) {
-    this.files.push(...event.addedFiles);
-    let file: File = event.addedFiles[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imageURL = reader.result as string;
-      this.f.image.patchValue(this.imageURL);
-      setTimeout(() => {
-        // this.profile.push(this.imageURL)
-      }, 100);
-    };
-    reader.readAsDataURL(file);
-  }
 
   assignList: any = [];
   slectMember(id: number) {
@@ -206,42 +188,87 @@ export class CreateComponent implements OnInit {
   }
 
   addProject() {
-    if (this.uploadedImage) {
-      this.projectService
-        .uploadImage(this.uploadedImage, this.uploadedImage.name)
-        .subscribe(
-          (img: Image) => {
-            const projectRequest = this.projectForm.value;
-            if (img) {
-              projectRequest.image = img;
-            }
-            this.createProject(projectRequest);
-          },
-          (error) => {
-            console.error("Error uploading image:", error);
-            const projectRequest = this.projectForm.value;
-            this.createProject(projectRequest);
-          }
-        );
-    } else {
-      console.warn(
-        "this.projectService.uploadImage is not defined. Proceeding without uploading image."
-      );
-      // Continuer avec la création du projet sans télécharger d'image
-      const projectRequest = this.projectForm.value;
-      this.createProject(projectRequest);
-    }
+      this.createProject(this.projectForm.value);
+
   }
 
+  // createProject(projectRequest: any): void {
+  //   console.log(projectRequest);
+  //   this.projectForm.markAllAsTouched();
+  //   if (this.projectForm.valid) {
+  //     this.isloading = true;
+  //     this.snackbar
+  //       .showConfirmation("Voulez-vous vraiment créer le projet ?")
+  //       .then((result) => {
+  //         if (result["value"] == true) {
+  //           this.projectService
+  //             .add<ResponseData<Project>>(
+  //               "projects/createProject",
+  //               projectRequest
+  //             )
+  //             .subscribe(
+  //               (data: ResponseData<Project>) => {
+  //                 console.log("Project created successfully:", data);
+  //                 this.toastr.success(`${data.message}`);
+  //                 const normeProject: NormeProject[] = this.members.value;
+  //                 let saveNormeRequests = [];
+  //                 normeProject.forEach((normeProject: any) => {
+  //                   normeProject.project = data.data;
+  //                   const saveRequest = this.projectService
+  //                     .saveNormeProjet(normeProject, data.data.id)
+  //                     .toPromise();
+  //                   saveNormeRequests.push(saveRequest);
+  //                 });
+  //                 Promise.all(saveNormeRequests)
+  //                   .then(() => {
+  //                     this.router.navigate(["/projects/list"]);
+  //                     this.toastr.success(`Projet crée avec succés`);
+  //                   })
+  //                   .catch((err) => {
+  //                     console.error("Error saving norme project:", err);
+  //                     this.toastr.error(
+  //                       `Une erreur s'est produite ,veillez réessayez`
+  //                     );
+  //                   });
+  //                 this.isloading = false;
+  //               },
+  //               (error) => {
+  //                 console.error("Error creating project:", error);
+  //                 this.toastr.error(`Une erreur s'est produite`);
+  //                 this.isloading = false;
+  //               }
+  //             );
+  //         }
+  //       });
+  //   } else {
+  //     console.log("Le formulaire est invalide !");
+  //     for (const controlName in this.projectForm.controls) {
+  //       const control = this.projectForm.get(controlName);
+  //       if (control?.invalid && control?.touched) {
+  //         console.log(`Le champ ${controlName} est invalide.`);
+  //         console.log(control?.errors);
+  //       }
+  //     }
+  //   }
+  // }
+
   createProject(projectRequest: any): void {
+
     this.projectForm.markAllAsTouched();
+
     if (this.projectForm.valid) {
       this.isloading = true;
+
+      const normeProject: NormeProject[] = this.members.value;
+      projectRequest.normes = normeProject;
+
+      console.log("data send", projectRequest);
+
+
       this.snackbar
         .showConfirmation("Voulez-vous vraiment créer le projet ?")
         .then((result) => {
           if (result["value"] == true) {
-            // Call to add the project
             this.projectService
               .add<ResponseData<Project>>(
                 "projects/createProject",
@@ -251,29 +278,9 @@ export class CreateComponent implements OnInit {
                 (data: ResponseData<Project>) => {
                   console.log("Project created successfully:", data);
                   this.toastr.success(`${data.message}`);
-                  const normeProject: NormeProject[] = this.members.value;
-                  let saveNormeRequests = [];
-
-                  normeProject.forEach((normeProject: any) => {
-                    normeProject.project = data.data;
-                    const saveRequest = this.projectService
-                      .saveNormeProjet(normeProject, data.data.id)
-                      .toPromise();
-                    saveNormeRequests.push(saveRequest);
-                  });
-
-                  Promise.all(saveNormeRequests)
-                    .then(() => {
-                      this.router.navigate(["/projects/list"]);
-                      this.toastr.success(`Projet crée avec succés`);
-                    })
-                    .catch((err) => {
-                      console.error("Error saving norme project:", err);
-                      this.toastr.error(
-                        `Une erreur s'est produite ,veillez réessayez`
-                      );
-                    });
-                    this.isloading = false;
+                  this.router.navigate(["/projects/list"]);
+                  this.toastr.success(`Projet créé avec succès`);
+                  this.isloading = false;
                 },
                 (error) => {
                   console.error("Error creating project:", error);
@@ -281,6 +288,8 @@ export class CreateComponent implements OnInit {
                   this.isloading = false;
                 }
               );
+          } else {
+            this.isloading = false;
           }
         });
     } else {
@@ -295,6 +304,7 @@ export class CreateComponent implements OnInit {
     }
   }
 
+
   loadProject() {
     return this.projectService
       .all<ResponseData<Project[]>>("projects/all")
@@ -305,45 +315,8 @@ export class CreateComponent implements OnInit {
   }
   // filechange
   imageURLs: any;
-  fileChange(event: any) {
-    let fileList: any = event.target as HTMLInputElement;
-    let file: File = fileList.files[0];
-    this.uploadedImage = event.target.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      this.imageURLs = reader.result as string;
-      this.toff = this.imageURLs;
-      //  reader.readAsDataURL(this.uploadedImage);
-      document.querySelectorAll("#projectlogo-img").forEach((element: any) => {
-        element.src = this.imageURLs;
-      });
-      console.log("====================================");
-      console.log(this.imageURLs);
-      console.log("====================================");
-    };
-  }
-  // file upload
-  public dropzoneConfig: DropzoneConfigInterface = {
-    clickable: true,
-    addRemoveLinks: true,
-    previewsContainer: false,
-    acceptedFiles: null,
-  };
 
-  uploadedFiles: any[] = [];
-  uploadFiles1: File[] = [];
 
-  // File Remove
-  removeFile(event: any) {
-    const index = this.uploadedFiles.indexOf(event);
-    if (index > -1) {
-      this.uploadedFiles.splice(index, 1);
-      this.projectForm.patchValue({
-        attachedFiles: this.uploadedFiles,
-      });
-    }
-  }
 
   updateForm(event: Event) {
     const inputValue = (event.target as HTMLInputElement).value;
@@ -369,7 +342,6 @@ export class CreateComponent implements OnInit {
         return;
       }
     }
-
     const memberForm = this.fb.group({
       titre: [memberData ? memberData.titre : "", [Validators.required]],
       description: [
@@ -381,60 +353,85 @@ export class CreateComponent implements OnInit {
     this.members.push(memberForm);
   }
 
-  deleteMember(i: number) {
-    this.members.removeAt(i);
-  }
+  lengthMo!: number;
 
   listMo: Mo[] = [];
   fetchMo() {
     return this.projectService
-      .all<ResponseData<any[]>>("users/all")
-      .subscribe((users: ResponseData<Mo[]>) => {
+      .all("users/by_role?roleName=Maitre d'ouvrage")
+      .subscribe((users: any) => {
         this.listMo = users.data.map((user) => {
           return {
             ...user,
             checked: "0",
           };
         });
+        this.lengthMo = users.data.length;
         console.log(users.data);
+        console.log("length: " + this.lengthMo);
+
       });
   }
 
+
+    addItems(): void {
+      this.snackbar.openModal(
+        AddMaitreOuvrageComponent,
+        "57rem",
+        "new",
+        "38rem",
+        "",
+        "",
+        () => {
+          this.fetchMo();
+        }
+      );
+    }
+
+
   myImage: string;
-  getImageFromBase64(imageType: string, imageName: number[]): string {
-    const base64Representation = "data:" + imageType + ";base64," + imageName;
-    return base64Representation;
-  }
 
   //update
 
   update(): void {
-    const projectRequest = this.projectForm.value;
-    const attachedFiles: File[] = this.projectForm.get("attachedFiles").value;
-    // Vérifier si uploadedImage est défini
-    if (this.uploadedImage) {
-      this.projectService
-        .uploadImage(this.uploadedImage, this.uploadedImage.name)
-        .subscribe(
-          (img: Image) => {
-            if (img) {
-              projectRequest.image = img;
-            }
-            this.updateProject(projectRequest);
-          },
-          (error) => {
-            console.error("Error uploading image:", error);
-            // Continuer avec la mise à jour du projet même en cas d'erreur de téléchargement d'image
-            this.updateProject(projectRequest);
-          }
-        );
-    } else {
-      console.warn("No image uploaded. Proceeding without uploading image.");
-      this.updateProject(projectRequest);
-    }
+    this.updateProject(this.projectForm.value);
   }
 
+  // updateProject(projectRequest: any): void {
+  //   this.projectService
+  //     .update<ResponseData<Project>, Project>(
+  //       `projects/updateProject`,
+  //       projectRequest
+  //     )
+  //     .subscribe(
+  //       (data: ResponseData<Project>) => {
+  //         console.log("Project updated successfully:", data);
+  //         this.toastr.success(`${data.message}`);
+  //         if (data) {
+  //           const normeProjects: NormeProject[] = this.members.value;
+  //           normeProjects.forEach((normeProject: any) => {
+  //             normeProject.project = data.data;
+  //           });
+  //           this.projectService
+  //             .saveNormeProjet1(normeProjects, data.data.id)
+  //             .subscribe(
+  //               (response) => {
+  //                 console.log(response);
+  //               },
+  //               (err) => {
+  //                 console.log(err);
+  //               }
+  //             );
+  //         }
+  //       },
+  //       (error) => {
+  //         console.error("Error updating project:", error);
+  //       }
+  //     );
+  // }
   updateProject(projectRequest: any): void {
+    const normeProjects: NormeProject[] = this.members.value;
+    projectRequest.normes = normeProjects;
     this.projectService
       .update<ResponseData<Project>, Project>(
         `projects/updateProject`,
@@ -444,72 +441,30 @@ export class CreateComponent implements OnInit {
         (data: ResponseData<Project>) => {
           console.log("Project updated successfully:", data);
           this.toastr.success(`${data.message}`);
-          if (data) {
-            const normeProjects: NormeProject[] = this.members.value;
-            normeProjects.forEach((normeProject: any) => {
-              normeProject.project = data.data;
-            });
-            this.projectService
-              .saveNormeProjet1(normeProjects, data.data.id)
-              .subscribe(
-                (response) => {
-                  console.log(response);
-                },
-                (err) => {
-                  console.log(err);
-                }
-              );
-          }
+          this.router.navigate(["/projects/list"]);
         },
         (error) => {
           console.error("Error updating project:", error);
+          this.toastr.error("Une erreur s'est produite lors de la mise à jour du projet.");
         }
       );
   }
-  updateNormeProjects(projectId: number, normeProjects: NormeProject[]): void {
-    normeProjects.forEach((normeProject: any) => {
-      normeProject.project = { id: projectId }; // Assuming normeProject has a 'project' property that is an object
-      this.projectService.saveNormeProjet(normeProject, projectId).subscribe(
-        (data) => {
-          console.log("Norme updated successfully:", data);
-        },
-        (err) => {
-          console.error("Error updating norme:", err);
-        }
-      );
-    });
-  }
+
+  // updateNormeProjects(projectId: number, normeProjects: NormeProject[]): void {
+  //   normeProjects.forEach((normeProject: any) => {
+  //     normeProject.project = { id: projectId }; // Assuming normeProject has a 'project' property that is an object
+  //     this.projectService.saveNormeProjet(normeProject, projectId).subscribe(
+  //       (data) => {
+  //         console.log("Norme updated successfully:", data);
+  //       },
+  //       (err) => {
+  //         console.error("Error updating norme:", err);
+  //       }
+  //     );
+  //   });
+  // }
 
   // Conversion du Base64 en fichier
-  base64ToFile(
-    base64String: string,
-    fileName: string,
-    mimeType: string,
-    dataURL: string
-  ): File {
-    // Décoder la chaîne Base64 en une chaîne binaire
-    const byteString = atob(base64String);
-    const byteNumbers = new Array(byteString.length);
-    for (let i = 0; i < byteString.length; i++) {
-      byteNumbers[i] = byteString.charCodeAt(i);
-    }
-
-    // Créer un tableau de type Uint8Array à partir des octets
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: mimeType });
-
-    // Créer un objet File à partir du Blob
-    const file = new File([blob], fileName, { type: mimeType });
-
-    // Ajouter la propriété dataURL
-    Object.defineProperty(file, "dataURL", {
-      value: dataURL,
-      writable: false,
-      enumerable: true,
-    });
-
-    return file;
-  }
 
   deleteImage() {
     this.uploadedImage = null;
@@ -526,14 +481,13 @@ export class CreateComponent implements OnInit {
     let accept = [];
     let extension = "";
     if (type === "photo_profile") {
-      accept = [".png", ".PNG", ".jpg", ".JPG"];
+      accept = [".png", ".PNG", ".jpg", ".JPG", ".jpeg", ".JPEG"];
       extension = "une image";
     }
     for (const file of evt.target.files) {
       const index = file.name.lastIndexOf(".");
       const strsubstring = file.name.substring(index, file.name.length);
       const ext = strsubstring;
-      // Verification de l'extension du ficihier est valide
       if (accept.indexOf(strsubstring) === -1) {
         this.snackbar.openSnackBar(
           "Ce fichier " + file.name + " n'est " + extension,
@@ -542,7 +496,6 @@ export class CreateComponent implements OnInit {
         );
         return;
       } else {
-        // recuperation du fichier et conversion en base64
         const reader = new FileReader();
         reader.onload = (e: any) => {
           if (type === "photo_profile") {
@@ -563,103 +516,24 @@ export class CreateComponent implements OnInit {
     formData.append("file", file);
     this._changeDetectorRef.detectChanges();
     const dataFile = { file: file };
-    this.clientServive
-      .saveStoreFile("image/uploadFileDossier", formData)
-      .subscribe(
-        (resp) => {
-          if (resp) {
-            console.log(resp);
-            this.imageProjet = `${this.urlImage + resp["data"]}`;
-            this.projectForm.get("imageUrl").setValue(this.imageProjet);
-            this.snackbar.openSnackBar("Image  joutée ", "OK", [
-              "mycssSnackbarGreen",
-            ]);
-          }
-        },
-        (error) => {
-          console.log(error);
-          this.snackbar.showErrors(error);
+    this.isloading = true;
+    this.clientServive.saveStoreFile(formData).subscribe(
+      (resp) => {
+        if (resp) {
+          console.log(resp);
+          this.imageProjet = `${this.urlImage + resp["fileName"]}`;
+          this.projectForm.get("imageUrl").setValue(this.imageProjet);
+          this.snackbar.openSnackBar("Image  joutée ", "OK", [
+            "mycssSnackbarGreen",
+          ]);
         }
-      );
-  }
-
-  onUploadSuccess(event: any) {
-    let accept = [];
-    let extension = "";
-
-    accept = [
-      ".png",
-      ".PNG",
-      ".jpg",
-      ".JPG",
-      ".jpeg",
-      ".JPEG",
-      ".pdf",
-      ".PDF",
-      ".doc",
-      ".DOC",
-      ".docx",
-      ".DOCX",
-      ".xls",
-      ".XLS",
-      ".xlsx",
-      ".XLSX",
-    ];
-
-    for (const file of event) {
-      const index = file.name.lastIndexOf(".");
-      const fileExtension = file.name.substring(index).toLowerCase();
-
-      // Vérifier si l'extension du fichier est valide
-      if (accept.indexOf(fileExtension) === -1) {
-        this.snackbar.openSnackBar(
-          "Le fichier " + file.name + " n'est pas " + extension + " valide",
-          "OK",
-          ["mycssSnackbarRed"]
-        );
-        return;
-      } else {
-        // Appel de la fonction pour sauvegarder directement le fichier (sans conversion base64)
-        this.saveStoreFile1(file);
+        this.isloading = false;
+      },
+      (error) => {
+        this.isloading = false;
+        console.log(error);
+        this.snackbar.showErrors(error);
       }
-    }
-  }
-
-  saveStoreFile1(file: File) {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    // Envoyer le fichier au serveur
-    this.clientServive
-      .saveStoreFile("image/uploadFileDossier", formData)
-      .subscribe(
-        (resp) => {
-          if (resp) {
-            console.log(resp);
-
-            // Récupérer l'URL du fichier depuis la réponse
-            const fileUrl = `${this.urlImage + resp["data"]}`;
-
-            // Ajouter l'URL au tableau uploadedFiles
-            this.uploadedFiles.push({
-              name: file.name,
-              size: file.size,
-              type: file.type,
-              url: fileUrl,
-            });
-
-            this.projectForm.patchValue({
-              attachedFiles: fileUrl, // Mettez à jour avec l'ensemble des fichiers
-            });
-
-            // Optionnel : rafraîchir la vue si nécessaire
-            this._changeDetectorRef.detectChanges();
-          }
-        },
-        (error) => {
-          console.log(error);
-          this.snackbar.showErrors(error);
-        }
-      );
+    );
   }
 }

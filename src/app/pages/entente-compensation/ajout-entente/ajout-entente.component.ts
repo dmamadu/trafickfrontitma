@@ -297,7 +297,9 @@ export class AjoutEntenteComponent implements OnInit {
 
   cherchePap() {}
 
-  typePap: string = "papEconomique";
+  //typePap: string = "papEconomique";
+  typePap: string = "";
+
 
   papData: any = null;
 
@@ -326,4 +328,7 @@ export class AjoutEntenteComponent implements OnInit {
       }
     );
   }
+
+
+
 }

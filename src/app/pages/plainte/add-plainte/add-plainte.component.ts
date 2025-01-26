@@ -37,6 +37,7 @@ import { environment } from "src/environments/environment";
 import { provideNativeDateAdapter } from "@angular/material/core";
 import { SignatureComponent } from "../../entente-compensation/signature/signature.component";
 import { UIModule } from "../../../shared/ui/ui.module";
+import { LoaderComponent } from "../../../shared/loader/loader.component";
 
 @Component({
   selector: "app-add-plainte",
@@ -51,7 +52,8 @@ import { UIModule } from "../../../shared/ui/ui.module";
     MatNativeDateModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    UIModule
+    UIModule,
+    LoaderComponent
 ],
   providers: [
     provideNativeDateAdapter(),
@@ -75,7 +77,7 @@ export class AddPlainteComponent implements OnInit {
   signature = "";
   situationsMatrimoniales: string[];
   typeIdentifications: any = [];
-  loader: boolean=false;
+  loader: boolean = false;
   action: string;
   today = new Date();
   canAdd: boolean;
@@ -86,13 +88,14 @@ export class AddPlainteComponent implements OnInit {
   categoriePartieInteresses: any;
   uploadedImage!: File;
   imageURL: string | undefined;
-  urlImage = environment.apiUrl + "image/getFile/";
+ // urlImage = environment.apiUrl + "image/getFile/";
+  urlImage = environment.apiUrl + "fileAws/download/";
+  isLoading: boolean = false;
 
   sexe = [
     { id: "1", value: "Masculin" },
     { id: "2", value: "Feminin" },
   ];
-
 
   ngOnInit(): void {
     this.situationsMatrimoniales = [
@@ -124,20 +127,20 @@ export class AddPlainteComponent implements OnInit {
       this.id = _data.data.id;
       this.initForms(_data.data);
       const imageToEdit = _data.data.image;
-      if (imageToEdit) {
-        document.querySelectorAll("#member-img").forEach((element: any) => {
-          element.src = this.getImageFromBase64(
-            imageToEdit.type,
-            imageToEdit.image
-          );
-        });
-        const image: any = this.getImageFromBase64(
-          imageToEdit.type,
-          imageToEdit.image
-        );
-        const file = this.base64ToFile(image, imageToEdit.name);
-        this.uploadedImage = file;
-      }
+      // if (imageToEdit) {
+      //   document.querySelectorAll("#member-img").forEach((element: any) => {
+      //     element.src = this.getImageFromBase64(
+      //       imageToEdit.type,
+      //       imageToEdit.image
+      //     );
+      //   });
+      //   const image: any = this.getImageFromBase64(
+      //     imageToEdit.type,
+      //     imageToEdit.image
+      //   );
+      //  // const file = this.base64ToFile(image, imageToEdit.name);
+      //   //this.uploadedImage = file;
+      // }
     }
 
     this.action = _data?.action;
@@ -151,22 +154,12 @@ export class AddPlainteComponent implements OnInit {
     this.initForm.get("statutVulnerable")?.setValue(value);
   }
 
-  getImageFromBase64(imageType: string, imageName: number[]): string {
-    const base64Representation = "data:" + imageType + ";base64," + imageName;
-    return base64Representation;
-  }
+  // getImageFromBase64(imageType: string, imageName: number[]): string {
+  //   const base64Representation = "data:" + imageType + ";base64," + imageName;
+  //   return base64Representation;
+  // }
 
-  base64ToFile(base64String: string, fileName: string): File {
-    const arr = base64String.split(",");
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], fileName, { type: mime });
-  }
+
 
   currentUser: any;
 
@@ -301,30 +294,28 @@ export class AddPlainteComponent implements OnInit {
         if (result["value"] == true) {
           this.loader = true;
           const value = this.initForm.value;
-          this.coreService
-            .updateItem(value, this.id, "plaintes")
-            .subscribe(
-              (resp) => {
-                if (resp) {
-                  this.loader = false;
-                  this.matDialogRef.close(resp);
-                  this.snackbar.openSnackBar(
-                    "Plainte  modifié avec succés",
-                    "OK",
-                    ["mycssSnackbarGreen"]
-                  );
-                } else {
-                  this.loader = false;
-                  this.snackbar.openSnackBar(resp["message"], "OK", [
-                    "mycssSnackbarRed",
-                  ]);
-                }
-              },
-              (error) => {
+          this.coreService.updateItem(value, this.id, "plaintes").subscribe(
+            (resp) => {
+              if (resp) {
                 this.loader = false;
-                this.snackbar.showErrors(error);
+                this.matDialogRef.close(resp);
+                this.snackbar.openSnackBar(
+                  "Plainte  modifié avec succés",
+                  "OK",
+                  ["mycssSnackbarGreen"]
+                );
+              } else {
+                this.loader = false;
+                this.snackbar.openSnackBar(resp["message"], "OK", [
+                  "mycssSnackbarRed",
+                ]);
               }
-            );
+            },
+            (error) => {
+              this.loader = false;
+              this.snackbar.showErrors(error);
+            }
+          );
         }
       });
   }
@@ -337,14 +328,14 @@ export class AddPlainteComponent implements OnInit {
     }
   }
 
-  getCategorie(value: any) {
-    if (this.categoriePartieInteresses) {
-      const liste = this.categoriePartieInteresses.filter(
-        (type) => type.id == value
-      );
-      return liste.length != 0 ? liste[0]?.libelle : value;
-    }
-  }
+  // getCategorie(value: any) {
+  //   if (this.categoriePartieInteresses) {
+  //     const liste = this.categoriePartieInteresses.filter(
+  //       (type) => type.id == value
+  //     );
+  //     return liste.length != 0 ? liste[0]?.libelle : value;
+  //   }
+  // }
 
   checkCNI() {
     this.errorCNI = "";
@@ -391,8 +382,6 @@ export class AddPlainteComponent implements OnInit {
     });
   }
 
-
-
   fileChange(event: any) {
     let fileList: any = event.target as HTMLInputElement;
     let file: File = fileList.files[0];
@@ -408,8 +397,6 @@ export class AddPlainteComponent implements OnInit {
   }
 
   deleteImage() {
-    // Logique pour supprimer l'image sélectionnée
-    // Par exemple, réinitialisation de l'image à une image par défaut
     document
       .getElementById("member-img")
       .setAttribute("src", "assets/images/users/user-dummy-img.jpg");
@@ -432,7 +419,7 @@ export class AddPlainteComponent implements OnInit {
       .showConfirmation(`Voulez-vous vraiment crée cette plainte `)
       .then((result) => {
         if (result["value"] == true) {
-          this.loader = true;
+          this.isLoading = true;
           const value = this.initForm.value;
           this.coreService.addItem(value, "plaintes").subscribe(
             (resp) => {
@@ -442,16 +429,16 @@ export class AddPlainteComponent implements OnInit {
                   "OK",
                   ["mycssSnackbarGreen"]
                 );
-                this.loader = false;
+                this.isLoading = false;
                 this.matDialogRef.close(resp["data"]);
                 this.changeDetectorRefs.markForCheck();
               } else {
-                this.loader = false;
+                this.isLoading = false;
                 this.changeDetectorRefs.markForCheck();
               }
             },
             (error) => {
-              this.loader = false;
+              this.isLoading = false;
               this.changeDetectorRefs.markForCheck();
               this.snackbar.showErrors(error);
             }
@@ -460,29 +447,12 @@ export class AddPlainteComponent implements OnInit {
       });
   }
 
-
-
-
-
-
-
   gettypeIdentification(value: any) {
     if (this.typeIdentifications) {
       const liste = this.typeIdentifications.filter((type) => type.id == value);
       return liste.length != 0 ? liste[0]?.libelle : value;
     }
   }
-
-
-
-
-
-
-
-
-
-
-
 
   // checkValidity(g: UntypedFormGroup) {
   //   Object.keys(g.controls).forEach((key) => {
@@ -508,8 +478,6 @@ export class AddPlainteComponent implements OnInit {
         const file = files[i];
         const reader = new FileReader();
         reader.onload = (e: any) => {
-          // Ajoutez la logique pour gérer les fichiers ici.
-          // Par exemple, vous pouvez ajouter les fichiers à une liste et afficher les vignettes.
           console.log(e.target.result);
         };
         reader.readAsDataURL(file);
@@ -520,7 +488,7 @@ export class AddPlainteComponent implements OnInit {
     let accept = [];
     let extension = "";
     if (type === "photo_profile") {
-      accept = [".png", ".jpg"];
+      accept = [".png", ".jpg", ".jpeg", ".JPG", ".PNG", "JPEG"];
       extension = "une image";
     }
 
@@ -543,20 +511,17 @@ export class AddPlainteComponent implements OnInit {
         this.uploadedFiles.push(file);
         const reader = new FileReader();
         reader.onload = (e: any) => {
-          if (type === "photo_profile") {
-            const img = new Image();
-            img.src = e.target.result;
-            const docBase64Path = e.target.result;
-            console.log("====================================");
-            console.log("base");
-            console.log("====================================");
+          //if (type === "photo_profile") {
+            //const img = new Image();
+           // img.src = e.target.result;
+           // const docBase64Path = e.target.result;
             this.saveStoreFile(file).then((signatureUrl) => {
               if (signatureUrl) {
                 fileUrls.push(signatureUrl);
                 this.updateFileUrls(fileUrls);
               }
             });
-          }
+
         };
         reader.readAsDataURL(file);
       }
@@ -564,29 +529,29 @@ export class AddPlainteComponent implements OnInit {
   }
 
   saveStoreFile(file) {
+    this.isLoading = true;
     return new Promise((resolve, reject) => {
       let formData = new FormData();
       formData.append("file", file);
-
-      this.clientServive
-        .saveStoreFile("image/uploadFileDossier", formData)
-        .subscribe(
-          (resp) => {
-            if (resp) {
-              console.log("====================================");
-              console.log(resp);
-              console.log("====================================");
-              //   const signatureUrl = resp["data"];
-              const signatureUrl = `${this.urlImage + resp["data"]}`;
-              resolve(signatureUrl);
-            }
-          },
-          (error) => {
-            console.log(error);
-            this.snackbar.showErrors(error);
-            reject(error);
+      this.clientServive.saveStoreFile(formData).subscribe(
+        (resp) => {
+          if (resp) {
+            console.log("====================================");
+            console.log(resp);
+            console.log("====================================");
+            //   const signatureUrl = resp["data"];
+            const signatureUrl = `${this.urlImage + resp["fileName"]}`;
+            resolve(signatureUrl);
           }
-        );
+          this.isLoading = false;
+        },
+        (error) => {
+          console.log(error);
+          this.snackbar.showErrors(error);
+          reject(error);
+          this.isLoading = false;
+        }
+      );
     });
   }
 

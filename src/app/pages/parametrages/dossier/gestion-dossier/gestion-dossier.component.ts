@@ -133,9 +133,9 @@ export class GestionDossierComponent {
   addItems(): void {
     this.snackbar.openModal(
       AddDossierComponent,
-      "35rem",
+      "45rem",
       "new",
-      "",
+      "30rem",
       this.datas,
       "",
       () => {

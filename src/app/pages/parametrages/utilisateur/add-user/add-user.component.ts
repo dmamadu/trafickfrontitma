@@ -18,13 +18,14 @@ import { LocalService } from "src/app/core/services/local.service";
 import { environment } from "src/environments/environment";
 import { ClientVueService } from "src/app/pages/admin/client-vue/client-vue.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
+import { LoaderComponent } from "../../../../shared/loader/loader.component";
 
 @Component({
   selector: "app-add-user",
   templateUrl: "./add-user.component.html",
   styleUrl: "./add-user.component.css",
   standalone: true,
-  imports: [AngularMaterialModule],
+  imports: [AngularMaterialModule, LoaderComponent],
 })
 export class AddUserComponent {
   panelOpenState = false;
@@ -40,40 +41,18 @@ export class AddUserComponent {
   pageSize: number = 100;
   pageIndex: number = 0;
 
-  nrSelect;
-  situationsMatrimoniales: any;
-  typeIdentifications: any = [];
-  capaciteJuridiques: any;
-  dateDelivrance;
-  regimeMatrimoniaux: any;
-  professions: any;
   loader: boolean;
   action: string;
-  minBirthDay: any;
-  today = new Date();
-  loaderss = false;
-  fields: any;
-  canAdd: boolean;
   dataCheck;
-  url = "users/createConsultant";
-  hasPhoneError: boolean;
-  currentValue: any;
-  countryChange: boolean = false;
-  eventNumber: any;
-  isFocus: unknown;
+  url = "users";
   noImage = "";
-  errorCNI;
-  newDate = new Date();
   emailPattern =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  isValidOnWhatsApp: boolean = true;
-  ng2TelOptions;
-  idPiece;
-  listeNoire: boolean = false;
   categoriePartieInteresses: any;
   uploadedImage!: File;
   imageURL: string | undefined;
-  urlImage = environment.apiUrl + "image/getFile/";
+
+  urlImage = environment.apiUrl + "fileAws/download/";
 
   roles: any[] = [];
   categories: any[] = [];
@@ -86,7 +65,6 @@ export class AddUserComponent {
     private coreService: CoreService,
     private snackbar: SnackBarService,
     private changeDetectorRefs: ChangeDetectorRef,
-    private clientService: ClientVueService,
     private localService: LocalService,
     private clientServive: ClientVueService,
     private parentService: ServiceParent
@@ -101,50 +79,16 @@ export class AddUserComponent {
       this.imageToff = _data.data.imageUrl;
       this.id = _data.data.id;
       this.initForms(_data.data);
-      const imageToEdit = _data.data.image;
-      if (imageToEdit) {
-        document.querySelectorAll("#member-img").forEach((element: any) => {
-          element.src = this.getImageFromBase64(
-            imageToEdit.type,
-            imageToEdit.image
-          );
-        });
-        const image: any = this.getImageFromBase64(
-          imageToEdit.type,
-          imageToEdit.image
-        );
-        const file = this.base64ToFile(image, imageToEdit.name);
-        this.uploadedImage = file;
-      }
+
     }
 
     this.action = _data?.action;
-    this.canAdd = _data.canAdd;
     this.dialogTitle = this.labelButton + this.suffixe;
-    this.ng2TelOptions = { initialCountry: "sn" };
   }
 
-  checkValidOnWhatsApp(event: any): void {
-    const value = event.value;
-    this.initForm.get("statutVulnerable")?.setValue(value);
-  }
 
-  getImageFromBase64(imageType: string, imageName: number[]): string {
-    const base64Representation = "data:" + imageType + ";base64," + imageName;
-    return base64Representation;
-  }
 
-  base64ToFile(base64String: string, fileName: string): File {
-    const arr = base64String.split(",");
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], fileName, { type: mime });
-  }
+
 
   currentUser: any;
   ngOnInit(): void {
@@ -192,9 +136,7 @@ export class AddUserComponent {
     });
   }
 
-  get phoneValue() {
-    return this.initForm.controls["numeroTelephonePersonneContact"];
-  }
+
 
   checkValidity(g: UntypedFormGroup) {
     Object.keys(g.controls).forEach((key) => {
@@ -217,14 +159,14 @@ export class AddUserComponent {
           this.loader = true;
           const value = this.initForm.value;
           this.coreService
-            .updateItem(value, this.id, "users/updateUser")
+            .updateItem(value, this.id, "users")
             .subscribe(
               (resp) => {
                 if (resp) {
                   this.loader = false;
                   this.matDialogRef.close(resp);
                   this.snackbar.openSnackBar(
-                    "Consultant  modifié avec succés",
+                    "User  modifié avec succés",
                     "OK",
                     ["mycssSnackbarGreen"]
                   );
@@ -267,47 +209,7 @@ export class AddUserComponent {
   fileSelected;
   loaderImg = false;
 
-  saveFile(file, type, name) {
-    let formData = new FormData();
-    formData.append("file", file);
 
-    this.loaderImg = true;
-    this.changeDetectorRefs.detectChanges();
-    const dataFile = { file: file };
-    this.clientService.saveStoreFile("store-file", formData).subscribe(
-      (resp) => {
-        if (resp) {
-          this.noImage = resp["urlprod"];
-          this.initForm.get(name).setValue(this.noImage);
-          this.loaderImg = false;
-          this.changeDetectorRefs.detectChanges();
-          this.snackbar.openSnackBar("Fichier chargé avec succès", "OK", [
-            "mycssSnackbarGreen",
-          ]);
-        }
-      },
-      (error) => {
-        this.loaderImg = false;
-        this.snackbar.showErrors(error);
-      }
-    );
-  }
-
-  // Fin file sun telecom
-
-  fileChange(event: any) {
-    let fileList: any = event.target as HTMLInputElement;
-    let file: File = fileList.files[0];
-    this.uploadedImage = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imageURL = reader.result as string;
-      document.querySelectorAll("#member-img").forEach((element: any) => {
-        element.src = this.imageURL;
-      });
-    };
-    reader.readAsDataURL(file);
-  }
 
   deleteImage() {
     document
@@ -402,17 +304,25 @@ export class AddUserComponent {
     formData.append("file", file);
     this.changeDetectorRefs.detectChanges();
     const dataFile = { file: file };
+    this.loader=true;
     this.clientServive
-      .saveStoreFile("image/uploadFileDossier", formData)
+      .saveStoreFile(formData)
       .subscribe(
         (resp) => {
           if (resp) {
             console.log(resp);
             this.imageToff = `${this.urlImage + resp["data"]}`;
             this.initForm.get("imageUrl").setValue(this.imageToff);
+            this.snackbar.openSnackBar(
+              "Image ajoutée avec succés",
+              "OK",
+              ["mycssSnackbarGreen"]
+            );
           }
+          this.loader=false;
         },
         (error) => {
+          this.loader=false;
           console.log(error);
           this.snackbar.showErrors(error);
         }

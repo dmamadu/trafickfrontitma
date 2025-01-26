@@ -1,21 +1,12 @@
-import { DatePipe } from "@angular/common";
 import { ChangeDetectorRef, Component, ViewChild } from "@angular/core";
 import { UntypedFormGroup } from "@angular/forms";
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogRef,
-} from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
-import { Router, ActivatedRoute } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { LocalService } from "src/app/core/services/local.service";
-import { ServiceParent } from "src/app/core/services/serviceParent";
 import { PapAddComponent } from "src/app/pages/pap/pap-add/pap-add.component";
-import { PapService } from "src/app/pages/pap/pap.service";
-import { SharedService } from "src/app/pages/projects/shared.service";
 import { CoreService } from "src/app/shared/core/core.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import {
@@ -25,11 +16,11 @@ import {
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { UIModule } from "src/app/shared/ui/ui.module";
-import { AddRencontreComponent } from '../add-rencontre/add-rencontre.component';
+import { AddRencontreComponent } from "../add-rencontre/add-rencontre.component";
 import { ProjectService } from "src/app/core/services/project.service";
 
 @Component({
-  selector: 'app-rencontre',
+  selector: "app-rencontre",
   standalone: true,
   providers: [
     {
@@ -44,12 +35,11 @@ import { ProjectService } from "src/app/core/services/project.service";
     },
   ],
   imports: [TableauComponent, UIModule, AngularMaterialModule],
-  templateUrl: './rencontre.component.html',
-  styleUrl: './rencontre.component.css'
+  templateUrl: "./rencontre.component.html",
+  styleUrl: "./rencontre.component.css",
 })
 export class RencontreComponent {
   currentUser: any;
-
 
   filterTable($event: any) {
     throw new Error("Method not implemented.");
@@ -107,7 +97,6 @@ export class RencontreComponent {
 
   constructor(
     private snackbar: SnackBarService,
-    private parentService: ServiceParent,
     private projectService: ProjectService,
     public matDialogRef: MatDialogRef<PapAddComponent>,
     private _changeDetectorRef: ChangeDetectorRef,
@@ -115,7 +104,7 @@ export class RencontreComponent {
     private coreService: CoreService,
     private localService: LocalService
   ) {
-    this.currentUser=this.localService.getDataJson("user");
+    this.currentUser = this.localService.getDataJson("user");
   }
 
   ngOnInit(): void {
@@ -129,14 +118,12 @@ export class RencontreComponent {
     ];
   }
 
-
-
   addItems(): void {
     this.snackbar.openModal(
       AddRencontreComponent,
       "45rem",
       "new",
-      "",
+      "30rem",
       this.datas,
       "",
       () => {
@@ -169,10 +156,9 @@ export class RencontreComponent {
       {
         th: "PV de la rencontre",
         td: "urlPvRencontre",
-      }
+      },
     ];
   }
-
 
   createActions(): ButtonAction[] {
     return [
@@ -210,20 +196,17 @@ export class RencontreComponent {
       AddRencontreComponent,
       "50rem",
       "edit",
-      "",
+      "30rem",
       information,
       "",
       () => {
-         this.getRencontres();
+        this.getRencontres();
       }
     );
   }
 
   //cette fonction permet de supprimer
   supprimerItems(id, information) {
-    console.log("====================================");
-    console.log(id);
-    console.log("====================================");
     this.snackbar
       .showConfirmation("Voulez-vous vraiment supprimer ce dossier?")
       .then((result) => {
@@ -249,8 +232,8 @@ export class RencontreComponent {
       });
   }
 
-
   getRencontres() {
+    this.loadData = true;
     return this.projectService
       .getRencontreByProjectId(this.currentUser.projects[0]?.id)
       .subscribe(
@@ -270,11 +253,12 @@ export class RencontreComponent {
             this.loadData = false;
             this.dataSource = new MatTableDataSource();
           }
+
         },
         (err) => {
+          this.loadData = false;
           console.log(err);
         }
       );
   }
-
 }

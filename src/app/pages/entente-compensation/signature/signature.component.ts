@@ -23,7 +23,8 @@ export class SignatureComponent {
   loaderImg: boolean = false;
   infosPap: any;
   noImage;
-  urlImage = environment.apiUrl + "image/getFile/";
+  //urlImage = environment.apiUrl + "image/getFile/";
+  urlImage = environment.apiUrl + "fileAws/download/";
   signatureUrlSubject: Subject<string> = new Subject<string>();
   constructor(
     public matDialogRef: MatDialogRef<SignatureComponent>,
@@ -48,7 +49,7 @@ export class SignatureComponent {
     let accept = [];
     let extension = "";
     if (type === "photo_profile") {
-      accept = [".png", ".PNG", ".jpg", ".JPG"];
+      accept = [".png", ".PNG", ".jpg", ".JPG",".jpeg","JPEG"];
       extension = "une image";
     }
     for (const file of evt.target.files) {
@@ -99,12 +100,12 @@ export class SignatureComponent {
     this._changeDetectorRef.detectChanges();
     const dataFile = { file: file };
     this.clientServive
-      .saveStoreFile("image/uploadFileDossier", formData)
+      .saveStoreFile(formData)
       .subscribe(
         (resp) => {
           if (resp) {
             console.log(resp);
-            const signatureUrl = `${this.urlImage + resp["data"]}`;
+            const signatureUrl = `${this.urlImage + resp["fileName"]}`;
             console.log(signatureUrl);
 
             // Fermez le dialogue et renvoyez l'URL de la signature
@@ -118,26 +119,26 @@ export class SignatureComponent {
       );
   }
 
-  saveFile(file) {
-    this.loaderImg = true;
-    this._changeDetectorRef.detectChanges();
-    this.clientServive
-      .updateEntity("personneAffectes/addSignature", this.infosPap.id, file)
-      .subscribe(
-        (resp) => {
-          console.log(resp["data"][0]);
-          //   this.noImage =  `${this.urlImage+(resp["data"][0].imagePath)}`;
-          this.loaderImg = false;
-          this._changeDetectorRef.detectChanges();
-          this.snackbar.openSnackBar("Fichier chargée avec succès", "OK", [
-            "mycssSnackbarGreen",
-          ]);
-        },
-        (error) => {
-          console.log(error);
-          this.loaderImg = false;
-          this.snackbar.showErrors(error);
-        }
-      );
-  }
+  // saveFile(file) {
+  //   this.loaderImg = true;
+  //   this._changeDetectorRef.detectChanges();
+  //   this.clientServive
+  //     .updateEntity("personneAffectes/addSignature", this.infosPap.id, file)
+  //     .subscribe(
+  //       (resp) => {
+  //         console.log(resp["data"][0]);
+  //         //   this.noImage =  `${this.urlImage+(resp["data"][0].imagePath)}`;
+  //         this.loaderImg = false;
+  //         this._changeDetectorRef.detectChanges();
+  //         this.snackbar.openSnackBar("Fichier chargée avec succès", "OK", [
+  //           "mycssSnackbarGreen",
+  //         ]);
+  //       },
+  //       (error) => {
+  //         console.log(error);
+  //         this.loaderImg = false;
+  //         this.snackbar.showErrors(error);
+  //       }
+  //     );
+  // }
 }

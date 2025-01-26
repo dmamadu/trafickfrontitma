@@ -36,6 +36,7 @@ import { UpdateComponent } from './update/update.component';
 import { NgxPaginationModule } from "ngx-pagination";
 import { NgxDocViewerModule } from "ngx-doc-viewer";
 import { TableauComponent } from "src/app/shared/tableau/tableau.component";
+import { LoaderComponent } from "../../shared/loader/loader.component";
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -71,9 +72,9 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     NgxDocViewerModule,
     NgxPaginationModule,
     TableauComponent,
-    BsDropdownModule
-
-  ],
+    BsDropdownModule,
+    LoaderComponent
+],
   providers: [
     {
       provide: DROPZONE_CONFIG,

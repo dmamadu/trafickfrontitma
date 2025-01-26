@@ -406,7 +406,7 @@ export class JobsComponent implements OnInit {
             console.log(data);
             this.lisRencontre = data["data"];
             this.lengthRencontre = this.lisRencontre.length;
-            console.log(data);
+            console.log("rencontres",this.lisRencontre);
           } else {
             this.loadData = false;
           }

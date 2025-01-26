@@ -103,6 +103,10 @@ export class AddEntenteComponent implements OnInit {
       // project_id: this.fb.control(this.currentUser.projects ? this.currentUser.projects[0]?.id   : null, [
       //   Validators.required,
       // ]),
+      projectId: this.fb.control(
+        this.currentUser.projects ? this.currentUser.projects[0]?.id : null,
+        [Validators.required]
+      ),
       articles: this.fb.array([]),
     });
   }

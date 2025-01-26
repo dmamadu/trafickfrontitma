@@ -120,13 +120,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let engagement of engagements | paginate: { itemsPerPage: 5, currentPage: page }; let i = index">
-            <td>{{ i + 1 }}</td>
-            <td>{{ engagement.type }}</td>
-            <td>{{ engagement.date }}</td>
-            <td>{{ engagement.reference }}</td>
+          <tr *ngFor="let rencontre of lisRencontre | paginate: { itemsPerPage: 5, currentPage: page }; let i = index">
+            <td>{{ rencontre.id }}</td>
+            <td>{{ rencontre.libelle }}</td>
+            <td>{{ rencontre.date }}</td>
+            <td>{{ rencontre.urlPvRencontre }}</td>
             <td>
-              <button class="" (click)="viewPV(engagement.reference)" title="Voir le PV">
+              <button class="" (click)="viewPV(rencontre.urlPvRencontre)" title="Voir le PV">
                 <i class="fa fa-eye" style="color: green;"></i>
               </button>
             </td>

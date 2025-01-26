@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from "@angular/core";
 import { Observable } from "rxjs";
-import { BsModalService, ModalDirective } from "ngx-bootstrap/modal";
+import {ModalDirective } from "ngx-bootstrap/modal";
 import {
   FormBuilder,
   FormGroup,
@@ -16,17 +16,14 @@ import {
 } from "@angular/forms";
 import { Store } from "@ngrx/store";
 import { deleteuserlist } from "src/app/store/UserList/userlist.action";
-import { selectData } from "src/app/store/UserList/userlist-selector";
 import { PageChangedEvent } from "ngx-bootstrap/pagination";
 import { validatePhoneNumberSn } from "src/app/shared/pipes/numberSn";
 import { MoService } from "src/app/core/services/mo.service";
 import { Image } from "src/app/shared/models/image.model";
 import { Mo, ResponseData } from "src/app/shared/models/Projet.model";
 import { ToastrService } from "ngx-toastr";
-import { el } from "@fullcalendar/core/internal-common";
 import { Project } from "../../projects/project.model";
 import { IDropdownSettings } from "ng-multiselect-dropdown";
-import { UtilsService } from "src/app/shared/utils/utils.service";
 import { User } from "src/app/store/Authentication/auth.models";
 import { LocalService } from "src/app/core/services/local.service";
 import { MatSort } from "@angular/material/sort";
@@ -46,7 +43,6 @@ import { AddMaitreOuvrageComponent } from "../add-maitre-ouvrage/add-maitre-ouvr
 export class MolistComponent implements OnInit {
   breadCrumbItems: Array<{}>;
   term: any;
-  contactsList: any;
   total: Observable<number>;
   createMoForm!: UntypedFormGroup;
   submitted = false;
@@ -85,19 +81,11 @@ export class MolistComponent implements OnInit {
   hasDelete: boolean;
   hasDetail: boolean;
   length = 100;
-  searchForm: UntypedFormGroup;
   dialogRef: any;
   dataSource: MatTableDataSource<any>;
   datas = [];
-  currentIndex;
   loadData: boolean = false;
-  exporter: boolean = false;
-  isCollapsed: boolean = false;
-  isSearch2: boolean = false;
-  isSearch: boolean = false;
-  deleteUser: boolean = false;
   rechercher = "";
-  showLoader = "isNotShow";
   message = "";
   config: any;
   isLoading: boolean = false;
@@ -107,15 +95,13 @@ export class MolistComponent implements OnInit {
   //constantes = CONSTANTES;
   userConnecter;
   offset: number = 0;
-  title: string = "Gestion des produits";
-  url: string = "users/by_role?roleName=utilisateur";
+  title: string = "Gestion des maitres d'ouvrages";
+  url: string = "users/by_role?roleName=Maitre d'ouvrage";
   panelOpenState = false;
-  img;
   image;
-  privilegeByRole: any;
-  privilegeForPage: number = 2520;
   headers: any = [];
   btnActions: any = [];
+  private _changeDetectorRef: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -129,24 +115,18 @@ export class MolistComponent implements OnInit {
   ) {}
 
   myImage: string;
-  getImageFromBase64(imageType: string, imageName: number[]): string {
-    const base64Representation = "data:" + imageType + ";base64," + imageName;
-    return base64Representation;
-  }
 
   ngOnInit() {
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
     this.user = this.localService.getDataJson("user");
+    this.fetchMo();
     console.log("user local data: ", this.user);
     this.breadCrumbItems = [
       { label: "Maitres d'ouvrages" },
       { label: "Listes", active: true },
     ];
-    setTimeout(() => {
-      this.fetchMo();
-      document.getElementById("elmLoader")?.classList.add("d-none");
-    }, 1200);
+
 
 
 
@@ -195,39 +175,12 @@ export class MolistComponent implements OnInit {
           Validators.maxLength(70),
         ],
       ],
-      // image: ["", []],
       project_ids: [[], this.formBuilder.array([])],
     });
-    this.loadProject();
-    this.settings = {
-      idField: "id",
-      textField: "libelle",
-      selectAllText: "Select All Data",
-      unSelectAllText: "UnSelect All Data",
-      allowSearchFilter: true,
-      noDataAvailablePlaceholderText: "Nothing to show data",
-    };
+
   }
 
-  onDataSelect(item: any) {
-    console.log("onData Select", this.createMoForm.get("project_ids").value);
-  }
 
-  onUnSelectAll() {
-    console.log("onData Select", this.createMoForm.get("project_ids").value);
-  }
-
-  onDataDeSelect(item: any) {
-    console.log("onData Select", this.createMoForm.get("project_ids").value);
-  }
-
-  onSelectAll(items: any) {
-    console.log("onData Select", this.createMoForm.get("project_ids").value);
-  }
-
-  onDeSelectAll(items: any) {
-    console.log("onData Select", this.createMoForm.get("project_ids").value);
-  }
 
   deleteImage() {
     // Logique pour supprimer l'image sélectionnée
@@ -259,25 +212,7 @@ export class MolistComponent implements OnInit {
   // File Upload
   uploadedImage!: File;
   imageURL: string | undefined;
-  saveUser() {
-    var updateBtn = document.getElementById(
-      "addContact-btn"
-    ) as HTMLAreaElement;
 
-    if (updateBtn.innerHTML == "Créer") {
-      if (this.uploadedImage) {
-        return this.moservice
-          .uploadImage(this.uploadedImage, this.uploadedImage.name)
-          .subscribe((ima: Image) => {
-            this.handleCreateMoForm(ima);
-          });
-      } else {
-        return this.handleCreateMoForm();
-      }
-    } else {
-      return this.updateUser();
-    }
-  }
 
   handleCreateMoForm(image?: Image) {
     const projectRequest = this.createMoForm.value;
@@ -306,15 +241,7 @@ export class MolistComponent implements OnInit {
   }
 
   // fiter job
-  searchJob() {
-    if (this.term) {
-      this.contactsList = this.returnedArray.filter((data: any) => {
-        return data.name.toLowerCase().includes(this.term.toLowerCase());
-      });
-    } else {
-      this.contactsList = this.returnedArray;
-    }
-  }
+
 
   filteredMo: Mo[] = [];
   filterTable(event: any) {
@@ -343,20 +270,6 @@ export class MolistComponent implements OnInit {
     ) as HTMLAreaElement;
     updateBtn.innerHTML = "Update";
     this.createMoForm.patchValue(this.listMo[id]);
-    if (this.listMo[id].image) {
-      document.querySelectorAll("#member-img").forEach((element: any) => {
-        element.src = this.getImageFromBase64(
-          this.listMo[id].image.type,
-          this.listMo[id].image.image
-        );
-      });
-      const image: any = this.getImageFromBase64(
-        this.listMo[id].image.type,
-        this.listMo[id].image.image
-      );
-      const file = this.base64ToFile(image, this.listMo[id].image.name);
-      this.uploadedImage = file;
-    }
 
     this.selectedProjects = this.listMo[id].projects;
 
@@ -364,23 +277,13 @@ export class MolistComponent implements OnInit {
     this.updateSelectedProjects();
   }
 
-  base64ToFile(base64String: string, fileName: string): File {
-    const arr = base64String.split(",");
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], fileName, { type: mime });
-  }
+
 
   // pagechanged
   pageChanged(event: PageChangedEvent): void {
     const startItem = (event.page - 1) * event.itemsPerPage;
     this.endItem = event.page * event.itemsPerPage;
-    this.contactsList = this.returnedArray.slice(startItem, this.endItem);
+   // this.contactsList = this.returnedArray.slice(startItem, this.endItem);
   }
 
   // Delete User
@@ -394,104 +297,39 @@ export class MolistComponent implements OnInit {
     this.removeItemModal?.hide();
   }
 
+
+
   fetchMo() {
+    this.loadData = true;
     return this.moservice
-      .all<ResponseData<Mo[]>>("users/by_role?roleName=Maitre d'ouvrage")
-      .subscribe((users: ResponseData<Mo[]>) => {
-        this.listMo = users.data;
-        this.filteredMo = this.listMo;
-      });
-  }
-
-  fileChange(event: any) {
-    let fileList: any = event.target as HTMLInputElement;
-    let file: File = fileList.files[0];
-    this.uploadedImage = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imageURL = reader.result as string;
-      document.querySelectorAll("#member-img").forEach((element: any) => {
-        element.src = this.imageURL;
-      });
-    };
-    reader.readAsDataURL(file);
-  }
-
-  updateUser() {
-    const projectRequest = this.createMoForm.value;
-
-    // Récupérer et transformer project_ids en un tableau d'ID
-    const projectIdsControl = this.createMoForm.get("project_ids");
-    if (projectIdsControl && Array.isArray(projectIdsControl.value)) {
-      const projectIdsArray = projectIdsControl.value.map(
-        (project: { id: any }) => project.id
-      );
-      projectRequest.project_ids = projectIdsArray; // Mettez à jour projectRequest avec le tableau d'ID
-    }
-
-    if (this.uploadedImage) {
-      return this.moservice
-        .updateImage(
-          this.uploadedImage,
-          this.uploadedImage.name,
-          this.createMoForm.get("id").value
-        )
-        .subscribe(
-          (ima: Image) => {
-            projectRequest.image = ima;
-            this.updateUserDetails(projectRequest);
-          },
-          (err) => {
-            console.log(err);
-          }
-        );
-    } else {
-      this.updateUserDetails(projectRequest);
-    }
-  }
-
-  updateUserDetails(projectRequest) {
-    this.moservice
-      .update<ResponseData<Mo>, Mo>("users/updateMo", projectRequest)
+      .all(`users/by_role?roleName=Maitre d'ouvrage`)
       .subscribe(
-        (data: ResponseData<Mo>) => {
-          console.log(data.data);
-          this.toastr.success(data.message);
-          const index = this.listMo.findIndex((mo) => mo.id === data.data.id);
-          if (index !== -1) {
-            this.listMo[index] = data.data;
+        (data: any) => {
+          if (data["status"] == 200) {
+            this.loadData = false;
+            console.log(data);
+            this.dataSource = new MatTableDataSource(data["data"]);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+            this.datas = data["data"];
+            this.length = data["length"];
+            console.log("length", this.length);
+          } else {
+            this.loadData = false;
+            this.dataSource = new MatTableDataSource();
           }
-          this.createMoForm.reset();
-          this.newContactModal.hide();
         },
         (err) => {
           console.log(err);
+          this.loadData = false;
         }
       );
   }
 
-  deleteUsers(userId: number) {
-    this.moservice.delete<ResponseData<Mo>>(userId, "users/deleteMo").subscribe(
-      (data: ResponseData<any>) => {
-        console.log(data.message);
-        this.toastr.success(data.message);
-        this.filteredMo = this.filteredMo.filter((mo) => mo.id !== userId);
-        this.removeItemModal?.hide();
-      },
-      (err) => {
-        console.log(err);
-        this.toastr.error("Error deleting user");
-      }
-    );
-  }
+
+
   projectlist: any;
-  loadProject() {
-    return this.moservice
-      .all<ResponseData<Project[]>>("projects/all")
-      .subscribe((data: ResponseData<Project[]>) => {
-        this.projectlist = data.data;
-      });
-  }
+
 
   createHeader() {
     return [
@@ -507,11 +345,6 @@ export class MolistComponent implements OnInit {
         th: "Email",
         td: "email",
       },
-      {
-        th: "Role",
-        td: "sous_role",
-      },
-
       {
         th: "Numéro téléphone ",
         td: "contact",
@@ -535,7 +368,7 @@ export class MolistComponent implements OnInit {
         size: "icon-size-4",
         title: "Supprimer",
         isDisabled: this.hasDelete,
-        action: (element?) => this.supprimerItems(element.id, element),
+        action: (element?) => this.supprimerItems(element.id),
       },
       {
         icon: "bxs-info-circle",
@@ -554,40 +387,31 @@ export class MolistComponent implements OnInit {
     console.log(information);
     this.snackbar.openModal(
       AddUserComponent,
-      "50rem",
+      "57rem",
       "edit",
-      "",
+      "38",
       information,
       "",
       () => {
-        // this.getList();
+         this.fetchMo();
       }
     );
   }
 
   //cette fonction permet de supprimer
-  supprimerItems(id, information) {
-    console.log("====================================");
-    console.log(id);
-    console.log("====================================");
+  supprimerItems(id) {
     this.snackbar
       .showConfirmation("Voulez-vous vraiment supprimer ce utilisateur?")
       .then((result) => {
         if (result["value"] == true) {
-          this.deleteUser = true;
-          this.currentIndex = information;
-          this.showLoader = "isShow";
           const message = "utilisateur  supprimé";
           this.coreService.deleteItem(id, "users/deleteMo").subscribe(
             (resp) => {
-              this.showLoader = "isNotShow";
               if (resp["responseCode"] == 200) {
                 // this.getUsers();
               }
             },
             (error) => {
-              this.showLoader = "isNotShow";
-              this.deleteUser = false;
               this.snackbar.showErrors(error);
             }
           );
@@ -600,9 +424,9 @@ export class MolistComponent implements OnInit {
   addItems(): void {
     this.snackbar.openModal(
       AddMaitreOuvrageComponent,
-      "55rem",
+      "57rem",
       "new",
-      "auto",
+      "38rem",
       this.datas,
       "",
       () => {

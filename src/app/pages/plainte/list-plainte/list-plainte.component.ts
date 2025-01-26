@@ -73,8 +73,6 @@ export class ListPlainteComponent implements OnInit {
   displayedColumns: any;
   searchList: any;
   codeEnvoye: number; //code envoye par notre menu
-  hasList: boolean;
-  hasAdd: boolean;
   hasUpdate: boolean;
   hasDelete: boolean;
   hasDetail: boolean;
@@ -306,13 +304,16 @@ export class ListPlainteComponent implements OnInit {
       "55rem",
       "new",
       "",
-     // this.datas,
+      this.datas,
       "",
       () => {
         this.getPlainte();
       }
     );
   }
+
+
+
 
   convertedJson: string;
 
