@@ -28,7 +28,10 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatBadgeModule } from "@angular/material/badge";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatTableModule } from "@angular/material/table";
+import { MatDividerModule } from '@angular/material/divider';
 import { MatSort, MatSortModule } from "@angular/material/sort";
+import { MatCardModule } from '@angular/material/card';
+import { MatListModule } from '@angular/material/list';
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import {
   MatStep,
@@ -240,7 +243,11 @@ const materialModules = [
   MatNativeDateModule,
   MatDatepickerModule,
   MatNativeDateModule,
-  MatDatepickerModule
+  MatDatepickerModule,
+  MatDividerModule,
+  MatCardModule,
+ // MatListModule,
+
 ];
 @NgModule({
   declarations: [],

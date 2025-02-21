@@ -65,106 +65,31 @@ export class PipDetailComponent {
     private coreService: CoreService,
     private snackbar: SnackBarService,
     private clientServive: ClientVueService,
-    private _matDialog: MatDialog,
-    private sharedService: SharedService,
     private localService :LocalService
   ) {
     this.menuData = [
       {
-        title: "Gestion",
+        title: "Gestion     ",
         children: [
           {
             id: "info-client",
             title: "Projets",
             icon: "heroicons_outline:user-group",
           },
-          {
-            id: "personne-lie",
-            title: "???",
-            icon: "heroicons_outline:user-group",
-          },
-          {
-            id: "signataires",
-            title: "????",
-            icon: "heroicons_outline:users",
-          },
-         // {
-          //   id: "groupement",
-          //   title: "Membres groupement",
+          // {
+          //   id: "personne-lie",
+          //   title: "???",
           //   icon: "heroicons_outline:user-group",
           // },
           // {
-          //   id: "actionnaire",
-          //   title: "Actionnaire",
-          //   icon: "heroicons_outline:user-circle",
+          //   id: "signataires",
+          //   title: "????",
+          //   icon: "heroicons_outline:users",
           // },
-          // {
-          //   id: "frais",
-          //   title: "Frais",
-          //   icon: "heroicons_outline:cash",
-          // },
-          // {
-          //   id: "transfert",
-          //   title: "Transfert",
-          //   icon: "heroicons_outline:arrow-narrow-right",
-          // },
-          // {
-          //   id: "audit",
-          //   title: "Audit Log",
-          //   icon: "heroicons_outline:document-text",
-          // },
+
         ],
       },
-      // {
-      //   title: "Produit",
-      //   children: [
-      //     {
-      //       id: "compte",
-      //       title: "Compte",
-      //       icon: "mat_outline:account_balance",
-      //     },
-      //     {
-      //       id: "demande",
-      //       title: "Demande de crédit",
-      //       icon: "heroicons_outline:document-text",
-      //     },
-      //     {
-      //       id: "permanent",
-      //       title: "Virement permanent",
-      //       icon: "heroicons_outline:cash",
-      //     },
-      //     {
-      //       id: "credit",
-      //       title: "Crédit",
-      //       icon: "heroicons_outline:cash",
-      //     },
-      //     {
-      //       id: "epargne",
-      //       title: "Depot terme",
-      //       icon: "mat_outline:account_balance",
-      //     },
-      //     {
-      //       id: "wallet",
-      //       title: "Wallet",
-      //       icon: "mat_outline:account_balance_wallet",
-      //     },
-      //     {
-      //       id: "decouvert",
-      //       title: "Découvert",
-      //       icon: "heroicons_outline:cash",
-      //     },
-      //   ],
-      // },
-      // {
-      //   title: "Rapport",
-      //   children: [
-      //     {
-      //       id: "fiche-client",
-      //       title: "Fiche client",
-      //       icon: "heroicons_outline:document-text",
-      //     },
-      //   ],
-      // },
+
     ];
 
     this.menuPP = [
@@ -198,57 +123,6 @@ export class PipDetailComponent {
           },
         ],
       },
-      // {
-      //   title: "Produit",
-      //   children: [
-      //     {
-      //       id: "compte",
-      //       title: "Compte",
-      //       icon: "mat_outline:account_balance",
-      //     },
-      //     {
-      //       id: "demande",
-      //       title: "Demande de crédit",
-      //       icon: "heroicons_outline:document-text",
-      //     },
-      //     {
-      //       id: "permanent",
-      //       title: "Virement permanent",
-      //       icon: "heroicons_outline:cash",
-      //     },
-      //     {
-      //       id: "credit",
-      //       title: "Crédit",
-      //       icon: "heroicons_outline:cash",
-      //     },
-      //     {
-      //       id: "epargne",
-      //       title: "Depot Terme",
-      //       icon: "mat_outline:account_balance",
-      //     },
-
-      //     {
-      //       id: "wallet",
-      //       title: "Wallet",
-      //       icon: "mat_outline:account_balance_wallet",
-      //     },
-      //     {
-      //       id: "decouvert",
-      //       title: "Découvert",
-      //       icon: "heroicons_outline:cash",
-      //     },
-      //   ],
-      // },
-      // {
-      //   title: "Rapport",
-      //   children: [
-      //     {
-      //       id: "fiche-client",
-      //       title: "Fiche client",
-      //       icon: "heroicons_outline:document-text",
-      //     },
-      //   ],
-      // },
     ];
     this.menuPM = [
       {
@@ -290,57 +164,7 @@ export class PipDetailComponent {
             icon: "heroicons_outline:user-group",
           },
         ],
-      },
-      // {
-      //   title: "Produit",
-      //   children: [
-      //     {
-      //       id: "compte",
-      //       title: "Compte",
-      //       icon: "mat_outline:account_balance",
-      //     },
-      //     {
-      //       id: "demande",
-      //       title: "Demande de crédit",
-      //       icon: "heroicons_outline:document-text",
-      //     },
-      //     {
-      //       id: "permanent",
-      //       title: "Virement permanent",
-      //       icon: "heroicons_outline:cash",
-      //     },
-      //     {
-      //       id: "credit",
-      //       title: "Crédit",
-      //       icon: "heroicons_outline:cash",
-      //     },
-      //     {
-      //       id: "epargne",
-      //       title: "Épargne",
-      //       icon: "mat_outline:account_balance",
-      //     },
-      //     {
-      //       id: "wallet",
-      //       title: "Wallet",
-      //       icon: "mat_outline:account_balance_wallet",
-      //     },
-      //     {
-      //       id: "decouvert",
-      //       title: "Découvert",
-      //       icon: "heroicons_outline:cash",
-      //     },
-      //   ],
-      // },
-      // {
-      //   title: "Rapport",
-      //   children: [
-      //     {
-      //       id: "fiche-client",
-      //       title: "Fiche client",
-      //       icon: "heroicons_outline:document-text",
-      //     },
-      //   ],
-      // },
+      }
     ];
     this.menuPMACTIONNAIRE = [
       {
@@ -361,78 +185,9 @@ export class PipDetailComponent {
             title: "???",
             icon: "heroicons_outline:cash",
           },
-          // {
-          //   id: "transfert",
-          //   title: "Transfert",
-          //   icon: "heroicons_outline:arrow-narrow-right",
-          // },
-          // {
-          //   id: "audit",
-          //   title: "Audit Log",
-          //   icon: "heroicons_outline:document-text",
-          // },
-          // {
-          //   id: "signataires",
-          //   title: "Signataires",
-          //   icon: "heroicons_outline:users",
-          // },
-          // {
-          //   id: "actionnaire",
-          //   title: "Actionnaire",
-          //   icon: "heroicons_outline:user-circle",
-          // },
+
         ],
-      },
-      // {
-      //   title: "Produit",
-      //   children: [
-      //     {
-      //       id: "compte",
-      //       title: "Compte",
-      //       icon: "mat_outline:account_balance",
-      //     },
-      //     {
-      //       id: "demande",
-      //       title: "Demande de crédit",
-      //       icon: "heroicons_outline:document-text",
-      //     },
-      //     {
-      //       id: "permanent",
-      //       title: "Virement permanent",
-      //       icon: "heroicons_outline:cash",
-      //     },
-      //     {
-      //       id: "credit",
-      //       title: "Crédit",
-      //       icon: "heroicons_outline:cash",
-      //     },
-      //     {
-      //       id: "epargne",
-      //       title: "Épargne",
-      //       icon: "mat_outline:account_balance",
-      //     },
-      //     {
-      //       id: "wallet",
-      //       title: "Wallet",
-      //       icon: "mat_outline:account_balance_wallet",
-      //     },
-      //     {
-      //       id: "decouvert",
-      //       title: "Découvert",
-      //       icon: "heroicons_outline:cash",
-      //     },
-      //   ],
-      // },
-      // {
-      //   title: "Rapport",
-      //   children: [
-      //     {
-      //       id: "fiche-client",
-      //       title: "Fiche client",
-      //       icon: "heroicons_outline:document-text",
-      //     },
-      //   ],
-      // },
+      }
     ];
 
     this.route.params.subscribe((params) => {
@@ -472,40 +227,8 @@ export class PipDetailComponent {
         title: "Rôle",
         description: "",
       },
-      // {
-      //   id: "caisse",
-      //   icon: "heroicons_outline:bell",
-      //   title: "Caisse",
-      //   description: "",
-      // },
-      // {
-      //   id: "plafond",
-      //   icon: "heroicons_outline:user-group",
-      //   title: "Plafond",
-      //   description: "",
-      // },
+
     ];
-
-    // Subscribe to media changes
-    // this._fuseMediaWatcherService.onMediaChange$
-    //     .pipe(takeUntil(this._unsubscribeAll))
-    //     .subscribe(({matchingAliases}) => {
-
-    //         // Set the drawerMode and drawerOpened
-    //         if ( matchingAliases.includes('lg') )
-    //         {
-    //             this.drawerMode = 'side';
-    //             this.drawerOpened = true;
-    //         }
-    //         else
-    //         {
-    //             this.drawerMode = 'over';
-    //             this.drawerOpened = false;
-    //         }
-
-    //         // Mark for check
-    //         this._changeDetectorRef.markForCheck();
-    //     });
     this.getpap();
   }
 

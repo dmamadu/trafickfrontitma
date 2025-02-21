@@ -2,8 +2,6 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 
 import { PageChangedEvent } from "ngx-bootstrap/pagination";
 import { Store } from "@ngrx/store";
-import { fetchprojectData } from "src/app/store/ProjectsData/project.actions";
-import { selectData } from "src/app/store/ProjectsData/project-selector";
 import { ProjectService } from "src/app/core/services/project.service";
 import { ResponseData } from "src/app/shared/models/Projet.model";
 import { Project } from "../project.model";
@@ -77,46 +75,22 @@ export class ProjectlistComponent implements OnInit {
       .all<ResponseData<Project[]>>("projects/all")
       .subscribe((data: ResponseData<Project[]>) => {
         this.projectlist = data.data;
-        console.log("====================================");
-        console.log(this.projectlist);
         this.filteredProjects = this.projectlist;
-        console.log("====================================");
         this.isLoading = false;
       });
   }
 
   myImage: string;
-  getImageFromBase64(imageType: string, imageName: number[]): string {
-    const base64Representation = "data:" + imageType + ";base64," + imageName;
-    return base64Representation;
-  }
 
-  editUser(id: any) {
-    console.log(id);
-  }
+
+
 
   selectItem(item: any) {
     this.sharedService.setSelectedItem(item);
     this.router.navigate(["/projects/update"]);
   }
 
-  // delet(userId: number) {
-  //   this.projectService
-  //     .delete<ResponseData<Project>>(userId, "projects/delete")
-  //     .subscribe(
-  //       (data: ResponseData<any>) => {
-  //         console.log(data.message);
-  //         this.toastr.success(data.message);
-  //         this.filteredProjects = this.filteredProjects.filter(
-  //           (mo) => mo.id !== userId
-  //         );
-  //       },
-  //       (err) => {
-  //         console.log(err);
-  //         this.toastr.error("Error deleting user");
-  //       }
-  //     );
-  // }
+
 
   delet(userId: number) {
     this.snackbar
@@ -145,15 +119,7 @@ export class ProjectlistComponent implements OnInit {
     this.removeItemModal?.show();
   }
 
-  // filterTable(event: any) {
-  //   const searchValue = event.target.value.toLowerCase();
-  //   this.projectlist = this.projectlist.filter(project =>
-  //     project.libelle.toLowerCase().includes(searchValue) ||
-  //     project.categorie.toLowerCase().includes(searchValue) ||
-  //     project.status.toLowerCase().includes(searchValue) ||
-  //     project.datedebut.toLowerCase().includes(searchValue)
-  //   );
-  // }
+
 
   filterTable(event: any) {
     const searchValue = event.target.value.toLowerCase();

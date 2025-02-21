@@ -24,14 +24,15 @@ export class SignatureClientComponent {
     loaderImg: boolean = false;
     infosPap: any;
     noImage;
-    urlImage=    environment.apiUrl+'image/getFile/';
+    //urlImage=    environment.apiUrl+'image/getFile/';
+
+    urlImage = environment.apiUrl + "fileAws/download/";
 
     constructor(
         public matDialogRef: MatDialogRef<SignatureClientComponent>, @Inject(MAT_DIALOG_DATA) _data,
         private snackbar: SnackBarService,
         private clientServive: ClientVueService,
         private _changeDetectorRef: ChangeDetectorRef,
-        private clientService: ClientVueService
     ) {
         this.infosPap = _data.pap;
         console.log(this.infosPap);
@@ -50,7 +51,7 @@ export class SignatureClientComponent {
       let accept = [];
       let extension = "";
       if (type === "photo_profile") {
-        accept = [".png", ".PNG", ".jpg", ".JPG"];
+        accept = [".png", ".PNG", ".jpg", ".JPG",".JEPG",".jpeg"];
         extension = "une image";
       }
       for (const file of evt.target.files) {
@@ -104,7 +105,7 @@ export class SignatureClientComponent {
         (resp) => {
           if (resp) {
           console.log(resp);
-          this.signature =   `${this.urlImage+resp["data"]}`;
+          this.signature =   `${this.urlImage+resp["fileName"]}`;
            console.log( this.signature);
           this.saveFile(resp["data"]);
             this._changeDetectorRef.detectChanges();
@@ -134,7 +135,6 @@ export class SignatureClientComponent {
         },
         (error) => {
           console.log(error);
-
           this.loaderImg = false;
           this.snackbar.showErrors(error);
         }

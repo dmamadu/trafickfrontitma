@@ -44,4 +44,8 @@ export class ServiceParent implements Resolve<any> {
   liste(url, max, offset,categorieLibelle): Observable<any[]> {
     return this.http.get<any[]>(this.url+ `${url}`+"?max=" + max + "&offset="+offset+"&categorieLibelle="+categorieLibelle);
   }
+
+  listeByProject(url, max, offset,projectId): Observable<any[]> {
+    return this.http.get<any[]>(this.url+ `${url}`+"?max=" + max + "&offset="+offset+"&projectId="+projectId);
+  }
 }

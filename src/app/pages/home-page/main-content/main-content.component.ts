@@ -57,11 +57,11 @@ export class MainContentComponent implements OnInit {
    private initForm() {
     this.contactForm = this.fb.group({
       motif: ['', Validators.required],
-      name: ['', Validators.required],
+      nomComplet: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
+      numeroTelephone: ['', Validators.required],
       subject: ['', Validators.required],
-      message: ['', Validators.required],
+      contenu: ['', Validators.required],
       dateCreation:[new Date()]
     });
   }

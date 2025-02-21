@@ -303,9 +303,6 @@ export class CoreService {
   getPapByCodePap(type: string, codePap: string): Observable<any> {
     let endpoint = '';
     switch (type) {
-      case 'economique':
-        endpoint = 'papEconomique';
-        break;
       case 'agricole':
         endpoint = 'papAgricole';
         break;
@@ -315,7 +312,7 @@ export class CoreService {
       default:
         throw new Error('Type invalide : ' + type);
     }
-    return this._httpClient.get<any>(`${environment.apiUrl}/${endpoint}/by-code-pap/${codePap}`);
+    return this._httpClient.get<any>(`${environment.apiUrl}${endpoint}/byCodePap/${codePap}`);
   }
 
     balanceGeneral(url,item): Observable<any> {

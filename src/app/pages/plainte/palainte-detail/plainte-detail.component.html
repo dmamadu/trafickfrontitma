@@ -1,4 +1,4 @@
-<div class="flex flex-col flex-auto min-w-0">
+<!-- <div class="flex flex-col flex-auto min-w-0">
   <div class="flex flex-col shadow bg-card">
     <div>
       <img class="h-24 lg:h-24 object-cover w-full" src="../../../../assets/images/41.jpg" alt="Cover image">
@@ -23,5 +23,91 @@
           </mat-drawer-content>
       </mat-drawer-container>
   </div>
-</div>
+</div> -->
 
+<mat-toolbar class="mat-accent m-0 backToolbar">
+  <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
+    <span class="">Détail d'une plainte</span>
+    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+
+<mat-card *ngIf="plainte" class="plainte-card">
+  <mat-card-header>
+    <div mat-card-avatar>
+      <mat-icon>assignment</mat-icon>
+    </div>
+    <mat-card-title>{{ plainte.prenom }} {{ plainte.nom }}</mat-card-title>
+    <mat-card-subtitle>Numéro de dossier: {{ plainte.numeroDossier }}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <!-- Informations de base organisées en grille -->
+    <div class="info-grid">
+      <!-- Ligne 1 : Date et Lieu -->
+      <div class="info-item">
+        <mat-icon matListIcon>date_range</mat-icon>
+        <div matLine>Date d'enregistrement: {{ plainte.dateEnregistrement | date }}</div>
+      </div>
+      <div class="info-item">
+        <mat-icon matListIcon>location_on</mat-icon>
+        <div matLine>Lieu d'enregistrement: {{ plainte.lieuEnregistrement }}</div>
+      </div>
+
+      <!-- Ligne 2 : Email et Contact sur la même ligne -->
+
+        <div class="info-item">
+          <mat-icon matListIcon>email</mat-icon>
+          <div matLine>Email: {{ plainte.email }}</div>
+        </div>
+        <div class="info-item">
+          <mat-icon matListIcon>phone</mat-icon>
+          <div matLine>Contact: {{ plainte.contact }}</div>
+        </div>
+
+
+      <!-- Ligne 3 : État -->
+      <div class="info-item">
+        <mat-icon matListIcon>flag</mat-icon>
+        <div matLine>État: {{ plainte.etat }}</div>
+      </div>
+    </div>
+
+    <!-- Description en bas -->
+    <div class="description">
+      <h3>Description</h3>
+      <p>{{ plainte.descriptionObjet }}</p>
+    </div>
+
+
+
+    <mat-divider></mat-divider>
+
+    <!-- Documents -->
+    <h3>Documents</h3>
+    <div class="documents">
+      <div *ngFor="let docUrl of plainte.documentUrls">
+        <img [src]="docUrl" alt="Document" class="document-image">
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Signatures -->
+    <h3>Signatures</h3>
+    <div class="signatures">
+      <div>
+        <h4>Signature du PAP</h4>
+        <img [src]="plainte.urlSignaturePap" alt="Signature du PAP" class="signature-image">
+      </div>
+      <div>
+        <h4>Signature du Responsable</h4>
+        <img [src]="plainte.urlSignatureResponsable" alt="Signature du Responsable" class="signature-image">
+      </div>
+    </div>
+
+  </mat-card-content>
+</mat-card>

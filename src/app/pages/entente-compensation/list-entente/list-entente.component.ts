@@ -19,6 +19,8 @@ import { LocalService } from "src/app/core/services/local.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { AddEntenteComponent } from "../add-entente/add-entente.component";
 import { AjoutEntenteComponent } from "../ajout-entente/ajout-entente.component";
+import { CoreService } from "src/app/shared/core/core.service";
+import { CompensationDetailComponent } from "../compensation-detail/compensation-detail.component";
 
 @Component({
   selector: "app-list-entente",
@@ -103,14 +105,18 @@ export class ListEntenteComponent implements OnInit {
   headers: any = [];
   btnActions: any = [];
 
+  currentUser: any;
+
   constructor(
     private _router: Router,
-    private ententeCompensationService: EntenteCompensationService,
     private _changeDetectorRef: ChangeDetectorRef,
     private parentService: ServiceParent,
     private localService: LocalService,
     private snackbar: SnackBarService,
-  ) {}
+    private coreService: CoreService
+  ) {
+    this.currentUser = this.localService.getDataJson("user");
+  }
 
   createHeader() {
     return [
@@ -131,38 +137,37 @@ export class ListEntenteComponent implements OnInit {
 
   createActions(): ButtonAction[] {
     return [
-      // {
-      //   icon: "bxs-edit",
-      //   couleur: "green",
-      //   size: "icon-size-4",
-      //   title: "Modifier",
-      //   isDisabled: this.hasUpdate,
-      //   action: (element?) => this.updateItems(element),
-      // },
-      // {
-      //   icon: "bxs-trash-alt",
-      //   couleur: "red",
-      //   size: "icon-size-4",
-      //   title: "Supprimer",
-      //   isDisabled: this.hasDelete,
-      //   action: (element?) => this.supprimerItems(element.id, element),
-      // },
+      {
+        icon: "bxs-edit",
+        couleur: "green",
+        size: "icon-size-4",
+        title: "Modifier",
+        isDisabled: this.hasUpdate,
+        action: (element?) => this.updateItems(element),
+      },
+      {
+        icon: "bxs-trash-alt",
+        couleur: "red",
+        size: "icon-size-4",
+        title: "Supprimer",
+        isDisabled: this.hasDelete,
+        action: (element?) => this.supprimerItems(element.id, element),
+      },
       {
         icon: "bxs-info-circle",
         couleur: "#00bfff	",
         size: "icon-size-4",
         title: "détail",
         isDisabled: this.hasDelete,
-        action: (element?) => this.detailItems(element.id, element),
+        action: (element?) => this.detailItems(element),
       },
     ];
   }
 
-
   addItems(): void {
     this.snackbar.openModal(
       AjoutEntenteComponent,
-      "60rem",
+      "73rem",
       "new",
       "",
       this.datas,
@@ -173,30 +178,90 @@ export class ListEntenteComponent implements OnInit {
     );
   }
 
-
-
-
-
-
-
-
-
-
-
-  updateItems(element: any) {}
-  supprimerItems(id: any, element: any) {}
-
-  detailItems(id: any, element: any) {
+  updateItems(element: any) {
     console.log(element);
-    this.localService.saveDataJson("entente", element);
 
-    this._router.navigate(["ententeCompensation/detail"]);
+    this.snackbar.openModal(
+      AjoutEntenteComponent,
+      "73rem",
+      "edit",
+      "",
+      element,
+      "",
+      () => {
+        this.getEntente();
+      }
+    );
   }
+  supprimerItems(id, information) {
+    this.snackbar
+      .showConfirmation("Voulez-vous vraiment supprimer cette entente?")
+      .then((result) => {
+        if (result["value"] == true) {
+          this.currentIndex = information;
+          this.showLoader = "isShow";
+          this.coreService.deleteItem(id, "ententes").subscribe(
+            (resp: any) => {
+              if (resp && resp["responseCode"] == "200") {
+                this.getEntente();
+                this.snackbar.openSnackBar(
+                  "Entente supprimée avec succès",
+                  "OK",
+                  ["mycssSnackbarGreen"]
+                );
+              } else {
+                console.error("Unexpected response structure", resp);
+                this.snackbar.openSnackBar(
+                  "Une erreur s'est produite lors de la suppression de l'entente.",
+                  "OK",
+                  ["mycssSnackbarRed"]
+                );
+              }
+            },
+            (error) => {
+              this.snackbar.showErrors(error);
+            }
+          );
+        }
+      });
+  }
+
+  // detailItems(id: any, element: any) {
+  //   console.log(element);
+  //   this.localService.saveDataJson("entente", element);
+
+  //   this._router.navigate(["ententeCompensation/detail"]);
+  // }
+
+  detailItems(element: any) {
+    console.log(element);
+    this.snackbar.openModal(
+      CompensationDetailComponent,
+      "",
+      "edit",
+      "",
+      element,
+      "",
+      () => {
+        this.getEntente();
+      }
+    );
+  }
+
   getEntente() {
     return this.parentService
-      .list("entente_compensations", this.pageSize, this.offset)
+      .listeByProject(
+        "ententes",
+        this.pageSize,
+        this.offset,
+        this.currentUser.projects[0]?.id
+      )
       .subscribe(
         (data: any) => {
+          console.log("ententes");
+
+          console.log(data);
+
           this.loadData = false;
           if (data["responseCode"] == 200) {
             this.loadData = false;

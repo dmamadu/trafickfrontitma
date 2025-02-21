@@ -130,7 +130,6 @@ export class PapAgricoleComponent {
     private _router: Router,
     private datePipe: DatePipe,
     private snackbar: SnackBarService,
-    private _matDialog: MatDialog,
     private papService: PapService,
     private parentService: ServiceParent,
     public matDialogRef: MatDialogRef<PapAgricoleComponent>,
@@ -265,7 +264,6 @@ export class PapAgricoleComponent {
           if (data["responseCode"] == 200) {
             this.loadData = false;
             console.log(data);
-
             this.dataSource = new MatTableDataSource(data["data"]);
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
@@ -306,7 +304,7 @@ export class PapAgricoleComponent {
       information,
       "",
       () => {
-        this.getList();
+        this.getPapAgricole();
       }
     );
   }
@@ -614,6 +612,8 @@ export class PapAgricoleComponent {
           return obj;
         });
         this.dataExcel = jsonData;
+        console.log("data",this.dataExcel);
+
         //this.convertedJson = JSON.stringify(jsonData, undefined, 4);
       });
     };
@@ -655,31 +655,12 @@ export class PapAgricoleComponent {
       (err) => {
         this.loadData = false;
         console.log(err);
-
         this.toastr.error(err);
       }
     );
   }
 
-  importDatas(params: string) {
-    return this.papService.add(`${params} `, this.dataExcel).subscribe(
-      (data: any) => {
-        console.log("====================================");
-        console.log(data);
-        console.log("====================================");
-        this.toastr.success(data.message);
-        this.selectedOption = "";
-        this.resetDataFromExcel();
-      },
-      (err) => {
-        console.log("====================================");
-        console.log(err);
-        console.log("====================================");
-        this.toastr.error(err);
-        this.resetDataFromExcel();
-      }
-    );
-  }
+
 
   onOptionSelected() {
     console.log("Valeur sélectionnée :", this.selectedOption);

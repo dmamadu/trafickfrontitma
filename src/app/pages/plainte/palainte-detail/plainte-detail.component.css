@@ -1,5 +1,175 @@
-.span-text {
+/* .plainte-card {
+  width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+mat-card-header {
+  background-color: #3f51b5;
+  color: white;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  padding: 16px;
+}
+
+mat-card-content {
+  padding: 16px;
+}
+
+.signature-image {
+  max-width: 100%;
+  height: 170px;
+  width: 170px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  background-color: #f9f9f9;
+}
+
+.document-image {
+  max-width: 100%;
+  height: 170px;
+  width: 170px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  background-color: #f9f9f9;
+}
+
+h3 {
+  color: #3f51b5;
+  margin-top: 20px;
+}
+
+h4 {
+  color: #555;
+  margin-bottom: 10px;
+}
+
+mat-divider {
+  margin: 20px 0;
+} */
+
+
+.plainte-card {
+  width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+mat-card-header {
+  background-color: #3c3c3d transparent;
+  color: white;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  padding: 1px;
+}
+
+mat-card-content {
+  padding: 16px;
+}
+
+/* Grille pour les informations */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Deux colonnes */
+  gap: 16px; /* Espace entre les éléments */
+  margin-bottom: 20px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Espace entre l'icône et le texte */
+}
+
+.full-width {
+  grid-column: span 2; /* Prend toute la largeur */
+}
+
+/* Description en bas */
+.description {
+  margin-top: 20px;
+}
+
+.description h3 {
+  color: #3f51b5;
+  margin-bottom: 10px;
+}
+
+.description p {
+  margin: 0;
+  white-space: pre-wrap; /* Pour conserver les sauts de ligne */
+}
+
+/* Signatures */
+.signatures {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.signature-image {
+  max-width: 100%;
+  height: 170px;
+  width: 170px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  background-color: #f9f9f9;
+}
+
+.document-image {
+  max-width: 100%;
+  height: 170px;
+  width: 170px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  background-color: #f9f9f9;
+}
+
+/* Documents */
+.documents {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+
+h3 {
+  color: #3f51b5;
+  margin-top: 20px;
+}
+
+h4 {
+  color: #555;
+  margin-bottom: 10px;
+}
+
+mat-divider {
+  margin: 20px 0;
+}
+
+
+mat-card-title {
+  font-size: 18px;
+  font-weight: bold;
+
+}
+
+mat-card-subtitle {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+mat-list-item{
   color: black;
   font-size: 14px;
-  font-weight: 500;
 }

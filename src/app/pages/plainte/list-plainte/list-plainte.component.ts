@@ -31,6 +31,8 @@ import { AddPlainteComponent } from "../add-plainte/add-plainte.component";
 import * as XLSX from "xlsx";
 import { DatatableComponent } from "src/app/shared/datatable/datatable.component";
 import { ExportService } from "src/app/shared/core/export.service";
+import { DetailPlainteComponent } from "src/app/detail-plainte/detail-plainte.component";
+import { PlainteDetailComponent } from "../palainte-detail/plainte-detail.component";
 
 @Component({
   selector: "app-list-plainte",
@@ -48,13 +50,13 @@ import { ExportService } from "src/app/shared/core/export.service";
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { appearance: "outline" },
     },
-    ExportService
+    ExportService,
   ],
   imports: [
-      TableauComponent,
-      UIModule,
-      AngularMaterialModule,
-      DatatableComponent,
+    TableauComponent,
+    UIModule,
+    AngularMaterialModule,
+    DatatableComponent,
   ],
   styleUrl: "./list-plainte.component.css",
 })
@@ -123,8 +125,7 @@ export class ListPlainteComponent implements OnInit {
     private sharedService: SharedService,
     private localService: LocalService,
     private coreService: CoreService,
-    private exportService: ExportService,
-
+    private exportService: ExportService
   ) {}
 
   ngOnInit(): void {
@@ -190,13 +191,13 @@ export class ListPlainteComponent implements OnInit {
         size: "icon-size-4",
         title: "détail",
         isDisabled: this.hasDelete,
-        action: (element?) => this.detailItems(element.id, element),
+        action: (element?) => this.detailItems(element),
       },
     ];
   }
 
   getPlainte() {
-    this.loadData=true;
+    this.loadData = true;
     return this.parentService
       .list("plaintes", this.pageSize, this.offset)
       .subscribe(
@@ -260,7 +261,7 @@ export class ListPlainteComponent implements OnInit {
           this.showLoader = "isShow";
           this.coreService.deleteItem(id, "plaintes").subscribe(
             (resp: any) => {
-              if (resp && resp["responseCode"] == '200') {
+              if (resp && resp["responseCode"] == "200") {
                 this.getPlainte();
                 this.snackbar.openSnackBar(
                   "Plainte supprimée avec succès",
@@ -268,7 +269,7 @@ export class ListPlainteComponent implements OnInit {
                   ["mycssSnackbarGreen"]
                 );
               } else {
-                console.error('Unexpected response structure', resp);
+                console.error("Unexpected response structure", resp);
                 this.snackbar.openSnackBar(
                   "Une erreur s'est produite lors de la suppression de la plainte.",
                   "OK",
@@ -284,16 +285,35 @@ export class ListPlainteComponent implements OnInit {
       });
   }
 
-
   filterList() {
     this.isCollapsed = !this.isCollapsed;
   }
 
-  detailItems(id, information) {
-    console.log("ttetete", information);
-    this.localService.saveDataJson("plainte", information);
-    this.sharedService.setSelectedItem(information);
-    this._router.navigate(["plainte/detail"]);
+  // detailItems(id, information) {
+
+  //   console.log('====================================');
+  //   console.log(information);
+  //   console.log('====================================');
+  //   return
+  //   console.log("ttetete", information);
+  //   this.localService.saveDataJson("plainte", information);
+  //   this.sharedService.setSelectedItem(information);
+  //   this._router.navigate(["plainte/detail"]);
+  // }
+
+  detailItems(element: any) {
+    console.log(element);
+    this.snackbar.openModal(
+      PlainteDetailComponent,
+      "auto",
+      "edit",
+      "",
+      element,
+      "",
+      () => {
+        this.getPlainte();
+      }
+    );
   }
 
   record(item) {}
@@ -311,9 +331,6 @@ export class ListPlainteComponent implements OnInit {
       }
     );
   }
-
-
-
 
   convertedJson: string;
 
@@ -334,7 +351,6 @@ export class ListPlainteComponent implements OnInit {
       fileUploadElement.click();
     }
   }
-
 
   invalidComplaints: any[] = [];
   importData() {
@@ -404,11 +420,8 @@ export class ListPlainteComponent implements OnInit {
     };
   }
 
-
-
-
   exportAs(format) {
-    let nom = 'invalid data';
+    let nom = "invalid data";
     let value = this.invalidComplaints; // Utilisation de invalidComplaints au lieu de l'appel backend
 
     if (value.length != 0) {
@@ -454,8 +467,7 @@ export class ListPlainteComponent implements OnInit {
                     });
                   } else {
                     tabField.push({
-                      [this.headings[i]]:
-                        itemCurrent[field] || "",
+                      [this.headings[i]]: itemCurrent[field] || "",
                     });
                   }
                 }
@@ -481,10 +493,4 @@ export class ListPlainteComponent implements OnInit {
       ]);
     }
   }
-
-
-
-
-
-
 }

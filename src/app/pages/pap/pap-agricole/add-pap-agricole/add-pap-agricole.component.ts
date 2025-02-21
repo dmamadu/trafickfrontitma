@@ -263,10 +263,6 @@ export class AddPapAgricoleComponent {
 
 
   addItems() {
-    // if(this.listeNoire){
-    console.log("====================================");
-    console.log(this.initForm.value);
-    console.log("====================================");
     this.snackbar
       .showConfirmation("Voulez-vous vraiment ajouter ce pap ?")
       .then((result) => {
@@ -303,9 +299,6 @@ export class AddPapAgricoleComponent {
   }
 
   updateItems() {
-    console.log("====================================");
-    console.log(this.initForm.value);
-    console.log("====================================");
     this.snackbar
       .showConfirmation(
         "Voulez-vous vraiment modifier cette personne affectée ?"
@@ -354,7 +347,7 @@ export class AddPapAgricoleComponent {
     let accept = [];
     let extension = "";
     if (type === "photo_profile") {
-      accept = [".png", ".PNG", ".jpg", ".JPG"];
+      accept = [".png", ".PNG", ".jpg", ".JPG",".JPEG",".jpeg"];
       extension = "une image";
     }
     for (const file of evt.target.files) {

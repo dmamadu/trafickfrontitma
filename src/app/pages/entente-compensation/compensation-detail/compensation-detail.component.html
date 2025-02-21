@@ -1,0 +1,119 @@
+<mat-toolbar class="mat-accent m-0 backToolbar">
+  <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
+    <span class="">Détail d'une entente de compensation</span>
+    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-card *ngIf="compensation" class="compensation-card">
+  <mat-card-header class="mx-4">
+    <div mat-card-avatar class="header-avatar"></div>
+    <mat-card-title>{{ compensation.prenom }} {{ compensation.nom }}</mat-card-title> <br>
+    <mat-card-subtitle>{{ compensation.codePap }}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <!-- Section Informations Personnelles -->
+    <div fxLayout="row" fxLayoutGap="40px">
+      <!-- Section Informations Personnelles -->
+      <div fxFlex="50">
+        <h3>Informations Personnelles</h3>
+        <mat-list>
+          <mat-list-item fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+            <mat-icon matListIcon>person</mat-icon>
+            <div matLine>{{ compensation.sexe }}</div>
+          </mat-list-item>
+          <mat-list-item fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+            <mat-icon matListIcon>location_on</mat-icon>
+            <div matLine>{{ compensation.departement }}, {{ compensation.commune }}</div>
+          </mat-list-item>
+          <mat-list-item fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+            <mat-icon matListIcon>flag</mat-icon>
+            <div matLine>{{ compensation.nationalite }}</div>
+          </mat-list-item>
+        </mat-list>
+      </div>
+
+      <!-- Section Détails de la Compensation -->
+      <div fxFlex="50">
+        <h3>Détails de la Compensation</h3>
+        <mat-list>
+          <mat-list-item fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+            <mat-icon matListIcon>attach_money</mat-icon>
+            <div matLine>Frais de déplacement: {{ compensation.fraisDeplacement | currency }}</div>
+          </mat-list-item>
+          <mat-list-item fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+            <mat-icon matListIcon>home</mat-icon>
+            <div matLine>Superficie affectée: {{ compensation.superficieAffecte }} m²</div>
+          </mat-list-item>
+          <mat-list-item fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+            <mat-icon matListIcon>money_off</mat-icon>
+            <div matLine>Perte totale: {{ compensation.perteTotale | currency }}</div>
+          </mat-list-item>
+        </mat-list>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Section Signatures -->
+
+
+    <!-- Section Pertes de Récoltes -->
+    <h3><mat-icon matListIcon class="mr-3">local_florist</mat-icon> Pertes de Récoltes</h3>
+    <mat-list>
+      <mat-list-item *ngFor="let recolte of  compensation.perteRecoltes">
+
+        <div matLine>{{ recolte.produit }} - Rendement: {{ recolte.rendement }} - Prix: {{ recolte.prix | currency }}
+        </div>
+      </mat-list-item>
+    </mat-list>
+
+    <!-- Section Pertes d'Arbres -->
+    <h3> <mat-icon matListIcon class="mr-3">park</mat-icon>Pertes d'Arbres</h3>
+    <mat-list>
+      <mat-list-item *ngFor="let arbre of compensation.perteArbres">
+
+        <div matLine>{{ arbre.espece }} - Type: {{ arbre.type }} - Nombre: {{ arbre.nombre }} - Total: {{ arbre.total |
+          currency }}</div>
+      </mat-list-item>
+    </mat-list>
+
+    <!-- Section Pertes de Revenus -->
+    <h3><mat-icon matListIcon class="mr-3">trending_down</mat-icon>Pertes de Revenus</h3>
+    <mat-list>
+      <mat-list-item *ngFor="let revenue of compensation.perteRevenues">
+
+        <div matLine>{{ revenue.categorieRevenue }} - Perte: {{ revenue.perteRevenue | currency }}</div>
+      </mat-list-item>
+    </mat-list>
+
+    <!-- Section Pertes d'Équipements -->
+    <h3> <mat-icon matListIcon class="mr-3">build</mat-icon>Pertes d'Équipements</h3>
+    <mat-list>
+      <mat-list-item *ngFor="let equipement of compensation.perteEquipements">
+
+        <div matLine>{{ equipement.libelle }} - Nombre: {{ equipement.nombre }} - Prix: {{ equipement.prix | currency }}
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+
+  <mat-divider></mat-divider>
+
+
+  <h3>Signatures</h3>
+  <div fxLayout="row" fxLayoutGap="40px">
+    <div fxFlex="50">
+      <h4>Signature du PAP</h4>
+      <img [src]="compensation.urlSignaturePap" alt="Signature du PAP" class="signature-image">
+    </div>
+    <div fxFlex="50">
+      <h4>Signature du Responsable</h4>
+      <img [src]="compensation.urlSignatureResponsable" alt="Signature du Responsable" class="signature-image">
+    </div>
+  </div>
+
+</mat-card>

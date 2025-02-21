@@ -25,27 +25,7 @@
               </div>
           </div>
           <div class="hidden lg:flex h-8 mx-8 border-l-2"></div>
-          <div class="flex items-center mt-6 lg:mt-0 space-x-6">
-              <div class="flex flex-col">
-                  <button (click)="signatureClient()" class="c_btnAccount_attribut c_btnAccountF" matTooltip="Voir Signature Client">
-                      <i class="bx bx-pencil"></i>
-                  </button>
-              </div>
-          </div>
-          <!-- <div class="flex items-center mt-8 mb-4 lg:m-0 lg:ml-auto space-x-6">
-              <button class="fuse-mat-button-rounded bg-accent-700 c_btnAdher" mat-flat-button [color]="'accent'" matTooltip="Adhésion client" (click)="changeClient('adhesion')">
-                  <i class="bx bx-user-check" style="color: #FFFFFF !important;"></i>
-                  <span class="ml-2 textColor">Adhérer</span>
-              </button>
-              <button class="fuse-mat-button-rounded bg-accent-700 c_btnAdValider textColor" mat-flat-button [color]="'accent'" matTooltip="Validation client" (click)="changeClient('validation')">
-                  <i class="bx bx-user-check" style="color: #FFFFFF !important;"></i>
-                  <span class="ml-2">Valider</span>
-              </button>
 
-              <div *ngIf="loader">
-                  <mat-progress-spinner class="circle-loader" color="#000000" [mode]="'indeterminate'" [strokeWidth]="4" [value]="2" [diameter]="20"></mat-progress-spinner>
-              </div>
-          </div> -->
       </div>
   </div>
   <div class="flex flex-col w-full min-w-0 sm:inset-0 sm:overflow-hidden">
@@ -81,51 +61,6 @@
                   </div>
                   <div class="mt-4">
                     <info-client [infosPap]="infosPap" [persPhysique]="typeClient" [attributComplementaire]="attributComplementaires"></info-client>
-
-                      <!-- <ng-container [ngSwitch]="selectedPanel">
-                          <ng-container *ngSwitchCase="'compte'">
-                              <compte></compte>
-                          </ng-container>
-                          <ng-container *ngSwitchCase="'epargne'">
-                              <depot-terme></depot-terme>
-                          </ng-container>
-                          <ng-container *ngSwitchCase="'permanent'">
-                              <vue-virement-permanent></vue-virement-permanent>
-                          </ng-container>
-                          <ng-container *ngSwitchCase="'demande'">
-                              <vue-demande-credit (changePage)="goToPanel($event)"></vue-demande-credit>
-                          </ng-container>
-                          <ng-container *ngSwitchCase="'signataires'">
-                              <signataires></signataires>
-                          </ng-container>
-                          <ng-container *ngSwitchCase="'groupement'">
-                              <groupement></groupement>
-                          </ng-container>
-                          <ng-container *ngSwitchCase="'actionnaire'">
-                              <actionnaire-client></actionnaire-client>
-                          </ng-container>
-                          <ng-container *ngSwitchCase="'gestionnaire'">
-                              <gestionnaire></gestionnaire>
-                          </ng-container>
-                          <ng-container *ngSwitchCase="'personne-lie'">
-                              <personne-lie></personne-lie>
-                          </ng-container>
-                          <ng-container *ngSwitchCase="'info-client'">
-                              <info-client [infosPap]="infosPap" [persPhysique]="typeClient" [attributComplementaire]="attributComplementaires"></info-client>
-                          </ng-container>
-                          <ng-container *ngSwitchCase="'transfert'">
-                              <transfert [infosPap]="infosPap" [persPhysique]="typeClient"></transfert>
-                          </ng-container>
-                          <ng-container *ngSwitchCase="'fiche-client'">
-                              <fiche-client [infosPap]="infosPap" [persPhysique]="typeClient"></fiche-client>
-                          </ng-container>
-                          <ng-container *ngSwitchCase="'credit'">
-                              <vue-credit (changePage)="goToPanel($event)"></vue-credit>
-                          </ng-container>
-                          <ng-container *ngSwitchCase="'frais'">
-                              <frais-client></frais-client>
-                          </ng-container>
-                      </ng-container> -->
                   </div>
               </div>
           </mat-drawer-content>

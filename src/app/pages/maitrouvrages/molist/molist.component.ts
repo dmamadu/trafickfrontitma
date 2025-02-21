@@ -34,6 +34,7 @@ import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { AddUserComponent } from "../../parametrages/utilisateur/add-user/add-user.component";
 import { CoreService } from "src/app/shared/core/core.service";
 import { AddMaitreOuvrageComponent } from "../add-maitre-ouvrage/add-maitre-ouvrage.component";
+import { DetailUserComponent } from "../detail-user/detail-user.component";
 
 @Component({
   selector: "app-molist",
@@ -42,12 +43,9 @@ import { AddMaitreOuvrageComponent } from "../add-maitre-ouvrage/add-maitre-ouvr
 })
 export class MolistComponent implements OnInit {
   breadCrumbItems: Array<{}>;
-  term: any;
   total: Observable<number>;
   createMoForm!: UntypedFormGroup;
   submitted = false;
-  contacts: any;
-  files: File[] = [];
   endItem: any;
   listMo: Mo[] = [];
   @ViewChild("newContactModal", { static: false })
@@ -58,13 +56,9 @@ export class MolistComponent implements OnInit {
   returnedArray: any;
 
   @Input() fromDate: Date;
-  @Input() toDate: Date;
   @Output() dateRangeSelected: EventEmitter<{}> = new EventEmitter();
 
-  @ViewChild("dp", { static: true }) datePicker: any;
-
   dropdownData: any[] = [];
-  settings: IDropdownSettings = {};
   form!: FormGroup;
   selectedItems: any[] = [];
   user: User;
@@ -85,9 +79,6 @@ export class MolistComponent implements OnInit {
   dataSource: MatTableDataSource<any>;
   datas = [];
   loadData: boolean = false;
-  rechercher = "";
-  message = "";
-  config: any;
   isLoading: boolean = false;
   pageSizeOptions = [5, 10, 25, 100, 500, 1000];
   pageSize: number = 10;
@@ -101,7 +92,6 @@ export class MolistComponent implements OnInit {
   image;
   headers: any = [];
   btnActions: any = [];
-  private _changeDetectorRef: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -109,7 +99,6 @@ export class MolistComponent implements OnInit {
     public store: Store,
     private coreService: CoreService,
     public toastr: ToastrService,
-    //  private utilsService: UtilsService,
     private localService: LocalService,
     private snackbar: SnackBarService
   ) {}
@@ -376,12 +365,26 @@ export class MolistComponent implements OnInit {
         size: "icon-size-4",
         title: "détail",
         isDisabled: this.hasDelete,
-        action: (element?) => this.detailItems(element.id, element),
+        action: (element?) => this.detailItems(element),
       },
     ];
   }
-  detailItems(id: any, element: any) {
-    throw new Error("Method not implemented.");
+
+
+
+  detailItems(information): void {
+    console.log(information);
+    this.snackbar.openModal(
+      DetailUserComponent,
+      "57rem",
+      "edit",
+      "38",
+      information,
+      "",
+      () => {
+         this.fetchMo();
+      }
+    );
   }
   updateItems(information): void {
     console.log(information);

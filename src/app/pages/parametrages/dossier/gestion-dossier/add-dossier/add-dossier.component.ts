@@ -6,8 +6,7 @@ import {
 } from "@angular/forms";
 import {
   MatDialogRef,
-  MAT_DIALOG_DATA,
-  MatDialog,
+  MAT_DIALOG_DATA
 } from "@angular/material/dialog";
 import { MatDrawer } from "@angular/material/sidenav";
 import { MatStepper } from "@angular/material/stepper";
@@ -45,43 +44,22 @@ export class AddDossierComponent {
   pageIndex: number = 0;
 
   imageToff: any;
-
   imageProjet: any;
 
   nrSelect;
-  situationsMatrimoniales: any;
-  typeIdentifications: any = [];
-  capaciteJuridiques: any;
-  dateDelivrance;
-  regimeMatrimoniaux: any;
-  professions: any;
   loader: boolean;
   action: string;
-  minBirthDay: any;
-  today = new Date();
-  loaderss = false;
-  fields: any;
   canAdd: boolean;
-  dataCheck;
-  hasPhoneError: boolean;
-  currentValue: any;
-  countryChange: boolean = false;
-  eventNumber: any;
-  isFocus: unknown;
   noImage = "";
   errorCNI;
   newDate = new Date();
   emailPattern =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  isValidOnWhatsApp: boolean = true;
   ng2TelOptions;
-  idPiece;
-  listeNoire: boolean = false;
   categoriePartieInteresses: any;
   uploadedImage!: File;
   imageURL: string | undefined;
   urlImage = environment.apiUrl + "fileAws/download/";
-
 
   roles: any[] = [];
   categories: any[] = [];
@@ -121,9 +99,6 @@ export class AddDossierComponent {
     this.ng2TelOptions = { initialCountry: "sn" };
   }
 
-
-
-
   currentUser: any;
   ngOnInit(): void {
     this.getCategorieItems();
@@ -150,9 +125,7 @@ export class AddDossierComponent {
     });
   }
 
-  get phoneValue() {
-    return this.initForm.controls["numeroTelephonePersonneContact"];
-  }
+
 
   checkValidity(g: UntypedFormGroup) {
     Object.keys(g.controls).forEach((key) => {
@@ -168,7 +141,7 @@ export class AddDossierComponent {
 
   updateItems() {
     console.log(this.initForm.value);
-    this.initForm.get('projetId').setValue(1);
+   // this.initForm.get("projetId").setValue(1);
     this.snackbar
       .showConfirmation(`Voulez-vous vraiment modifier ce document `)
       .then((result) => {
@@ -224,49 +197,9 @@ export class AddDossierComponent {
   fileSelected;
   loaderImg = false;
 
-  saveFile(file, type, name) {
-    let formData = new FormData();
-    formData.append("file", file);
-    this.loaderImg = true;
-    this.changeDetectorRefs.detectChanges();
-    const dataFile = { file: file };
-    this.clientService.saveStoreFile(formData).subscribe(
-      (resp) => {
-        if (resp) {
-          console.log("====================================");
-          console.log(resp);
-          console.log("====================================");
-          this.noImage = resp["urlprod"];
-          this.initForm.get(name).setValue(this.noImage);
-          this.loaderImg = false;
-          this.changeDetectorRefs.detectChanges();
-          this.snackbar.openSnackBar("Fichier chargé avec succès", "OK", [
-            "mycssSnackbarGreen",
-          ]);
-        }
-      },
-      (error) => {
-        this.loaderImg = false;
-        this.snackbar.showErrors(error);
-      }
-    );
-  }
 
-  // Fin file sun telecom
 
-  fileChange(event: any) {
-    let fileList: any = event.target as HTMLInputElement;
-    let file: File = fileList.files[0];
-    this.uploadedImage = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imageURL = reader.result as string;
-      document.querySelectorAll("#member-img").forEach((element: any) => {
-        element.src = this.imageURL;
-      });
-    };
-    reader.readAsDataURL(file);
-  }
+
 
   deleteImage() {
     document
@@ -292,8 +225,8 @@ export class AddDossierComponent {
   }
 
   addItems() {
-   console.log(this.initForm.value);
-   this.initForm.get('projetId').setValue(1);
+    console.log(this.initForm.value);
+    this.initForm.get("projetId").setValue(1);
     this.snackbar
       .showConfirmation(`Voulez-vous vraiment ajouter ce document `)
       .then((result) => {
@@ -387,26 +320,27 @@ export class AddDossierComponent {
   saveStoreFile(file) {
     let formData = new FormData();
     formData.append("file", file);
-
-    this.clientServive
-      .saveStoreFile(formData)
-      .subscribe(
-        (resp) => {
-          if (resp) {
-            this.imageToff = `${this.urlImage + resp["data"]}`;
-            this.imageProjet = `${this.urlImage + resp["data"]}`;
-            this.initForm.get("urlDocument").setValue(this.imageProjet);
-            this.snackbar.openSnackBar(
-              "Fichier chargé avec succès : " + file.name,
-              "OK",
-              ["mycssSnackbarGreen"]
-            );
-          }
-        },
-        (error) => {
-          this.snackbar.showErrors(error);
+    this.loader = true;
+    this.clientServive.saveStoreFile(formData).subscribe(
+      (resp) => {
+        if (resp) {
+          this.imageToff = `${this.urlImage + resp["fileName"]}`;
+          this.imageProjet = `${this.urlImage + resp["fileName"]}`;
+          this.initForm.get("urlDocument").setValue(this.imageProjet);
+          this.snackbar.openSnackBar(
+            "Fichier chargé avec succès : " + file.name,
+            "OK",
+            ["mycssSnackbarGreen"]
+          );
         }
-      );
+        this.loader = false;
+      },
+      (error) => {
+        this.loader = false;
+
+        this.snackbar.showErrors(error);
+      }
+    );
   }
 
   getCategorieItems() {

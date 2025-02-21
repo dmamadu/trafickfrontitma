@@ -15,112 +15,88 @@
                                         <!-- <mat-icon class="c_icons c_cursor icon-size-5" [svgIcon]="'edit'"></mat-icon> -->
                                         <i class="bx bx-edit"></i>
                                     </button>
-                                    <button
-                                        class="ml-2 c_btnAccount_attribut c_btnAccountF"
-                                        [disabled]="infosPap?.statut ==='DEMISSION'"
-                                        matTooltip="Lettre de consentement" mat-icon-button>
-                                        <!-- <mat-icon class="c_icons c_cursor icon-size-5" [svgIcon]="'email'"></mat-icon> -->
-                                        <i class="bx bx-edit"></i>
-                                    </button>
+
                                 </div>
                             </div>
                             <hr class="w-full border-t">
                             <div class="flex flex-auto w-full">
                                 <div class="flex flex-col w-full">
                                     <div class="grid grid-cols-2">
-                                        <span class="mr-3">Libelle: </span>
-                                        <span class="leading-none font-bold">{{infosPap?.libelle}}</span>
+                                        <span class="mr-3">Libelle : </span>
+                                        <span class="leading-none font-bold"> {{infosPap?.libelle}}</span>
                                     </div>
                                     <div class="grid grid-cols-2 mt-4">
-                                        <span class="mr-3">Statut: </span>
-                                        <span class="leading-none font-bold">{{infosPap?.statut}}</span>
+                                        <span class="mr-3">Statut : </span>
+                                        <span class="leading-none font-bold"> {{infosPap?.statut}}</span>
                                     </div>
                                     <div class="grid grid-cols-2 mt-4">
-                                        <span class="mr-3">Localisation: </span>
-                                        <span class="leading-none font-bold">{{infosPap?.localisation}}</span>
+                                        <span class="mr-3">Localisation : </span>
+                                        <span class="leading-none font-bold"> {{infosPap?.localisation}}</span>
                                     </div>
                                     <div class="grid grid-cols-2 mt-4">
-                                        <span class="mr-3">Courriel Principal: </span>
-                                        <span class="leading-none font-bold">{{infosPap?.courielPrincipal
+                                        <span class="mr-3">Courriel Principal : </span>
+                                        <span class="leading-none font-bold"> {{infosPap?.courielPrincipal
                                         }}</span>
                                     </div>
                                     <div class="grid grid-cols-2 mt-4">
                                         <span class="">Adresse: </span>
-                                        <span class="leading-none font-bold">{{infosPap?.adresse}}</span>
+                                        <span class="leading-none font-bold"> {{infosPap?.adresse}}</span>
                                     </div>
 
                                 </div>
                                 <div class="flex flex-col w-full">
                                     <div class="grid grid-cols-2">
-                                        <span class="">Normes: </span>
+                                        <span class="">Normes : </span>
                                         <span class="leading-none font-bold">{{infosPap?.normes}}</span>
                                     </div>
 
                                 </div>
                             </div>
 
-                            <attribut-complementaire title="Attribut complémentaire"
-                                (ajoutAttributComplementaire)="ajoutAttributComplementaire(infosPap,_attributComplementaire)"
-                                [infosPap]="infosPap"
-                                (updateAttributComplementaire)="updateAttributComplementaire($event,infosPap)"
-                                [attributComplementaire]="_attributComplementaire"
-                                [natureAttribut]="'CLIENT'"></attribut-complementaire>
-
                         </div>
                     </div>
                 </mat-tab>
-                <mat-tab label="Responsable Principal">
-                    <div class="">
-                        <div class="flex flex-col w-full p-4">
-                            <div class="flex justify-between">
-                                <div class="leading-tight uppercase c_title_header">Responsable Principal</div>
-                                <button (click)="updateItems(infosPap?.personnePhysique)"
-                                    class="c_btnAccount_attribut c_btnAccountF" matTooltip="Modifier personne physique"
-                                    mat-icon-button>
+                <mat-tab label="Responsables Principaux">
+                  <div class="p-4">
+                      <div class="leading-tight uppercase c_title_header">Responsables</div>
+                      <hr class="w-full border-t">
 
+                      <div *ngIf="infosPap?.contacts?.length > 0; else noRepresentants">
+                          <div *ngFor="let representant of infosPap.contacts" class="border p-4 mb-4 rounded-lg shadow-sm">
+                              <div class="flex justify-between items-center">
+                                  <span class="font-bold text-lg">{{ representant.nomContactPrincipal }} {{ representant.prenomContactPrincipal }}</span>
+                                  <button (click)="updateClient(representant)"
+                                      class="c_btnAccount_attribut c_btnAccountF"
+                                      matTooltip="Modifier représentant"
+                                      mat-icon-button>
+                                      <i class="bx bx-edit"></i>
+                                  </button>
+                              </div>
+                              <hr class="my-2">
 
-                                    <i class="bx bx-edit"></i>
-                                </button>
-                            </div>
-                            <hr class="w-full border-t">
-                            <div class="flex flex-auto w-full">
-                                <div class="flex flex-col w-full">
-                                    <div class="grid grid-cols-2 items-center">
-                                        <span class="">Nom: </span>
-                                        <span class="leading-none font-bold">{{infosPap?.nomContactPrincipal}}
-                                          </span>
-                                    </div>
-                                    <div class="grid grid-cols-2 mt-4 items-center">
-                                        <span class="">Prénom: </span>
-                                        <span
-                                            class="leading-none font-bold">{{infosPap?.prenomContactPrincipal
-                                           }}</span>
-                                    </div>
-                                    <div class="grid grid-cols-2 mt-4 items-center">
-                                        <span class="">Email: </span>
-                                        <span
-                                            class="leading-none font-bold">{{infosPap?.emailContactPrincipal}}</span>
-                                    </div>
+                              <div class="grid grid-cols-2 gap-4">
+                                  <div>
+                                      <span class="font-semibold">Email:</span>
+                                      <span class="leading-none font-bold">{{ representant.emailContactPrincipal }}</span>
+                                  </div>
+                                  <div>
+                                      <span class="font-semibold">Téléphone:</span>
+                                      <span class="leading-none font-bold">{{ representant.telephoneContactPrincipal }}</span>
+                                  </div>
+                                  <div>
+                                      <span class="font-semibold">Sexe:</span>
+                                      <span class="leading-none font-bold">{{ representant.sexeContactPrincipal }}</span>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
 
-                                    <div class="grid grid-cols-2 mt-4 items-center">
-                                        <span class="">Sexe: </span>
-                                        <span
-                                            class="leading-none font-bold">{{infosPap?.sexeContactPrincipal}}</span>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col w-full">
-                                    <div class="grid grid-cols-2 items-center">
-                                        <span class="">Téléphone: </span>
-                                        <span
-                                            class="leading-none font-bold">{{infosPap?.telephoneContactPrincipal}}</span>
-                                    </div>
+                      <ng-template #noRepresentants>
+                          <p class="text-gray-500 italic">Aucun représentant disponible.</p>
+                      </ng-template>
+                  </div>
+              </mat-tab>
 
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </mat-tab>
 
             </mat-tab-group>
         </fuse-card>

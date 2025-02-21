@@ -100,9 +100,9 @@ export class AddEntenteComponent implements OnInit {
       urlSignatureResponsable: this.fb.control(donnees ? donnees?.urlSignatureResponsable : null, [
         Validators.required,
       ]),
-      // project_id: this.fb.control(this.currentUser.projects ? this.currentUser.projects[0]?.id   : null, [
-      //   Validators.required,
-      // ]),
+      project_id: this.fb.control(this.currentUser.projects ? this.currentUser.projects[0]?.id   : null, [
+        Validators.required,
+      ]),
       projectId: this.fb.control(
         this.currentUser.projects ? this.currentUser.projects[0]?.id : null,
         [Validators.required]

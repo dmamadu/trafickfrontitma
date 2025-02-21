@@ -294,6 +294,20 @@ export const MENU: MenuItem[] = [
         link: "/baremes/economique",
         parentId: 121,
       },
+      {
+        id: 123,
+        label: "Recoltes",
+        icon: "bxs-briefcase",
+        link: "/baremes/recolte",
+        parentId: 121,
+      },
+      {
+        id: 123,
+        label: "Revenues,",
+        icon: "bxs-briefcase",
+        link: "/baremes/revenue",
+        parentId: 121,
+      },
     ],
   },
 ];

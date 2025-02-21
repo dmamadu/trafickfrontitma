@@ -39,7 +39,7 @@ export class RootService {
 
   delete<T>(id: number, next: string): Observable<T> {
     return this.http.delete<T>(
-      this.url + `/${next}` + `${id}`,
+      this.url + `${next}/` + `${id}`,
       this.httpOptions
     );
   }

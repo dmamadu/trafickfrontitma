@@ -126,49 +126,9 @@ export class BaremePapOperateurEconomiqueComponent {
     this.currentUser = this.localService.getDataJson("user");
 
     console.log("user connecter", this.currentUser);
-    this.informations = {
-      exportFile: ["excel", "pdf"],
-      titleFile: "liste des pap",
-      code: "01410",
-      tabHead: ["Prénom", "Nom", "Nationalité"],
-      tabFileHead: [
-        "Prénom",
-        "Nom",
-        "Nationalité",
-        "Numéro identification",
-        "Téléphone",
-        "Situation Matrimoniale",
-        "Statut",
-        "Pays",
-        "Région",
-        "Localité de résidance",
-      ],
-      searchFields: [],
-      tabBody: ["prenom", "nom", "nationalite"],
-      tabFileBody: [
-        "prenom",
-        "nom",
-        "nationalite",
-        "numeroIdentification",
-        "numeroTelephone",
-        "situationMatrimoniale",
-        "statutPap",
-        "pays",
-        "region",
-        "localiteResidence",
-      ],
-      action: [
-        { name: "modifier", icon: "edit", color: "primary" },
-        {
-          name: "supprimer",
-          icon: "delete",
-          color: "red",
-        },
-        { name: "detail", icon: "detail", color: "red" },
-      ],
-    };
+
     //
-    this.displayedColumns = this.informations.tabBody;
+    //this.displayedColumns = this.informations.tabBody;
   }
 
   selectedOption: string = "";

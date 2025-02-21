@@ -314,7 +314,7 @@ export class AddMaitreOuvrageComponent {
     let accept = [];
     let extension = "";
     if (type === "photo_profile") {
-      accept = [".png", ".PNG", ".jpg", ".JPG"];
+    accept = [".png", ".PNG", ".jpg", ".JPG",".JPEG",".jpeg"];
       extension = "une image";
     }
     for (const file of evt.target.files) {

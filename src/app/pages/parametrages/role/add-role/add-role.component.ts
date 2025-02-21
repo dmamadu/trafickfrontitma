@@ -161,9 +161,6 @@ export class AddRoleComponent {
   }
 
   addItems() {
-    console.log("====================================");
-    console.log(this.initForm.value);
-    console.log("====================================");
     this.snackbar
       .showConfirmation(`Voulez-vous vraiment crée ce role `)
       .then((result) => {

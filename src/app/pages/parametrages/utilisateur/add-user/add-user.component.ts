@@ -4,10 +4,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from "@angular/forms";
-import {
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-} from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { MatDrawer } from "@angular/material/sidenav";
 import { MatStepper } from "@angular/material/stepper";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
@@ -77,18 +74,13 @@ export class AddUserComponent {
     } else if (_data?.action == "edit") {
       this.labelButton = "Modifier ";
       this.imageToff = _data.data.imageUrl;
-      this.id = _data.data.id;
+      // this.id = _data.data.id;
       this.initForms(_data.data);
-
     }
 
     this.action = _data?.action;
     this.dialogTitle = this.labelButton + this.suffixe;
   }
-
-
-
-
 
   currentUser: any;
   ngOnInit(): void {
@@ -99,44 +91,39 @@ export class AddUserComponent {
 
   initForms(donnees?) {
     this.initForm = this.fb.group({
-      lastname: this.fb.control(donnees ? donnees?.lastname : null, [
+      lastname: this.fb.control(donnees?.lastname ?? null, [
         Validators.required,
       ]),
-      firstname: this.fb.control(donnees ? donnees?.firstname : null, [
+      firstname: this.fb.control(donnees?.firstname ?? null, [
         Validators.required,
       ]),
-      email: this.fb.control(donnees ? donnees?.email : null, [
+      email: this.fb.control(donnees?.email ?? null, [
         Validators.required,
         Validators.email,
       ]),
-      locality: this.fb.control(donnees ? donnees?.locality : null, [
+      locality: this.fb.control(donnees?.locality ?? null, [
         Validators.required,
       ]),
 
-      project_id: this.fb.control(
-        this.currentUser.projects ? this.currentUser.projects[0]?.id : null,
-        [Validators.required]
-      ),
-      role_id: this.fb.control(donnees ? donnees?.role[0].id : null, [
+      project_id: this.fb.control(this.currentUser.projects?.[0]?.id ?? null, [
+        Validators.required,
+      ]),
+      role_id: this.fb.control(donnees?.roles?.[0]?.id ?? null, [
         Validators.required,
       ]),
       imageUrl: this.fb.control(
-        donnees ? this.urlImage + donnees?.imageUrl : null,
+        donnees?.imageUrl ? this.urlImage + donnees.imageUrl : null,
         [Validators.required]
       ),
-      contact: this.fb.control(donnees ? donnees?.contact : null, [
+      contact: this.fb.control(donnees?.contact ?? null, [Validators.required]),
+      categorie_id: this.fb.control(donnees?.categorie?.id ?? null, [
         Validators.required,
       ]),
-      categorie_id: this.fb.control(donnees ? donnees?.categorie.id : null, [
-        Validators.required,
-      ]),
-      fonction_id: this.fb.control(donnees ? donnees?.fonction.id : null, [
+      fonction_id: this.fb.control(donnees?.fonction?.id ?? null, [
         Validators.required,
       ]),
     });
   }
-
-
 
   checkValidity(g: UntypedFormGroup) {
     Object.keys(g.controls).forEach((key) => {
@@ -151,38 +138,34 @@ export class AddUserComponent {
   }
 
   updateItems() {
-    console.log(this.initForm.value);
+  //  console.log(this.initForm.value);
     this.snackbar
       .showConfirmation(`Voulez-vous vraiment modifier cet utilisateur `)
       .then((result) => {
         if (result["value"] == true) {
           this.loader = true;
           const value = this.initForm.value;
-          this.coreService
-            .updateItem(value, this.id, "users")
-            .subscribe(
-              (resp) => {
-                if (resp) {
-                  this.loader = false;
-                  this.matDialogRef.close(resp);
-                  this.snackbar.openSnackBar(
-                    "User  modifié avec succés",
-                    "OK",
-                    ["mycssSnackbarGreen"]
-                  );
-                } else {
-                  this.loader = false;
-                  this.snackbar.openSnackBar(resp["message"], "OK", [
-                    "mycssSnackbarRed",
-                  ]);
-                }
-              },
-              (error) => {
+          this.coreService.updateItem(value, this.id, "users").subscribe(
+            (resp) => {
+              if (resp) {
                 this.loader = false;
+                this.matDialogRef.close(resp);
+                this.snackbar.openSnackBar("User  modifié avec succés", "OK", [
+                  "mycssSnackbarGreen",
+                ]);
+              } else {
                 this.loader = false;
-                this.snackbar.showErrors(error);
+                this.snackbar.openSnackBar(resp["message"], "OK", [
+                  "mycssSnackbarRed",
+                ]);
               }
-            );
+            },
+            (error) => {
+              this.loader = false;
+              this.loader = false;
+              this.snackbar.showErrors(error);
+            }
+          );
         }
       });
   }
@@ -208,8 +191,6 @@ export class AddUserComponent {
 
   fileSelected;
   loaderImg = false;
-
-
 
   deleteImage() {
     document
@@ -304,29 +285,25 @@ export class AddUserComponent {
     formData.append("file", file);
     this.changeDetectorRefs.detectChanges();
     const dataFile = { file: file };
-    this.loader=true;
-    this.clientServive
-      .saveStoreFile(formData)
-      .subscribe(
-        (resp) => {
-          if (resp) {
-            console.log(resp);
-            this.imageToff = `${this.urlImage + resp["data"]}`;
-            this.initForm.get("imageUrl").setValue(this.imageToff);
-            this.snackbar.openSnackBar(
-              "Image ajoutée avec succés",
-              "OK",
-              ["mycssSnackbarGreen"]
-            );
-          }
-          this.loader=false;
-        },
-        (error) => {
-          this.loader=false;
-          console.log(error);
-          this.snackbar.showErrors(error);
+    this.loader = true;
+    this.clientServive.saveStoreFile(formData).subscribe(
+      (resp) => {
+        if (resp) {
+          console.log(resp);
+          this.imageToff = `${this.urlImage + resp["data"]}`;
+          this.initForm.get("imageUrl").setValue(this.imageToff);
+          this.snackbar.openSnackBar("Image ajoutée avec succés", "OK", [
+            "mycssSnackbarGreen",
+          ]);
         }
-      );
+        this.loader = false;
+      },
+      (error) => {
+        this.loader = false;
+        console.log(error);
+        this.snackbar.showErrors(error);
+      }
+    );
   }
 
   getRole() {

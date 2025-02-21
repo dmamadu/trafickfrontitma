@@ -42,7 +42,8 @@
   <section class="partie-affectee">
     <div class="partie-affectee-container">
       <h2>Exprimez votre Réclamation</h2>
-      <p>Vous pouvez partager vos préoccupations en cliquant sur le bouton ci-dessous pour remplir le formulaire de réclamation.</p>
+      <p>Vous pouvez partager vos préoccupations en cliquant sur le bouton ci-dessous pour remplir le formulaire de
+        réclamation.</p>
       <button class="open-complaint-btn" (click)="openComplaintModal()">Faire une réclamation</button>
     </div>
 
@@ -94,13 +95,14 @@
           <!-- Description de la plainte -->
           <div class="form-group">
             <label for="complaint-description">Description de la plainte</label>
-            <textarea id="complaint-description" formControlName="complaintDescription" placeholder="Décrivez la plainte..." rows="5" required></textarea>
+            <textarea id="complaint-description" formControlName="complaintDescription"
+              placeholder="Décrivez la plainte..." rows="5" required></textarea>
           </div>
 
           <!-- Bouton de soumission -->
           <button type="submit" class="submit-btn" (click)="submitComplaint()">
-            <mat-progress-spinner class="circle-loader" color="accent" [mode]="'indeterminate'"
-            [strokeWidth]="4" [diameter]="30"></mat-progress-spinner>
+            <mat-progress-spinner class="circle-loader" color="accent" [mode]="'indeterminate'" [strokeWidth]="4"
+              [diameter]="30"></mat-progress-spinner>
 
             Envoyer la plainte
           </button>
@@ -109,7 +111,7 @@
     </div>
   </section>
 
-<!-- app.component.html -->
+  <!-- app.component.html -->
 
 
 
@@ -123,7 +125,6 @@
         <p>Nous serions ravis d'échanger avec vous ! Remplissez le formulaire ci-dessous, et notre équipe vous répondra
           dans les plus brefs délais.</p>
       </div>
-  <app-loader-custom ></app-loader-custom>
 
       <div class="contact-form">
         <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
@@ -147,10 +148,10 @@
           <div class="form-row">
             <div class="form-group">
               <label for="name">Nom complet</label>
-              <input type="text" id="name" formControlName="name" placeholder="Votre nom complet" required>
+              <input type="text" id="nomComplet" formControlName="nomComplet" placeholder="Votre nom complet" required>
               <!-- Message d'erreur pour le champ Nom -->
-              <div *ngIf="contactForm.get('name').touched && contactForm.get('name').invalid" class="error-message">
-                <small *ngIf="contactForm.get('name').hasError('required')">Le nom est requis.</small>
+              <div *ngIf="contactForm.get('nomComplet').touched && contactForm.get('nomComplet').invalid" class="error-message">
+                <small *ngIf="contactForm.get('nomComplet').hasError('required')">Le nom est requis.</small>
               </div>
             </div>
             <div class="form-group">
@@ -168,11 +169,11 @@
           <div class="form-row">
             <div class="form-group">
               <label for="phone">Numéro de téléphone</label>
-              <input type="tel" id="phone" formControlName="phone" placeholder="Votre numéro de téléphone" required>
+              <input type="tel" id="phone" formControlName="numeroTelephone" placeholder="Votre numéro de téléphone" required>
               <!-- Message d'erreur pour le champ Numéro de téléphone -->
-              <div *ngIf="contactForm.get('phone').touched && contactForm.get('phone').invalid" class="error-message">
-                <small *ngIf="contactForm.get('phone').hasError('required')">Le numéro de téléphone est requis.</small>
-                <small *ngIf="contactForm.get('phone').hasError('pattern')">Le numéro de téléphone doit contenir 10
+              <div *ngIf="contactForm.get('numeroTelephone').touched && contactForm.get('numeroTelephone').invalid" class="error-message">
+                <small *ngIf="contactForm.get('numeroTelephone').hasError('numeroTelephone')">Le numéro de téléphone est requis.</small>
+                <small *ngIf="contactForm.get('numeroTelephone').hasError('pattern')">Le numéro de téléphone doit contenir 10
                   chiffres.</small>
               </div>
             </div>
@@ -191,11 +192,11 @@
           <!-- Champ Message -->
           <div class="form-group full-width">
             <label for="message">Message</label>
-            <textarea id="message" formControlName="message" placeholder="Écrivez votre message ici..." rows="5"
+            <textarea id="message" formControlName="contenu" placeholder="Écrivez votre message ici..." rows="5"
               required></textarea>
             <!-- Message d'erreur pour le champ Message -->
-            <div *ngIf="contactForm.get('message').touched && contactForm.get('message').invalid" class="error-message">
-              <small *ngIf="contactForm.get('message').hasError('required')">Le message est requis.</small>
+            <div *ngIf="contactForm.get('contenu').touched && contactForm.get('contenu').invalid" class="error-message">
+              <small *ngIf="contactForm.get('contenu').hasError('required')">Le message est requis.</small>
             </div>
           </div>
 

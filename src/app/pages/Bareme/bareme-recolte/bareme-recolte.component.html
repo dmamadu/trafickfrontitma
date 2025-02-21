@@ -1,0 +1,45 @@
+<div>
+  <app-page-title title="Barémes de compensations des recoltes "
+    [breadcrumbItems]="breadCrumbItems"></app-page-title>
+</div>
+<div class=" row mb-2">
+  <div class="col-sm">
+    <div class="search-box me-2 d-inline-block">
+      <div class="position-relative">
+        <input type="text" class="form-control" autocomplete="off" id="searchTableList" placeholder="Search..."
+          (input)="filterTable($event)">
+        <i class="bx bx-search-alt search-icon"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-auto">
+    <div class="d-flex flex-wrap gap-2">
+      <button type="submit" class="btn bgPrimaire" (click)="triggerFileUpload()"> <i
+          class="mdi mdi-file-excel me-1">Importer un fichier excel</i>
+      </button>
+    </div>
+    <input type="file" id="file-upload" (change)="fileUpload($event)" name="fileUpload" accept=".xls,.xlsx"
+      style="display: none;">
+  </div>
+</div>
+@if (dataExcel.length>0) {
+<app-datatable [headings]="headings" [dataExcel]="dataExcel"></app-datatable>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="text-end">
+      <button type="button" class="btn btn-danger me-1 w-36" (click)="resetDataFromExcel()">Annuler</button>
+      <button type="submit" class="btn btn-success  w-36" (click)="importData()">Ajouter</button>
+    </div>
+  </div>
+</div>
+}
+
+<app-loader-custom *ngIf="loadData"></app-loader-custom>
+
+<div style="z-index: 0" class="pt-3">
+  <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" [total]="length"
+    [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
+    (changePage)="pageChanged($event)" *ngIf="!loadData"></tableau>
+</div>
+

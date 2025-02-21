@@ -614,6 +614,8 @@ export class PapPlaceAffaireComponent {
           return obj;
         });
         this.dataExcel = jsonData;
+        console.log("dataExcel", this.dataExcel);
+
         //this.convertedJson = JSON.stringify(jsonData, undefined, 4);
       });
     };
@@ -644,6 +646,8 @@ export class PapPlaceAffaireComponent {
       projectId: +this.currentUser.projects[0]?.id,
     }));
 
+    console.log("data",dataToSend);
+
     return this.papService.add("databasePapPlaceAffaire", dataToSend).subscribe(
       (data: any) => {
         console.log(data);
@@ -661,25 +665,25 @@ export class PapPlaceAffaireComponent {
     );
   }
 
-  importDatas(params: string) {
-    return this.papService.add(`${params} `, this.dataExcel).subscribe(
-      (data: any) => {
-        console.log("====================================");
-        console.log(data);
-        console.log("====================================");
-        this.toastr.success(data.message);
-        this.selectedOption = "";
-        this.resetDataFromExcel();
-      },
-      (err) => {
-        console.log("====================================");
-        console.log(err);
-        console.log("====================================");
-        this.toastr.error(err);
-        this.resetDataFromExcel();
-      }
-    );
-  }
+  // importDatas(params: string) {
+  //   return this.papService.add(`${params} `, this.dataExcel).subscribe(
+  //     (data: any) => {
+  //       console.log("====================================");
+  //       console.log(data);
+  //       console.log("====================================");
+  //       this.toastr.success(data.message);
+  //       this.selectedOption = "";
+  //       this.resetDataFromExcel();
+  //     },
+  //     (err) => {
+  //       console.log("====================================");
+  //       console.log(err);
+  //       console.log("====================================");
+  //       this.toastr.error(err);
+  //       this.resetDataFromExcel();
+  //     }
+  //   );
+  // }
 
   onOptionSelected() {
     console.log("Valeur sélectionnée :", this.selectedOption);

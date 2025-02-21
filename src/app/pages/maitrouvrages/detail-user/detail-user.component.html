@@ -1,0 +1,69 @@
+<mat-toolbar class="mat-accent m-0 backToolbar">
+  <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
+    <span class="c_title dialog-title">Informtion de l'utilisateur</span>
+    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+<div class="bg-white shadow-lg rounded-lg p-6">
+
+
+  <!-- Header avec l'image et le nom -->
+  <div class="flex items-center space-x-4">
+    <img
+      *ngIf="user?.imageUrl"
+      [src]="user.imageUrl"
+      alt="Photo de profil"
+      class="w-16 h-16 rounded-full border border-gray-300"
+    />
+    <div>
+      <h2 class="text-lg font-bold">{{ user?.firstname }} {{ user?.lastname }}</h2>
+      <p class="text-sm text-gray-600">{{ user?.email }}</p>
+    </div>
+  </div>
+
+  <!-- Informations principales -->
+  <div class="mt-4 grid grid-cols-2 gap-4">
+    <div>
+      <p class="text-gray-500">Localité :</p>
+      <p class="font-semibold">{{ user?.locality || 'N/A' }}</p>
+    </div>
+    <div>
+      <p class="text-gray-500">Contact :</p>
+      <p class="font-semibold">{{ user?.contact || 'N/A' }}</p>
+    </div>
+    <div>
+      <p class="text-gray-500">Sexe :</p>
+      <p class="font-semibold">{{ user?.sexe || 'N/A' }}</p>
+    </div>
+    <div>
+      <p class="text-gray-500">Fonction :</p>
+      <p class="font-semibold">{{ user?.fonction?.libelle || 'Non défini' }}</p>
+    </div>
+    <div>
+      <p class="text-gray-500">Catégorie :</p>
+      <p class="font-semibold">{{ user?.categorie?.libelle || 'N/A' }}</p>
+    </div>
+    <div>
+      <p class="text-gray-500">Rôle :</p>
+      <p class="font-semibold">{{ user?.roles?.[0]?.name || 'N/A' }}</p>
+    </div>
+  </div>
+
+  <!-- Projets associés -->
+  <div class="mt-6">
+    <h3 class="text-lg font-bold">Projets</h3>
+    <ul class="mt-2 space-y-2">
+      <li *ngFor="let project of user?.projects">
+        <a
+          [routerLink]="['/projets', project.id]"
+          class="text-blue-500 hover:underline"
+        >
+          {{ project.libelle }}
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+

@@ -91,7 +91,7 @@ export class AuthenticationService {
    * @param email email
    */
   resetPassword(email: string) {
-    return this.http.post(`${this.url}/users/reset`, { email }).pipe(
+    return this.http.post(`${this.url}users/reset`, { email }).pipe(
       map((response: any) => {
         return response;
       })
@@ -100,7 +100,7 @@ export class AuthenticationService {
 
   changePassword(newPassword: string, token: string) {
     return this.http
-      .post(`${this.url}/users/reset-password`, { newPassword, token })
+      .post(`${this.url}users/reset-password`, { newPassword, token })
       .pipe(
         map((response: any) => {
           return response;

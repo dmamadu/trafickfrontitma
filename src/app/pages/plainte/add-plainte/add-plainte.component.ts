@@ -53,8 +53,8 @@ import { LoaderComponent } from "../../../shared/loader/loader.component";
     MatDatepickerModule,
     MatNativeDateModule,
     UIModule,
-    LoaderComponent
-],
+    LoaderComponent,
+  ],
   providers: [
     provideNativeDateAdapter(),
     { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
@@ -88,7 +88,7 @@ export class AddPlainteComponent implements OnInit {
   categoriePartieInteresses: any;
   uploadedImage!: File;
   imageURL: string | undefined;
- // urlImage = environment.apiUrl + "image/getFile/";
+  // urlImage = environment.apiUrl + "image/getFile/";
   urlImage = environment.apiUrl + "fileAws/download/";
   isLoading: boolean = false;
 
@@ -126,21 +126,7 @@ export class AddPlainteComponent implements OnInit {
       this.labelButton = "Modifier ";
       this.id = _data.data.id;
       this.initForms(_data.data);
-      const imageToEdit = _data.data.image;
-      // if (imageToEdit) {
-      //   document.querySelectorAll("#member-img").forEach((element: any) => {
-      //     element.src = this.getImageFromBase64(
-      //       imageToEdit.type,
-      //       imageToEdit.image
-      //     );
-      //   });
-      //   const image: any = this.getImageFromBase64(
-      //     imageToEdit.type,
-      //     imageToEdit.image
-      //   );
-      //  // const file = this.base64ToFile(image, imageToEdit.name);
-      //   //this.uploadedImage = file;
-      // }
+
     }
 
     this.action = _data?.action;
@@ -158,8 +144,6 @@ export class AddPlainteComponent implements OnInit {
   //   const base64Representation = "data:" + imageType + ";base64," + imageName;
   //   return base64Representation;
   // }
-
-
 
   currentUser: any;
 
@@ -328,14 +312,7 @@ export class AddPlainteComponent implements OnInit {
     }
   }
 
-  // getCategorie(value: any) {
-  //   if (this.categoriePartieInteresses) {
-  //     const liste = this.categoriePartieInteresses.filter(
-  //       (type) => type.id == value
-  //     );
-  //     return liste.length != 0 ? liste[0]?.libelle : value;
-  //   }
-  // }
+
 
   checkCNI() {
     this.errorCNI = "";
@@ -471,19 +448,19 @@ export class AddPlainteComponent implements OnInit {
   }
 
   uploadedFiles: File[] = [];
-  selectOnFile1(event: any, type: string, format: string): void {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          console.log(e.target.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-  }
+  // selectOnFile1(event: any, type: string, format: string): void {
+  //   const files = event.target.files;
+  //   if (files && files.length > 0) {
+  //     for (let i = 0; i < files.length; i++) {
+  //       const file = files[i];
+  //       const reader = new FileReader();
+  //       reader.onload = (e: any) => {
+  //         console.log(e.target.result);
+  //       };
+  //       reader.readAsDataURL(file);
+  //     }
+  //   }
+  // }
   selectOnFile(evt, type, name) {
     let accept = [];
     let extension = "";
@@ -512,16 +489,15 @@ export class AddPlainteComponent implements OnInit {
         const reader = new FileReader();
         reader.onload = (e: any) => {
           //if (type === "photo_profile") {
-            //const img = new Image();
-           // img.src = e.target.result;
-           // const docBase64Path = e.target.result;
-            this.saveStoreFile(file).then((signatureUrl) => {
-              if (signatureUrl) {
-                fileUrls.push(signatureUrl);
-                this.updateFileUrls(fileUrls);
-              }
-            });
-
+          //const img = new Image();
+          // img.src = e.target.result;
+          // const docBase64Path = e.target.result;
+          this.saveStoreFile(file).then((signatureUrl) => {
+            if (signatureUrl) {
+              fileUrls.push(signatureUrl);
+              this.updateFileUrls(fileUrls);
+            }
+          });
         };
         reader.readAsDataURL(file);
       }
@@ -529,10 +505,10 @@ export class AddPlainteComponent implements OnInit {
   }
 
   saveStoreFile(file) {
-    this.isLoading = true;
     return new Promise((resolve, reject) => {
       let formData = new FormData();
       formData.append("file", file);
+      this.isLoading = true;
       this.clientServive.saveStoreFile(formData).subscribe(
         (resp) => {
           if (resp) {

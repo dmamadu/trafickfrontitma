@@ -12,18 +12,12 @@ import {
 import { MatDrawer } from "@angular/material/sidenav";
 import { MatStepper } from "@angular/material/stepper";
 import { LocalService } from "src/app/core/services/local.service";
-import { MoService } from "src/app/core/services/mo.service";
-import { ServiceParent } from "src/app/core/services/serviceParent";
 import { ClientVueService } from "src/app/pages/admin/client-vue/client-vue.service";
 import { CoreService } from "src/app/shared/core/core.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { environment } from "src/environments/environment";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { Image } from "src/app/shared/models/image.model";
-import { MatNativeDateModule } from "@angular/material/core";
-import { MatDatepickerModule } from "@angular/material/datepicker";
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { FlatpickrModule } from "angularx-flatpickr/lib/flatpickr.module";
 import {provideNativeDateAdapter} from '@angular/material/core';
 import { LoaderComponent } from "../../../shared/loader/loader.component";
 
@@ -54,39 +48,18 @@ export class AddRencontreComponent {
 
   imageProjet: any;
 
-  nrSelect;
-  situationsMatrimoniales: any;
-  typeIdentifications: any = [];
-  capaciteJuridiques: any;
-  dateDelivrance;
-  regimeMatrimoniaux: any;
-  professions: any;
   loader: boolean;
   action: string;
-  minBirthDay: any;
-  today = new Date();
-  loaderss = false;
-  fields: any;
   canAdd: boolean;
   dataCheck;
-  hasPhoneError: boolean;
-  currentValue: any;
-  countryChange: boolean = false;
-  eventNumber: any;
-  isFocus: unknown;
   noImage = "";
   errorCNI;
   newDate = new Date();
   emailPattern =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  isValidOnWhatsApp: boolean = true;
   ng2TelOptions;
-  idPiece;
-  listeNoire: boolean = false;
-  categoriePartieInteresses: any;
   uploadedImage!: File;
-  imageURL: string | undefined;
-  urlImage = environment.apiUrl + "image/getFile/";
+  urlImage = environment.apiUrl + "fileAws/download/";
 
   roles: any[] = [];
   categories: any[] = [];
@@ -101,7 +74,6 @@ export class AddRencontreComponent {
     private coreService: CoreService,
     private snackbar: SnackBarService,
     private changeDetectorRefs: ChangeDetectorRef,
-    private clientService: ClientVueService,
     private localService: LocalService,
     private clientServive: ClientVueService,
   ) {
@@ -125,10 +97,7 @@ export class AddRencontreComponent {
     this.ng2TelOptions = { initialCountry: "sn" };
   }
 
-  checkValidOnWhatsApp(event: any): void {
-    const value = event.value;
-    this.initForm.get("statutVulnerable")?.setValue(value);
-  }
+
 
 
 
@@ -215,54 +184,9 @@ export class AddRencontreComponent {
   }
 
 
-
-
   fileSelected;
   loaderImg = false;
 
-  saveFile(file, type, name) {
-    let formData = new FormData();
-    formData.append("file", file);
-    this.loaderImg = true;
-    this.changeDetectorRefs.detectChanges();
-    const dataFile = { file: file };
-    this.clientService.saveStoreFile(formData).subscribe(
-      (resp) => {
-        if (resp) {
-          console.log("====================================");
-          console.log(resp);
-          console.log("====================================");
-          this.noImage = resp["urlprod"];
-          this.initForm.get(name).setValue(this.noImage);
-          this.loaderImg = false;
-          this.changeDetectorRefs.detectChanges();
-          this.snackbar.openSnackBar("Fichier chargé avec succès", "OK", [
-            "mycssSnackbarGreen",
-          ]);
-        }
-      },
-      (error) => {
-        this.loaderImg = false;
-        this.snackbar.showErrors(error);
-      }
-    );
-  }
-
-  // Fin file sun telecom
-
-  fileChange(event: any) {
-    let fileList: any = event.target as HTMLInputElement;
-    let file: File = fileList.files[0];
-    this.uploadedImage = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imageURL = reader.result as string;
-      document.querySelectorAll("#member-img").forEach((element: any) => {
-        element.src = this.imageURL;
-      });
-    };
-    reader.readAsDataURL(file);
-  }
 
   deleteImage() {
     document
@@ -376,8 +300,8 @@ export class AddRencontreComponent {
       .subscribe(
         (resp) => {
           if (resp) {
-            this.imageToff = `${this.urlImage + resp["data"]}`;
-            this.imageProjet = `${this.urlImage + resp["data"]}`;
+            this.imageToff = `${this.urlImage + resp["fileName"]}`;
+            this.imageProjet = `${this.urlImage + resp["fileName"]}`;
             this.initForm.get("urlPvRencontre").setValue(this.imageProjet);
             this.snackbar.openSnackBar(
               "Fichier chargé avec succès : " + file.name,
