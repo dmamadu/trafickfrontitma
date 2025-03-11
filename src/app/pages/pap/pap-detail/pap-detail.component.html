@@ -1,7 +1,7 @@
 <div class="flex flex-col flex-auto min-w-0">
   <div class="flex flex-col shadow bg-card">
     <div>
-      <img class="h-24 lg:h-24 object-cover w-full" src="../../../../assets/images/41.jpg" alt="Cover image">
+      <img class="h-24 lg:h-24 object-fit w-full" src="../../../../assets/images/41.png" alt="Cover image">
     </div>
     <div class="d-flex justify-between items-center ">
       <div class="rounded-full cursor-pointer relative" matTooltip="Charger l'image du client" style="margin-left: 50px; margin-top: 5px;"
@@ -132,6 +132,13 @@
                 </info-client>
               </div>
               <div *ngSwitchCase="'plainte'">
+                <div style="z-index: 0" class="pt-3">
+                  <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize"
+                    [total]="length" [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
+                    (changePage)="pageChanged($event)"></tableau>
+                </div>
+              </div>
+              <div *ngSwitchCase="'entente'">
                 <div style="z-index: 0" class="pt-3">
                   <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize"
                     [total]="length" [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"

@@ -71,12 +71,6 @@ export class RootService {
   getPlaintEntenteByCodePap<T>(url: string, codePap: string): Observable<T> {
     const params = new HttpParams()
       .set('codePap', codePap)
-
-
-    return this.http.get<T>(`${this.url}${url}/by-codePap`, { params });
+    return this.http.get<T>(`${this.url}${url}/byCodePap`, { params });
   }
-
-
-
-
 }

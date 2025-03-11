@@ -36,7 +36,7 @@
       <div class="avatar-lg">
         <div class="avatar-title bg-light rounded-circle">
           <img [src]="imageToff ? imageToff : 'assets/images/users/user-dummy-img.jpg'"
-            class="avatar-md rounded-circle h-auto" />
+            class="avatar-md rounded-circle h-auto"  (click)="openImageModal()" />
         </div>
       </div>
     </div>
@@ -79,7 +79,7 @@
       <button mat-raised-button class="submit-buttonRed" type="button">
         <span class="textForm">Retour</span>
       </button>&nbsp;
-      <button [disabled]="loader" mat-raised-button class="submit-button" (click)="checkRecap(action)">
+      <button mat-raised-button class="submit-button" (click)="checkRecap(action)">
         <span class="textForm">{{ labelButton }}</span>
       </button>
     </div>

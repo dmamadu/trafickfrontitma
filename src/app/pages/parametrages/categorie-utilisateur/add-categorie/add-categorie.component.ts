@@ -1,20 +1,24 @@
-import { ChangeDetectorRef, Component, Inject } from '@angular/core';
-import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginatorIntl } from '@angular/material/paginator';
-import { AddComponent } from 'src/app/pages/tasks/add/add.component';
-import { AngularMaterialModule } from 'src/app/shared/angular-materiel-module/angular-materiel-module';
-import { CoreService } from 'src/app/shared/core/core.service';
-import { SnackBarService } from 'src/app/shared/core/snackBar.service';
+import { ChangeDetectorRef, Component, Inject } from "@angular/core";
+import {
+  UntypedFormGroup,
+  UntypedFormBuilder,
+  Validators,
+} from "@angular/forms";
+import { MatNativeDateModule, MAT_DATE_LOCALE } from "@angular/material/core";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatPaginatorIntl } from "@angular/material/paginator";
+import { AddComponent } from "src/app/pages/tasks/add/add.component";
+import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
+import { CoreService } from "src/app/shared/core/core.service";
+import { SnackBarService } from "src/app/shared/core/snackBar.service";
 
 @Component({
-  selector: 'app-add-categorie',
-  standalone:true,
+  selector: "app-add-categorie",
+  standalone: true,
   imports: [
     MatFormFieldModule,
     MatInputModule,
@@ -31,11 +35,10 @@ import { SnackBarService } from 'src/app/shared/core/snackBar.service';
     SnackBarService,
     MatDatepickerModule,
   ],
-  templateUrl: './add-categorie.component.html',
-  styleUrl: './add-categorie.component.css'
+  templateUrl: "./add-categorie.component.html",
+  styleUrl: "./add-categorie.component.css",
 })
 export class AddCategorieComponent {
-
   dialogTitle: string;
   id: string;
   initForm: UntypedFormGroup;
@@ -53,7 +56,7 @@ export class AddCategorieComponent {
     private fb: UntypedFormBuilder,
     private coreService: CoreService,
     private snackbar: SnackBarService,
-    private changeDetectorRefs: ChangeDetectorRef,
+    private changeDetectorRefs: ChangeDetectorRef
   ) {
     if (_data?.action == "new") {
       this.initForms();
@@ -93,15 +96,15 @@ export class AddCategorieComponent {
 
   updateCategorie() {
     console.log(this.initForm.value);
-    this.snackbar
-      .showConfirmation(`Voulez-vous vraiment modifier cette entité `)
-      .then((result) => {
-        if (result["value"] == true) {
-          this.loader = true;
-          const value = this.initForm.value;
-          this.coreService
-            .updateItem(value, this.id, "categories")
-            .subscribe(
+
+    if (this.initForm.valid) {
+      this.snackbar
+        .showConfirmation(`Voulez-vous vraiment modifier cette entité `)
+        .then((result) => {
+          if (result["value"] == true) {
+            this.loader = true;
+            const value = this.initForm.value;
+            this.coreService.updateItem(value, this.id, "categories").subscribe(
               (resp) => {
                 if (resp) {
                   this.loader = false;
@@ -124,8 +127,9 @@ export class AddCategorieComponent {
                 this.snackbar.showErrors(error);
               }
             );
-        }
-      });
+          }
+        });
+    }
   }
 
   checkRecap(type) {
@@ -147,40 +151,40 @@ export class AddCategorieComponent {
   }
 
   addItems() {
-    console.log("====================================");
-    console.log(this.initForm.value);
-    console.log("====================================");
-    this.snackbar
-      .showConfirmation(`Voulez-vous vraiment crée cette entité `)
-      .then((result) => {
-        if (result["value"] == true) {
-          this.loader = true;
-          const value = this.initForm.value;
-          this.coreService.addItem(value, "categories").subscribe(
-            (resp) => {
-              if (resp["responseCode"] == 201) {
-                this.snackbar.openSnackBar("Entité  ajoutée avec succés", "OK", [
-                  "mycssSnackbarGreen",
-                ]);
+    if (this.initForm.valid) {
+      this.snackbar
+        .showConfirmation(`Voulez-vous vraiment crée cette entité `)
+        .then((result) => {
+          if (result["value"] == true) {
+            this.loader = true;
+            const value = this.initForm.value;
+            this.coreService.addItem(value, "categories").subscribe(
+              (resp) => {
+                if (resp["responseCode"] == 201) {
+                  this.snackbar.openSnackBar(
+                    "Entité  ajoutée avec succés",
+                    "OK",
+                    ["mycssSnackbarGreen"]
+                  );
+                  this.loader = false;
+                  this.matDialogRef.close(resp["data"]);
+                  this.changeDetectorRefs.markForCheck();
+                } else {
+                  this.loader = false;
+                  this.changeDetectorRefs.markForCheck();
+                }
+              },
+              (error) => {
                 this.loader = false;
-                this.matDialogRef.close(resp["data"]);
+                console.log("====================================");
+                console.log(error);
+                console.log("====================================");
                 this.changeDetectorRefs.markForCheck();
-              } else {
-                this.loader = false;
-                this.changeDetectorRefs.markForCheck();
+                this.snackbar.showErrors(error);
               }
-            },
-            (error) => {
-              this.loader = false;
-              console.log("====================================");
-              console.log(error);
-              console.log("====================================");
-              this.changeDetectorRefs.markForCheck();
-              this.snackbar.showErrors(error);
-            }
-          );
-        }
-      });
+            );
+          }
+        });
+    }
   }
-
 }

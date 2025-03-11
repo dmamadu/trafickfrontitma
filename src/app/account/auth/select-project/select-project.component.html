@@ -1,0 +1,30 @@
+<div class="main container">
+  <div class="close">
+    <span (click)="closeModal()">
+      <mat-icon>close</mat-icon>
+    </span>
+  </div>
+  <div class="project-selection-container">
+    <!-- Texte d'accueil -->
+    <div class="welcome-message">
+      <h2><strong>{{ appName }}</strong></h2>
+      <p>Veuillez sélectionner le projet que vous souhaitez consulter.</p>
+    </div>
+
+    <!-- Liste des projets -->
+    <div *ngIf="projects.length > 0" class="project-select">
+      <select (change)="onProjectSelect($event.target.value)" [value]="selectedProjectId">
+        <option value="" selected> Sélectionner le projet</option>
+        <option *ngFor="let project of projects" [value]="project.id">
+          {{ project.libelle }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Aucun projet disponible -->
+    <div *ngIf="projects.length === 0" class="no-projects">
+      <p>Aucun projet disponible.</p>
+    </div>
+  </div>
+
+</div>

@@ -41,6 +41,7 @@ import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
 import { NgApexchartsModule } from "ng-apexcharts";
 import { DndModule } from "ngx-drag-drop";
 import { DetailComponent } from "../detail/detail.component";
+import { LocalService } from "src/app/core/services/local.service";
 
 @Component({
   selector: "app-list",
@@ -84,9 +85,9 @@ import { DetailComponent } from "../detail/detail.component";
   ],
 })
 export class ListTacheComponent implements OnInit {
-filterTable($event: any) {
-throw new Error('Method not implemented.');
-}
+  filterTable($event: any) {
+    throw new Error("Method not implemented.");
+  }
 
   breadCrumbItems: (
     | { label: string; active?: undefined }
@@ -137,7 +138,7 @@ throw new Error('Method not implemented.');
   privilegePage;
   headers: any = [];
   btnActions: any = [];
-
+  currentProjectId: any;
   constructor(
     private changeDetectorRefs: ChangeDetectorRef,
     private snackbar: SnackBarService,
@@ -146,8 +147,11 @@ throw new Error('Method not implemented.');
     public matDialogRef: MatDialogRef<PapAddComponent>,
     private _changeDetectorRef: ChangeDetectorRef,
     public toastr: ToastrService,
+    private localService: LocalService,
     private coreService: CoreService
-  ) {}
+  ) {
+    this.currentProjectId = this.localService.getData("ProjectId");
+  }
 
   ngOnInit(): void {
     this.getTaches();
@@ -208,7 +212,7 @@ throw new Error('Method not implemented.');
   getTaches() {
     this.loadData = true;
     return this.parentService
-      .list(this.url, this.pageSize, this.offset)
+      .list(this.url, this.pageSize, this.offset, this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -377,21 +381,20 @@ throw new Error('Method not implemented.');
   //   this._router.navigate(["tasks/list"]);
   // }
 
-
   detailItems(information): void {
-      console.log(information);
-      this.snackbar.openModal(
-        DetailComponent,
-        "45rem",
-        "",
-        "38rem",
-        information,
-        "",
-        () => {
-          this.getTaches();
-        }
-      );
-    }
+    console.log(information);
+    this.snackbar.openModal(
+      DetailComponent,
+      "45rem",
+      "",
+      "38rem",
+      information,
+      "",
+      () => {
+        this.getTaches();
+      }
+    );
+  }
 
   getConsultant() {
     return this.papService.all("users/by_role?roleName=Consultant").subscribe(

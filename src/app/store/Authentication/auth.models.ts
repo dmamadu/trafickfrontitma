@@ -1,3 +1,5 @@
+import { Project } from "../ProjectsData/project.model";
+
 export interface Auth {
   token: string;
   user?: User;
@@ -13,6 +15,7 @@ export interface User {
   enabled?: boolean;
   image?: Image;
   roles?: Role[];
+  projects?: any[];
 }
 
 export interface Image {

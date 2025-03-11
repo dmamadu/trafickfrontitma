@@ -9,8 +9,8 @@
 
 <div class="flex flex-col flex-auto min-w-10-0 p-2 md:p-4">
   <form [formGroup]="initForm" class="event-form w-100-p">
-    <mat-stepper #stepper>
-      <mat-step label="Informations personnelles">
+    <mat-stepper #stepper linear="">
+      <mat-step label="Informations personnelles" [completed]="isStepValid(0)">
         <!-- Code PAP -->
 
 
@@ -117,7 +117,8 @@
           </mat-form-field>
           <mat-form-field class="w-1/2 mt-2" appearance="outline">
             <mat-label class="enteteccColor">Nombre de parcelles</mat-label>
-            <input class="typeTitle" matInput type="number" name="nombrePlaceAffaire" formControlName="nombrePlaceAffaire" />
+            <input class="typeTitle" matInput type="number" name="nombrePlaceAffaire"
+              formControlName="nombrePlaceAffaire" />
             <mat-error *ngIf="initForm.get('nombrePlaceAffaire')?.hasError('required')">
               Le champ est obligatoire
             </mat-error>
@@ -135,13 +136,14 @@
           <button mat-raised-button matDialogClose class="submit-buttonRed" matStepperPrevious type="button">
             <span class="textForm">Annuler</span>
           </button>
-          <button mat-raised-button class="submit-button" aria-label="VALIDER" matStepperNext type="button">
+          <button mat-raised-button class="submit-button" aria-label="VALIDER" type="button"
+            (click)="nextStep(stepper)">
             <span class="textForm">Suivant</span>
           </button>
         </div>
       </mat-step>
 
-      <mat-step label="Informations sur la parcelle">
+      <mat-step label="Informations sur la parcelle" [completed]="isStepValid(1)">
         <!-- Code parcelle -->
         <div class="flex gap-2">
           <!-- Nombre de parcelles -->
@@ -155,7 +157,8 @@
           </mat-form-field>
           <mat-form-field class="w-1/2 mt-2" appearance="outline">
             <mat-label class="enteteccColor">Activité principal</mat-label>
-            <input class="typeTitle" matInput type="text" name="activitePrincipale" formControlName="activitePrincipale" />
+            <input class="typeTitle" matInput type="text" name="activitePrincipale"
+              formControlName="activitePrincipale" />
           </mat-form-field>
         </div>
 
@@ -184,18 +187,37 @@
 
         </div>
 
+        <div class="flex gap-2">
+          <mat-form-field class="w-full mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Perte arbres jeunes</mat-label>
+            <textarea matInput name="perteArbreJeune" formControlName="perteArbreJeune" class="typeTitle"></textarea>
+            <mat-error *ngIf="initForm.get('perteArbreJeune')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="flex gap-2">
+          <mat-form-field class="w-full mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Perte arbres adultes</mat-label>
+            <textarea matInput name="perteArbreAdulte" formControlName="perteArbreAdulte" class="typeTitle"></textarea>
+            <mat-error *ngIf="initForm.get('perteArbreAdulte')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+
         <!-- Boutons de navigation -->
         <div class="flex justify-center gap-4 mt-4">
           <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
             <span class="textForm">Précédent</span>
           </button>
-          <button mat-raised-button class="submit-button" matStepperNext type="button">
+          <button mat-raised-button class="submit-button" type="button" (click)="nextStep(stepper)">
             <span class="textForm">Suivant</span>
           </button>
         </div>
       </mat-step>
 
-      <mat-step label="Documents et détails supplémentaires">
+      <mat-step label="Documents et détails supplémentaires" [completed]="isStepValid(2)">
         <div class="flex  flex-col gap-2">
           <!-- Photo PAP -->
           <div class="row">
@@ -226,10 +248,8 @@
                 </div>
                 <div class="avatar-lg">
                   <div class="avatar-title bg-light rounded-circle">
-                    <!-- <img src="assets/images/users/user-dummy-img.jpg" id="member-img"
-                      class="avatar-md rounded-circle h-auto" /> -->
                     <img [src]="imageToff ? imageToff : 'assets/images/users/user-dummy-img.jpg'"
-                      class="avatar-md rounded-circle h-auto" />
+                      class="avatar-md rounded-circle h-auto" (click)="openImageModal(imageToff)" />
                   </div>
                 </div>
               </div>
@@ -301,18 +321,11 @@
 
             <mat-form-field class="w-full mt-2" appearance="outline">
               <mat-label class="enteteccColor">Nombre de membre familial handicapé</mat-label>
-              <input class="typeTitle" matInput type="text" name="membreFoyerHandicape" formControlName="membreFoyerHandicape" />
+              <input class="typeTitle" matInput type="text" name="membreFoyerHandicape"
+                formControlName="membreFoyerHandicape" />
               <mat-error *ngIf="initForm.get('membreFoyerHandicape')?.hasError('required')">
                 Le champ est obligatoire
               </mat-error>
-            </mat-form-field>
-          </div>
-          <div class="flex gap-2">
-            <!-- Informations supplémentaires -->
-            <mat-form-field class="w-full mt-2" appearance="outline">
-              <mat-label class="enteteccColor">Informations Etendues</mat-label>
-              <textarea class="typeTitle" matInput name="informationsEtendues"
-                formControlName="informationsEtendues"></textarea>
             </mat-form-field>
           </div>
 
@@ -327,7 +340,163 @@
           <!-- <button [disabled]="loader" mat-raised-button class="submit-button" (click)="checkRecap(action)">
             <span class="textForm">{{ labelButton }}</span>
           </button> -->
-          <button matStepperNext mat-raised-button class="submit-button">
+          <button matStepperNext mat-raised-button class="submit-button" (click)="nextStep(stepper)">
+            <span class="textForm">Suivant</span>
+          </button>
+        </div>
+      </mat-step>
+
+
+      <mat-step label="Co-propriétaires" [completed]="isStepValid(3)">
+        <label for="">Ajouter ici ses copropriétaires</label>
+        <form [formGroup]="contactForm">
+          <div class="flex gap-2">
+            <!-- Champs du contact principal -->
+            <mat-form-field class="w-1/2 mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Code Copropriétaire</mat-label>
+              <input matInput type="text" formControlName="codeCoProprietaire" />
+              <mat-icon matSuffix class="enteteccColor">code</mat-icon>
+              <mat-error>Le champ est obligatoire</mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="w-1/2 mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Nom Complet</mat-label>
+              <input matInput type="text" formControlName="nomComplet" />
+              <mat-icon matSuffix class="secondary-text">code</mat-icon>
+              <mat-error>Le champ est obligatoire</mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Autres champs pour le contact principal -->
+          <div class="flex gap-2">
+            <mat-form-field class="w-1/2 mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Contact</mat-label>
+              <input matInput type="text" formControlName="contactTelephonique" />
+              <mat-icon matSuffix class="enteteccColor">number</mat-icon>
+              <mat-error>Le champ est obligatoire</mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="w-1/2 mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Sexe</mat-label>
+              <mat-select formControlName="sexeCoProprietaire">
+                <mat-option *ngFor="let sexe of sexeOptions" [value]="sexe?.id">{{ sexe?.name }}</mat-option>
+              </mat-select>
+              <mat-icon matSuffix class="secondary-text">person</mat-icon>
+              <mat-error>Le champ est obligatoire</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="flex gap-2">
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Informations complémentaires</mat-label>
+              <textarea matInput formControlName="infoComplementaire" rows="4"
+                placeholder="Saisissez ici les informations supplémentaires, y compris l'email et le contact téléphonique si nécessaire"></textarea>
+              <mat-icon matSuffix class="secondary-text">notes</mat-icon>
+              <mat-error>Le champ est obligatoire</mat-error>
+            </mat-form-field>
+          </div>
+
+
+          <div class="flex justify-center gap-4">
+            <button mat-raised-button class="submit-button" (click)="addContact()" type="button">
+              {{ contacts.data.length > 0 ? 'Ajouter un autre' : 'Ajouter' }}
+            </button>
+          </div>
+
+          <!-- Tableau des contacts ajoutés -->
+          <div class="contact-table mt-4" style="height: 150px; overflow-y: auto;">
+            <table mat-table [dataSource]="contacts" style="width: 100%; table-layout: fixed;">
+              <ng-container matColumnDef="nom">
+                <th mat-header-cell *matHeaderCellDef> Code </th>
+                <td mat-cell *matCellDef="let contact">{{ contact.codeCoProprietaire }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="prenom">
+                <th mat-header-cell *matHeaderCellDef> Nom complet </th>
+                <td mat-cell *matCellDef="let contact">{{ contact.nomComplet }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="sexe">
+                <th mat-header-cell *matHeaderCellDef> Sexe </th>
+                <td mat-cell *matCellDef="let contact">{{ contact.sexeCoProprietaire }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="telephone">
+                <th mat-header-cell *matHeaderCellDef> Téléphone </th>
+                <td mat-cell *matCellDef="let contact">{{ contact.contactTelephonique }}</td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+          </div>
+
+          <div class="flex justify-center gap-4 mt-4">
+            <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
+              <span class="textForm">Retour</span>
+            </button>
+            <button mat-raised-button class="submit-button" aria-label="VALIDER" matStepperNext type="button"
+              (click)="nextStep(stepper)">
+              <span class="textForm">Suivant</span>
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+
+      <mat-step label="Batiments /Equipements" [completed]="isStepValid(4)">
+
+
+        <div class="flex gap-2">
+          <mat-form-field class="w-full mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Perte equipements</mat-label>
+            <textarea matInput name="perteEquipement" formControlName="perteEquipement" class="typeTitle"></textarea>
+            <mat-error *ngIf="initForm.get('perteEquipement')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="flex gap-2">
+          <mat-form-field class="w-full mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Perte batiments</mat-label>
+            <textarea matInput name="perteBatiment" formControlName="perteBatiment" class="typeTitle"></textarea>
+            <mat-error *ngIf="initForm.get('perteBatiment')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+
+        <div class="flex gap-2">
+          <mat-form-field class="w-full mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Perte totale</mat-label>
+            <textarea matInput name="perteTotale" formControlName="perteTotale" class="typeTitle"></textarea>
+            <mat-error *ngIf="initForm.get('perteTotale')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="flex gap-2">
+          <!-- Informations supplémentaires -->
+          <mat-form-field class="w-full mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Informations Etendues</mat-label>
+            <textarea class="typeTitle" matInput name="informationsEtendues"
+              formControlName="informationsEtendues"></textarea>
+          </mat-form-field>
+        </div>
+
+
+
+
+
+
+        <!-- Boutons de navigation -->
+        <div class="flex justify-center gap-4 mt-4">
+          <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
+            <span class="textForm">Précédent</span>
+          </button>
+          <button mat-raised-button class="submit-button" type="button" (click)="nextStep(stepper)">
             <span class="textForm">Suivant</span>
           </button>
         </div>
@@ -335,7 +504,7 @@
 
 
 
-      <mat-step label="Récapitulatif">
+      <mat-step label="Récapitulatif" [completed]="isStepValid(5)">
         <mat-accordion>
           <!-- Section 1 : Informations personnelles -->
           <mat-expansion-panel [expanded]="true">
@@ -351,9 +520,15 @@
               <div class="grid grid-cols-2 gap-4">
                 <div><strong>Nom :</strong> {{ initForm.get('nom')?.value }}</div>
                 <div><strong>Prénom :</strong> {{ initForm.get('prenom')?.value }}</div>
-                <div><strong>Date de naissance :</strong> {{ initForm.get('dateNaissance')?.value | date: 'dd/MM/yyyy'
-                  }}</div>
                 <div><strong>Sexe :</strong> {{ initForm.get('sexe')?.value }}</div>
+                <div><strong>Nationalité :</strong> {{ initForm.get('nationalite')?.value }}</div>
+                <div><strong>Situation matrimoniale :</strong> {{ initForm.get('situationMatrimoniale')?.value }}</div>
+                <div><strong>Commune :</strong> {{ initForm.get('commune')?.value }}</div>
+                <div><strong>Département :</strong> {{ initForm.get('departement')?.value }}</div>
+                <div><strong>Langue parlée :</strong> {{ initForm.get('langueParlee')?.value }}</div>
+                <div><strong>Niveau d'étude :</strong> {{ initForm.get('niveauEtude')?.value }}</div>
+                <div><strong>Religion :</strong> {{ initForm.get('religion')?.value }}</div>
+                <div><strong>Nombre de parcelles :</strong> {{ initForm.get('nombrePlaceAffaire')?.value }}</div>
               </div>
             </div>
           </mat-expansion-panel>
@@ -371,18 +546,22 @@
             <div class="p-4">
               <div class="grid grid-cols-2 gap-4">
                 <div><strong>Code PAP :</strong> {{ initForm.get('codePap')?.value }}</div>
-                <div><strong>Commune :</strong> {{ initForm.get('commune')?.value }}</div>
-                <div><strong>Superficie :</strong> {{ initForm.get('superficie')?.value }}</div>
-                <div><strong>Nombre de parcelles :</strong> {{ initForm.get('nombrePlaceAffaire')?.value }}</div>
+                <div><strong>Code place affaire :</strong> {{ initForm.get('codePlaceAffaire')?.value }}</div>
+                <div><strong>Activité principale :</strong> {{ initForm.get('activitePrincipale')?.value }}</div>
+                <div><strong>Évaluation de la perte :</strong> {{ initForm.get('evaluationPerte')?.value }}</div>
+                <div><strong>Caractéristique place affaire :</strong> {{
+                  initForm.get('caracteristiquePlaceAffaire')?.value }}</div>
+                <div><strong>Perte arbres jeunes :</strong> {{ initForm.get('perteArbreJeune')?.value }}</div>
+                <div><strong>Perte arbres adultes :</strong> {{ initForm.get('perteArbreAdulte')?.value }}</div>
               </div>
             </div>
           </mat-expansion-panel>
 
-          <!-- Section 3 : Informations supplémentaires -->
+          <!-- Section 3 : Documents et détails supplémentaires -->
           <mat-expansion-panel>
             <mat-expansion-panel-header>
               <div class="flex justify-between w-full items-center">
-                <span class="font-semibold text-lg">Informations supplémentaires</span>
+                <span class="font-semibold text-lg">Documents et détails supplémentaires</span>
                 <button mat-icon-button (click)="goToStep(2)">
                   <mat-icon>edit</mat-icon>
                 </button>
@@ -390,19 +569,64 @@
             </mat-expansion-panel-header>
             <div class="p-4">
               <div class="grid grid-cols-2 gap-4">
-                <div><strong>Numéro de téléphone :</strong> {{ initForm.get('numeroTelephone')?.value }}</div>
                 <div><strong>Statut PAP :</strong> {{ initForm.get('statutPap')?.value }}</div>
                 <div><strong>Vulnérabilité :</strong> {{ initForm.get('vulnerabilite')?.value }}</div>
+                <div><strong>Type de pièce d'identification :</strong> {{ initForm.get('typePni')?.value }}</div>
+                <div><strong>Numéro de pièce :</strong> {{ initForm.get('numeroPni')?.value }}</div>
+                <div><strong>Surnom :</strong> {{ initForm.get('surnom')?.value }}</div>
+                <div><strong>Numéro de téléphone :</strong> {{ initForm.get('numeroTelephone')?.value }}</div>
+                <div><strong>Nombre de membres familiaux :</strong> {{ initForm.get('membreFoyer')?.value }}</div>
+                <div><strong>Nombre de membres familiaux handicapés :</strong> {{
+                  initForm.get('membreFoyerHandicape')?.value }}</div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+
+          <!-- Section 4 : Co-propriétaires -->
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <div class="flex justify-between w-full items-center">
+                <span class="font-semibold text-lg">Co-propriétaires</span>
+                <button mat-icon-button (click)="goToStep(3)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            </mat-expansion-panel-header>
+            <div class="p-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div *ngFor="let contact of contacts.data">
+                  <div><strong>Code :</strong> {{ contact.codeCoProprietaire }}</div>
+                  <div><strong>Nom complet :</strong> {{ contact.nomComplet }}</div>
+                  <div><strong>Âge :</strong> {{ contact.age }}</div>
+                  <div><strong>Sexe :</strong> {{ contact.sexeCoProprietaire }}</div>
+                  <div><strong>Informations complémentaires :</strong> {{ contact.infoComplementaire }}</div>
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+
+          <!-- Section 5 : Bâtiments / Équipements -->
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <div class="flex justify-between w-full items-center">
+                <span class="font-semibold text-lg">Bâtiments / Équipements</span>
+                <button mat-icon-button (click)="goToStep(4)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            </mat-expansion-panel-header>
+            <div class="p-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div><strong>Perte équipements :</strong> {{ initForm.get('perteEquipement')?.value }}</div>
+                <div><strong>Perte bâtiments :</strong> {{ initForm.get('perteBatiment')?.value }}</div>
+                <div><strong>Perte totale :</strong> {{ initForm.get('perteTotale')?.value }}</div>
+                <div><strong>Informations étendues :</strong> {{ initForm.get('informationsEtendues')?.value }}</div>
               </div>
             </div>
           </mat-expansion-panel>
         </mat-accordion>
-        <div class="">
-          <mat-progress-spinner *ngIf="loader" class="circle-loader" color="#000000" [mode]="'indeterminate'"
-            [strokeWidth]="4" [value]="2" [diameter]="30">
-          </mat-progress-spinner>
-        </div>
 
+        <!-- Boutons de navigation -->
         <div class="flex justify-center gap-4 mt-3">
           <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
             <span class="textForm">Retour</span>
@@ -417,3 +641,4 @@
   </form>
 </div>
 
+<app-loader-data *ngIf="loader"></app-loader-data>

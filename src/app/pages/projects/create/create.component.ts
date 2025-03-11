@@ -20,6 +20,8 @@ import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { ClientVueService } from "../../admin/client-vue/client-vue.service";
 import { environment } from "src/environments/environment";
 import { AddMaitreOuvrageComponent } from "../../maitrouvrages/add-maitre-ouvrage/add-maitre-ouvrage.component";
+import { MatDialog } from "@angular/material/dialog";
+import { ImageModalComponent } from "src/app/shared/image-modal.component";
 
 @Component({
   selector: "app-create",
@@ -40,6 +42,7 @@ export class CreateComponent implements OnInit {
   buttonText: string = "Créer le projet";
   constructor(
     private fb: FormBuilder,
+    private dialog: MatDialog,
     private projectService: ProjectService,
     public toastr: ToastrService,
     private router: Router,
@@ -74,6 +77,9 @@ export class CreateComponent implements OnInit {
         // image: ["", Validators.required],
         // attachedFiles: [],
         users: this.fb.array([]),
+        primaryColor: ["#3F51B5", [Validators.required]],
+        secondaryColor: ["#FF4081", [Validators.required]],
+        accentColor: ["#4CAF50", [Validators.required]],
       }
       // { validators: dateValidator() }
     );
@@ -104,7 +110,6 @@ export class CreateComponent implements OnInit {
   form: FormGroup;
   dropdownSettings = {};
   ngOnInit() {
-    this.projectForm.reset();
     this.breadCrumbItems = [
       { label: "Projects" },
       { label: "Create New", active: true },
@@ -188,82 +193,28 @@ export class CreateComponent implements OnInit {
   }
 
   addProject() {
-      this.createProject(this.projectForm.value);
-
+    this.createProject(this.projectForm.value);
   }
 
-  // createProject(projectRequest: any): void {
-  //   console.log(projectRequest);
-  //   this.projectForm.markAllAsTouched();
-  //   if (this.projectForm.valid) {
-  //     this.isloading = true;
-  //     this.snackbar
-  //       .showConfirmation("Voulez-vous vraiment créer le projet ?")
-  //       .then((result) => {
-  //         if (result["value"] == true) {
-  //           this.projectService
-  //             .add<ResponseData<Project>>(
-  //               "projects/createProject",
-  //               projectRequest
-  //             )
-  //             .subscribe(
-  //               (data: ResponseData<Project>) => {
-  //                 console.log("Project created successfully:", data);
-  //                 this.toastr.success(`${data.message}`);
-  //                 const normeProject: NormeProject[] = this.members.value;
-  //                 let saveNormeRequests = [];
-  //                 normeProject.forEach((normeProject: any) => {
-  //                   normeProject.project = data.data;
-  //                   const saveRequest = this.projectService
-  //                     .saveNormeProjet(normeProject, data.data.id)
-  //                     .toPromise();
-  //                   saveNormeRequests.push(saveRequest);
-  //                 });
-  //                 Promise.all(saveNormeRequests)
-  //                   .then(() => {
-  //                     this.router.navigate(["/projects/list"]);
-  //                     this.toastr.success(`Projet crée avec succés`);
-  //                   })
-  //                   .catch((err) => {
-  //                     console.error("Error saving norme project:", err);
-  //                     this.toastr.error(
-  //                       `Une erreur s'est produite ,veillez réessayez`
-  //                     );
-  //                   });
-  //                 this.isloading = false;
-  //               },
-  //               (error) => {
-  //                 console.error("Error creating project:", error);
-  //                 this.toastr.error(`Une erreur s'est produite`);
-  //                 this.isloading = false;
-  //               }
-  //             );
-  //         }
-  //       });
-  //   } else {
-  //     console.log("Le formulaire est invalide !");
-  //     for (const controlName in this.projectForm.controls) {
-  //       const control = this.projectForm.get(controlName);
-  //       if (control?.invalid && control?.touched) {
-  //         console.log(`Le champ ${controlName} est invalide.`);
-  //         console.log(control?.errors);
-  //       }
-  //     }
-  //   }
-  // }
-
   createProject(projectRequest: any): void {
-
     this.projectForm.markAllAsTouched();
 
     if (this.projectForm.valid) {
       this.isloading = true;
 
+      const colors = {
+        primary: this.projectForm.value.primaryColor,
+        secondary: this.projectForm.value.secondaryColor,
+        accent: this.projectForm.value.accentColor,
+      };
       const normeProject: NormeProject[] = this.members.value;
       projectRequest.normes = normeProject;
 
+      projectRequest.colors = JSON.stringify(colors);
+      delete projectRequest.primaryColor;
+      delete projectRequest.secondaryColor;
+      delete projectRequest.accentColor;
       console.log("data send", projectRequest);
-
 
       this.snackbar
         .showConfirmation("Voulez-vous vraiment créer le projet ?")
@@ -304,7 +255,6 @@ export class CreateComponent implements OnInit {
     }
   }
 
-
   loadProject() {
     return this.projectService
       .all<ResponseData<Project[]>>("projects/all")
@@ -315,8 +265,6 @@ export class CreateComponent implements OnInit {
   }
   // filechange
   imageURLs: any;
-
-
 
   updateForm(event: Event) {
     const inputValue = (event.target as HTMLInputElement).value;
@@ -369,25 +317,22 @@ export class CreateComponent implements OnInit {
         this.lengthMo = users.data.length;
         console.log(users.data);
         console.log("length: " + this.lengthMo);
-
       });
   }
 
-
-    addItems(): void {
-      this.snackbar.openModal(
-        AddMaitreOuvrageComponent,
-        "57rem",
-        "new",
-        "38rem",
-        "",
-        "",
-        () => {
-          this.fetchMo();
-        }
-      );
-    }
-
+  addItems(): void {
+    this.snackbar.openModal(
+      AddMaitreOuvrageComponent,
+      "57rem",
+      "new",
+      "38rem",
+      "",
+      "",
+      () => {
+        this.fetchMo();
+      }
+    );
+  }
 
   myImage: string;
 
@@ -397,38 +342,6 @@ export class CreateComponent implements OnInit {
     this.updateProject(this.projectForm.value);
   }
 
-  // updateProject(projectRequest: any): void {
-  //   this.projectService
-  //     .update<ResponseData<Project>, Project>(
-  //       `projects/updateProject`,
-  //       projectRequest
-  //     )
-  //     .subscribe(
-  //       (data: ResponseData<Project>) => {
-  //         console.log("Project updated successfully:", data);
-  //         this.toastr.success(`${data.message}`);
-  //         if (data) {
-  //           const normeProjects: NormeProject[] = this.members.value;
-  //           normeProjects.forEach((normeProject: any) => {
-  //             normeProject.project = data.data;
-  //           });
-  //           this.projectService
-  //             .saveNormeProjet1(normeProjects, data.data.id)
-  //             .subscribe(
-  //               (response) => {
-  //                 console.log(response);
-  //               },
-  //               (err) => {
-  //                 console.log(err);
-  //               }
-  //             );
-  //         }
-  //       },
-  //       (error) => {
-  //         console.error("Error updating project:", error);
-  //       }
-  //     );
-  // }
   updateProject(projectRequest: any): void {
     const normeProjects: NormeProject[] = this.members.value;
     projectRequest.normes = normeProjects;
@@ -445,24 +358,12 @@ export class CreateComponent implements OnInit {
         },
         (error) => {
           console.error("Error updating project:", error);
-          this.toastr.error("Une erreur s'est produite lors de la mise à jour du projet.");
+          this.toastr.error(
+            "Une erreur s'est produite lors de la mise à jour du projet."
+          );
         }
       );
   }
-
-  // updateNormeProjects(projectId: number, normeProjects: NormeProject[]): void {
-  //   normeProjects.forEach((normeProject: any) => {
-  //     normeProject.project = { id: projectId }; // Assuming normeProject has a 'project' property that is an object
-  //     this.projectService.saveNormeProjet(normeProject, projectId).subscribe(
-  //       (data) => {
-  //         console.log("Norme updated successfully:", data);
-  //       },
-  //       (err) => {
-  //         console.error("Error updating norme:", err);
-  //       }
-  //     );
-  //   });
-  // }
 
   // Conversion du Base64 en fichier
 
@@ -536,4 +437,26 @@ export class CreateComponent implements OnInit {
       }
     );
   }
+
+  presetColors: string[] = [
+    "#3F51B5", // Bleu
+    "#FF4081", // Rose
+    "#4CAF50", // Vert
+    "#FFC107", // Jaune
+    "#9C27B0", // Violet
+    "#E91E63", // Rose foncé
+    "#00BCD4", // Cyan
+    "#FF5722", // Orange
+  ];
+
+
+  openImageModal() {
+    if (this.imageProjet) {
+      this.dialog.open(ImageModalComponent, {
+        data: { imageUrl: this.imageProjet }, // Passer l'URL de l'image à la modal
+      });
+    }
+  }
+
+
 }

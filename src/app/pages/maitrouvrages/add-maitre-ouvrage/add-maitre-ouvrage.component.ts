@@ -4,7 +4,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from "@angular/forms";
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatDrawer } from "@angular/material/sidenav";
 import { MatStepper } from "@angular/material/stepper";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
@@ -16,6 +16,7 @@ import { environment } from "src/environments/environment";
 import { ClientVueService } from "src/app/pages/admin/client-vue/client-vue.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
+import { ImageModalComponent } from "src/app/shared/image-modal.component";
 
 @Component({
   selector: "app-add-maitre-ouvrage",
@@ -58,6 +59,7 @@ export class AddMaitreOuvrageComponent {
     public matDialogRef: MatDialogRef<AddMaitreOuvrageComponent>,
     @Inject(MAT_DIALOG_DATA) _data,
     private fb: UntypedFormBuilder,
+    private _matDialog: MatDialog,
     private coreService: CoreService,
     private snackbar: SnackBarService,
     private changeDetectorRefs: ChangeDetectorRef,
@@ -416,4 +418,13 @@ export class AddMaitreOuvrageComponent {
       (profil) => profil.categorie.id === categorieId
     );
   }
+
+
+   openImageModal(imageUrl: string) {
+        if (imageUrl) {
+          this._matDialog.open(ImageModalComponent, {
+            data: { imageUrl: imageUrl },
+          });
+        }
+      }
 }

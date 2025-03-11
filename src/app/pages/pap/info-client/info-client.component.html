@@ -1,7 +1,8 @@
 <div class="w-full heighContentRight" id="heighContentRightId">
   <div class="w-full mb-10 ">
-    <fuse-card class="flex flex-col w-full p-4" *ngIf="(infosPap.type!='PAPAGRICOLE' &&  infosPap.type!='PAPPLACEAFFAIRE' && infosPap.type!='PAPECONOMIQUE')">
-      <mat-tab-group dynamicHeight class="w-full" >
+    <fuse-card class="flex flex-col w-full p-4"
+      *ngIf="(infosPap.type!='PAPAGRICOLE' &&  infosPap.type!='PAPPLACEAFFAIRE' && infosPap.type!='PAPECONOMIQUE')">
+      <mat-tab-group dynamicHeight class="w-full">
         <mat-tab label="Détails">
           <div class="">
             <div class="flex flex-col w-full p-4">
@@ -161,7 +162,7 @@
                   Nombre total des équipements : {{ equipements.length }}
                 </div>
                 <div class="my-2 text-red-700 font-semibold" *ngIf="equipements.length==0">
-                 Aucun équipement
+                  Aucun équipement
                 </div>
                 <div class="overflow-x-auto">
                   <div class="flex flex-nowrap">
@@ -184,7 +185,7 @@
                   Nombre total des cultures : {{ cultures.length }}
                 </div>
                 <div class="my-2 text-red-700 font-semibold" *ngIf="cultures.length==0">
-                 Aucun culture
+                  Aucun culture
                 </div>
                 <div class="overflow-x-auto">
                   <div class="flex flex-nowrap">
@@ -213,7 +214,7 @@
                 Nombre total des co-propriétaires : {{ coProprietaires.length }}
               </div>
               <div class="my-2 text-red-700 font-semibold" *ngIf="coProprietaires.length==0">
-               Aucun co-propriétaires
+                Aucun co-propriétaires
               </div>
               <hr class="w-full border-t">
               <div class="flex flex-col w-full" *ngFor="let coProprietaire of coProprietaires">
@@ -327,7 +328,7 @@
     <!---PAP AGRICOLE-->
 
     <fuse-card class="flex flex-col w-full p-4" *ngIf="infosPap.type=='PAPAGRICOLE'">
-      <mat-tab-group dynamicHeight class="w-full" >
+      <mat-tab-group dynamicHeight class="w-full">
         <mat-tab label="Détails">
           <div class="">
             <div class="flex flex-col w-full p-4">
@@ -336,89 +337,118 @@
                 <div class="">
                   <button (click)="updateClient(infosPap)" class="c_btnAccount_attribut c_btnAccountF"
                     [disabled]="infosPap?.statut ==='DEMISSION'" matTooltip="Modifier le pap" mat-icon-button>
-                    <i class="bx bx-edit"></i>
+                    <mat-icon>edit</mat-icon>
                   </button>
                   <button (click)="templateConsentementClient(infosPap)"
                     class="ml-2 c_btnAccount_attribut c_btnAccountF" [disabled]="infosPap?.statut ==='DEMISSION'"
                     matTooltip="Lettre de consentement" mat-icon-button>
-                    <i class="bx bx-envelope"></i>
+                    <mat-icon>email</mat-icon>
                   </button>
                 </div>
               </div>
               <hr class="w-full border-t">
               <div class="flex flex-auto w-full">
                 <div class="flex flex-col w-full">
-                  <div class="grid grid-cols-2">
-                    <span class="mr-3 span-text">Code du Pap:</span>
+                  <div class="grid grid-cols-2 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">assignment</mat-icon> Code du Pap:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.codePap}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Nom: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">person</mat-icon> Nom:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.nom}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Prénom: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">person_outline</mat-icon> Prénom:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.prenom}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Nationalité: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">public</mat-icon> Nationalité:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.nationalite}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Langue Parlée: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">language</mat-icon> Langue Parlée:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.langueParlee}}</span>
                   </div>
-
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Sexe: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">wc</mat-icon> Sexe:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.sexe}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Age: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">cake</mat-icon> Age:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.age}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Situation Matrimoniale: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">favorite</mat-icon> Situation Matrimoniale:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.situationMatrimoniale}}</span>
                   </div>
                 </div>
                 <div class="flex flex-col w-full">
-                  <div class="grid grid-cols-2">
-                    <span class="span-text">Type d'identification: </span>
+                  <div class="grid grid-cols-2 items-center">
+                    <span class="span-text flex items-center">
+                      <mat-icon class="mr-2">badge</mat-icon> Type d'identification:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.typePni}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="span-text">Numéro d'identification: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="span-text flex items-center">
+                      <mat-icon class="mr-2">credit_card</mat-icon> Numéro d'identification:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.numeroPni}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="span-text">Numéro téléphone: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="span-text flex items-center">
+                      <mat-icon class="mr-2">phone</mat-icon> Numéro téléphone:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.numeroTelephone}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Nombre de parcelle affectée: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">map</mat-icon> Nombre de parcelle affectée:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.nombreParcelle}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Département: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">location_city</mat-icon> Département:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.departement}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Commune: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">place</mat-icon> Commune:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.commune}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Statut: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">flag</mat-icon> Statut:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.statutPap}}</span>
-
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Statut vulnérable: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">warning</mat-icon> Statut vulnérable:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.vulnerabilite }}</span>
                   </div>
                 </div>
               </div>
-
 
               <attribut-complementaire title="Attribut complémentaire"
                 (ajoutAttributComplementaire)="ajoutAttributComplementaire(infosPap,_attributComplementaire)"
@@ -434,11 +464,76 @@
             {{ infosPap.caracteristiqueParcelle }}
           </div>
         </mat-tab>
-        <mat-tab label="Evaluation des pertes subies">
-          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
-            {{ infosPap.evaluationPerte }}
+
+        <mat-tab label="Évaluation des pertes subies">
+          <div class="border border-gray-300 rounded-lg p-6 bg-white shadow-md">
+            <!-- En-tête fixe -->
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+              <mat-icon class="mr-2 text-red-500">assessment</mat-icon> Évaluation des pertes
+            </h2>
+
+            <!-- Conteneur de défilement pour les évaluations -->
+            <div class="overflow-y-auto" style="max-height: 500px;">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Perte de terre -->
+                <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <mat-icon class="text-green-700 mr-2">terrain</mat-icon>
+                  <span><strong>Perte de terre :</strong> {{ infosPap.evaluationPerte.perteTerre ?? 'Aucune perte' }}</span>
+                </div>
+
+                <!-- Perte d'arbres -->
+                <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <mat-icon class="text-green-500 mr-2">nature</mat-icon>
+                  <span><strong>Arbres jeunes :</strong> {{ infosPap.evaluationPerte.perteArbreJeune ?? 'Aucune perte' }}</span>
+                </div>
+
+                <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <mat-icon class="text-green-700 mr-2">park</mat-icon>
+                  <span><strong>Arbres adultes :</strong> {{ infosPap.evaluationPerte.perteArbreAdulte ?? 'Aucune perte' }}</span>
+                </div>
+
+                <!-- Perte d'équipements -->
+                <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <mat-icon class="text-blue-500 mr-2">devices</mat-icon>
+                  <span><strong>Pertes d'équipements :</strong> {{ parsedEquipements.length > 0 ? '' : 'Aucune perte' }}</span>
+                </div>
+
+                <div class="mt-2 space-y-2 w-full" *ngIf="parsedEquipements.length > 0">
+                  <div *ngFor="let equipement of parsedEquipements"
+                    class="bg-white p-4 border-l-4 border-blue-400 rounded-lg shadow-sm flex items-center">
+                    <mat-icon class="mr-3 text-blue-500">build</mat-icon>
+                    <span><strong>{{ equipement.typeEquipement }}</strong> - {{ equipement.etatEquipement }} ({{
+                      equipement.evaluationEquipement | number }} FCFA)</span>
+                  </div>
+                </div>
+
+                <!-- Perte de bâtiments -->
+                <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <mat-icon class="text-brown-500 mr-2">apartment</mat-icon>
+                  <span><strong>Pertes de bâtiments :</strong> {{ parsedBatiments.length > 0 ? '' : 'Aucune perte' }}</span>
+                </div>
+
+                <div class="mt-2 space-y-2 w-full" *ngIf="parsedBatiments.length > 0">
+                  <div *ngFor="let batiment of parsedBatiments"
+                    class="bg-white p-4 border-l-4 border-brown-400 rounded-lg shadow-sm flex items-center">
+                    <mat-icon class="mr-3 text-brown-500">house</mat-icon>
+                    <span><strong>{{ batiment.typeBatiment }}</strong> - {{ batiment.etatBatiment }} ({{
+                      batiment.evaluationBatiment | number }} FCFA)</span>
+                  </div>
+                </div>
+
+                <!-- Perte Totale -->
+                <h3 class="mt-6 text-lg font-bold text-red-600 flex items-center">
+                  <mat-icon class="mr-2 text-red-600">warning</mat-icon> Perte totale :
+                </h3>
+                <p class="text-xl font-bold text-red-600 mt-1">
+                  {{ infosPap.evaluationPerte.perteTotale !== null ? (infosPap.evaluationPerte.perteTotale | number) + ' FCFA' : 'Non évalué' }}
+                </p>
+              </div>
+            </div>
           </div>
         </mat-tab>
+
         <mat-tab label="Informations complémentaires">
           <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
             {{ infosPap.informationsEtendues }}
@@ -449,7 +544,7 @@
 
 
     <fuse-card class="flex flex-col w-full p-4" *ngIf="infosPap.type=='PAPPLACEAFFAIRE'">
-      <mat-tab-group dynamicHeight class="w-full" >
+      <mat-tab-group dynamicHeight class="w-full">
         <mat-tab label="Détails">
           <div class="">
             <div class="flex flex-col w-full p-4">
@@ -458,89 +553,118 @@
                 <div class="">
                   <button (click)="updateClient(infosPap)" class="c_btnAccount_attribut c_btnAccountF"
                     [disabled]="infosPap?.statut ==='DEMISSION'" matTooltip="Modifier le pap" mat-icon-button>
-                    <i class="bx bx-edit"></i>
+                    <mat-icon>edit</mat-icon>
                   </button>
                   <button (click)="templateConsentementClient(infosPap)"
                     class="ml-2 c_btnAccount_attribut c_btnAccountF" [disabled]="infosPap?.statut ==='DEMISSION'"
                     matTooltip="Lettre de consentement" mat-icon-button>
-                    <i class="bx bx-envelope"></i>
+                    <mat-icon>email</mat-icon>
                   </button>
                 </div>
               </div>
               <hr class="w-full border-t">
               <div class="flex flex-auto w-full">
                 <div class="flex flex-col w-full">
-                  <div class="grid grid-cols-2">
-                    <span class="mr-3 span-text">Code du Pap:</span>
+                  <div class="grid grid-cols-2 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">assignment</mat-icon> Code du Pap:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.codePap}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Nom: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">person</mat-icon> Nom:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.nom}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Prénom: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">person_outline</mat-icon> Prénom:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.prenom}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Nationalité: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">public</mat-icon> Nationalité:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.nationalite}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Langue Parlée: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">language</mat-icon> Langue Parlée:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.langueParlee}}</span>
                   </div>
-
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Sexe: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">wc</mat-icon> Sexe:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.sexe}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Age: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">cake</mat-icon> Age:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.age}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Situation Matrimoniale: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">favorite</mat-icon> Situation Matrimoniale:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.situationMatrimoniale}}</span>
                   </div>
                 </div>
                 <div class="flex flex-col w-full">
-                  <div class="grid grid-cols-2">
-                    <span class="span-text">Type d'identification: </span>
+                  <div class="grid grid-cols-2 items-center">
+                    <span class="span-text flex items-center">
+                      <mat-icon class="mr-2">badge</mat-icon> Type d'identification:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.typePni}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="span-text">Numéro d'identification: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="span-text flex items-center">
+                      <mat-icon class="mr-2">credit_card</mat-icon> Numéro d'identification:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.numeroPni}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="span-text">Numéro téléphone: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="span-text flex items-center">
+                      <mat-icon class="mr-2">phone</mat-icon> Numéro téléphone:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.numeroTelephone}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Nombre de place affaire affectée: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">map</mat-icon> Nombre de place affaire affectée:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.nombrePlaceAffaire}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Département: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">location_city</mat-icon> Département:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.departement}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Commune: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">place</mat-icon> Commune:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.commune}}</span>
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Statut: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">flag</mat-icon> Statut:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.statutPap}}</span>
-
                   </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Statut vulnérable: </span>
+                  <div class="grid grid-cols-2 mt-4 items-center">
+                    <span class="mr-3 span-text flex items-center">
+                      <mat-icon class="mr-2">warning</mat-icon> Statut vulnérable:
+                    </span>
                     <span class="leading-none font-bold">{{infosPap?.vulnerabilite }}</span>
                   </div>
                 </div>
               </div>
-
 
               <attribut-complementaire title="Attribut complémentaire"
                 (ajoutAttributComplementaire)="ajoutAttributComplementaire(infosPap,_attributComplementaire)"
@@ -551,16 +675,177 @@
             </div>
           </div>
         </mat-tab>
+
+        <mat-tab label="Co-propriétaire">
+          <div class="">
+            <div class="flex flex-col w-full p-4">
+              <!-- En-tête fixe -->
+              <div class="flex justify-between">
+                <div class="leading-tight uppercase c_title_header">Co-propriétaire</div>
+              </div>
+              <div class="my-2 text-gray-700 font-semibold" *ngIf="coProprietaires.length > 0">
+                Nombre total des co-propriétaires : {{ coProprietaires.length }}
+              </div>
+              <div class="my-2 text-red-700 font-semibold" *ngIf="coProprietaires.length === 0">
+                Aucun co-propriétaire
+              </div>
+              <hr class="w-full border-t">
+
+              <!-- Conteneur de la liste avec défilement -->
+              <div class="flex flex-col w-full overflow-y-auto" style="max-height: 400px;">
+                <div class="flex flex-col w-full" *ngFor="let coProprietaire of coProprietaires">
+                  <div class="flex flex-col w-full p-4 mb-4 border border-gray-300 rounded-lg bg-white">
+                    <div class="grid grid-cols-2 items-center">
+                      <span class="span-text flex items-center">
+                        <mat-icon class="mr-2">code</mat-icon>
+                        Code CoPropriétaire:
+                      </span>
+                      <span class="leading-none font-bold">{{ coProprietaire.codeCoProprietaire }}</span>
+                    </div>
+                    <div class="grid grid-cols-2 mt-4 items-center">
+                      <span class="span-text flex items-center">
+                        <mat-icon class="mr-2">person</mat-icon>
+                        Nom complet:
+                      </span>
+                      <span class="leading-none font-bold">{{ coProprietaire.nomComplet }}</span>
+                    </div>
+                    <div class="grid grid-cols-2 mt-4 items-center">
+                      <span class="span-text flex items-center">
+                        <mat-icon class="mr-2">phone</mat-icon>
+                        Contact Téléphonique:
+                      </span>
+                      <span class="leading-none font-bold">{{ coProprietaire.contactTelephonique }}</span>
+                    </div>
+                    <div class="grid grid-cols-2 mt-4 items-center">
+                      <span class="span-text flex items-center">
+                        <mat-icon class="mr-2">wc</mat-icon>
+                        Sexe:
+                      </span>
+                      <span class="leading-none font-bold">{{ coProprietaire.sexe }}</span>
+                    </div>
+                    <div class="grid grid-cols-2 mt-4 items-center">
+                      <span class="flex items-center">
+                        <mat-icon class="mr-2">cake</mat-icon>
+                        Âge:
+                      </span>
+                      <span class="leading-none font-bold">{{ coProprietaire.age }}</span>
+                    </div>
+                    <div class="grid grid-cols-2 mt-4 items-center">
+                      <span class="span-text flex items-center">
+                        <mat-icon class="mr-2">favorite</mat-icon>
+                        Situation matrimoniale:
+                      </span>
+                      <span class="leading-none font-bold">{{ coProprietaire.situationMatrimoniale }}</span>
+                    </div>
+                    <div class="leading-tight mt-8 uppercase c_title_header">Information complémentaire</div>
+                    <div class="flex flex-auto w-full mt-4">
+                      <span class="leading-none font-bold">{{ coProprietaire.infoComplementaire }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
         <mat-tab label="Caractéristiques de la place affaire">
           <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
             {{ infosPap.caracteristiquePlaceAffaire }}
           </div>
         </mat-tab>
-        <mat-tab label="Evaluation des pertes subies">
+        <!-- <mat-tab label="Evaluation des pertes subies">
           <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
             {{ infosPap.evaluationPerte }}
           </div>
+        </mat-tab> -->
+        <mat-tab label="Évaluation des pertes subies">
+          <div class="border border-gray-300 rounded-lg p-6 bg-white shadow-md">
+            <!-- En-tête fixe -->
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+              <mat-icon class="mr-2 text-red-500">assessment</mat-icon> Évaluation des pertes
+            </h2>
+
+            <!-- Conteneur de défilement pour les évaluations -->
+            <div class="overflow-y-auto" style="max-height: 500px;">
+              <!-- Grille des pertes -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Perte d'arbres -->
+                <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <mat-icon class="text-green-500 mr-2">nature</mat-icon>
+                  <span><strong>Arbres jeunes :</strong> {{ infosPap.evaluationPerte.perteArbreJeune }}</span>
+                </div>
+
+                <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <mat-icon class="text-green-700 mr-2">park</mat-icon>
+                  <span><strong>Arbres adultes :</strong> {{ infosPap.evaluationPerte.perteArbreAdulte }}</span>
+                </div>
+
+                <!-- Perte de revenus -->
+                <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <mat-icon class="text-yellow-500 mr-2">attach_money</mat-icon>
+                  <span><strong>Revenus :</strong> {{ infosPap.evaluationPerte.perteRevenue | number }} FCFA</span>
+                </div>
+
+                <!-- Appui relocalisation -->
+                <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <mat-icon class="text-blue-500 mr-2">home</mat-icon>
+                  <span><strong>Appui relocalisation :</strong> {{ infosPap.evaluationPerte.appuieRelocalisation | number }} FCFA</span>
+                </div>
+
+                <!-- Frais de déplacement -->
+                <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <mat-icon class="text-purple-500 mr-2">directions_car</mat-icon>
+                  <span><strong>Frais déplacement :</strong> {{ infosPap.evaluationPerte.fraisDeplacement | number }} FCFA</span>
+                </div>
+
+                <!-- Perte loyer -->
+                <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <mat-icon class="text-orange-500 mr-2">real_estate_agent</mat-icon>
+                  <span><strong>Perte loyer :</strong> {{ infosPap.evaluationPerte.perteLoyer | number }} FCFA</span>
+                </div>
+
+                <!-- Perte clôture -->
+                <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <mat-icon class="text-red-700 mr-2">fence</mat-icon>
+                  <span><strong>Perte clôture :</strong> {{ infosPap.evaluationPerte.perteCloture | number }} FCFA</span>
+                </div>
+              </div>
+
+              <!-- Pertes d'équipements -->
+              <h3 class="mt-6 text-lg font-bold text-gray-700 flex items-center">
+                <mat-icon class="mr-2 text-gray-600">build</mat-icon> Pertes d'équipements
+              </h3>
+              <div class="mt-2 space-y-2">
+                <div *ngFor="let equipement of parsedEquipements"
+                  class="bg-white p-4 border-l-4 border-gray-400 rounded-lg shadow-sm flex items-center">
+                  <mat-icon class="mr-3 text-blue-500">devices</mat-icon>
+                  <span><strong>{{ equipement.typeEquipement }}</strong> - {{ equipement.etatEquipement }} ({{
+                    equipement.evaluationEquipement | number }} FCFA)</span>
+                </div>
+              </div>
+
+              <!-- Pertes de bâtiments -->
+              <h3 class="mt-6 text-lg font-bold text-gray-700 flex items-center">
+                <mat-icon class="mr-2 text-gray-600">apartment</mat-icon> Pertes de bâtiments
+              </h3>
+              <div class="mt-2 space-y-2">
+                <div *ngFor="let batiment of parsedBatiments"
+                  class="bg-white p-4 border-l-4 border-gray-600 rounded-lg shadow-sm flex items-center">
+                  <mat-icon class="mr-3 text-brown-500">house</mat-icon>
+                  <span><strong>{{ batiment.typeBatiment }}</strong> - {{ batiment.etatBatiment }} ({{
+                    batiment.evaluationBatiment | number }} FCFA)</span>
+                </div>
+              </div>
+
+              <!-- Perte Totale -->
+              <h3 class="mt-6 text-lg font-bold text-red-600 flex items-center">
+                <mat-icon class="mr-2 text-red-600">warning</mat-icon> Perte totale :
+              </h3>
+              <p class="text-xl font-bold text-red-600 mt-1">{{ infosPap.evaluationPerte.perteTotale | number }} FCFA</p>
+            </div>
+          </div>
         </mat-tab>
+
         <mat-tab label="Informations complémentaires">
           <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
             {{ infosPap.informationsEtendues }}
@@ -572,7 +857,7 @@
 
 
     <fuse-card class="flex flex-col w-full p-4" *ngIf="infosPap.type=='PAPECONOMIQUE'">
-      <mat-tab-group dynamicHeight class="w-full" >
+      <mat-tab-group dynamicHeight class="w-full">
         <mat-tab label="Détails">
           <div class="">
             <div class="flex flex-col w-full p-4">
@@ -700,11 +985,7 @@
             {{ infosPap.descriptionCloture }}
           </div>
         </mat-tab>
-        <!-- <mat-tab label="Description de la cloture">
-          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
-            {{ infosPap.descriptionCloture }}
-          </div>
-        </mat-tab> -->
+
         <mat-tab label="Informations complémentaires">
           <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
             {{ infosPap.informationsEtendues }}

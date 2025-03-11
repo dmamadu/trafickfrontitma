@@ -59,7 +59,7 @@ export class ListEntenteComponent implements OnInit {
     | { label: string; active?: undefined }
     | { label: string; active: boolean }
   )[];
-  filterTable($event: any) {}
+  //filterTable($event: any) {}
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -95,7 +95,7 @@ export class ListEntenteComponent implements OnInit {
   userConnecter;
   offset: number = 0;
   title: string = "Gestion des ententes";
-  url: string = "";
+  url: string = "ententes";
   panelOpenState = false;
   img;
   image;
@@ -105,7 +105,7 @@ export class ListEntenteComponent implements OnInit {
   headers: any = [];
   btnActions: any = [];
 
-  currentUser: any;
+  currentProjectId: any;
 
   constructor(
     private _router: Router,
@@ -115,7 +115,7 @@ export class ListEntenteComponent implements OnInit {
     private snackbar: SnackBarService,
     private coreService: CoreService
   ) {
-    this.currentUser = this.localService.getDataJson("user");
+    this.currentProjectId = this.localService.getData("ProjectId");
   }
 
   createHeader() {
@@ -237,7 +237,7 @@ export class ListEntenteComponent implements OnInit {
     console.log(element);
     this.snackbar.openModal(
       CompensationDetailComponent,
-      "",
+      "51rem",
       "edit",
       "",
       element,
@@ -251,14 +251,13 @@ export class ListEntenteComponent implements OnInit {
   getEntente() {
     return this.parentService
       .listeByProject(
-        "ententes",
+        this.url,
         this.pageSize,
         this.offset,
-        this.currentUser.projects[0]?.id
+        this.currentProjectId
       )
       .subscribe(
         (data: any) => {
-          console.log("ententes");
 
           console.log(data);
 
@@ -277,6 +276,37 @@ export class ListEntenteComponent implements OnInit {
           }
         },
         (err) => {
+          console.log(err);
+        }
+      );
+  }
+
+
+
+  filterTable(event: Event) {
+    const searchTerm = (event.target as HTMLInputElement).value.trim();
+    this.loadData = true;
+    this.parentService
+      .searchGlobal(this.url, searchTerm, this.currentProjectId,this.pageSize, this.offset)
+      .subscribe(
+        (data: any) => {
+          this.loadData = false;
+          console.log('====================================');
+          console.log(data);
+          console.log('====================================');
+          if (data["responseCode"] == 200) {
+            this.dataSource = new MatTableDataSource(data["data"]);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+            this.datas = data["data"];
+            this.length = data["length"];
+            this._changeDetectorRef.markForCheck();
+          } else {
+            this.dataSource = new MatTableDataSource();
+          }
+        },
+        (err) => {
+          this.loadData = false;
           console.log(err);
         }
       );

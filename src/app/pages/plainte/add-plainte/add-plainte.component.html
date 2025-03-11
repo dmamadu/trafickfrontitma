@@ -11,8 +11,8 @@
 
   <div class="flex flex-col flex-auto min-w-10-0 p-2 md:p-4">
     <form [formGroup]="initForm" class="event-form w-100-p">
-      <mat-stepper #stepper>
-        <mat-step label="Préambule">
+      <mat-stepper #stepper linear>
+        <mat-step label="Préambule" [completed]="isStepValid(0)">
           <div class="flex gap-2">
             <mat-form-field class="w-1/2 mt-2" appearance="outline">
               <mat-label class="enteteccColor">Libelle du projet
@@ -110,13 +110,13 @@
             <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
               <span class="textForm">Retour</span>
             </button>&nbsp;
-            <button mat-raised-button class="submit-button" aria-label="VALIDER" matStepperNext type="button">
+            <button mat-raised-button class="submit-button" aria-label="VALIDER" (click)="nextStep(stepper)" type="button">
               <span class="textForm">Suivant</span>
             </button>&nbsp;
           </div>
         </mat-step>
 
-        <mat-step label="Informations personnelles">
+        <mat-step label="Informations personnelles" [completed]="isStepValid(1)">
 
 
           <div class="flex gap-2">
@@ -226,13 +226,13 @@
             <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
               <span class="textForm">Retour</span>
             </button>&nbsp;
-            <button mat-raised-button class="submit-button" aria-label="VALIDER" matStepperNext type="button">
+            <button mat-raised-button class="submit-button" aria-label="VALIDER" (click)="nextStep(stepper)" type="button">
               <span class="textForm">Suivant</span>
             </button>&nbsp;
           </div>
         </mat-step>
 
-        <mat-step label="Description">
+        <mat-step label="Description" [completed]="isStepValid(2)">
 
 
           <mat-form-field class=" w-full mt-2" appearance="outline">
@@ -298,18 +298,18 @@
             <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
               <span class="textForm">Retour</span>
             </button>&nbsp;
-            <button matStepperNext mat-raised-button class="submit-button">
+            <button (click)="nextStep(stepper)" mat-raised-button class="submit-button">
               <span class="textForm">Suivant</span>
             </button>
           </div>
         </mat-step>
 
-        <mat-step label="Signatures">
+        <mat-step label="Signatures" [completed]="isStepValid(3)">
           <div class="flex items-center justify-center gap-4">
             <div class="w-1/2 mt-2">
               <label for="">Signature du pap</label>
               <img class="w-32 h-32" [src]="initForm.get('urlSignaturePap')?.value" alt=""
-                *ngIf="initForm.get('urlSignaturePap')?.value">
+                *ngIf="initForm.get('urlSignaturePap')?.value" (click)="openImageModal(initForm.get('urlSignaturePap')?.value)">
               <div class="flex items-center mt-6 lg:mt-0 space-x-6">
                 <div class="flex flex-col">
                   <input matInput type="text" name="numeroIdentification" formControlName="urlSignaturePap" hidden />
@@ -325,7 +325,7 @@
             <div class="w-1/2 mt-2">
               <label for="">Signature du responsable</label>
               <img class="w-32 h-32" [src]="initForm.get('urlSignatureResponsable')?.value" alt=""
-                *ngIf="initForm.get('urlSignatureResponsable')?.value">
+                *ngIf="initForm.get('urlSignatureResponsable')?.value"  (click)="openImageModal(initForm.get('urlSignatureResponsable')?.value)">
               <div class="flex items-center mt-6 lg:mt-0 space-x-6">
                 <div class="flex flex-col">
                   <input matInput type="text" name="numeroIdentification" formControlName="urlSignatureResponsable"
@@ -343,7 +343,7 @@
             <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
               <span class="textForm">Retour</span>
             </button>&nbsp;
-            <button mat-raised-button class="submit-button" aria-label="VALIDER" matStepperNext type="button">
+            <button mat-raised-button class="submit-button" aria-label="VALIDER" (click)="nextStep(stepper)" type="button">
               <span class="textForm">Suivant</span>
             </button>&nbsp;
           </div>
@@ -351,233 +351,201 @@
 
         <mat-step label="Récapitulatif">
           <mat-accordion>
-            <div class="flex flex-col w-full p-8">
-
-              <!-- Préambule -->
-              <mat-expansion-panel [expanded]="true">
-                <mat-expansion-panel-header>
-                  <div class="w-full flex rec">
-                    <div class="titleRecap">Préambule</div>
-                    <button matTooltip="Modifier cette partie" class="butSearchs" mat-icon-button>
-                      <i class="bx bx-edit collapseButton icon-size-4 c_colorIcom" (click)="goToStep(0)"></i>
-                    </button>
+            <!-- Section 1 : Préambule -->
+            <mat-expansion-panel [expanded]="true">
+              <mat-expansion-panel-header>
+                <div class="w-full flex rec">
+                  <div class="titleRecap">Préambule</div>
+                  <button matTooltip="Modifier cette partie" class="butSearchs" mat-icon-button (click)="goToStep(0)">
+                    <i class="bx bx-edit collapseButton icon-size-4 c_colorIcom"></i>
+                  </button>
+                </div>
+              </mat-expansion-panel-header>
+              <hr class="w-full border-t my-6">
+              <div class="flex flex-col w-full">
+                <div class="grid grid-cols-2 gap-4 w-full">
+                  <div class="flex items-center recapCss">
+                    <span>Libellé du projet : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('libelleProjet')?.value }}</span>
                   </div>
-                </mat-expansion-panel-header>
-                <hr class="w-full border-t my-6">
-                <div class="flex flex-col w-full">
-                  <div class="grid grid-cols-2 gap-4 w-full">
-                    <!-- Colonne 1 -->
-                    <div class="flex items-center recapCss">
-                      <span>Libellé : </span>
-                      <span title="{{ initForm?.get('libelleProjet')?.value }}" class="overme leading-none font-bold">
-                        {{ initForm?.get('libelleProjet')?.value }}
-                      </span>
-                    </div>
-                    <div class="flex items-center recapCss">
-                      <span>Numéro du dossier : </span>
-                      <span title="{{ initForm?.get('numeroDossier')?.value }}" class="overme leading-none font-bold">
-                        {{ initForm?.get('numeroDossier')?.value }}
-                      </span>
-                    </div>
-
-                    <!-- Colonne 2 -->
-                    <div class="flex items-center recapCss">
-                      <span>Date d'enregistrement : </span>
-                      <span class="leading-none font-bold">
-                        {{ initForm?.get('dateEnregistrement')?.value | date:'dd-MM-yyyy' }}
-                      </span>
-                    </div>
-                    <div class="flex items-center recapCss">
-                      <span>Lieu d'enregistrement : </span>
-                      <span class="leading-none font-bold">{{ initForm?.get('lieuEnregistrement')?.value }}</span>
-                    </div>
-
-                    <!-- Colonne 3 -->
-                    <div class="flex items-center recapCss">
-                      <span>Date du recensement : </span>
-                      <span class="leading-none font-bold">
-                        {{ initForm?.get('dateRecensement')?.value | date:'dd-MM-yyyy' }}
-                      </span>
-                    </div>
-
-                    <!-- Colonne 4 -->
-                    <div class="flex items-center recapCss">
-                      <span>Nature des biens affectés : </span>
-                      <span title="{{ initForm?.get('natureBienAffecte')?.value }}"
-                        class="overme leading-none font-bold">
-                        {{ initForm?.get('natureBienAffecte')?.value }}
-                      </span>
-                    </div>
-                    <div class="flex items-center recapCss">
-                      <span>Emplacement des biens affectés : </span>
-                      <span title="{{ initForm?.get('emplacementBienAffecte')?.value }}"
-                        class="overme leading-none font-bold">
-                        {{ initForm?.get('emplacementBienAffecte')?.value }}
-                      </span>
-                    </div>
+                  <div class="flex items-center recapCss">
+                    <span>Numéro du dossier : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('numeroDossier')?.value }}</span>
+                  </div>
+                  <div class="flex items-center recapCss">
+                    <span>Lieu d'enregistrement : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('lieuEnregistrement')?.value }}</span>
+                  </div>
+                  <div class="flex items-center recapCss">
+                    <span>Date d'enregistrement : </span>
+                    <span class="leading-none font-bold">
+                      {{ initForm?.get('dateEnregistrement')?.value | date:'dd-MM-yyyy' }}
+                    </span>
+                  </div>
+                  <div class="flex items-center recapCss">
+                    <span>Recensé pour dédommagement : </span>
+                    <span class="leading-none font-bold">
+                      {{ initForm?.get('isRecensed')?.value ? 'Oui' : 'Non' }}
+                    </span>
+                  </div>
+                  <div class="flex items-center recapCss">
+                    <span>Date du recensement : </span>
+                    <span class="leading-none font-bold">
+                      {{ initForm?.get('dateRecensement')?.value | date:'dd-MM-yyyy' }}
+                    </span>
+                  </div>
+                  <div class="flex items-center recapCss">
+                    <span>Fiche de confirmation signée : </span>
+                    <span class="leading-none font-bold">
+                      {{ initForm?.get('isSignedFileRecensement')?.value ? 'Oui' : 'Non' }}
+                    </span>
+                  </div>
+                  <div class="flex items-center recapCss">
+                    <span>Nature du bien affecté : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('natureBienAffecte')?.value }}</span>
+                  </div>
+                  <div class="flex items-center recapCss">
+                    <span>Emplacement des biens affectés : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('emplacementBienAffecte')?.value }}</span>
                   </div>
                 </div>
-              </mat-expansion-panel>
+              </div>
+            </mat-expansion-panel>
 
-
-              <!-- Informations personnelles -->
-              <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                  <div class="w-full flex rec">
-                    <div class="titleRecap">Informations personnelles</div>
-                    <button matTooltip="Modifier cette partie" class="butSearchs" mat-icon-button>
-                      <i class="bx bx-edit icon-size-4 collapseButton c_colorIcom" (click)="goToStep(1)"></i>
-                    </button>
+            <!-- Section 2 : Informations personnelles -->
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <div class="w-full flex rec">
+                  <div class="titleRecap">Informations personnelles</div>
+                  <button matTooltip="Modifier cette partie" class="butSearchs" mat-icon-button (click)="goToStep(1)">
+                    <i class="bx bx-edit icon-size-4 collapseButton c_colorIcom"></i>
+                  </button>
+                </div>
+              </mat-expansion-panel-header>
+              <hr class="w-full border-t my-6">
+              <div class="flex flex-col w-full mt-2 cSize">
+                <div class="grid grid-cols-2 gap-4 w-full">
+                  <div class="flex items-center recapCss">
+                    <span>Prénom : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('prenom')?.value }}</span>
                   </div>
-                </mat-expansion-panel-header>
-                <hr class="w-full border-t my-6">
-                <div class="flex flex-col w-full mt-2 cSize">
-                  <!-- Grille pour deux éléments par ligne -->
-                  <div class="grid grid-cols-2 gap-4 w-full">
-
-                    <!-- Colonne 1 -->
-                    <div class="flex items-center recapCss">
-                      <span>Prénom : </span>
-                      <span class="leading-none font-bold">{{ initForm?.get('prenom')?.value }}</span>
-                    </div>
-                    <div class="flex items-center recapCss">
-                      <span>Nom : </span>
-                      <span class="leading-none font-bold">{{ initForm?.get('nom')?.value }}</span>
-                    </div>
-
-                    <!-- Colonne 2 -->
-                    <div class="flex items-center recapCss">
-                      <span>Nature de la pièce : </span>
-                      <span class="leading-none font-bold">
-                        {{ gettypeIdentification(initForm?.get('typeIdentification')?.value) }}
-                      </span>
-                    </div>
-                    <div class="flex items-center recapCss">
-                      <span>Numéro de la pièce : </span>
-                      <span class="leading-none font-bold">{{ initForm?.get('numeroIdentification')?.value }}</span>
-                    </div>
-
-                    <!-- Colonne 3 -->
-                    <div class="flex items-center recapCss">
-                      <span>Sexe : </span>
-                      <span class="leading-none font-bold">{{ initForm?.get('sexe')?.value }}</span>
-                    </div>
-                    <div class="flex items-center recapCss">
-                      <span>Situation Matrimoniale : </span>
-                      <span class="leading-none font-bold">{{ initForm?.get('situationMatrimoniale')?.value }}</span>
-                    </div>
-
-                    <!-- Colonne 4 -->
-                    <div class="flex items-center recapCss">
-                      <span>Téléphone : </span>
-                      <span class="leading-none font-bold">{{ initForm?.get('contact')?.value }}</span>
-                    </div>
-                    <div class="flex items-center recapCss">
-                      <span>Email : </span>
-                      <span class="leading-none font-bold">{{ initForm?.get('email')?.value }}</span>
-                    </div>
-                    <div class="flex items-center recapCss">
-                      <span>Email : </span>
-                      <span class="leading-none font-bold">{{ initForm?.get('vulnerabilite')?.value }}</span>
-                    </div>
+                  <div class="flex items-center recapCss">
+                    <span>Nom : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('nom')?.value }}</span>
+                  </div>
+                  <div class="flex items-center recapCss">
+                    <span>Nature de la pièce : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('typeIdentification')?.value }}</span>
+                  </div>
+                  <div class="flex items-center recapCss">
+                    <span>Numéro de la pièce : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('numeroIdentification')?.value }}</span>
+                  </div>
+                  <div class="flex items-center recapCss">
+                    <span>Sexe : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('sexe')?.value }}</span>
+                  </div>
+                  <div class="flex items-center recapCss">
+                    <span>Situation matrimoniale : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('situationMatrimoniale')?.value }}</span>
+                  </div>
+                  <div class="flex items-center recapCss">
+                    <span>Téléphone : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('contact')?.value }}</span>
+                  </div>
+                  <div class="flex items-center recapCss">
+                    <span>Email : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('email')?.value }}</span>
+                  </div>
+                  <div class="flex items-center recapCss">
+                    <span>Commentaire sur vulnérabilité : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('vulnerabilite')?.value }}</span>
                   </div>
                 </div>
-              </mat-expansion-panel>
+              </div>
+            </mat-expansion-panel>
 
-
-              <!-- Description & Récommandation -->
-              <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                  <div class="w-full flex rec">
-                    <div class="titleRecap">Description & Récommandation</div>
-                    <button matTooltip="Modifier cette partie" class="butSearchs" mat-icon-button>
-                      <i class="bx bx-edit icon-size-4 collapseButton c_colorIcom" (click)="goToStep(2)"></i>
-                    </button>
+            <!-- Section 3 : Description & Recommandation -->
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <div class="w-full flex rec">
+                  <div class="titleRecap">Description & Recommandation</div>
+                  <button matTooltip="Modifier cette partie" class="butSearchs" mat-icon-button (click)="goToStep(2)">
+                    <i class="bx bx-edit icon-size-4 collapseButton c_colorIcom"></i>
+                  </button>
+                </div>
+              </mat-expansion-panel-header>
+              <hr class="w-full border-t my-6">
+              <div class="flex flex-col w-full mt-2 cSize">
+                <div class="grid grid-cols-2 gap-4 w-full">
+                  <div class="flex items-center recapCss">
+                    <span>Description : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('descriptionObjet')?.value }}</span>
                   </div>
-                </mat-expansion-panel-header>
-                <hr class="w-full border-t my-6">
-                <div class="flex flex-col w-full mt-2 cSize">
-                  <!-- Grille pour deux éléments par ligne -->
-                  <div class="grid grid-cols-2 gap-4 w-full">
-
-                    <!-- Colonne 1 -->
-                    <div class="flex items-center recapCss">
-                      <span>Description : </span>
-                      <span class="leading-none font-bold">{{ initForm?.get('descriptionObjet')?.value }}</span>
-                    </div>
-                    <div class="flex items-center recapCss">
-                      <span>Récommandation : </span>
-                      <span class="leading-none font-bold">{{ initForm?.get('recommandation')?.value }}</span>
-                    </div>
-
-                    <!-- Colonne 2 -->
-                    <div class="flex items-center recapCss">
-                      <span>Etat : </span>
-                      <span class="leading-none font-bold">{{ initForm?.get('etat')?.value }}</span>
-                    </div>
-
+                  <div class="flex items-center recapCss">
+                    <span>Recommandation : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('recommandation')?.value }}</span>
+                  </div>
+                  <div class="flex items-center recapCss">
+                    <span>État : </span>
+                    <span class="leading-none font-bold">{{ initForm?.get('etat')?.value }}</span>
                   </div>
                 </div>
-              </mat-expansion-panel>
+              </div>
+            </mat-expansion-panel>
 
-              <!-- Documents -->
-              <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                  <div class="w-full flex rec">
-                    <div class="titleRecap">Documents</div>
-                    <button class="butSearchs" mat-icon-button>
-                      <i class="bx bx-edit icon-size-4 collapseButton c_colorIcom" (click)="goToStep(3)"></i>
-                    </button>
-                  </div>
-                </mat-expansion-panel-header>
-                <hr class="w-full border-t my-6">
-                <!-- <div class="flex flex-auto w-full mt-2 cSize"> -->
-                <!-- Affichage des images des documents -->
-                <div>
-                  <h3>Fichiers sélectionnés :</h3>
-                  <ul>
-                    <li *ngFor="let url of documentUrls">
-                      <img [src]="url" alt="Image" style="max-width: 200px; max-height: 200px;">
-                    </li>
-                  </ul>
+            <!-- Section 4 : Documents -->
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <div class="w-full flex rec">
+                  <div class="titleRecap">Documents</div>
+                  <button class="butSearchs" mat-icon-button (click)="goToStep(3)">
+                    <i class="bx bx-edit icon-size-4 collapseButton c_colorIcom"></i>
+                  </button>
                 </div>
-              </mat-expansion-panel>
+              </mat-expansion-panel-header>
+              <hr class="w-full border-t my-6">
+              <div>
+                <h3>Fichiers sélectionnés :</h3>
+                <ul>
+                  <li *ngFor="let url of documentUrls">
+                    <img [src]="url" alt="Image" style="max-width: 200px; max-height: 200px;" (click)="openImageModal(url)" >
+                  </li>
+                </ul>
+              </div>
+            </mat-expansion-panel>
 
-              <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                  <div class="w-full flex rec">
-                    <div class="titleRecap">Signatures</div>
-                    <button class="butSearchs" mat-icon-button>
-                      <i class="bx bx-edit icon-size-4 collapseButton c_colorIcom" (click)="goToStep(4)"></i>
-                    </button>
-                  </div>
-                </mat-expansion-panel-header>
-                <hr class="w-full border-t my-6">
-                <div class="p-4">
-                  <div class="w-full gap-4">
-                    <div class="flex flex-col items-center">
-                      <div class="flex space-x-4">
-                        <div>
-                          <label for="">Signature du Pap</label>
-                          <img [src]="initForm.get('urlSignaturePap')?.value" alt="" class="w-1/2 h-auto">
-                        </div>
-                        <div>
-                          <label for="">Signature du responsable</label>
-                          <img [src]="initForm.get('urlSignatureResponsable')?.value" alt="" class="w-1/2 h-auto">
-                        </div>
+            <!-- Section 5 : Signatures -->
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <div class="w-full flex rec">
+                  <div class="titleRecap">Signatures</div>
+                  <button class="butSearchs" mat-icon-button (click)="goToStep(4)">
+                    <i class="bx bx-edit icon-size-4 collapseButton c_colorIcom"></i>
+                  </button>
+                </div>
+              </mat-expansion-panel-header>
+              <hr class="w-full border-t my-6">
+              <div class="p-4">
+                <div class="w-full gap-4">
+                  <div class="flex flex-col items-center">
+                    <div class="flex space-x-4">
+                      <div>
+                        <label for="">Signature du PAP</label>
+                        <img [src]="initForm.get('urlSignaturePap')?.value" alt="" class="w-1/2 h-auto" (click)="openImageModal(initForm.get('urlSignaturePap')?.value)">
+                      </div>
+                      <div>
+                        <label for="">Signature du responsable</label>
+                        <img [src]="initForm.get('urlSignatureResponsable')?.value" alt="" class="w-1/2 h-auto" (click)="openImageModal(initForm.get('urlSignatureResponsable')?.value)">
                       </div>
                     </div>
                   </div>
                 </div>
-              </mat-expansion-panel>
-
-
-            </div>
+              </div>
+            </mat-expansion-panel>
           </mat-accordion>
 
-
-
-
+          <!-- Boutons de navigation -->
           <div class="flex justify-center gap-4 mt-4">
             <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
               <span class="textForm">Retour</span>

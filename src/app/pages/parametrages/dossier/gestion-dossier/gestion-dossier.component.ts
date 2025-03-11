@@ -1,21 +1,14 @@
 import { DatePipe } from "@angular/common";
 import { ChangeDetectorRef, Component, ViewChild } from "@angular/core";
 import { UntypedFormGroup } from "@angular/forms";
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogRef,
-} from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
-import { Router, ActivatedRoute } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { LocalService } from "src/app/core/services/local.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { PapAddComponent } from "src/app/pages/pap/pap-add/pap-add.component";
-import { PapService } from "src/app/pages/pap/pap.service";
-import { SharedService } from "src/app/pages/projects/shared.service";
 import { CoreService } from "src/app/shared/core/core.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import {
@@ -48,6 +41,7 @@ import { AddDossierComponent } from "./add-dossier/add-dossier.component";
   styleUrl: "./gestion-dossier.component.css",
 })
 export class GestionDossierComponent {
+  currentProjectId: any;
   filterTable($event: any) {
     throw new Error("Method not implemented.");
   }
@@ -103,22 +97,16 @@ export class GestionDossierComponent {
   )[];
 
   constructor(
-    private changeDetectorRefs: ChangeDetectorRef,
-    private _router: Router,
-    private datePipe: DatePipe,
     private snackbar: SnackBarService,
-    private _matDialog: MatDialog,
-    private papService: PapService,
     private parentService: ServiceParent,
     public matDialogRef: MatDialogRef<PapAddComponent>,
     private _changeDetectorRef: ChangeDetectorRef,
-    public toastr: ToastrService,
-    private sharedService: SharedService,
     private localService: LocalService,
-    private coreService: CoreService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+    public toastr: ToastrService,
+    private coreService: CoreService
+  ) {
+    this.currentProjectId = this.localService.getData("ProjectId");
+  }
   ngOnInit(): void {
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
@@ -220,9 +208,6 @@ export class GestionDossierComponent {
 
   //cette fonction permet de supprimer
   supprimerItems(id, information) {
-    console.log("====================================");
-    console.log(id);
-    console.log("====================================");
     this.snackbar
       .showConfirmation("Voulez-vous vraiment supprimer ce dossier?")
       .then((result) => {
@@ -251,7 +236,7 @@ export class GestionDossierComponent {
   getDossiers() {
     this.loadData = true;
     return this.parentService
-      .list(this.url, this.pageSize, this.offset)
+      .list(this.url, this.pageSize, this.offset, this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;

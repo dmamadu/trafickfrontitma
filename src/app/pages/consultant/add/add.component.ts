@@ -22,6 +22,7 @@ import { LocalService } from "src/app/core/services/local.service";
 import { environment } from "src/environments/environment";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
+import { ImageModalComponent } from "src/app/shared/image-modal.component";
 
 @Component({
   selector: "app-add",
@@ -77,7 +78,7 @@ export class AddComponent {
   //urlImage = environment.apiUrl + "image/getFile/";
 
   urlImage = environment.apiUrl + "fileAws/download/";
-
+  currentProjectId: any;
   constructor(
     public matDialogRef: MatDialogRef<AddComponent>,
     @Inject(MAT_DIALOG_DATA) _data,
@@ -87,12 +88,15 @@ export class AddComponent {
     private changeDetectorRefs: ChangeDetectorRef,
     private clientService: ClientVueService,
     private parentService: ServiceParent,
+    private dialog: MatDialog,
     private moservice: MoService,
     private localService: LocalService,
     private clientServive: ClientVueService,
     private _changeDetectorRef: ChangeDetectorRef,
   ) {
-    this.currentUser = this.localService.getDataJson("user");
+    //this.currentUser = this.localService.getDataJson("user");
+
+    this.currentProjectId = this.localService.getData("ProjectId");
 
     console.log("user connecter", this.currentUser);
     if (_data?.action == "new") {
@@ -146,7 +150,7 @@ export class AddComponent {
       ]),
 
       project_id: this.fb.control(
-        this.currentUser.projects ? this.currentUser.projects[0]?.id : null,
+        this.currentProjectId ? this.currentProjectId : null,
         [Validators.required]
       ),
       fonction_id: this.fb.control(donnees ? donnees?.fonction_id : null, [
@@ -182,7 +186,8 @@ export class AddComponent {
 
   updateItems() {
     console.log(this.initForm.value);
-    this.snackbar
+    if(this.initForm.valid){
+      this.snackbar
       .showConfirmation(`Voulez-vous vraiment modifier ce consultant `)
       .then((result) => {
         if (result["value"] == true) {
@@ -215,6 +220,9 @@ export class AddComponent {
             );
         }
       });
+
+    }
+
   }
 
   checkRecap(type) {
@@ -325,12 +333,14 @@ export class AddComponent {
   }
 
   addItems(image?: Image) {
-    this.initForm.get("project_id").setValue(1);
-    console.log(this.initForm.value);
+    //this.initForm.get("project_id").setValue(1);
+   // console.log(this.initForm.value);
+
+   if(this.initForm.valid){
     const consultantRequest = this.initForm.value;
-    if (image) {
-      consultantRequest.image = image;
-    }
+    // if (image) {
+    //   consultantRequest.image = image;
+    // }
     this.snackbar
       .showConfirmation(`Voulez-vous vraiment ajouter ce consultant `)
       .then((result) => {
@@ -363,6 +373,8 @@ export class AddComponent {
           );
         }
       });
+   }
+
   }
 
 
@@ -453,4 +465,14 @@ export class AddComponent {
           }
         );
     }
+
+
+
+       openImageModal() {
+          if (this.imageToff) {
+            this.dialog.open(ImageModalComponent, {
+              data: { imageUrl: this.imageToff },
+            });
+          }
+        }
 }

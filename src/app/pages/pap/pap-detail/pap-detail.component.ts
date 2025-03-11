@@ -20,16 +20,10 @@ import { ClientVueService } from "../../admin/client-vue/client-vue.service";
 import { MatDialog } from "@angular/material/dialog";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { InfoClientComponent } from "../info-client/info-client.component";
-import { SharedService } from "../../projects/shared.service";
 import { LocalService } from "src/app/core/services/local.service";
 import { SignatureClientComponent } from "../signature-client/signature-client.component";
 import { environment } from "src/environments/environment";
 import { PapService } from "../pap.service";
-import { InfoPlainteComponent } from "../../plainte/palainte-detail/info-plainte/info-plainte.component";
-import { PlainteFomuleComponent } from "../plainte-fomule/plainte-fomule.component";
-import { CommunicationPapComponent } from "../communication-pap/communication-pap.component";
-import { EntenteCompensationFormuleComponent } from "../entente-compensation-formule/entente-compensation-formule.component";
-import { ListPlainteComponent } from "../../plainte/list-plainte/list-plainte.component";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
@@ -41,6 +35,8 @@ import { DatatableComponent } from "src/app/shared/datatable/datatable.component
 import { ToastrService } from "ngx-toastr";
 import { CommonModule } from "@angular/common";
 import { AddPlainteComponent } from "../../plainte/add-plainte/add-plainte.component";
+import { CompensationDetailComponent } from "../../entente-compensation/compensation-detail/compensation-detail.component";
+import { PlainteDetailComponent } from "../../plainte/palainte-detail/plainte-detail.component";
 
 @Component({
   selector: "app-pap-detail",
@@ -49,11 +45,6 @@ import { AddPlainteComponent } from "../../plainte/add-plainte/add-plainte.compo
   imports: [
     AngularMaterialModule,
     InfoClientComponent,
-    InfoPlainteComponent,
-    PlainteFomuleComponent,
-    CommunicationPapComponent,
-    EntenteCompensationFormuleComponent,
-    ListPlainteComponent,
     TableauComponent,
     DatatableComponent,
     CommonModule,
@@ -78,9 +69,6 @@ export class PapDetailComponent implements OnInit {
   paramsId: any;
   infosPap: any;
   isLoading = false;
-  menuPP: any;
-  menuPM: any;
-  menuPMACTIONNAIRE: any;
   typeClient: boolean;
   noImage = "assets/images/noImage.png";
   imagePath = "";
@@ -102,32 +90,21 @@ export class PapDetailComponent implements OnInit {
   informations: any;
   displayedColumns: any;
   searchList: any;
-  codeEnvoye: number; //code envoye par notre menu
-  hasList: boolean;
-  hasAdd: boolean;
-  hasUpdate: boolean;
   hasDelete: boolean;
-  hasDetail: boolean;
   length = 100;
   dataSource: MatTableDataSource<any>;
   datas = [];
-  deleteUser: boolean = false;
-  currentIndex;
   loadData: boolean = false;
   offset: number = 0;
-
-  //urlImage=     'http://localhost:8080/image/getFile/';
-
   plaintes: any = [];
+  currentUser: any;
 
   /**
    * Constructor
    */
   constructor(
     private _changeDetectorRef: ChangeDetectorRef,
-    // private _fuseMediaWatcherService: FuseMediaWatcherService,
     private route: ActivatedRoute,
-    private _router: Router,
     private coreService: CoreService,
     private snackbar: SnackBarService,
     private clientServive: ClientVueService,
@@ -137,6 +114,7 @@ export class PapDetailComponent implements OnInit {
     private papService: PapService,
     public toastr: ToastrService
   ) {
+    this.currentUser = this.localService.getDataJson("user");
     this.menuData = [
       {
         title: "Actions liées",
@@ -151,11 +129,11 @@ export class PapDetailComponent implements OnInit {
             title: "Plaintes",
             icon: "heroicons_outline:user-group",
           },
-          // {
-          //   id: "entente",
-          //   title: "Ententes de compensation",
-          //   icon: "heroicons_outline:users",
-          // },
+          {
+            id: "entente",
+            title: "Ententes de compensation",
+            icon: "heroicons_outline:users",
+          },
         ],
       },
     ];
@@ -257,12 +235,7 @@ export class PapDetailComponent implements OnInit {
    * @param panel
    */
   goToPanel(panel: string): void {
-    //this.coreService.encriptDataToLocalStorage("CD-@--129", null);
     this.selectedPanel = panel;
-
-    console.log("====================================");
-    console.log(this.selectedPanel);
-    console.log("====================================");
     if (this.selectedPanel == "plainte") {
       this.headers = this.createHeaderPlainte();
       this.btnActions = this.createActionsPlainte();
@@ -389,24 +362,22 @@ export class PapDetailComponent implements OnInit {
     formData.append("file", file);
     this._changeDetectorRef.detectChanges();
     const dataFile = { file: file };
-    this.clientServive
-      .saveStoreFile(formData)
-      .subscribe(
-        (resp) => {
-          if (resp) {
-            console.log(resp);
-            this.noImageStore = resp["fileName"];
-            console.log(this.noImageStore);
+    this.clientServive.saveStoreFile(formData).subscribe(
+      (resp) => {
+        if (resp) {
+          console.log(resp);
+          this.noImageStore = resp["fileName"];
+          console.log(this.noImageStore);
 
-            this.saveFile(this.noImageStore);
-            this._changeDetectorRef.detectChanges();
-            //   this.snackbar.openSnackBar('Fichier chargée avec succès', 'OK', ['mycssSnackbarGreen']);
-          }
-        },
-        (error) => {
-          this.snackbar.showErrors(error);
+          this.saveFile(this.noImageStore);
+          this._changeDetectorRef.detectChanges();
+          //   this.snackbar.openSnackBar('Fichier chargée avec succès', 'OK', ['mycssSnackbarGreen']);
         }
-      );
+      },
+      (error) => {
+        this.snackbar.showErrors(error);
+      }
+    );
   }
 
   saveFile(file) {
@@ -449,17 +420,57 @@ export class PapDetailComponent implements OnInit {
   }
 
   getpap() {
-    let data = this.localService.getDataJson("pap");
     this.infosPap = this.localService.getDataJson("pap");
-
-    console.log("infos", this.infosPap.codePap);
-
     if (this.infosPap.imagePath != null) {
       this.imagePath = `${this.urlImage + this.infosPap.imagePath}`;
     }
   }
 
+  getEntenteByCodePap() {
+    this.datas = [];
+    return this.papservice
+      .getPlaintEntenteByCodePap("ententes", this.infosPap.codePap)
+      .subscribe((data: any) => {
+        this.loadData = false;
+        if (data["responseCode"] == 200) {
+          this.loadData = false;
+          console.log(data["data"]);
+          this.dataSource = new MatTableDataSource(data["data"]);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+          this.datas = data["data"];
+          this.length = data["length"];
+          console.log("length", this.length);
+          this._changeDetectorRef.markForCheck();
+        } else {
+          this.loadData = false;
+          this.dataSource = new MatTableDataSource();
+        }
+      });
+  }
+
+  // getEntentes() {
+  //   return this.papservice.all("ententes").subscribe((data: any) => {
+  //     this.loadData = false;
+  //     if (data["responseCode"] == 200) {
+  //       this.loadData = false;
+  //       console.log(data["data"]);
+  //       this.dataSource = new MatTableDataSource(data["data"]);
+  //       this.dataSource.paginator = this.paginator;
+  //       this.dataSource.sort = this.sort;
+  //       this.datas = data["data"];
+  //       this.length = data["length"];
+  //       console.log("length", this.length);
+  //       this._changeDetectorRef.markForCheck();
+  //     } else {
+  //       this.loadData = false;
+  //       this.dataSource = new MatTableDataSource();
+  //     }
+  //   });
+  // }
+
   getPlainteByCodePap() {
+    this.datas = [];
     return this.papservice
       .getByCodePap("plaintes", this.infosPap.codePap)
       .subscribe((data: any) => {
@@ -481,27 +492,38 @@ export class PapDetailComponent implements OnInit {
       });
   }
 
-  getEntenteByCodePap() {
-    return this.papservice
-      .getByCodePap("entente_compensations", this.infosPap.codePap)
-      .subscribe((data: any) => {
-        this.loadData = false;
-        if (data["responseCode"] == 200) {
-          this.loadData = false;
-          console.log(data["data"]);
-          this.dataSource = new MatTableDataSource(data["data"]);
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-          this.datas = data["data"];
-          this.length = data["length"];
-          console.log("length", this.length);
-          this._changeDetectorRef.markForCheck();
-        } else {
-          this.loadData = false;
-          this.dataSource = new MatTableDataSource();
-        }
-      });
-  }
+  // getEntente() {
+  //   this.datas = [];
+  //   return this.parentService
+  //     .listeByProject(
+  //       "ententes",
+  //       this.pageSize,
+  //       this.offset,
+  //       this.currentUser.projects[0]?.id
+  //     )
+  //     .subscribe(
+  //       (data: any) => {
+  //         console.log("ententes");
+  //         console.log(data);
+  //         this.loadData = false;
+  //         if (data["responseCode"] == 200) {
+  //           this.loadData = false;
+  //           this.dataSource = new MatTableDataSource(data["data"]);
+  //           this.dataSource.paginator = this.paginator;
+  //           this.dataSource.sort = this.sort;
+  //           this.datas = data["data"];
+  //           this.length = data["length"];
+  //           this._changeDetectorRef.markForCheck();
+  //         } else {
+  //           this.loadData = false;
+  //           this.dataSource = new MatTableDataSource();
+  //         }
+  //       },
+  //       (err) => {
+  //         console.log(err);
+  //       }
+  //     );
+  // }
 
   createHeaderPlainte() {
     return [
@@ -538,10 +560,6 @@ export class PapDetailComponent implements OnInit {
         th: "Nom",
         td: "nom",
       },
-      {
-        th: "Date d'enregistrement",
-        td: "dateEnregistrement",
-      },
     ];
   }
 
@@ -553,15 +571,30 @@ export class PapDetailComponent implements OnInit {
         size: "icon-size-4",
         title: "détail",
         isDisabled: this.hasDelete,
-        action: (element?) => this.detailItemsPlainte(element.id, element),
+        action: (element?) => this.detailItemsPlainte(element),
       },
     ];
   }
 
-  detailItemsPlainte(id, information) {
-    console.log("ttetete", information);
-    this.localService.saveDataJson("plainte", information);
-    this._router.navigate(["plainte/detail"]);
+  // detailItemsPlainte(id, information) {
+  //   console.log("ttetete", information);
+  //   this.localService.saveDataJson("plainte", information);
+  //   this._router.navigate(["plainte/detail"]);
+  // }
+
+  detailItemsPlainte(element: any) {
+    console.log(element);
+    this.snackbar.openModal(
+      PlainteDetailComponent,
+      "auto",
+      "edit",
+      "",
+      element,
+      "",
+      () => {
+        this.getPlainteByCodePap();
+      }
+    );
   }
 
   createActionsEntente(): ButtonAction[] {
@@ -572,15 +605,24 @@ export class PapDetailComponent implements OnInit {
         size: "icon-size-4",
         title: "détail",
         isDisabled: this.hasDelete,
-        action: (element?) => this.detailItemsEntente(element.id, element),
+        action: (element?) => this.detailItemsEntente(element),
       },
     ];
   }
 
-  detailItemsEntente(id, information) {
-    console.log("ttetete", information);
-    this.localService.saveDataJson("entente", information);
-    this._router.navigate(["ententeCompensation/detail"]);
+  detailItemsEntente(element: any) {
+    console.log(element);
+    this.snackbar.openModal(
+      CompensationDetailComponent,
+      "",
+      "edit",
+      "",
+      element,
+      "",
+      () => {
+        this.getEntenteByCodePap();
+      }
+    );
   }
 
   pageChanged(event) {

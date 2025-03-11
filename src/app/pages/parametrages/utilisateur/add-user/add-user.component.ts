@@ -138,7 +138,7 @@ export class AddUserComponent {
   }
 
   updateItems() {
-  //  console.log(this.initForm.value);
+    //  console.log(this.initForm.value);
     this.snackbar
       .showConfirmation(`Voulez-vous vraiment modifier cet utilisateur `)
       .then((result) => {
@@ -209,41 +209,43 @@ export class AddUserComponent {
 
   addItems() {
     console.log(this.initForm.value);
-    this.snackbar
-      .showConfirmation(`Voulez-vous vraiment ajouter cet utilisateur `)
-      .then((result) => {
-        if (result["value"] == true) {
-          this.loader = true;
-          const value = this.initForm.value;
-          this.coreService.addItem(value, "users/createUser").subscribe(
-            (resp) => {
-              if (resp["status"] == 200) {
+    if (this.initForm.valid) {
+      this.snackbar
+        .showConfirmation(`Voulez-vous vraiment ajouter cet utilisateur `)
+        .then((result) => {
+          if (result["value"] == true) {
+            this.loader = true;
+            const value = this.initForm.value;
+            this.coreService.addItem(value, "users/createUser").subscribe(
+              (resp) => {
+                if (resp["status"] == 200) {
+                  this.snackbar.openSnackBar(
+                    "Utilisateur  ajouté avec succés",
+                    "OK",
+                    ["mycssSnackbarGreen"]
+                  );
+                  this.loader = false;
+                  this.matDialogRef.close(resp["data"]);
+                  this.changeDetectorRefs.markForCheck();
+                } else {
+                  this.loader = false;
+                  this.changeDetectorRefs.markForCheck();
+                }
+              },
+              (error) => {
+                this.loader = false;
+                this.changeDetectorRefs.markForCheck();
                 this.snackbar.openSnackBar(
-                  "Utilisateur  ajouté avec succés",
+                  "Une erreur s'est produite , veillez réessayez",
                   "OK",
-                  ["mycssSnackbarGreen"]
+                  ["mycssSnackbarRed"]
                 );
-                this.loader = false;
-                this.matDialogRef.close(resp["data"]);
-                this.changeDetectorRefs.markForCheck();
-              } else {
-                this.loader = false;
-                this.changeDetectorRefs.markForCheck();
+                //  this.snackbar.showErrors(error);
               }
-            },
-            (error) => {
-              this.loader = false;
-              this.changeDetectorRefs.markForCheck();
-              this.snackbar.openSnackBar(
-                "Une erreur s'est produite , veillez réessayez",
-                "OK",
-                ["mycssSnackbarRed"]
-              );
-              //  this.snackbar.showErrors(error);
-            }
-          );
-        }
-      });
+            );
+          }
+        });
+    }
   }
 
   selectOnFile(evt, type, name) {

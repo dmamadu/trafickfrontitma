@@ -209,7 +209,7 @@ export class CategorieDossierComponent {
       AddCategorieDossierComponent,
       "35rem",
       "new",
-      "",
+      "20rem",
       this.datas,
       "",
       () => {

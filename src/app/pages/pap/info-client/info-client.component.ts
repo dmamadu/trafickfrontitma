@@ -7,6 +7,7 @@ import {
   OnInit,
   ViewChild,
   ViewEncapsulation,
+
 } from "@angular/core";
 import {
   UntypedFormGroup,
@@ -57,13 +58,18 @@ import { PapService } from "../pap.service";
 export class InfoClientComponent implements OnInit {
   _attributComplementaire = [];
   @Input() infosPap;
-  coProprietaires: any[] = [];
+
   employes: any[] = [];
   betails: any[] = [];
   cultures: any[] = [];
   equipements: any[] = [];
   batiments: any[] = [];
   polygones: any[] = [];
+
+
+  parsedEquipements: any[] = [];
+parsedBatiments: any[] = [];
+
 
   set attributComplementaire(data: any) {
     this._attributComplementaire = data ? data : [];
@@ -105,6 +111,15 @@ export class InfoClientComponent implements OnInit {
     this.getCopropriétaireByCodePap();
     this.getPolygoneByCodePap();
     this.getEmployeByCodePap();
+    if (this.infosPap && this.infosPap.evaluationPerte) {
+      this.parsedEquipements = this.infosPap.evaluationPerte.perteEquipement
+        ? JSON.parse(this.infosPap.evaluationPerte.perteEquipement)
+        : [];
+
+      this.parsedBatiments = this.infosPap.evaluationPerte.perteBatiment
+        ? JSON.parse(this.infosPap.evaluationPerte.perteBatiment)
+        : [];
+    }
   }
 
   getAttributComplementaireClient(infosPap) {
@@ -399,4 +414,62 @@ export class InfoClientComponent implements OnInit {
         this.employes = data.data[0];
       });
   }
+
+
+
+
+
+
+  coProprietaires: any[]  = [
+    {
+      codeCoProprietaire: 'CP001',
+      nomComplet: 'Jean Dupont',
+      contactTelephonique: '+33 6 12 34 56 78',
+      sexe: 'Homme',
+      age: 35,
+      situationMatrimoniale: 'Marié(e)',
+      infoComplementaire: 'Propriétaire depuis 2015.'
+    },
+    {
+      codeCoProprietaire: 'CP002',
+      nomComplet: 'Marie Curie',
+      contactTelephonique: '+33 6 98 76 54 32',
+      sexe: 'Femme',
+      age: 42,
+      situationMatrimoniale: 'Célibataire',
+      infoComplementaire: 'Propriétaire depuis 2018.'
+    },
+    {
+      codeCoProprietaire: 'CP003',
+      nomComplet: 'Pierre Durand',
+      contactTelephonique: '+33 6 55 44 33 22',
+      sexe: 'Homme',
+      age: 28,
+      situationMatrimoniale: 'Divorcé(e)',
+      infoComplementaire: 'Propriétaire depuis 2020.'
+    },
+    {
+      codeCoProprietaire: 'CP004',
+      nomComplet: 'Sophie Martin',
+      contactTelephonique: '+33 6 11 22 33 44',
+      sexe: 'Femme',
+      age: 50,
+      situationMatrimoniale: 'Veuf/Veuve',
+      infoComplementaire: 'Propriétaire depuis 2010.'
+    }
+  ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

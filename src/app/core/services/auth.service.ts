@@ -16,7 +16,7 @@ export class AuthenticationService {
 
   private http = inject(HttpClient);
   private localService = inject(LocalService);
-   private  tokenStorageService=inject(TokenStorageService);
+  private tokenStorageService = inject(TokenStorageService);
   constructor() {}
 
   /**
@@ -114,5 +114,7 @@ export class AuthenticationService {
   logout() {
     // logout the user
     localStorage.removeItem("currentUser");
+    localStorage.removeItem("ProjectId");
+    localStorage.clear();
   }
 }

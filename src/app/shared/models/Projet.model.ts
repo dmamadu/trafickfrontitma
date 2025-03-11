@@ -14,6 +14,11 @@ export interface Project {
   datefin?: string;
   image?: Image;
   files?: File[];
+  colors?: {
+    primary: string;
+    secondary: string;
+    accent: string;
+  };
 }
 
 export interface Image {

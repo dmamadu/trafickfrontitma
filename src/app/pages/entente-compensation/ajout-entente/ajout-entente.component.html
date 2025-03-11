@@ -10,19 +10,10 @@
 
 
 
-
-
-
-
-
-
-
-
-
-<mat-stepper #stepper>
+<mat-stepper #stepper linear>
   <form [formGroup]="initForm" class="event-form w-100-p">
 
-    <mat-step label="Informations personnelles">
+    <mat-step label="Informations personnelles" [completed]="isStepValid(0)">
       <div class="flex gap-2">
         <mat-form-field class="w-1/2 mt-2" appearance="outline">
           <mat-label class="enteteccColor">Code Pap
@@ -124,7 +115,7 @@
         </button>
       </div>
     </mat-step>
-    <mat-step label="Frais/équipements">
+    <mat-step label="Frais/équipements" [completed]="isStepValid(1)">
       <div>
         <div class="inner-repeater mb-2">
           <div class="inner mb-0 row">
@@ -151,35 +142,7 @@
                 <mat-icon matSuffix class="secondary-text">code</mat-icon>
               </mat-form-field>
             </div>
-            <!-- <div>
-              <label for="">Pertes d’équipements</label>
-            </div>
-            <div class="flex gap-2">
-              <mat-form-field class="w-1/2 mt-2" appearance="outline">
-                <mat-label class="enteteccColor">Nombre d'équipements
-                </mat-label>
-                <input matInput type="text" name="nbArbreEquipement" formControlName="nbArbreEquipement" />
-                <mat-error>Le champs est obligatoire</mat-error>
-                <mat-icon matSuffix class="secondary-text">code</mat-icon>
-              </mat-form-field>
-              <mat-form-field class=" w-1/2 mt-2" appearance="outline">
-                <mat-label class="enteteccColor">Prix d'équipement
-                </mat-label>
-                <input matInput type="number" name="prixArbreEquipement" formControlName="prixArbreEquipement" />
-                <mat-icon matSuffix class="secondary-text">code</mat-icon>
-                <mat-error>Le champs est obligatoire</mat-error>
-              </mat-form-field>
-            </div>
 
-            <div class="flex gap-2">
-              <mat-form-field class="w-full mt-2" appearance="outline">
-                <mat-label class="enteteccColor">Perte totale des equipements
-                </mat-label>
-                <input matInput type="text" name="perteEquipement" formControlName="perteEquipement" />
-                <mat-error>Le champs est obligatoire</mat-error>
-                <mat-icon matSuffix class="secondary-text">code</mat-icon>
-              </mat-form-field>
-            </div> -->
             <div>
               <label for="">Pertes de revenues</label>
             </div>
@@ -240,13 +203,13 @@
         <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
           <span class="textForm">Retour</span>
         </button>&nbsp;
-        <button matStepperNext mat-raised-button class="submit-button">
+        <button (click)="nextStep(stepper)" mat-raised-button class="submit-button">
           <span class="textForm">Suivant</span>
         </button>
       </div>
     </mat-step>
 
-    <mat-step label="Pertes de terres">
+    <mat-step label="Pertes de terres" [completed]="isStepValid(2)">
 
 
       <div>
@@ -281,39 +244,7 @@
                 <mat-icon matSuffix class="secondary-text">code</mat-icon>
               </mat-form-field>
             </div>
-            <!-- <div class="section-equipement" style="background-color: red;">
 
-
-              <div>
-                <label for="">Pertes d’équipements</label>
-              </div>
-              <div class="flex gap-2">
-                <mat-form-field class="w-1/2 mt-2" appearance="outline">
-                  <mat-label class="enteteccColor">Nombre d'équipements
-                  </mat-label>
-                  <input matInput type="text" name="nbArbreEquipement" formControlName="nbArbreEquipement" />
-                  <mat-error>Le champs est obligatoire</mat-error>
-                  <mat-icon matSuffix class="secondary-text">code</mat-icon>
-                </mat-form-field>
-                <mat-form-field class=" w-1/2 mt-2" appearance="outline">
-                  <mat-label class="enteteccColor">Prix d'équipement
-                  </mat-label>
-                  <input matInput type="number" name="prixArbreEquipement" formControlName="prixArbreEquipement" />
-                  <mat-icon matSuffix class="secondary-text">code</mat-icon>
-                  <mat-error>Le champs est obligatoire</mat-error>
-                </mat-form-field>
-              </div>
-
-              <div class="flex gap-2">
-                <mat-form-field class="w-full mt-2" appearance="outline">
-                  <mat-label class="enteteccColor">Perte totale des equipements
-                  </mat-label>
-                  <input matInput type="text" name="perteEquipement" formControlName="perteEquipement" />
-                  <mat-error>Le champs est obligatoire</mat-error>
-                  <mat-icon matSuffix class="secondary-text">code</mat-icon>
-                </mat-form-field>
-              </div>
-            </div> -->
 
             <div class="section-equipement p-4 rounded-lg border">
               <h3 class="text-lg font-bold mb-2">Pertes d’équipements</h3>
@@ -367,7 +298,7 @@
         <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
           <span class="textForm">Retour</span>
         </button>&nbsp;
-        <button matStepperNext mat-raised-button class="submit-button">
+        <button (click)="nextStep(stepper)" mat-raised-button class="submit-button">
           <span class="textForm">Suivant</span>
         </button>
       </div>
@@ -375,44 +306,8 @@
     </mat-step>
 
 
-    <mat-step label="Pertes de recoltes">
-      <!-- <div>
-        <label for="">Pertes de recoltes</label>
-      </div>
-      <div class="flex gap-2">
-        <mat-form-field class="w-1/3 mt-2" appearance="outline">
-          <mat-label class="enteteccColor">Rendement spéculation
-          </mat-label>
-          <input matInput type="text" name="rendement" formControlName="rendement" />
-          <mat-error>Le champs est obligatoire</mat-error>
-          <mat-icon matSuffix class="secondary-text">code</mat-icon>
-        </mat-form-field>
-        <mat-form-field class=" w-1/3 mt-2" appearance="outline">
-          <mat-label class="enteteccColor">Superficie Cultivée
-          </mat-label>
-          <input matInput type="number" name="superficieCultive" formControlName="superficieCultive" />
-          <mat-icon matSuffix class="secondary-text">code</mat-icon>
-          <mat-error>Le champs est obligatoire</mat-error>
-        </mat-form-field>
+    <mat-step label="Pertes de recoltes" [completed]="isStepValid(3)">
 
-        <mat-form-field class=" w-1/3 mt-2" appearance="outline">
-          <mat-label class="enteteccColor">Prix au mettre carré
-          </mat-label>
-          <input matInput type="number" name="prixMettreCarre" formControlName="prixMettreCarre" />
-          <mat-icon matSuffix class="secondary-text">code</mat-icon>
-          <mat-error>Le champs est obligatoire</mat-error>
-        </mat-form-field>
-      </div>
-
-      <div class="flex gap-2">
-        <mat-form-field class="w-full mt-2" appearance="outline">
-          <mat-label class="enteteccColor">Perte totale des recoltes
-          </mat-label>
-          <input matInput type="text" name="perteRecolte" formControlName="perteRecolte" />
-          <mat-error>Le champs est obligatoire</mat-error>
-          <mat-icon matSuffix class="secondary-text">code</mat-icon>
-        </mat-form-field>
-      </div> -->
 
       <div class="section-recolte p-4 rounded-lg border">
         <h3 class="text-lg font-bold mb-2">Pertes de récoltes</h3>
@@ -465,14 +360,14 @@
         <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
           <span class="textForm">Retour</span>
         </button>&nbsp;
-        <button matStepperNext mat-raised-button class="submit-button">
+        <button (click)="nextStep(stepper)" mat-raised-button class="submit-button">
           <span class="textForm">Suivant</span>
         </button>
       </div>
     </mat-step>
 
 
-    <mat-step label="Pertes d'arbres">
+    <mat-step label="Pertes d'arbres" [completed]="isStepValid(4)">
 
       <div class="inner-repeater mb-4">
         <div class="inner mb-0 row">
@@ -525,7 +420,7 @@
                     </td>
                     <td class="border">
                       <mat-form-field appearance="outline" class="w-full">
-                        <input matInput type="number" formControlName="total"  [disabled]="true" />
+                        <input matInput type="number" formControlName="total" [disabled]="true" />
                       </mat-form-field>
                     </td>
                     <td class="border text-center">
@@ -558,13 +453,13 @@
         <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
           <span class="textForm">Retour</span>
         </button>&nbsp;
-        <button matStepperNext mat-raised-button class="submit-button">
+        <button (click)="nextStep(stepper)" mat-raised-button class="submit-button">
           <span class="textForm">Suivant</span>
         </button>
       </div>
     </mat-step>
 
-    <mat-step label="Signatures">
+    <mat-step label="Signatures" [completed]="isStepValid(5)">
       <div class="flex gap-2">
         <mat-form-field class="w-full mt-2" appearance="outline">
           <mat-label class="enteteccColor">Perte totales
@@ -578,7 +473,8 @@
         <div class="w-1/2 mt-2">
           <label for="">Signature du pap</label>
           <img class="w-32 h-32" [src]="initForm.get('urlSignaturePap')?.value" alt=""
-            *ngIf="initForm.get('urlSignaturePap')?.value">
+            *ngIf="initForm.get('urlSignaturePap')?.value"
+            (click)="openImageModal(initForm.get('urlSignaturePap')?.value)">
           <div class="flex items-center mt-6 lg:mt-0 space-x-6">
             <div class="flex flex-col">
               <input matInput type="text" name="numeroPni" formControlName="urlSignaturePap" hidden />
@@ -593,7 +489,8 @@
         <div class="w-1/2 mt-2">
           <label for="">Signature du responsable</label>
           <img class="w-32 h-32" [src]="initForm.get('urlSignatureResponsable')?.value" alt=""
-            *ngIf="initForm.get('urlSignatureResponsable')?.value">
+            *ngIf="initForm.get('urlSignatureResponsable')?.value"
+            (click)="openImageModal(initForm.get('urlSignatureResponsable')?.value)">
           <div class="flex items-center mt-6 lg:mt-0 space-x-6">
             <div class="flex flex-col">
               <input matInput type="text" name="numeroPni" formControlName="urlSignatureResponsable" hidden />
@@ -606,53 +503,259 @@
           </div>
         </div>
       </div>
-      <!-- <div class="flex justify-center gap-4">
-        <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
-          <span class="textForm">Retour</span>
-        </button>&nbsp;
-        <button matStepperNext mat-raised-button class="submit-button">
-          <span class="textForm">Suivant</span>
-        </button>
-      </div> -->
+
       <div class="flex justify-center gap-4 mt-4">
         <button mat-raised-button class="submit-buttonRed" type="button">
           <span class="textForm">Annuler</span>
         </button>
-        <button mat-raised-button class="submit-button" aria-label="VALIDER" type="button" (click)="checkRecap(action)">
-          <span class="textForm">{{labelButton}}</span>
+        <button (click)="nextStep(stepper)" mat-raised-button class="submit-button">
+          <span class="textForm">Suivant</span>
         </button>
       </div>
     </mat-step>
 
-    <!-- <mat-step label="Récapitulatif"> -->
 
-    <!-- <div class="p-4">
-        <h3 class="recap-title">Signatures</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="flex flex-col items-center">
-            <div class="flex space-x-4">
-              <div>
-                <label for="">Signature du Pap</label>
-                <img [src]="initForm.get('urlSignaturePap')?.value" alt="" class="w-1/2 h-auto">
+
+    <mat-step label="Récapitulatif">
+      <mat-accordion>
+        <!-- Section 1 : Informations personnelles -->
+        <mat-expansion-panel [expanded]="true">
+          <mat-expansion-panel-header>
+            <div class="w-full flex rec">
+              <div class="titleRecap">Informations personnelles</div>
+              <button matTooltip="Modifier cette partie" class="butSearchs" mat-icon-button (click)="goToStep(0)">
+                <i class="bx bx-edit collapseButton icon-size-4 c_colorIcom"></i>
+              </button>
+            </div>
+          </mat-expansion-panel-header>
+          <hr class="w-full border-t my-6">
+          <div class="flex flex-col w-full">
+            <div class="grid grid-cols-2 gap-4 w-full">
+              <div class="flex items-center recapCss">
+                <span>Code PAP : </span>
+                <span class="leading-none font-bold">{{ initForm.get('codePap')?.value }}</span>
               </div>
-              <div>
-                <label for="">Signature du responsable</label>
-                <img [src]="initForm.get('urlSignatureResponsable')?.value" alt="" class="w-1/2 h-auto">
+              <div class="flex items-center recapCss">
+                <span>Catégorie du PAP : </span>
+                <span class="leading-none font-bold">{{ initForm.get('categoriePap')?.value }}</span>
+              </div>
+              <div class="flex items-center recapCss">
+                <span>Prénom : </span>
+                <span class="leading-none font-bold">{{ initForm.get('prenom')?.value }}</span>
+              </div>
+              <div class="flex items-center recapCss">
+                <span>Nom : </span>
+                <span class="leading-none font-bold">{{ initForm.get('nom')?.value }}</span>
+              </div>
+              <div class="flex items-center recapCss">
+                <span>Nature de la pièce : </span>
+                <span class="leading-none font-bold">{{ initForm.get('typePni')?.value }}</span>
+              </div>
+              <div class="flex items-center recapCss">
+                <span>Numéro de pièce : </span>
+                <span class="leading-none font-bold">{{ initForm.get('numeroPni')?.value }}</span>
+              </div>
+              <div class="flex items-center recapCss">
+                <span>Nationalité : </span>
+                <span class="leading-none font-bold">{{ initForm.get('nationalite')?.value }}</span>
+              </div>
+              <div class="flex items-center recapCss">
+                <span>Sexe : </span>
+                <span class="leading-none font-bold">{{ initForm.get('sexe')?.value }}</span>
+              </div>
+              <div class="flex items-center recapCss">
+                <span>Département : </span>
+                <span class="leading-none font-bold">{{ initForm.get('departement')?.value }}</span>
+              </div>
+              <div class="flex items-center recapCss">
+                <span>Commune : </span>
+                <span class="leading-none font-bold">{{ initForm.get('commune')?.value }}</span>
               </div>
             </div>
           </div>
-        </div>
-      </div> -->
+        </mat-expansion-panel>
 
-    <!-- <div class="flex justify-center gap-4 mt-4">
-        <button mat-raised-button class="submit-buttonRed" type="button">
-          <span class="textForm">Annuler</span>
+        <!-- Section 2 : Frais et équipements -->
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <div class="w-full flex rec">
+              <div class="titleRecap">Frais et équipements</div>
+              <button matTooltip="Modifier cette partie" class="butSearchs" mat-icon-button (click)="goToStep(1)">
+                <i class="bx bx-edit icon-size-4 collapseButton c_colorIcom"></i>
+              </button>
+            </div>
+          </mat-expansion-panel-header>
+          <hr class="w-full border-t my-6">
+          <div class="flex flex-col w-full">
+            <div class="grid grid-cols-2 gap-4 w-full">
+              <div class="flex items-center recapCss">
+                <span>Frais de déplacement : </span>
+                <span class="leading-none font-bold">{{ initForm.get('fraisDeplacement')?.value }}</span>
+              </div>
+              <div class="flex items-center recapCss">
+                <span>Appui à la relocalisation : </span>
+                <span class="leading-none font-bold">{{ initForm.get('appuiRelocalisation')?.value }}</span>
+              </div>
+              <div class="flex items-center recapCss">
+                <span>Frais total de déplacement : </span>
+                <span class="leading-none font-bold">{{ initForm.get('fraisTotalDeplacement')?.value }}</span>
+              </div>
+            </div>
+            <div class="mt-4">
+              <h3 class="font-bold mb-2">Pertes de revenus</h3>
+              <div *ngFor="let perte of pertes.controls; let i = index" class="grid grid-cols-2 gap-4 mb-2">
+                <div class="flex items-center recapCss">
+                  <span>Catégorie : </span>
+                  <span class="leading-none font-bold">{{ perte.get('categorieRevenue')?.value }}</span>
+                </div>
+                <div class="flex items-center recapCss">
+                  <span>Perte totale : </span>
+                  <span class="leading-none font-bold">{{ perte.get('perteRevenue')?.value }}</span>
+                </div>
+              </div>
+              <div class="font-bold mt-2">Total des pertes de revenus : {{ getTotalReevenusGeneral() }} FCFA</div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+
+        <!-- Section 3 : Pertes de terres -->
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <div class="w-full flex rec">
+              <div class="titleRecap">Pertes de terres</div>
+              <button matTooltip="Modifier cette partie" class="butSearchs" mat-icon-button (click)="goToStep(2)">
+                <i class="bx bx-edit icon-size-4 collapseButton c_colorIcom"></i>
+              </button>
+            </div>
+          </mat-expansion-panel-header>
+          <hr class="w-full border-t my-6">
+          <div class="flex flex-col w-full">
+            <div class="grid grid-cols-2 gap-4 w-full">
+              <div class="flex items-center recapCss">
+                <span>Superficie affectée : </span>
+                <span class="leading-none font-bold">{{ initForm.get('superficieAffecte')?.value }}</span>
+              </div>
+              <div class="flex items-center recapCss">
+                <span>Barème au mètre carré : </span>
+                <span class="leading-none font-bold">{{ initForm.get('baremeTypeSol')?.value }}</span>
+              </div>
+              <div class="flex items-center recapCss">
+                <span>Perte totale des terres : </span>
+                <span class="leading-none font-bold">{{ initForm.get('perteTotalTerre')?.value }}</span>
+              </div>
+            </div>
+            <div class="mt-4">
+              <h3 class="font-bold mb-2">Pertes d’équipements</h3>
+              <div *ngFor="let equipement of equipements.controls; let i = index" class="grid grid-cols-2 gap-4 mb-2">
+                <div class="flex items-center recapCss">
+                  <span>Libellé : </span>
+                  <span class="leading-none font-bold">{{ equipement.get('libelle')?.value }}</span>
+                </div>
+                <div class="flex items-center recapCss">
+                  <span>Total : </span>
+                  <span class="leading-none font-bold">{{ calculerTotalEquipement(equipement) }} FCFA</span>
+                </div>
+              </div>
+              <div class="font-bold mt-2">Total des pertes d’équipements : {{ getTotalGeneralEquipement() }} FCFA</div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+
+        <!-- Section 4 : Pertes de récoltes -->
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <div class="w-full flex rec">
+              <div class="titleRecap">Pertes de récoltes</div>
+              <button matTooltip="Modifier cette partie" class="butSearchs" mat-icon-button (click)="goToStep(3)">
+                <i class="bx bx-edit icon-size-4 collapseButton c_colorIcom"></i>
+              </button>
+            </div>
+          </mat-expansion-panel-header>
+          <hr class="w-full border-t my-6">
+          <div class="flex flex-col w-full">
+            <div *ngFor="let recolte of recoltes.controls; let i = index" class="grid grid-cols-2 gap-4 mb-2">
+              <div class="flex items-center recapCss">
+                <span>Produit récolté : </span>
+                <span class="leading-none font-bold">{{ recolte.get('produit')?.value }}</span>
+              </div>
+              <div class="flex items-center recapCss">
+                <span>Total : </span>
+                <span class="leading-none font-bold">{{ calculerTotalRecolte(recolte) }} FCFA</span>
+              </div>
+            </div>
+            <div class="font-bold mt-2">Total des pertes de récoltes : {{ getTotalGeneralRecolte() }} FCFA</div>
+          </div>
+        </mat-expansion-panel>
+
+        <!-- Section 5 : Pertes d'arbres -->
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <div class="w-full flex rec">
+              <div class="titleRecap">Pertes d'arbres</div>
+              <button matTooltip="Modifier cette partie" class="butSearchs" mat-icon-button (click)="goToStep(4)">
+                <i class="bx bx-edit icon-size-4 collapseButton c_colorIcom"></i>
+              </button>
+            </div>
+          </mat-expansion-panel-header>
+          <hr class="w-full border-t my-6">
+          <div class="flex flex-col w-full">
+            <div *ngFor="let arbre of arbres.controls; let i = index" class="grid grid-cols-2 gap-4 mb-2">
+              <div class="flex items-center recapCss">
+                <span>Espèce : </span>
+                <span class="leading-none font-bold">{{ arbre.get('espece')?.value }}</span>
+              </div>
+              <div class="flex items-center recapCss">
+                <span>Total : </span>
+                <span class="leading-none font-bold">{{ arbre.get('total')?.value }} FCFA</span>
+              </div>
+            </div>
+            <div class="font-bold mt-2">Total des pertes d'arbres : {{ totalGeneralArbre }} FCFA</div>
+          </div>
+        </mat-expansion-panel>
+
+        <!-- Section 6 : Signatures -->
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <div class="w-full flex rec">
+              <div class="titleRecap">Signatures</div>
+              <button matTooltip="Modifier cette partie" class="butSearchs" mat-icon-button (click)="goToStep(5)">
+                <i class="bx bx-edit icon-size-4 collapseButton c_colorIcom"></i>
+              </button>
+            </div>
+          </mat-expansion-panel-header>
+          <hr class="w-full border-t my-6">
+          <div class="p-4">
+            <div class="w-full gap-4">
+              <div class="flex flex-col items-center">
+                <div class="flex space-x-4">
+                  <div>
+                    <label for="">Signature du PAP</label>
+                    <img [src]="initForm.get('urlSignaturePap')?.value" alt="" class="w-1/2 h-auto"
+                      (click)="openImageModal(initForm.get('urlSignaturePap')?.value)">
+                  </div>
+                  <div>
+                    <label for="">Signature du responsable</label>
+                    <img [src]="initForm.get('urlSignatureResponsable')?.value" alt="" class="w-1/2 h-auto"
+                      (click)="openImageModal(initForm.get('urlSignatureResponsable')?.value)">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+
+      <!-- Boutons de navigation -->
+      <div class="flex justify-center gap-4 mt-4">
+        <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
+          <span class="textForm">Retour</span>
         </button>
-        <button mat-raised-button class="submit-button" aria-label="VALIDER" type="button" (click)="addEntente()">
-          <span class="textForm">Ajouter</span>
+        <button mat-raised-button class="submit-button" (click)="checkRecap(action)">
+          <span class="textForm">{{ labelButton }}</span>
         </button>
-      </div> -->
-    <!-- </mat-step> -->
+      </div>
+    </mat-step>
+
 
 
 

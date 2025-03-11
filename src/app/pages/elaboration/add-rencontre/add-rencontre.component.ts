@@ -7,7 +7,7 @@ import {
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
-  MatDialog,
+  MatDialog
 } from "@angular/material/dialog";
 import { MatDrawer } from "@angular/material/sidenav";
 import { MatStepper } from "@angular/material/stepper";
@@ -20,6 +20,7 @@ import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/an
 import { Image } from "src/app/shared/models/image.model";
 import {provideNativeDateAdapter} from '@angular/material/core';
 import { LoaderComponent } from "../../../shared/loader/loader.component";
+import { ImageModalComponent } from "src/app/shared/image-modal.component";
 
 @Component({
   selector: "app-add-rencontre",
@@ -72,6 +73,7 @@ export class AddRencontreComponent {
     @Inject(MAT_DIALOG_DATA) _data,
     private fb: UntypedFormBuilder,
     private coreService: CoreService,
+    private dialog: MatDialog,
     private snackbar: SnackBarService,
     private changeDetectorRefs: ChangeDetectorRef,
     private localService: LocalService,
@@ -201,12 +203,14 @@ export class AddRencontreComponent {
 
   addItems() {
     console.log(this.initForm.value);
-    this.snackbar
+
+
+    if(this.initForm.valid){
+      this.snackbar
       .showConfirmation(`Voulez-vous vraiment ajouter cette rencontre `)
       .then((result) => {
         if (result["value"] == true) {
           this.loader = true;
-          // const value = documentRequest;
           this.coreService.addItem(this.initForm.value, this.url).subscribe(
             (resp) => {
               if (resp["responseCode"] == 201) {
@@ -231,6 +235,8 @@ export class AddRencontreComponent {
           );
         }
       });
+    }
+
   }
 
   selectOnFile(evt) {
@@ -294,7 +300,7 @@ export class AddRencontreComponent {
   saveStoreFile(file) {
     let formData = new FormData();
     formData.append("file", file);
-
+    this.loader = true;
     this.clientServive
       .saveStoreFile(formData)
       .subscribe(
@@ -309,15 +315,25 @@ export class AddRencontreComponent {
               ["mycssSnackbarGreen"]
             );
           }
+          this.loader = false;
         },
         (error) => {
           this.snackbar.showErrors(error);
+          this.loader = false;
         }
       );
   }
 
 
 
+
+    openImageModal() {
+      if (this.imageProjet) {
+        this.dialog.open(ImageModalComponent, {
+          data: { imageUrl: this.imageProjet },
+        });
+      }
+    }
 
 
 }

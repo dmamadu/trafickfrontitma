@@ -26,7 +26,7 @@ import {
 } from "@angular/material/dialog";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import * as XLSX from "xlsx";
-import { Pap, ResponsePap } from "../pap.model";
+import { Pap} from "../pap.model";
 import { PapService } from "../pap.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { DatatableComponent } from "src/app/shared/datatable/datatable.component";
@@ -41,6 +41,8 @@ import { logoItma } from "src/app/shared/logoItma";
 import { ExportService } from "src/app/shared/core/export.service";
 import { AddPapAgricoleComponent } from "./add-pap-agricole/add-pap-agricole.component";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
+import { AppConfig } from "src/app/app.config";
+import { ImageModalComponent } from "src/app/shared/image-modal.component";
 
 @Component({
   selector: "app-pap-agricole",
@@ -68,14 +70,17 @@ import { LoaderComponent } from "../../../shared/loader/loader.component";
     AngularMaterialModule,
     DatatableComponent,
     FormsModule,
-    LoaderComponent
-],
+    LoaderComponent,
+  ],
 })
 export class PapAgricoleComponent {
+
+
+  appName: string = AppConfig.appName;
   [x: string]: any;
 
   listPap: Pap[];
-  filterTable($event: any) {}
+  //filterTable($event: any) {}
   breadCrumbItems: Array<{}>;
 
   @ViewChild(MatSort) sort: MatSort;
@@ -123,7 +128,7 @@ export class PapAgricoleComponent {
   privilegePage;
   headers: any = [];
   btnActions: any = [];
-  currentUser: any;
+  currentProjectId: any;
 
   constructor(
     private changeDetectorRefs: ChangeDetectorRef,
@@ -138,41 +143,121 @@ export class PapAgricoleComponent {
     private sharedService: SharedService,
     private localService: LocalService,
     private coreService: CoreService,
-    private exportService: ExportService,
+    private exportService: ExportService
   ) {
-    this.currentUser = this.localService.getDataJson("user");
+    //this.currentProjectId = this.localService.getDataJson("user");
 
-    console.log("user connecter", this.currentUser);
+    this.currentProjectId = this.localService.getData("ProjectId");
+
+    console.log("user connecter", this.currentProjectId);
     this.informations = {
       exportFile: ["excel", "pdf"],
       titleFile: "liste des pap",
       code: "01410",
       tabHead: ["Prénom", "Nom", "Nationalité"],
       tabFileHead: [
-        "Prénom",
+        "Id",
+        "Code Pap",
         "Nom",
+        "Prénom",
+        "Code Place Affaire",
+        "Commune",
+        "Département",
+        "Nombre Place Affaire",
+        "Surnom",
+        "Sexe",
+        "Photo Pap",
+        "Photo Place Affaire",
+        "Point Géométriques",
         "Nationalité",
-        "Numéro identification",
-        "Téléphone",
+        "Ethnie",
+        "Langue Parlée",
         "Situation Matrimoniale",
-        "Statut",
-        "Pays",
-        "Région",
-        "Localité de résidance",
+        "Niveau Étude",
+        "Religion",
+        "Activité Principale",
+        "Membre Foyer",
+        "Membre Foyer Handicapé",
+        "Project Id",
+        "Type",
+        "Existe Pni",
+        "Type Pni",
+        "Numéro Pni",
+        "Numéro Téléphone",
+        "Caractéristique Place Affaire",
+        "Informations Étendues",
+        "Évaluation Perte",
+        "Statut Pap",
+        "Vulnérabilité",
+        "PJ1",
+        "PJ2",
+        "PJ3",
+        "PJ4",
+        "PJ5",
+        "Infos Complémentaires",
+        "Perte Arbre Jeune",
+        "Perte Arbre Adulte",
+        "Perte Équipement",
+        "Perte Revenue",
+        "Appuie Relocalisation",
+        "Perte Totale",
+        "Frais Déplacement",
+        "Perte Bâtiment",
+        "Perte Loyer",
+        "Perte Clôture",
       ],
       searchFields: [],
       tabBody: ["prenom", "nom", "nationalite"],
       tabFileBody: [
-        "prenom",
+        "id",
+        "codePap",
         "nom",
+        "prenom",
+        "codePlaceAffaire",
+        "commune",
+        "departement",
+        "nombrePlaceAffaire",
+        "surnom",
+        "sexe",
+        "photoPap",
+        "photoPlaceAffaire",
+        "pointGeometriques",
         "nationalite",
-        "numeroIdentification",
-        "numeroTelephone",
+        "ethnie",
+        "langueParlee",
         "situationMatrimoniale",
+        "niveauEtude",
+        "religion",
+        "activitePrincipale",
+        "membreFoyer",
+        "membreFoyerHandicape",
+        "projectId",
+        "type",
+        "existePni",
+        "typePni",
+        "numeroPni",
+        "numeroTelephone",
+        "caracteristiquePlaceAffaire",
+        "informationsEtendues",
+        "evaluationPerte",
         "statutPap",
-        "pays",
-        "region",
-        "localiteResidence",
+        "vulnerabilite",
+        "pj1",
+        "pj2",
+        "pj3",
+        "pj4",
+        "pj5",
+        "infosComplemenataires",
+        "perteArbreJeune",
+        "perteArbreAdulte",
+        "perteEquipement",
+        "perteRevenue",
+        "appuieRelocalisation",
+        "perteTotale",
+        "fraisDeplacement",
+        "perteBatiment",
+        "perteLoyer",
+        "perteCloture",
       ],
       action: [
         { name: "modifier", icon: "edit", color: "primary" },
@@ -198,6 +283,35 @@ export class PapAgricoleComponent {
     this.getPapAgricole();
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
+  }
+
+    getPapAgricole() {
+    this.loadData = true;
+    return this.parentService
+      .list(this.url, this.pageSize, this.offset, this.currentProjectId)
+      .subscribe(
+        (data: any) => {
+          this.loadData = false;
+          if (data["responseCode"] == 200) {
+            this.loadData = false;
+            console.log(data);
+            this.dataSource = new MatTableDataSource(data["data"]);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+            this.datas = data["data"];
+            this.length = data["length"];
+            console.log("length", this.length);
+            this._changeDetectorRef.markForCheck();
+          } else {
+            this.loadData = false;
+            this.dataSource = new MatTableDataSource();
+          }
+        },
+        (err) => {
+          this.loadData = false;
+          console.log(err);
+        }
+      );
   }
 
   createHeader() {
@@ -254,34 +368,7 @@ export class PapAgricoleComponent {
     ];
   }
 
-  getPapAgricole() {
-    this.loadData = true;
-    return this.parentService
-      .list(this.url, this.pageSize, this.offset)
-      .subscribe(
-        (data: any) => {
-          this.loadData = false;
-          if (data["responseCode"] == 200) {
-            this.loadData = false;
-            console.log(data);
-            this.dataSource = new MatTableDataSource(data["data"]);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-            this.datas = data["data"];
-            this.length = data["length"];
-            console.log("length", this.length);
-            this._changeDetectorRef.markForCheck();
-          } else {
-            this.loadData = false;
-            this.dataSource = new MatTableDataSource();
-          }
-        },
-        (err) => {
-          this.loadData = false;
-          console.log(err);
-        }
-      );
-  }
+
 
   pageChanged(event) {
     console.log(event);
@@ -298,7 +385,7 @@ export class PapAgricoleComponent {
     console.log(information);
     this.snackbar.openModal(
       AddPapAgricoleComponent,
-      "50rem",
+      "65rem",
       "edit",
       "",
       information,
@@ -355,11 +442,49 @@ export class PapAgricoleComponent {
     this.isCollapsed = !this.isCollapsed;
   }
 
+
+  filterTable(event: Event) {
+    const searchTerm = (event.target as HTMLInputElement).value.trim();
+
+    console.log('====================================');
+    console.log(searchTerm);
+    console.log('====================================');
+
+    // Appeler l'API avec le terme de recherche
+    this.loadData = true;
+    this.parentService
+      .searchGlobal(this.url, searchTerm, this.currentProjectId,this.pageSize, this.offset)
+      .subscribe(
+        (data: any) => {
+          this.loadData = false;
+          console.log('====================================');
+          console.log(data);
+          console.log('====================================');
+          if (data["responseCode"] == 200) {
+
+
+            this.dataSource = new MatTableDataSource(data["data"]);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+            this.datas = data["data"];
+            this.length = data["length"];
+            this._changeDetectorRef.markForCheck();
+          } else {
+            this.dataSource = new MatTableDataSource();
+          }
+        },
+        (err) => {
+          this.loadData = false;
+          console.log(err);
+        }
+      );
+  }
+
   //cette fonction permet d'exporter la liste sous format excel ou pdf
   exportAs(format) {
     let nom = this.informations.titleFile;
     let value = [];
-    this.parentService.list("personneAffectes", 1000000000, 0).subscribe(
+    this.parentService.list("papAgricole", 1000000000, 0).subscribe(
       (resp) => {
         if (resp["responseCode"] == 200) {
           value = resp["data"];
@@ -575,7 +700,7 @@ export class PapAgricoleComponent {
   addItems(): void {
     this.snackbar.openModal(
       AddPapAgricoleComponent,
-      "45rem",
+      "65rem",
       "new",
       "auto",
       this.datas,
@@ -612,7 +737,7 @@ export class PapAgricoleComponent {
           return obj;
         });
         this.dataExcel = jsonData;
-        console.log("data",this.dataExcel);
+        console.log("data", this.dataExcel);
 
         //this.convertedJson = JSON.stringify(jsonData, undefined, 4);
       });
@@ -641,7 +766,7 @@ export class PapAgricoleComponent {
     this.loadData = true;
     const dataToSend = this.dataExcel.map((item) => ({
       ...item,
-      projectId: +this.currentUser.projects[0]?.id,
+      projectId: +this.currentProjectId,
     }));
 
     return this.papService.add("papAgricole", dataToSend).subscribe(
@@ -660,8 +785,6 @@ export class PapAgricoleComponent {
     );
   }
 
-
-
   onOptionSelected() {
     console.log("Valeur sélectionnée :", this.selectedOption);
   }
@@ -672,4 +795,8 @@ export class PapAgricoleComponent {
     this.sharedService.setSelectedItem(information);
     this._router.navigate(["pap/detail"]);
   }
+
+
+
+
 }

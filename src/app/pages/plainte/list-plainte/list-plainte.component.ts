@@ -65,9 +65,7 @@ export class ListPlainteComponent implements OnInit {
     | { label: string; active?: undefined }
     | { label: string; active: boolean }
   )[];
-  filterTable($event: any) {
-    throw new Error("Method not implemented.");
-  }
+
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -97,11 +95,10 @@ export class ListPlainteComponent implements OnInit {
   pageSizeOptions = [5, 10, 25, 100, 500, 1000];
   pageSize: number = 10;
   pageIndex: number = 0;
-  //constantes = CONSTANTES;
   userConnecter;
   offset: number = 0;
   title: string = "Gestion des produits";
-  //url: string = "users/by_role?roleName=plainte";
+  url: string = "plaintes";
   panelOpenState = false;
   img;
   image;
@@ -110,36 +107,25 @@ export class ListPlainteComponent implements OnInit {
   privilegePage;
   headers: any = [];
   btnActions: any = [];
-
+  currentProjectId: any;
   constructor(
-    private changeDetectorRefs: ChangeDetectorRef,
     private parentService: ServiceParent,
-    private _router: Router,
-    private datePipe: DatePipe,
     private snackbar: SnackBarService,
-    private _matDialog: MatDialog,
     private papService: PapService,
     public matDialogRef: MatDialogRef<PapAddComponent>,
     private _changeDetectorRef: ChangeDetectorRef,
     public toastr: ToastrService,
-    private sharedService: SharedService,
     private localService: LocalService,
     private coreService: CoreService,
     private exportService: ExportService
-  ) {}
+  ) {
+    this.currentProjectId = this.localService.getData("ProjectId");
+  }
 
   ngOnInit(): void {
-    //  this.getPlainte();
-
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
     this.getPlainte();
-
-    // if (this.privilegePage) {
-    //   this.getList();
-    // //  this.checkCodePrivilegeForRole();
-
-    // }
     this.breadCrumbItems = [
       { label: "Plainte" },
       { label: "List des plaintes", active: true },
@@ -196,10 +182,41 @@ export class ListPlainteComponent implements OnInit {
     ];
   }
 
+
+
+  filterTable(event: Event) {
+    const searchTerm = (event.target as HTMLInputElement).value.trim();
+    this.loadData = true;
+    this.parentService
+      .searchGlobal(this.url, searchTerm, this.currentProjectId,this.pageSize, this.offset)
+      .subscribe(
+        (data: any) => {
+          this.loadData = false;
+          console.log('====================================');
+          console.log(data);
+          console.log('====================================');
+          if (data["responseCode"] == 200) {
+            this.dataSource = new MatTableDataSource(data["data"]);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+            this.datas = data["data"];
+            this.length = data["length"];
+            this._changeDetectorRef.markForCheck();
+          } else {
+            this.dataSource = new MatTableDataSource();
+          }
+        },
+        (err) => {
+          this.loadData = false;
+          console.log(err);
+        }
+      );
+  }
+
   getPlainte() {
     this.loadData = true;
     return this.parentService
-      .list("plaintes", this.pageSize, this.offset)
+      .list(this.url, this.pageSize, this.offset,this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -211,7 +228,6 @@ export class ListPlainteComponent implements OnInit {
             this.dataSource.sort = this.sort;
             this.datas = data["data"];
             this.length = data["length"];
-            console.log("length", this.length);
             this._changeDetectorRef.markForCheck();
           } else {
             this.loadData = false;
@@ -289,17 +305,6 @@ export class ListPlainteComponent implements OnInit {
     this.isCollapsed = !this.isCollapsed;
   }
 
-  // detailItems(id, information) {
-
-  //   console.log('====================================');
-  //   console.log(information);
-  //   console.log('====================================');
-  //   return
-  //   console.log("ttetete", information);
-  //   this.localService.saveDataJson("plainte", information);
-  //   this.sharedService.setSelectedItem(information);
-  //   this._router.navigate(["plainte/detail"]);
-  // }
 
   detailItems(element: any) {
     console.log(element);

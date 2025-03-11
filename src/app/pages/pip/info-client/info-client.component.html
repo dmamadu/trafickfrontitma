@@ -1,62 +1,83 @@
 <div class="w-full heighContentRight" id="heighContentRightId">
-    <div class="w-full mb-10">
-        <fuse-card class="flex flex-col w-full p-4">
-            <mat-tab-group dynamicHeight class="w-full">
-                <mat-tab label="Détail">
-                    <div class="">
-                        <div class="flex flex-col w-full p-4">
-                            <div class="flex justify-between">
-                                <div class="leading-tight uppercase c_title_header">Détails</div>
-                                <div class="">
-                                    <button (click)="updateClient(infosPap)"
-                                        class="c_btnAccount_attribut c_btnAccountF"
-                                        [disabled]="infosPap?.statut ==='DEMISSION'" matTooltip="Modifier client"
-                                        mat-icon-button>
-                                        <!-- <mat-icon class="c_icons c_cursor icon-size-5" [svgIcon]="'edit'"></mat-icon> -->
-                                        <i class="bx bx-edit"></i>
-                                    </button>
+  <div class="w-full mb-10">
+      <fuse-card class="flex flex-col w-full p-4">
+          <mat-tab-group dynamicHeight class="w-full">
+              <!-- Onglet Détail -->
+              <mat-tab label="Détail">
+                  <div class="">
+                      <div class="flex flex-col w-full p-4">
+                          <div class="flex justify-between">
+                              <div class="leading-tight uppercase c_title_header">Détails</div>
+                              <div class="">
+                                  <button (click)="updateClient(infosPap)"
+                                      class="c_btnAccount_attribut c_btnAccountF"
+                                      [disabled]="infosPap?.statut ==='DEMISSION'" matTooltip="Modifier client"
+                                      mat-icon-button>
+                                      <mat-icon class="c_icons c_cursor icon-size-5">edit</mat-icon>
+                                  </button>
+                              </div>
+                          </div>
+                          <hr class="w-full border-t">
+                          <div class="flex flex-auto w-full">
+                              <div class="flex flex-col w-full">
+                                  <!-- Libelle -->
+                                  <div class="grid grid-cols-2 items-center mt-4">
+                                      <span class="flex items-center">
+                                          <mat-icon class="mr-2">label</mat-icon>
+                                          Libelle :
+                                      </span>
+                                      <span class="leading-none font-bold">{{ infosPap?.libelle }}</span>
+                                  </div>
+                                  <!-- Statut -->
+                                  <div class="grid grid-cols-2 items-center mt-4">
+                                      <span class="flex items-center">
+                                          <mat-icon class="mr-2">info</mat-icon>
+                                          Statut :
+                                      </span>
+                                      <span class="leading-none font-bold">{{ infosPap?.statut }}</span>
+                                  </div>
+                                  <!-- Localisation -->
+                                  <div class="grid grid-cols-2 items-center mt-4">
+                                      <span class="flex items-center">
+                                          <mat-icon class="mr-2">location_on</mat-icon>
+                                          Localisation :
+                                      </span>
+                                      <span class="leading-none font-bold">{{ infosPap?.localisation }}</span>
+                                  </div>
+                                  <!-- Courriel Principal -->
+                                  <div class="grid grid-cols-2 items-center mt-4">
+                                      <span class="flex items-center">
+                                          <mat-icon class="mr-2">email</mat-icon>
+                                          Courriel Principal :
+                                      </span>
+                                      <span class="leading-none font-bold">{{ infosPap?.courielPrincipal }}</span>
+                                  </div>
+                                  <!-- Adresse -->
+                                  <div class="grid grid-cols-2 items-center mt-4">
+                                      <span class="flex items-center">
+                                          <mat-icon class="mr-2">home</mat-icon>
+                                          Adresse :
+                                      </span>
+                                      <span class="leading-none font-bold">{{ infosPap?.adresse }}</span>
+                                  </div>
+                              </div>
+                              <div class="flex flex-col w-full">
+                                  <!-- Normes -->
+                                  <div class="grid grid-cols-2 items-center mt-4">
+                                      <span class="flex items-center">
+                                          <mat-icon class="mr-2">rule</mat-icon>
+                                          Normes :
+                                      </span>
+                                      <span class="leading-none font-bold">{{ infosPap?.normes }}</span>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </mat-tab>
 
-                                </div>
-                            </div>
-                            <hr class="w-full border-t">
-                            <div class="flex flex-auto w-full">
-                                <div class="flex flex-col w-full">
-                                    <div class="grid grid-cols-2">
-                                        <span class="mr-3">Libelle : </span>
-                                        <span class="leading-none font-bold"> {{infosPap?.libelle}}</span>
-                                    </div>
-                                    <div class="grid grid-cols-2 mt-4">
-                                        <span class="mr-3">Statut : </span>
-                                        <span class="leading-none font-bold"> {{infosPap?.statut}}</span>
-                                    </div>
-                                    <div class="grid grid-cols-2 mt-4">
-                                        <span class="mr-3">Localisation : </span>
-                                        <span class="leading-none font-bold"> {{infosPap?.localisation}}</span>
-                                    </div>
-                                    <div class="grid grid-cols-2 mt-4">
-                                        <span class="mr-3">Courriel Principal : </span>
-                                        <span class="leading-none font-bold"> {{infosPap?.courielPrincipal
-                                        }}</span>
-                                    </div>
-                                    <div class="grid grid-cols-2 mt-4">
-                                        <span class="">Adresse: </span>
-                                        <span class="leading-none font-bold"> {{infosPap?.adresse}}</span>
-                                    </div>
-
-                                </div>
-                                <div class="flex flex-col w-full">
-                                    <div class="grid grid-cols-2">
-                                        <span class="">Normes : </span>
-                                        <span class="leading-none font-bold">{{infosPap?.normes}}</span>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </mat-tab>
-                <mat-tab label="Responsables Principaux">
+              <!-- Onglet Responsables Principaux -->
+              <mat-tab label="Responsables Principaux">
                   <div class="p-4">
                       <div class="leading-tight uppercase c_title_header">Responsables</div>
                       <hr class="w-full border-t">
@@ -64,28 +85,37 @@
                       <div *ngIf="infosPap?.contacts?.length > 0; else noRepresentants">
                           <div *ngFor="let representant of infosPap.contacts" class="border p-4 mb-4 rounded-lg shadow-sm">
                               <div class="flex justify-between items-center">
-                                  <span class="font-bold text-lg">{{ representant.nomContactPrincipal }} {{ representant.prenomContactPrincipal }}</span>
+                                  <span class="font-bold text-lg">
+                                      <mat-icon class="mr-2">person</mat-icon>
+                                      {{ representant.nomContactPrincipal }} {{ representant.prenomContactPrincipal }}
+                                  </span>
                                   <button (click)="updateClient(representant)"
                                       class="c_btnAccount_attribut c_btnAccountF"
                                       matTooltip="Modifier représentant"
                                       mat-icon-button>
-                                      <i class="bx bx-edit"></i>
+                                      <mat-icon class="c_icons c_cursor icon-size-5">edit</mat-icon>
                                   </button>
                               </div>
                               <hr class="my-2">
 
                               <div class="grid grid-cols-2 gap-4">
-                                  <div>
+                                  <!-- Email -->
+                                  <div class="flex items-center">
+                                      <mat-icon class="mr-2">email</mat-icon>
                                       <span class="font-semibold">Email:</span>
-                                      <span class="leading-none font-bold">{{ representant.emailContactPrincipal }}</span>
+                                      <span class="leading-none font-bold ml-2">{{ representant.emailContactPrincipal }}</span>
                                   </div>
-                                  <div>
+                                  <!-- Téléphone -->
+                                  <div class="flex items-center">
+                                      <mat-icon class="mr-2">phone</mat-icon>
                                       <span class="font-semibold">Téléphone:</span>
-                                      <span class="leading-none font-bold">{{ representant.telephoneContactPrincipal }}</span>
+                                      <span class="leading-none font-bold ml-2">{{ representant.telephoneContactPrincipal }}</span>
                                   </div>
-                                  <div>
+                                  <!-- Sexe -->
+                                  <div class="flex items-center">
+                                      <mat-icon class="mr-2">wc</mat-icon>
                                       <span class="font-semibold">Sexe:</span>
-                                      <span class="leading-none font-bold">{{ representant.sexeContactPrincipal }}</span>
+                                      <span class="leading-none font-bold ml-2">{{ representant.sexeContactPrincipal }}</span>
                                   </div>
                               </div>
                           </div>
@@ -96,9 +126,7 @@
                       </ng-template>
                   </div>
               </mat-tab>
-
-
-            </mat-tab-group>
-        </fuse-card>
-    </div>
+          </mat-tab-group>
+      </fuse-card>
+  </div>
 </div>

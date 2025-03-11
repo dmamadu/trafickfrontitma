@@ -892,14 +892,7 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
 //   padding-right: 35px !important;
 // }
 
-.submit-buttonRed {
-  width: 125px;
-  height: auto;
-  color: $white !important;
-  background-color: $redColor !important;
-  padding-left: 35px !important;
-  padding-right: 35px !important;
-}
+
 
 .submit-buttonPrimary {
   width: 125px;
@@ -910,18 +903,6 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
   padding-right: 35px !important;
 }
 
-.c-tab-group {
-  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-  .mat-tab-label-container {
-      border: 1px solid #80808070;
-      padding: 10px 24px !important;
-  }
-
-  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-  .mat-tab-body-wrapper {
-      border: 1px solid #8080806b;
-  }
-}
 
 .event-form-dialog {
   line-height: 30px;
@@ -1024,27 +1005,12 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
   border-top-left-radius: 25px;
 }
 
-.c-conn {
-  color: var(--ColorDefault) !important;
-  text-align: center;
-}
 
 .widthRight {
   width: 75% !important;
 }
 
-// new
-.c-posiDataSource {
-  margin: 0 25px;
-  box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
-  margin-top: -37px;
-  border-radius: 8px !important;
-}
-.c-posiBalance {
-  margin: 0 25px;
-  margin-top: -37px;
-  border-radius: 8px !important;
-}
+
 .c-posiDataSourceF {
   margin: 0 58px;
   box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
@@ -1075,17 +1041,7 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
   }
 }
 
-.c_logoHome {
-  width: 80% !important;
-}
 
-.c_logoHomeMarge {
-  margin-top: -5px;
-}
-
-.c_cursor {
-  cursor: pointer;
-}
 
 .c_icon {
   width: 85%;
@@ -1217,14 +1173,18 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
   margin-top: 14px;
 }
 .c_btnAccountF {
-  background: #00ff40	 !important;
+  background: #05001b	 !important;
   &:hover {
-      background: #255c02 !important;
+      background: #0d2201 !important;
       .c_icons {
           color: #FFFFFF !important;
       }
   }
 }
+.c_btnAccount_attribut i {
+  color: white !important; // Force la couleur blanche
+}
+
 .c_btnAccountG {
   background: #dce2e9c7 !important;
   .c_icons {
@@ -1860,7 +1820,7 @@ body .light .mat-tab-nav-bar.mat-primary .mat-ink-bar {
 
 .c_title_header {
   font-size: 16px !important;
-  color: #015e18 !important;
+  color: #02001d !important;
   font-weight: bold !important;
 }
 
@@ -2260,4 +2220,24 @@ body .light .mat-tab-nav-bar.mat-primary .mat-ink-bar {
 
 .modalIndex{
   z-index: 1002;
+}
+
+
+
+.color-picker {
+  cursor: pointer;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px;
+  transition: border-color 0.3s ease;
+}
+
+.color-picker:hover {
+  border-color: #3F51B5;
+}
+
+.color-picker:focus {
+  outline: none;
+  border-color: #3F51B5;
+  box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
 }

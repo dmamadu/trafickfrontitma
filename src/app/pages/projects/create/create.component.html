@@ -1,5 +1,6 @@
 <div class="container-fluid">
   <app-page-title title="Création d'un projet"></app-page-title>
+
   <form action="" [formGroup]="projectForm" (ngSubmit)="save()">
     <div class="row">
       <div class="col-lg-8">
@@ -36,10 +37,9 @@
                   </div>
                   <div class="avatar-lg">
                     <div class="avatar-title bg-light rounded-circle">
-                      <!-- <img src="assets/images/users/user-dummy-img.jpg" id="member-img"
-                        class="avatar-md rounded-circle h-auto" /> -->
-                      <img [src]="imageProjet ? imageProjet : 'assets/images/users/user-dummy-img.jpg'"
-                        class="avatar-md rounded-circle h-auto" />
+                      <img [src]="imageProjet ? imageProjet : 'assets/images/noImage.png'"
+                           class="avatar-md rounded-circle h-auto cursor-pointer"
+                           (click)="openImageModal()" />
                     </div>
                   </div>
                 </div>
@@ -47,7 +47,7 @@
             </div>
             <div class="relative">
               <div class="mb-4">
-                <label for="libelle-input" class="form-label">Libellé</label>
+                <label for="libelle-input" class="form-label titre-input">Libellé</label>
                 <input id="libelle-input" formControlName="libelle" type="text" class="form-control"
                   placeholder="Enter project name..." [ngClass]="{
                     'is-valid': f.libelle.valid || f.libelle.touched,
@@ -72,7 +72,7 @@
 
             <div class="relative">
               <div class="mb-3">
-                <label for="projectdesc-input" class="form-label">Description</label>
+                <label for="projectdesc-input" class="form-label titre-input">Description</label>
                 <textarea class="form-control" formControlName="description" id="projectdesc-input" rows="3"
                   placeholder="Enter project description..." [ngClass]="{
                     'is-valid': f.description.valid || f.description.touched,
@@ -98,7 +98,7 @@
 
             <div class="mb-3 position-relative" *ngIf="lengthMo>0">
 
-              <label for="task-assign-input" class="form-label">Assigné à</label>
+              <label for="task-assign-input" class="form-label titre-input">Assigné à</label>
               <div *ngIf="assignList && assignList.length > 0" class="d-flex flex-wrap mb-2">
                 <ng-container *ngFor="let data of assignList; let i = index">
                   <div class="d-flex align-items-center me-3">
@@ -142,7 +142,7 @@
             <div class="inner-repeater mb-4">
               <form [formGroup]="form">
                 <div class="inner mb-0 row" formArrayName="members">
-                  <label class="col-form-label col-lg-2">Normes : </label>
+                  <label class="col-form-label col-lg-2 titre-input">Normes : </label>
                   @for(data of members.controls;track $index){
                   <div class="inner col-lg-10 ms-md-auto" [formGroupName]="$index">
                     <div class="mb-3 row align-items-center">
@@ -173,45 +173,6 @@
                 </div>
               </div>
             </div>
-
-            <!-- <div>
-              <label class="form-label">Fichiers attachés</label>
-              <dropzone class="dropzone" [config]="dropzoneConfig" [message]="'Drop files here or click to upload.'"
-                (success)="onUploadSuccess($event)">
-              </dropzone>
-
-
-              <ul class="list-unstyled mb-0" id="dropzone-preview" *ngIf="uploadedFiles && uploadedFiles.length > 0">
-                <li class="mt-2" id="dropzone-preview-list" *ngFor="let file of uploadedFiles; trackBy: $index">
-                  <div class="border rounded">
-                    <div class="d-flex p-2">
-                      <div class="flex-shrink-0 me-3">
-                        <div class="avatar-sm bg-light rounded">
-                          <ng-container *ngIf=" file.type && file.type.startsWith('image/'); else otherFileType">
-                            <img class="img-fluid rounded d-block" [src]="file.dataURL" alt="Dropzone-Image" />
-                          </ng-container>
-                          <ng-template #otherFileType>
-                            <i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i>
-                          </ng-template>
-                        </div>
-                      </div>
-                      <div class="flex-grow-1">
-                        <div class="pt-1">
-                          <h5 class="fs-md mb-1">{{ file.name }}</h5>
-                          <p class="fs-sm text-muted mb-0">{{ file.size }} bytes</p>
-                          <strong class="error text-danger" data-dz-errormessage></strong>
-                        </div>
-                      </div>
-                      <div class="flex-shrink-0 ms-3">
-                        <button (click)="removeFile(file)" class="btn btn-sm btn-danger">Supprimé</button>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div> -->
-
-
           </div>
           <!-- end card body -->
         </div>
@@ -222,7 +183,7 @@
       <div class="col-lg-4">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title mb-3">Statut</h5>
+            <h5 class="card-title mb-3 titre-input">Statut</h5>
 
             <div class="mb-3">
               <label class="form-label" for="project-status-input">Etat</label>
@@ -236,35 +197,7 @@
               </select>
               <div class="invalid-feedback">Please select project status.</div>
             </div>
-            <!-- <div class="relative">
-              <div class="mb-4">
-                <label class="form-label" for="project-visibility-input">Catégorie</label>
-                <input matInput id="libelle-input" [matAutocomplete]="autoDepatement" (change)="updateForm($event)"
-                  formControlName="categorie" type="text" class="form-control" [ngClass]="{
-                  'is-valid': f.categorie.valid || f.categorie.touched,
-                  'is-invalid':f.categorie.invalid && f.categorie.touched
-                }">
-                <mat-autocomplete #autoDepatement="matAutocomplete"
-                  (optionSelected)="updateFormWithSelectedOption($event)">
-                  <mat-option *ngFor="let suggestion of suggestions$ | async" [value]="suggestion">
-                    {{ suggestion }}
-                  </mat-option>
-                </mat-autocomplete>
-              </div>
-              @if(f.categorie.invalid && (f.categorie.dirty || f.categorie.touched)){
-              <div class="text-red-600 position-absolute left-1 top-16">
-                @if(f.categorie.errors.required){
-                <div>Veillez saisir la catégorie du projet</div>
-                }
-                @if(f.categorie.errors.minlength){
-                <div>Veillez saisir minimum trois caractéres</div>
-                }
-                @if(f.categorie.errors.maxlength){
-                <div>Veillez saisir au maximum 150 caractéres</div>
-                }
-              </div>
-              }
-            </div> -->
+
           </div>
           <!-- end card body -->
         </div>
@@ -272,7 +205,7 @@
 
         <div class="relative">
           <div class="card-body mb-4">
-            <h5 class="card-title mb-3">Date du début</h5>
+            <h5 class="card-title mb-3 titre-input">Date du début</h5>
             <input class="form-control flatpickr-input" formControlName="datedebut" type="text" mwlFlatpickr [ngClass]="{
               'is-valid': f.datedebut.valid || f.datedebut.touched,
               'is-invalid':f.datedebut.invalid && f.datedebut.touched
@@ -291,7 +224,7 @@
         </div>
         <div class="relative">
           <div class="card-body mb-4">
-            <h5 class="card-title mb-3">Date de la Fin</h5>
+            <h5 class="card-title mb-3 titre-input">Date de la Fin</h5>
             <input class="form-control flatpickr-input" formControlName="datefin" type="text" mwlFlatpickr [ngClass]="{
               'is-valid': f.datefin.valid || f.datefin.touched,
               'is-invalid':f.datefin.invalid && f.datefin.touched || projectForm.errors?.dateInvalid
@@ -312,6 +245,59 @@
           </div>
         </div>
 
+        <div class="relative">
+          <h5 class="card-title mb-3 titre-input">Couleurs du projet</h5>
+          <div class="row">
+            <!-- Couleur primaire -->
+            <div class="col-md-4 mb-3">
+              <label for="primary-color" class="form-label">Couleur primaire</label>
+              <input type="text" class="form-control color-picker" id="primary-color"
+                     formControlName="primaryColor"
+                     [(colorPicker)]="projectForm.value.primaryColor"
+                     [style.background]="projectForm.value.primaryColor"
+                     [value]="projectForm.value.primaryColor"
+                     [cpPresetColors]="presetColors">
+              @if (projectForm.get('primaryColor').invalid && (projectForm.get('primaryColor').dirty || projectForm.get('primaryColor').touched)) {
+                <div class="text-red-600">
+                  La couleur primaire est obligatoire.
+                </div>
+              }
+            </div>
+
+            <!-- Couleur secondaire -->
+            <div class="col-md-4 mb-3">
+              <label for="secondary-color" class="form-label">Couleur secondaire</label>
+              <input type="text" class="form-control color-picker" id="secondary-color"
+                     formControlName="secondaryColor"
+                     [(colorPicker)]="projectForm.value.secondaryColor"
+                     [style.background]="projectForm.value.secondaryColor"
+                     [value]="projectForm.value.secondaryColor"
+                     [cpPresetColors]="presetColors">
+              @if (projectForm.get('secondaryColor').invalid && (projectForm.get('secondaryColor').dirty || projectForm.get('secondaryColor').touched)) {
+                <div class="text-red-600">
+                  La couleur secondaire est obligatoire.
+                </div>
+              }
+            </div>
+
+            <!-- Couleur d'accentuation -->
+            <div class="col-md-4 mb-3">
+              <label for="accent-color" class="form-label">Couleur d'accentuation</label>
+              <input type="text" class="form-control color-picker" id="accent-color"
+                     formControlName="accentColor"
+                     [(colorPicker)]="projectForm.value.accentColor"
+                     [style.background]="projectForm.value.accentColor"
+                     [value]="projectForm.value.accentColor"
+                     [cpPresetColors]="presetColors">
+              @if (projectForm.get('accentColor').invalid && (projectForm.get('accentColor').dirty || projectForm.get('accentColor').touched)) {
+                <div class="text-red-600">
+                  La couleur d'accentuation est obligatoire.
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
         <!-- end card body -->
       </div>
       <!-- end card -->
@@ -327,4 +313,20 @@
     </div>
     <!-- end row -->
   </form>
+</div>
+
+
+<!-- Modal pour afficher l'image en grand -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="imageModalLabel">Visualiser l'image</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img [src]="imageProjet" class="img-fluid" alt="Image en grand" />
+      </div>
+    </div>
+  </div>
 </div>

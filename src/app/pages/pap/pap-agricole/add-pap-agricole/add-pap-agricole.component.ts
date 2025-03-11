@@ -14,11 +14,11 @@ import {
 } from "@angular/forms";
 import {
   MatDialogRef,
-  MAT_DIALOG_DATA
+  MAT_DIALOG_DATA,
+  MatDialog,
 } from "@angular/material/dialog";
 import { MatDrawer } from "@angular/material/sidenav";
 import { MatStepper } from "@angular/material/stepper";
-import * as moment from "moment";
 import { CoreService } from "src/app/shared/core/core.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
@@ -26,7 +26,6 @@ import { MatPaginatorIntl } from "@angular/material/paginator";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
-import { DatePipe } from "@angular/common";
 import {
   DateAdapter,
   MAT_DATE_LOCALE,
@@ -36,18 +35,21 @@ import { LocalService } from "src/app/core/services/local.service";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { ClientVueService } from "src/app/pages/admin/client-vue/client-vue.service";
 import { environment } from "src/environments/environment";
+import { ImageModalComponent } from "src/app/shared/image-modal.component";
+import { LoaderComponent } from "src/app/shared/loader/loader.component";
 
 @Component({
-  selector: 'app-add-pap-agricole',
+  selector: "app-add-pap-agricole",
   standalone: true,
-  templateUrl: './add-pap-agricole.component.html',
-  styleUrl: './add-pap-agricole.component.css',
+  templateUrl: "./add-pap-agricole.component.html",
+  styleUrl: "./add-pap-agricole.component.css",
   imports: [
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
     AngularMaterialModule,
     MatDatepickerModule,
+    LoaderComponent,
     MatNativeDateModule, //
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,14 +57,11 @@ import { environment } from "src/environments/environment";
     { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
     { provide: MatPaginatorIntl },
     SnackBarService,
-    MatDatepickerModule
+    MatDatepickerModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AddPapAgricoleComponent {
-
-
-
   panelOpenState = false;
   @ViewChild("drawer") drawer: MatDrawer;
   @ViewChild("stepper") private myStepper: MatStepper;
@@ -87,7 +86,7 @@ export class AddPapAgricoleComponent {
   dateDelivrance;
   regimeMatrimoniaux: any;
   professions: any;
-  loader: boolean;
+  loader: boolean=false;
   action: string;
   minBirthDay: any;
   today = new Date();
@@ -108,7 +107,7 @@ export class AddPapAgricoleComponent {
   ng2TelOptions;
   idPiece;
   listeNoire: boolean = false;
-  currentUser: any;
+  currentProjectId: any;
 
   urlImage = environment.apiUrl + "image/getFile/";
 
@@ -119,17 +118,13 @@ export class AddPapAgricoleComponent {
     @Inject(MAT_DIALOG_DATA) _data,
     private fb: UntypedFormBuilder,
     private coreService: CoreService,
+    private _matDialog: MatDialog,
     private snackbar: SnackBarService,
     private changeDetectorRefs: ChangeDetectorRef,
     private localService: LocalService,
-    private clientServive: ClientVueService,
+    private clientServive: ClientVueService
   ) {
-    this.currentUser=this.localService.getDataJson("user");
-
-    console.log("user connecter",this.currentUser)
-    console.log("==data fomrmr==================================");
-    console.log(_data.data.pays);
-    console.log("====================================");
+    this.currentProjectId = this.localService.getData("ProjectId");
     if (_data?.action == "new") {
       this.initForms();
       this.labelButton = "Ajouter ";
@@ -138,115 +133,90 @@ export class AddPapAgricoleComponent {
       this.id = _data.data.id;
       this.initForms(_data.data);
       console.log(_data.data);
-        this.initForm.get("sexe").setValue(_data.data.sexe);
+      this.initForm.get("sexe").setValue(_data.data.sexe);
       const selectedCountry = _data.data.pays;
-
     }
     this.action = _data?.action;
     this.canAdd = _data.canAdd;
     this.dialogTitle = this.labelButton + this.suffixe;
     this.ng2TelOptions = { initialCountry: "sn" };
-
-
   }
-
 
   checkValidOnWhatsApp(event: any): void {
     const value = event.value;
     this.initForm.get("statutVulnerable")?.setValue(value);
   }
 
-
-
   goToStep(index) {
     this.myStepper.selectedIndex = index;
   }
 
-  initForms(donnees?) {
+  initForms(donnees?: any) {
     this.initForm = this.fb.group({
-      codePap: this.fb.control(donnees ? donnees.codePap : null, [
-        Validators.required,
-      ]),
-      caracteristiqueParcelle: this.fb.control(
-        donnees ? donnees.caracteristiqueParcelle : null,
-        []
-      ),
-      evaluationPerte: this.fb.control(
-        donnees ? donnees.evaluationPerte : null,
-        []
-      ),
-      nom: this.fb.control(donnees ? donnees.nom : null, [Validators.required]),
-      prenom: this.fb.control(donnees ? donnees.prenom : null, [
-        Validators.required,
-      ]),
-      codeParcelle: this.fb.control(
-        donnees ? donnees.codeParcelle : null,
+      // Étape 1 : Informations personnelles
+      prenom: [donnees?.prenom || "", Validators.required],
+      nom: [donnees?.nom || "", Validators.required],
+      sexe: [donnees?.sexe || "", Validators.required],
+      codePap: [donnees?.codePap || "", Validators.required],
+      nationalite: [donnees?.nationalite || "", Validators.required],
+      situationMatrimoniale: [donnees?.situationMatrimoniale || "", Validators.required],
+      commune: [donnees?.commune || "", Validators.required],
+      departement: [donnees?.departement || "", Validators.required],
+      langueParlee: [donnees?.langueParlee || ""],
+      niveauEtude: [donnees?.niveauEtude || ""],
+      religion: [donnees?.religion || ""],
+      nombreParcelle: [donnees?.nombreParcelle || "", Validators.required],
+
+      // Étape 2 : Informations sur la parcelle
+      codeParcelle: [donnees?.codeParcelle || "", Validators.required],
+      superficie: [donnees?.superficie || ""],
+      evaluationPerte: [donnees?.evaluationPerte || "", Validators.required],
+      perteArbreJeune: [donnees?.perteArbreJeune || "", Validators.required],
+      perteArbreAdulte: [donnees?.perteArbreAdulte || "", Validators.required],
+      caracteristiqueParcelle: [donnees?.caracteristiqueParcelle || "", Validators.required],
+
+      // Étape 3 : Documents et détails supplémentaires
+      statutPap: [donnees?.statutPap || "", Validators.required],
+      vulnerabilite: [donnees?.vulnerabilite || "", Validators.required],
+      typePni: [donnees?.typePni || "", Validators.required],
+      numeroPni: [donnees?.numeroPni || "", Validators.required],
+      surnom: [donnees?.surnom || "", Validators.required],
+      numeroTelephone: [donnees?.numeroTelephone || "", Validators.required],
+      membreFoyer: [donnees?.membreFoyer || "", Validators.required],
+      membreFoyerHandicape: [donnees?.membreFoyerHandicape || "", Validators.required],
+
+      // Étape 4 : Bâtiments / Équipements
+      perteEquipement: [donnees?.perteEquipement || "", Validators.required],
+      perteBatiment: [donnees?.perteBatiment || "", Validators.required],
+      perteLoyer: [donnees?.perteLoyer || ""],
+      perteCloture: [donnees?.perteCloture || ""],
+      informationsEtendues: [donnees?.informationsEtendues || ""],
+
+      // Étape 5 : Revenus
+      perteRevenue: [donnees?.perteRevenue || "", Validators.required],
+      fraisDeplacement: [donnees?.fraisDeplacement || "", Validators.required],
+      appuieRelocalisation: [donnees?.appuieRelocalisation || ""],
+      perteTotale: [donnees?.perteTotale || "", Validators.required],
+
+      // Champs optionnels
+      existePni: [donnees?.existePni || null],
+      photoPap: [donnees?.photoPap || null],
+      pointGeometriques: [donnees?.pointGeometriques || null],
+      ethnie: [donnees?.ethnie || null],
+      pj1: [donnees?.pj1 || null],
+      pj2: [donnees?.pj2 || null],
+      pj3: [donnees?.pj3 || null],
+      pj4: [donnees?.pj4 || null],
+      pj5: [donnees?.pj5 || null],
+      infos_complemenataires: [donnees?.infos_complemenataires || null],
+
+      // Gestion de projectId
+      projectId: [
+        donnees?.projectId || (this.currentProjectId ? this.currentProjectId : null),
         [Validators.required]
-      ),
-      commune: this.fb.control(donnees ? donnees.commune : null, [
-
-      ]),
-      departement: this.fb.control(donnees ? donnees.departement : null, [
-
-      ]),
-      nombreParcelle: this.fb.control(
-        donnees ? donnees.nombreParcelle : null,
-        []
-      ),
-      surnom: this.fb.control(donnees ? donnees.surnom : null),
-      sexe: this.fb.control(donnees ? donnees.sexe : null, []),
-      existePni: this.fb.control(donnees ? donnees.existePni : null),
-      typePni: this.fb.control(donnees ? donnees.typePni : null),
-      numeroPni: this.fb.control(donnees ? donnees.numeroPni : null),
-      numeroTelephone: this.fb.control(
-        donnees ? donnees.numeroTelephone : null,
-        []
-      ),
-      photoPap: this.fb.control(donnees ? donnees.photoPap : null),
-      pointGeometriques: this.fb.control(
-        donnees ? donnees.pointGeometriques : null
-      ),
-      superficie: this.fb.control(donnees ? donnees.superficie : null),
-      nationalite: this.fb.control(donnees ? donnees.nationalite : null, [
-        ,
-      ]),
-      ethnie: this.fb.control(donnees ? donnees.ethnie : null),
-      langueParlee: this.fb.control(donnees ? donnees.langueParlee : null),
-      situationMatrimoniale: this.fb.control(
-        donnees ? donnees.situationMatrimoniale : null,
-        []
-      ),
-      niveauEtude: this.fb.control(donnees ? donnees.niveauEtude : null),
-      religion: this.fb.control(donnees ? donnees.religion : null),
-      membreFoyer: this.fb.control(donnees ? donnees.membreFoyer : null),
-      membreFoyerHandicape: this.fb.control(
-        donnees ? donnees.membreFoyerHandicape : null
-      ),
-      informationsEtendues: this.fb.control(
-        donnees ? donnees.informationsEtendues : null
-      ),
-      pj1: this.fb.control(donnees ? donnees.pj1 : null),
-      pj2: this.fb.control(donnees ? donnees.pj2 : null),
-      pj3: this.fb.control(donnees ? donnees.pj3 : null),
-      pj4: this.fb.control(donnees ? donnees.pj4 : null),
-      pj5: this.fb.control(donnees ? donnees.pj5 : null),
-      statutPap: this.fb.control(donnees ? donnees.statutPap : null, [
-
-      ]),
-      vulnerabilite: this.fb.control(donnees ? donnees.vulnerabilite : null),
-      infos_complemenataires: this.fb.control(
-        donnees ? donnees.infos_complemenataires : null
-      ),
-      projectId: this.fb.control(this.currentUser.projects ? this.currentUser.projects[0]?.id   : null, [
-        Validators.required,
-      ]),
+      ],
     });
   }
-
-
-
-
-
 
   checkValidity(g: UntypedFormGroup) {
     Object.keys(g.controls).forEach((key) => {
@@ -259,8 +229,6 @@ export class AddPapAgricoleComponent {
       g.get(key).updateValueAndValidity();
     });
   }
-
-
 
   addItems() {
     this.snackbar
@@ -342,12 +310,11 @@ export class AddPapAgricoleComponent {
     }
   }
 
-
   selectOnFile(evt, type, name) {
     let accept = [];
     let extension = "";
     if (type === "photo_profile") {
-      accept = [".png", ".PNG", ".jpg", ".JPG",".JPEG",".jpeg"];
+      accept = [".png", ".PNG", ".jpg", ".JPG", ".JPEG", ".jpeg"];
       extension = "une image";
     }
     for (const file of evt.target.files) {
@@ -381,21 +348,190 @@ export class AddPapAgricoleComponent {
     let formData = new FormData();
     formData.append("file", file);
     this.changeDetectorRefs.detectChanges();
-    const dataFile = { file: file };
-    this.clientServive
-      .saveStoreFile(formData)
-      .subscribe(
-        (resp) => {
-          if (resp) {
-            console.log(resp);
-            this.imageToff = `${this.urlImage + resp["fileName"]}`;
-            this.initForm.get("photoPap").setValue(this.imageToff);
-          }
-        },
-        (error) => {
-          console.log(error);
-          this.snackbar.showErrors(error);
+    this.loader=true;
+    this.clientServive.saveStoreFile(formData).subscribe(
+      (resp) => {
+        if (resp) {
+        //  console.log(resp);
+          this.imageToff = `${this.urlImage + resp["fileName"]}`;
+          this.initForm.get("photoPap").setValue(this.imageToff);
+          this.snackbar.openSnackBar(
+            "Fichier chargé avec succès : " + file.name,
+            "OK",
+            ["mycssSnackbarGreen"]
+          );
         }
-      );
+        this.loader=false;
+      },
+      (error) => {
+        this.loader=false;
+        console.log(error);
+        this.snackbar.showErrors(error);
+      }
+    );
+  }
+
+  openImageModal(imageUrl: string) {
+    if (imageUrl) {
+      this._matDialog.open(ImageModalComponent, {
+        data: { imageUrl: imageUrl },
+      });
+    }
+  }
+
+  /**
+   * Gère la navigation vers l'étape suivante.
+   * Valide l'étape actuelle avant de passer à la suivante.
+   */
+  nextStep(stepper: MatStepper) {
+    const currentStep = stepper.selectedIndex;
+
+    switch (currentStep) {
+      case 0:
+        this.validateStep1();
+        break;
+      case 1:
+        this.validateStep2();
+        break;
+      case 2:
+        this.validateStep3();
+        break;
+      case 3:
+        this.validateStep4();
+        break;
+      case 4:
+        this.validateStep5();
+        break;
+    }
+
+    if (this.isStepValid(currentStep)) {
+      stepper.next();
+    }
+  }
+
+  /**
+   * Valide l'étape 1 : Informations personnelles.
+   */
+  validateStep1() {
+    const step1Controls = [
+      "prenom",
+      "nom",
+      "sexe",
+      "codePap",
+      "nationalite",
+      "situationMatrimoniale",
+      "commune",
+      "departement",
+      "nombreParcelle",
+    ];
+    this.markControlsAsTouched(step1Controls);
+  }
+
+  /**
+   * Valide l'étape 2 : Informations sur la parcelle.
+   */
+  validateStep2() {
+    const step2Controls = [
+      "codeParcelle",
+      "evaluationPerte",
+      "perteArbreJeune",
+      "perteArbreAdulte",
+      "caracteristiqueParcelle",
+    ];
+    this.markControlsAsTouched(step2Controls);
+  }
+
+  /**
+   * Valide l'étape 3 : Documents et détails supplémentaires.
+   */
+  validateStep3() {
+    const step3Controls = [
+      "statutPap",
+      "vulnerabilite",
+      "typePni",
+      "numeroPni",
+      "surnom",
+      "numeroTelephone",
+      "membreFoyer",
+      "membreFoyerHandicape",
+    ];
+    this.markControlsAsTouched(step3Controls);
+  }
+
+  /**
+   * Valide l'étape 4 : Bâtiments / Équipements.
+   */
+  validateStep4() {
+    const step4Controls = ["perteEquipement", "perteBatiment"];
+    this.markControlsAsTouched(step4Controls);
+  }
+
+  /**
+   * Valide l'étape 5 : Revenus.
+   */
+  validateStep5() {
+    const step5Controls = ["perteRevenue", "fraisDeplacement", "perteTotale"];
+    this.markControlsAsTouched(step5Controls);
+  }
+
+  /**
+   * Marque les contrôles spécifiés comme "touchés" pour afficher les erreurs de validation.
+   */
+  markControlsAsTouched(controls: string[]) {
+    controls.forEach((control) => {
+      this.initForm.get(control)?.markAsTouched();
+    });
+  }
+
+  /**
+   * Vérifie si l'étape actuelle est valide.
+   */
+  isStepValid(stepIndex: number): boolean {
+    switch (stepIndex) {
+      case 0:
+        return (
+          this.initForm.get("prenom")?.valid &&
+          this.initForm.get("nom")?.valid &&
+          this.initForm.get("sexe")?.valid &&
+          this.initForm.get("codePap")?.valid &&
+          this.initForm.get("nationalite")?.valid &&
+          this.initForm.get("situationMatrimoniale")?.valid &&
+          this.initForm.get("commune")?.valid &&
+          this.initForm.get("departement")?.valid &&
+          this.initForm.get("nombreParcelle")?.valid
+        );
+      case 1:
+        return (
+          this.initForm.get("codeParcelle")?.valid &&
+          this.initForm.get("evaluationPerte")?.valid &&
+          this.initForm.get("perteArbreJeune")?.valid &&
+          this.initForm.get("perteArbreAdulte")?.valid &&
+          this.initForm.get("caracteristiqueParcelle")?.valid
+        );
+      case 2:
+        return (
+          this.initForm.get("statutPap")?.valid &&
+          this.initForm.get("vulnerabilite")?.valid &&
+          this.initForm.get("typePni")?.valid &&
+          this.initForm.get("numeroPni")?.valid &&
+          this.initForm.get("surnom")?.valid &&
+          this.initForm.get("numeroTelephone")?.valid &&
+          this.initForm.get("membreFoyer")?.valid &&
+          this.initForm.get("membreFoyerHandicape")?.valid
+        );
+      case 3:
+        return (
+          this.initForm.get("perteEquipement")?.valid &&
+          this.initForm.get("perteBatiment")?.valid
+        );
+      case 4:
+        return (
+          this.initForm.get("perteRevenue")?.valid &&
+          this.initForm.get("fraisDeplacement")?.valid &&
+          this.initForm.get("perteTotale")?.valid
+        );
+      default:
+        return false;
+    }
   }
 }

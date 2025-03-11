@@ -6,7 +6,8 @@ import {
 } from "@angular/forms";
 import {
   MatDialogRef,
-  MAT_DIALOG_DATA
+  MAT_DIALOG_DATA,
+  MatDialog,
 } from "@angular/material/dialog";
 import { MatDrawer } from "@angular/material/sidenav";
 import { MatStepper } from "@angular/material/stepper";
@@ -21,6 +22,7 @@ import { AddUserComponent } from "../../../utilisateur/add-user/add-user.compone
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { Image } from "src/app/shared/models/image.model";
 import { LoaderComponent } from "../../../../../shared/loader/loader.component";
+import { ImageModalComponent } from "src/app/shared/image-modal.component";
 
 @Component({
   selector: "app-add-dossier",
@@ -72,17 +74,17 @@ export class AddDossierComponent {
     @Inject(MAT_DIALOG_DATA) _data,
     private fb: UntypedFormBuilder,
     private coreService: CoreService,
+    private _matDialog: MatDialog,
     private snackbar: SnackBarService,
     private changeDetectorRefs: ChangeDetectorRef,
-    private clientService: ClientVueService,
     private moservice: MoService,
     private localService: LocalService,
     private clientServive: ClientVueService,
     private parentService: ServiceParent
   ) {
-    this.currentUser = this.localService.getDataJson("user");
+    this.currentProjectId = this.localService.getData("ProjectId");
 
-    console.log("user connecter", this.currentUser);
+    console.log("user connecter", this.currentProjectId);
     if (_data?.action == "new") {
       this.initForms();
       this.labelButton = "Ajouter ";
@@ -99,7 +101,7 @@ export class AddDossierComponent {
     this.ng2TelOptions = { initialCountry: "sn" };
   }
 
-  currentUser: any;
+  currentProjectId: any;
   ngOnInit(): void {
     this.getCategorieItems();
   }
@@ -114,7 +116,7 @@ export class AddDossierComponent {
         [Validators.required]
       ),
       projetId: this.fb.control(
-        this.currentUser.projects ? this.currentUser.projects[0]?.id : null,
+        this.currentProjectId ? +this.currentProjectId : null,
         [Validators.required]
       ),
 
@@ -124,8 +126,6 @@ export class AddDossierComponent {
       ),
     });
   }
-
-
 
   checkValidity(g: UntypedFormGroup) {
     Object.keys(g.controls).forEach((key) => {
@@ -141,38 +141,41 @@ export class AddDossierComponent {
 
   updateItems() {
     console.log(this.initForm.value);
-   // this.initForm.get("projetId").setValue(1);
-    this.snackbar
-      .showConfirmation(`Voulez-vous vraiment modifier ce document `)
-      .then((result) => {
-        if (result["value"] == true) {
-          this.loader = true;
-          const value = this.initForm.value;
-          this.coreService.updateItem(value, this.id, this.url).subscribe(
-            (resp) => {
-              if (resp) {
+
+    if (this.initForm.valid) {
+      this.snackbar
+        .showConfirmation(`Voulez-vous vraiment modifier ce document `)
+        .then((result) => {
+          if (result["value"] == true) {
+            this.loader = true;
+            const value = this.initForm.value;
+            this.coreService.updateItem(value, this.id, this.url).subscribe(
+              (resp) => {
+                if (resp) {
+                  this.loader = false;
+                  this.matDialogRef.close(resp);
+                  this.snackbar.openSnackBar(
+                    "document  modifié avec succés",
+                    "OK",
+                    ["mycssSnackbarGreen"]
+                  );
+                } else {
+                  this.loader = false;
+                  this.snackbar.openSnackBar(resp["message"], "OK", [
+                    "mycssSnackbarRed",
+                  ]);
+                }
+              },
+              (error) => {
                 this.loader = false;
-                this.matDialogRef.close(resp);
-                this.snackbar.openSnackBar(
-                  "document  modifié avec succés",
-                  "OK",
-                  ["mycssSnackbarGreen"]
-                );
-              } else {
                 this.loader = false;
-                this.snackbar.openSnackBar(resp["message"], "OK", [
-                  "mycssSnackbarRed",
-                ]);
+                this.snackbar.showErrors(error);
               }
-            },
-            (error) => {
-              this.loader = false;
-              this.loader = false;
-              this.snackbar.showErrors(error);
-            }
-          );
-        }
-      });
+            );
+          }
+        });
+    }
+    // this.initForm.get("projetId").setValue(1);
   }
 
   checkRecap(type) {
@@ -196,10 +199,6 @@ export class AddDossierComponent {
 
   fileSelected;
   loaderImg = false;
-
-
-
-
 
   deleteImage() {
     document
@@ -226,37 +225,40 @@ export class AddDossierComponent {
 
   addItems() {
     console.log(this.initForm.value);
-    this.initForm.get("projetId").setValue(1);
-    this.snackbar
-      .showConfirmation(`Voulez-vous vraiment ajouter ce document `)
-      .then((result) => {
-        if (result["value"] == true) {
-          this.loader = true;
-          // const value = documentRequest;
-          this.coreService.addItem(this.initForm.value, this.url).subscribe(
-            (resp) => {
-              if (resp["responseCode"] == 201) {
-                this.snackbar.openSnackBar(
-                  "document  ajouté avec succés",
-                  "OK",
-                  ["mycssSnackbarGreen"]
-                );
+    // this.initForm.get("projetId").setValue(1);
+
+    if (this.initForm.valid) {
+      this.snackbar
+        .showConfirmation(`Voulez-vous vraiment ajouter ce document `)
+        .then((result) => {
+          if (result["value"] == true) {
+            this.loader = true;
+            // const value = documentRequest;
+            this.coreService.addItem(this.initForm.value, this.url).subscribe(
+              (resp) => {
+                if (resp["responseCode"] == 201) {
+                  this.snackbar.openSnackBar(
+                    "document  ajouté avec succés",
+                    "OK",
+                    ["mycssSnackbarGreen"]
+                  );
+                  this.loader = false;
+                  this.matDialogRef.close(resp["data"]);
+                  this.changeDetectorRefs.markForCheck();
+                } else {
+                  this.loader = false;
+                  this.changeDetectorRefs.markForCheck();
+                }
+              },
+              (error) => {
                 this.loader = false;
-                this.matDialogRef.close(resp["data"]);
                 this.changeDetectorRefs.markForCheck();
-              } else {
-                this.loader = false;
-                this.changeDetectorRefs.markForCheck();
+                this.snackbar.showErrors(error);
               }
-            },
-            (error) => {
-              this.loader = false;
-              this.changeDetectorRefs.markForCheck();
-              this.snackbar.showErrors(error);
-            }
-          );
-        }
-      });
+            );
+          }
+        });
+    }
   }
 
   selectOnFile(evt) {
@@ -364,5 +366,13 @@ export class AddDossierComponent {
     this.filteredProfils = this.profils.filter(
       (profil) => profil.categorie.id === categorieId
     );
+  }
+
+  openImageModal(imageUrl: string) {
+    if (imageUrl) {
+      this._matDialog.open(ImageModalComponent, {
+        data: { imageUrl: imageUrl },
+      });
+    }
   }
 }

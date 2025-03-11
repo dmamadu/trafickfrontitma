@@ -38,6 +38,7 @@ import { provideNativeDateAdapter } from "@angular/material/core";
 import { SignatureComponent } from "../../entente-compensation/signature/signature.component";
 import { UIModule } from "../../../shared/ui/ui.module";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
+import { ImageModalComponent } from "src/app/shared/image-modal.component";
 
 @Component({
   selector: "app-add-plainte",
@@ -116,9 +117,9 @@ export class AddPlainteComponent implements OnInit {
     private localService: LocalService,
     private clientServive: ClientVueService
   ) {
-    this.currentUser = this.localService.getDataJson("user");
+    this.currentProjectId = this.localService.getData("ProjectId");
     this.signature = "assets/images/noImage.png";
-    // console.log("user connecter",this.currentUser)
+    // console.log("user connecter",this.currentProjectId)
     if (_data?.action == "new") {
       this.initForms();
       this.labelButton = "Ajouter ";
@@ -126,7 +127,6 @@ export class AddPlainteComponent implements OnInit {
       this.labelButton = "Modifier ";
       this.id = _data.data.id;
       this.initForms(_data.data);
-
     }
 
     this.action = _data?.action;
@@ -145,7 +145,7 @@ export class AddPlainteComponent implements OnInit {
   //   return base64Representation;
   // }
 
-  currentUser: any;
+  currentProjectId: any;
 
   initForms(donnees?) {
     //firstep
@@ -193,7 +193,7 @@ export class AddPlainteComponent implements OnInit {
       //secondStep
 
       projectId: this.fb.control(
-        this.currentUser.projects ? this.currentUser.projects[0]?.id : null,
+        this.currentProjectId ? this.currentProjectId : null,
         [Validators.required]
       ),
       contact: this.fb.control(donnees ? donnees?.contact : null, [
@@ -311,8 +311,6 @@ export class AddPlainteComponent implements OnInit {
       this.updatePlainte();
     }
   }
-
-
 
   checkCNI() {
     this.errorCNI = "";
@@ -545,4 +543,177 @@ export class AddPlainteComponent implements OnInit {
   }
 
   etats: string[] = ["Résolu", "En Attente", "En Cours"];
+
+
+
+   openImageModal(imageUrl: string) {
+      if (imageUrl) {
+        this._matDialog.open(ImageModalComponent, {
+          data: { imageUrl: imageUrl },
+        });
+      }
+    }
+
+
+
+
+
+
+
+
+    nextStep(stepper: MatStepper) {
+      const currentStep = stepper.selectedIndex;
+
+      // Valider l'étape actuelle
+      switch (currentStep) {
+        case 0:
+          this.validateStep1();
+          break;
+        case 1:
+          this.validateStep2();
+          break;
+        case 2:
+          this.validateStep3();
+          break;
+        case 3:
+          this.validateStep4();
+          break;
+        case 4:
+          this.validateStep5();
+          break;
+      }
+
+      // Passer à l'étape suivante si l'étape actuelle est valide
+      if (this.isStepValid(currentStep)) {
+        stepper.next();
+      }
+    }
+
+
+    /**
+ * Valide l'étape 1 : Préambule
+ */
+validateStep1() {
+  const step1Controls = [
+    "libelleProjet",
+    "numeroDossier",
+    "lieuEnregistrement",
+    "dateEnregistrement",
+    "isRecensed",
+    "dateRecensement",
+    "isSignedFileRecensement",
+    "natureBienAffecte",
+    "emplacementBienAffecte"
+  ];
+  this.markControlsAsTouched(step1Controls);
+}
+
+/**
+ * Valide l'étape 2 : Informations personnelles
+ */
+validateStep2() {
+  const step2Controls = [
+    "prenom",
+    "nom",
+    "typeIdentification",
+    "numeroIdentification",
+    "sexe",
+    "situationMatrimoniale",
+    "contact",
+    "email",
+    "codePap",
+    "vulnerabilite"
+  ];
+  this.markControlsAsTouched(step2Controls);
+}
+
+/**
+ * Valide l'étape 3 : Description & Recommandation
+ */
+validateStep3() {
+  const step3Controls = [
+    "descriptionObjet",
+    "hasDocument",
+    "recommandation",
+    "etat"
+  ];
+  this.markControlsAsTouched(step3Controls);
+}
+
+/**
+ * Valide l'étape 4 : Signatures
+ */
+validateStep4() {
+  const step4Controls = [
+    "urlSignaturePap",
+    "urlSignatureResponsable"
+  ];
+  this.markControlsAsTouched(step4Controls);
+}
+
+/**
+ * Valide l'étape 5 : Récapitulatif
+ */
+validateStep5() {
+  // Aucun contrôle à valider ici, car c'est une étape de récapitulatif
+}
+
+
+/**
+ * Marque les contrôles spécifiés comme "touchés" pour afficher les erreurs de validation.
+ */
+markControlsAsTouched(controls: string[]) {
+  controls.forEach((control) => {
+    this.initForm.get(control)?.markAsTouched();
+  });
+}
+
+/**
+ * Vérifie si l'étape actuelle est valide.
+ */
+isStepValid(stepIndex: number): boolean {
+  switch (stepIndex) {
+    case 0:
+      return (
+        this.initForm.get("libelleProjet")?.valid &&
+        this.initForm.get("numeroDossier")?.valid &&
+        this.initForm.get("lieuEnregistrement")?.valid &&
+        this.initForm.get("dateEnregistrement")?.valid &&
+        this.initForm.get("isRecensed")?.valid &&
+        this.initForm.get("dateRecensement")?.valid &&
+        this.initForm.get("isSignedFileRecensement")?.valid &&
+        this.initForm.get("natureBienAffecte")?.valid &&
+        this.initForm.get("emplacementBienAffecte")?.valid
+      );
+    case 1:
+      return (
+        this.initForm.get("prenom")?.valid &&
+        this.initForm.get("nom")?.valid &&
+        this.initForm.get("typeIdentification")?.valid &&
+        this.initForm.get("numeroIdentification")?.valid &&
+        this.initForm.get("sexe")?.valid &&
+        this.initForm.get("situationMatrimoniale")?.valid &&
+        this.initForm.get("contact")?.valid &&
+        this.initForm.get("email")?.valid &&
+        this.initForm.get("codePap")?.valid &&
+        this.initForm.get("vulnerabilite")?.valid
+      );
+    case 2:
+      return (
+        this.initForm.get("descriptionObjet")?.valid &&
+        this.initForm.get("hasDocument")?.valid &&
+        this.initForm.get("recommandation")?.valid &&
+        this.initForm.get("etat")?.valid
+      );
+    case 3:
+      return (
+        this.initForm.get("urlSignaturePap")?.valid &&
+        this.initForm.get("urlSignatureResponsable")?.valid
+      );
+    case 4:
+      return true; // L'étape de récapitulatif est toujours valide
+    default:
+      return false;
+  }
+}
 }

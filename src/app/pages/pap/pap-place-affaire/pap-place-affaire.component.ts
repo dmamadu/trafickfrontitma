@@ -71,14 +71,14 @@ import { LoaderComponent } from "../../../shared/loader/loader.component";
     AngularMaterialModule,
     DatatableComponent,
     FormsModule,
-    LoaderComponent
-],
+    LoaderComponent,
+  ],
 })
 export class PapPlaceAffaireComponent {
   [x: string]: any;
 
   listPap: Pap[];
-  filterTable($event: any) {}
+ // filterTable($event: any) {}
   breadCrumbItems: Array<{}>;
 
   @ViewChild(MatSort) sort: MatSort;
@@ -126,7 +126,7 @@ export class PapPlaceAffaireComponent {
   privilegePage;
   headers: any = [];
   btnActions: any = [];
-  currentUser: any;
+  currentProjectId: any;
 
   constructor(
     private changeDetectorRefs: ChangeDetectorRef,
@@ -142,41 +142,73 @@ export class PapPlaceAffaireComponent {
     private sharedService: SharedService,
     private localService: LocalService,
     private coreService: CoreService,
-    private exportService: ExportService,
+    private exportService: ExportService
   ) {
-    this.currentUser = this.localService.getDataJson("user");
+    // this.currentProjectId = this.localService.getDataJson("user");
 
-    console.log("user connecter", this.currentUser);
+    this.currentProjectId = this.localService.getData("ProjectId");
+
+
+
+    console.log("user connecter", this.currentProjectId);
     this.informations = {
       exportFile: ["excel", "pdf"],
       titleFile: "liste des pap",
       code: "01410",
       tabHead: ["Prénom", "Nom", "Nationalité"],
       tabFileHead: [
-        "Prénom",
+        "Id",
+        "Code Pap",
         "Nom",
+        "Prénom",
+        "Code Place Affaire",
+        "Commune",
+        "Département",
+        "Nombre Place Affaire",
+        "Surnom",
+        "Sexe",
+        "Photo Pap",
+        "Photo Place Affaire",
+        "Point Géométriques",
         "Nationalité",
-        "Numéro identification",
-        "Téléphone",
+        "Ethnie",
+        "Langue Parlée",
         "Situation Matrimoniale",
-        "Statut",
-        "Pays",
-        "Région",
-        "Localité de résidance",
+        "Niveau Étude",
+        "Religion",
+        "Activité Principale",
+        "Membre Foyer",
+        "Membre Foyer Handicapé",
+        "Project Id",
+        "Type",
       ],
       searchFields: [],
       tabBody: ["prenom", "nom", "nationalite"],
       tabFileBody: [
-        "prenom",
+        "id",
+        "codePap",
         "nom",
+        "prenom",
+        "codePlaceAffaire",
+        "commune",
+        "departement",
+        "nombrePlaceAffaire",
+        "surnom",
+        "sexe",
+        "photoPap",
+        "photoPlaceAffaire",
+        "pointGeometriques",
         "nationalite",
-        "numeroIdentification",
-        "numeroTelephone",
+        "ethnie",
+        "langueParlee",
         "situationMatrimoniale",
-        "statutPap",
-        "pays",
-        "region",
-        "localiteResidence",
+        "niveauEtude",
+        "religion",
+        "activitePrincipale",
+        "membreFoyer",
+        "membreFoyerHandicape",
+        "projectId",
+        "type",
       ],
       action: [
         { name: "modifier", icon: "edit", color: "primary" },
@@ -261,7 +293,7 @@ export class PapPlaceAffaireComponent {
   getPapPlaceAffaire() {
     this.loadData = true;
     return this.parentService
-      .list(this.url, this.pageSize, this.offset)
+      .list(this.url, this.pageSize, this.offset, this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -272,6 +304,7 @@ export class PapPlaceAffaireComponent {
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
             this.datas = data["data"];
+
             this.length = data["length"];
             console.log("length", this.length);
             this._changeDetectorRef.markForCheck();
@@ -302,7 +335,7 @@ export class PapPlaceAffaireComponent {
     console.log(information);
     this.snackbar.openModal(
       AddPapPlaceAffaireComponent,
-      "55rem",
+      "65rem",
       "edit",
       "",
       information,
@@ -355,6 +388,45 @@ export class PapPlaceAffaireComponent {
 
   filterList() {
     this.isCollapsed = !this.isCollapsed;
+  }
+
+
+
+  filterTable(event: Event) {
+    const searchTerm = (event.target as HTMLInputElement).value.trim();
+
+    console.log('====================================');
+    console.log(searchTerm);
+    console.log('====================================');
+
+    // Appeler l'API avec le terme de recherche
+    this.loadData = true;
+    this.parentService
+      .searchGlobal(this.url, searchTerm, this.currentProjectId,this.pageSize, this.offset, )
+      .subscribe(
+        (data: any) => {
+          this.loadData = false;
+          console.log('====================================');
+          console.log(data);
+          console.log('====================================');
+          if (data["responseCode"] == 200) {
+
+
+            this.dataSource = new MatTableDataSource(data["data"]);
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+            this.datas = data["data"];
+            this.length = data["length"];
+            this._changeDetectorRef.markForCheck();
+          } else {
+            this.dataSource = new MatTableDataSource();
+          }
+        },
+        (err) => {
+          this.loadData = false;
+          console.log(err);
+        }
+      );
   }
 
   //cette fonction permet d'exporter la liste sous format excel ou pdf
@@ -577,7 +649,7 @@ export class PapPlaceAffaireComponent {
   addItems(): void {
     this.snackbar.openModal(
       AddPapPlaceAffaireComponent,
-      "55rem",
+      "68rem",
       "new",
       "",
       this.datas,
@@ -643,10 +715,10 @@ export class PapPlaceAffaireComponent {
     this.loadData = true;
     const dataToSend = this.dataExcel.map((item) => ({
       ...item,
-      projectId: +this.currentUser.projects[0]?.id,
+      projectId: +this.currentProjectId,
     }));
 
-    console.log("data",dataToSend);
+    console.log("data", dataToSend);
 
     return this.papService.add("databasePapPlaceAffaire", dataToSend).subscribe(
       (data: any) => {

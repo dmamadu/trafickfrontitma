@@ -45,17 +45,15 @@ export class JobsComponent implements OnInit {
     vulnerable: 0,
     nonVulnerable: 0,
   };
-  currentUser: any;
+  currentProjectId: any;
 
   constructor(
     private localService: LocalService,
-    private utilService: UtilsService,
     private parentService: ServiceParent,
-    private coreService: CoreService,
     private projectService: ProjectService,
     private snackbar: SnackBarService
   ) {
-    this.currentUser = this.localService.getDataJson("user");
+    this.currentProjectId = this.localService.getData("ProjectId");
   }
 
   jobViewChart: ChartType;
@@ -90,7 +88,6 @@ export class JobsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUserConnected();
-    // this.getPap();
     this.loadAllCategories();
     this.getPip();
     this.getPlainte();
@@ -100,40 +97,7 @@ export class JobsComponent implements OnInit {
 
   getUserConnected() {
     this.userConnected = this.localService.getDataJson("user");
-
-    // if (this.userConnected.image) {
-    //   this.imageUserConnected = this.utilService.getImageFromBase64(
-    //     this.userConnected.image.type,
-    //     this.userConnected.image.image
-    //   );
-    // } else {
-    //   this.imageUserConnected = "assets/images/user.png";
-    // }
   }
-
-  // getPap() {
-  //   return this.parentService
-  //     .list("personneAffectes", this.pageSize, this.offset)
-  //     .subscribe(
-  //       (data: any) => {
-  //         this.loadData = false;
-  //         if (data["responseCode"] == 200) {
-  //           this.listPap = data.data;
-  //           this.lengthPap = this.listPap.length;
-  //           this.classifyVulnerability();
-  //           this.vulnerabilityChart.series = [
-  //             this.vulnerabilityCounts.vulnerable,
-  //             this.vulnerabilityCounts.nonVulnerable,
-  //           ];
-  //         } else {
-  //           this.loadData = false;
-  //         }
-  //       },
-  //       (err) => {
-  //         console.log(err);
-  //       }
-  //     );
-  // }
 
   classifyVulnerability(): void {
     if (this.listPap && this.listPap.length > 0) {
@@ -170,15 +134,15 @@ export class JobsComponent implements OnInit {
   getPip() {
     this.loadData = true;
     return this.parentService
-      .list("partie-interesse", this.pageSize, this.offset)
+      .list("partie-interesse", this.pageSize, this.offset,this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;
           if (data["responseCode"] == 200) {
-            console.log(data);
+          //  console.log(data);
             this.loadData = false;
             this.lengthPip = data.length;
-            console.log(data);
+           // console.log(data);
           } else {
             this.loadData = false;
           }
@@ -193,7 +157,7 @@ export class JobsComponent implements OnInit {
 
   getPlainte() {
     return this.parentService
-      .list("plaintes", this.pageSize, this.offset)
+      .list("plaintes", this.pageSize, this.offset,this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -201,7 +165,6 @@ export class JobsComponent implements OnInit {
             this.loadData = false;
             this.lengthPlainte = data.length;
             this.listPlainte = data.data;
-            console.log("listePlainte", this.listPlainte);
             this.classifyComplaints();
             this.complaintChart.series = [
               this.complaintCounts.resolu,
@@ -220,12 +183,11 @@ export class JobsComponent implements OnInit {
 
   getDocument() {
     return this.parentService
-      .list("documents", this.pageSize, this.offset)
+      .list("documents", this.pageSize, this.offset,this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;
           if (data["responseCode"] == 200) {
-            console.log("list des documents");
             this.loadData = false;
             this.listDocument = data["data"];
             this.lenghtDocument = data.length;
@@ -266,11 +228,11 @@ export class JobsComponent implements OnInit {
   public complaintChart = {
     series: [],
     chart: {
-      type: "pie", // Graphique en secteurs
+      type: "pie",
       height: 350,
     },
-    labels: ["Résolu", "En Attente", "En Cours"], // Les étiquettes pour les différents états
-    colors: ["#28a745", "#ffc107", "#007bff"], // Couleurs pour chaque état
+    labels: ["Résolu", "En Attente", "En Cours"],
+    colors: ["#28a745", "#ffc107", "#007bff"],
     legend: {
       position: "bottom",
     },
@@ -397,16 +359,16 @@ export class JobsComponent implements OnInit {
 
   getRencontres() {
     return this.projectService
-      .getRencontreByProjectId(this.currentUser.projects[0]?.id)
+      .getRencontreByProjectId(this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;
           if (data["responseCode"] == 200) {
             this.loadData = false;
-            console.log(data);
+         //   console.log(data);
             this.lisRencontre = data["data"];
             this.lengthRencontre = this.lisRencontre.length;
-            console.log("rencontres",this.lisRencontre);
+          //  console.log("rencontres",this.lisRencontre);
           } else {
             this.loadData = false;
           }
@@ -418,19 +380,14 @@ export class JobsComponent implements OnInit {
   }
   getPapByCategory(category: string) {
     return this.parentService
-      .list(category, this.pageSize, this.offset)
+      .list(category, this.pageSize, this.offset,this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;
           if (data["responseCode"] === 200) {
             const currentList = data.data;
-            console.log(
-              `Liste récupérée pour la catégorie ${category}:`,
-              currentList
-            );
             this.listPap = [...this.listPap, ...currentList];
             this.lengthPap += currentList.length;
-            console.log("Longueur totale des PAP:", this.lengthPap);
             this.updateVulnerabilityCounts(currentList);
           } else {
             console.error(

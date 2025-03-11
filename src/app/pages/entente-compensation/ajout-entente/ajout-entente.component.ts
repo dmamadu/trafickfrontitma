@@ -5,6 +5,7 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
   Inject,
   OnInit,
+  ViewChild,
 } from "@angular/core";
 import {
   FormArray,
@@ -28,6 +29,8 @@ import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { SignatureComponent } from "../signature/signature.component";
 import { UIModule } from "../../../shared/ui/ui.module";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
+import { MatStepper } from "@angular/material/stepper";
+import { ImageModalComponent } from "src/app/shared/image-modal.component";
 
 @Component({
   selector: "app-ajout-entente",
@@ -44,10 +47,11 @@ import { LoaderComponent } from "../../../shared/loader/loader.component";
   styleUrl: "./ajout-entente.component.css",
 })
 export class AjoutEntenteComponent implements OnInit {
+  @ViewChild("stepper") private myStepper: MatStepper;
   initForm: UntypedFormGroup;
   dialogRef: any;
   form: FormGroup;
-  currentUser: any;
+  currentProjectId: any;
   action: string;
 
   labelButton: string;
@@ -62,9 +66,10 @@ export class AjoutEntenteComponent implements OnInit {
     private localService: LocalService,
     private coreService: CoreService,
     private snackbar: SnackBarService,
+    private dialog: MatDialog,
     private _changeDetectorRef: ChangeDetectorRef
   ) {
-    this.currentUser = this.localService.getDataJson("user");
+    this.currentProjectId = this.localService.getData("ProjectId");
 
     console.log("data");
 
@@ -89,7 +94,6 @@ export class AjoutEntenteComponent implements OnInit {
     this.perteRevenueForm = this.fb.group({
       pertes: this.fb.array([]),
     });
-
 
     this.action = _data?.action;
     this.id = _data.data.id;
@@ -189,7 +193,6 @@ export class AjoutEntenteComponent implements OnInit {
           console.error("Erreur lors du parsing de revenues :", error);
         }
       }
-
     }
 
     // this.initForms();
@@ -198,8 +201,6 @@ export class AjoutEntenteComponent implements OnInit {
       this.calculerTotalFraisDeplacement();
       this.calculerTotalPerteTerre();
     });
-
-
 
     this.perteRevenueForm.valueChanges.subscribe(() => {
       this.calculerPerteTotale();
@@ -213,8 +214,6 @@ export class AjoutEntenteComponent implements OnInit {
       this.calculerPerteTotale();
     });
   }
-
-
 
   calculerPerteTotale() {
     const fraisTotalDeplacement =
@@ -317,9 +316,7 @@ export class AjoutEntenteComponent implements OnInit {
         [Validators.required]
       ),
       projectId: this.fb.control(
-        this.currentUser.projects
-          ? parseInt(this.currentUser.projects[0]?.id, 10) || null
-          : null,
+        this.currentProjectId ? this.currentProjectId : null,
         [Validators.required]
       ),
 
@@ -393,6 +390,10 @@ export class AjoutEntenteComponent implements OnInit {
         []
       ),
     });
+  }
+
+  goToStep(index) {
+    this.myStepper.selectedIndex = index;
   }
 
   addEntente() {
@@ -470,8 +471,6 @@ export class AjoutEntenteComponent implements OnInit {
     return this.equipementForm.get("equipements") as FormArray;
   }
 
-
-
   ajouterEquipement(equipement?: any): void {
     if (
       this.equipements.length === 0 ||
@@ -513,7 +512,6 @@ export class AjoutEntenteComponent implements OnInit {
   get recoltes(): FormArray {
     return this.recolteForm.get("recoltes") as FormArray;
   }
-
 
   ajouterRecolte(recolte?: any): void {
     if (
@@ -557,8 +555,6 @@ export class AjoutEntenteComponent implements OnInit {
   get arbres(): FormArray {
     return this.arbreForm.get("arbres") as FormArray;
   }
-
-
 
   ajouterArbre(arbre?: any): void {
     if (
@@ -622,7 +618,6 @@ export class AjoutEntenteComponent implements OnInit {
   get pertes(): FormArray {
     return this.perteRevenueForm.get("pertes") as FormArray;
   }
-
 
   ajouterPerte(revenue?: any): void {
     if (this.pertes.length > 0) {
@@ -767,4 +762,203 @@ export class AjoutEntenteComponent implements OnInit {
         });
     }
   }
+
+  openImageModal(imageUrl: string) {
+    if (imageUrl) {
+      this.dialog.open(ImageModalComponent, {
+        data: { imageUrl: imageUrl },
+      });
+    }
+  }
+
+
+
+  nextStep(stepper: MatStepper) {
+    const currentStep = stepper.selectedIndex;
+
+    // Valider l'étape actuelle
+    switch (currentStep) {
+      case 0:
+        this.validateStep1();
+        break;
+      case 1:
+        this.validateStep2();
+        break;
+      case 2:
+        this.validateStep3();
+        break;
+      case 3:
+        this.validateStep4();
+        break;
+      case 4:
+        this.validateStep5();
+        break;
+      case 5:
+        this.validateStep6();
+        break;
+      case 6:
+        this.validateStep7();
+        break;
+    }
+
+    // Passer à l'étape suivante si l'étape actuelle est valide
+    if (this.isStepValid(currentStep)) {
+      stepper.next();
+    }
+  }
+
+  /**
+ * Valide l'étape 1 : Informations personnelles
+ */
+validateStep1() {
+  const step1Controls = [
+    "codePap",
+    "categoriePap",
+    "prenom",
+    "nom",
+    "typePni",
+    "numeroPni",
+    "nationalite",
+    "sexe",
+    "departement",
+    "commune"
+  ];
+  this.markControlsAsTouched(step1Controls);
+}
+
+/**
+ * Valide l'étape 2 : Frais/équipements
+ */
+validateStep2() {
+  const step2Controls = [
+    "fraisDeplacement",
+    "appuiRelocalisation",
+    "fraisTotalDeplacement"
+  ];
+  this.markControlsAsTouched(step2Controls);
+}
+
+/**
+ * Valide l'étape 3 : Pertes de terres
+ */
+validateStep3() {
+  const step3Controls = [
+    "superficieAffecte",
+    "baremeTypeSol",
+    "perteTotalTerre"
+  ];
+  this.markControlsAsTouched(step3Controls);
+}
+
+/**
+ * Valide l'étape 4 : Pertes de récoltes
+ */
+validateStep4() {
+  const step4Controls = [
+    "produit",
+    "rendement",
+    "prix"
+  ];
+  this.markControlsAsTouched(step4Controls);
+}
+
+/**
+ * Valide l'étape 5 : Pertes d'arbres
+ */
+validateStep5() {
+  const step5Controls = [
+    "espece",
+    "type",
+    "nombre",
+    "prix"
+  ];
+  this.markControlsAsTouched(step5Controls);
+}
+
+/**
+ * Valide l'étape 6 : Signatures
+ */
+validateStep6() {
+  const step6Controls = [
+    "urlSignaturePap",
+    "urlSignatureResponsable"
+  ];
+  this.markControlsAsTouched(step6Controls);
+}
+
+/**
+ * Valide l'étape 7 : Récapitulatif
+ */
+validateStep7() {
+  // Aucun contrôle à valider ici, car c'est une étape de récapitulatif
+}
+
+
+
+/**
+ * Marque les contrôles spécifiés comme "touchés" pour afficher les erreurs de validation.
+ */
+markControlsAsTouched(controls: string[]) {
+  controls.forEach((control) => {
+    this.initForm.get(control)?.markAsTouched();
+  });
+}
+
+
+/**
+ * Vérifie si l'étape actuelle est valide.
+ */
+isStepValid(stepIndex: number): boolean {
+  switch (stepIndex) {
+    case 0:
+      return (
+        this.initForm.get("codePap")?.valid &&
+        this.initForm.get("categoriePap")?.valid &&
+        this.initForm.get("prenom")?.valid &&
+        this.initForm.get("nom")?.valid &&
+        this.initForm.get("typePni")?.valid &&
+        this.initForm.get("numeroPni")?.valid &&
+        this.initForm.get("nationalite")?.valid &&
+        this.initForm.get("sexe")?.valid &&
+        this.initForm.get("departement")?.valid &&
+        this.initForm.get("commune")?.valid
+      );
+    case 1:
+      return (
+        this.initForm.get("fraisDeplacement")?.valid &&
+        this.initForm.get("appuiRelocalisation")?.valid &&
+        this.initForm.get("fraisTotalDeplacement")?.valid
+      );
+    case 2:
+      return (
+        this.initForm.get("superficieAffecte")?.valid &&
+        this.initForm.get("baremeTypeSol")?.valid &&
+        this.initForm.get("perteTotalTerre")?.valid
+      );
+    case 3:
+      return (
+        this.initForm.get("produit")?.valid &&
+        this.initForm.get("rendement")?.valid &&
+        this.initForm.get("prix")?.valid
+      );
+    case 4:
+      return (
+        this.initForm.get("espece")?.valid &&
+        this.initForm.get("type")?.valid &&
+        this.initForm.get("nombre")?.valid &&
+        this.initForm.get("prix")?.valid
+      );
+    case 5:
+      return (
+        this.initForm.get("urlSignaturePap")?.valid &&
+        this.initForm.get("urlSignatureResponsable")?.valid
+      );
+    case 6:
+      return true;
+    default:
+      return false;
+  }
+}
+
+
 }

@@ -41,6 +41,8 @@ import { ProjectService } from "src/app/core/services/project.service";
 export class RencontreComponent {
   currentUser: any;
 
+  currentProjectId: any;
+
   filterTable($event: any) {
     throw new Error("Method not implemented.");
   }
@@ -104,7 +106,9 @@ export class RencontreComponent {
     private coreService: CoreService,
     private localService: LocalService
   ) {
-    this.currentUser = this.localService.getDataJson("user");
+    //this.currentUser = this.localService.getDataJson("user");
+
+    this.currentProjectId = this.localService.getData("ProjectId");
   }
 
   ngOnInit(): void {
@@ -235,7 +239,7 @@ export class RencontreComponent {
   getRencontres() {
     this.loadData = true;
     return this.projectService
-      .getRencontreByProjectId(this.currentUser.projects[0]?.id)
+      .getRencontreByProjectId(this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -260,5 +264,6 @@ export class RencontreComponent {
           console.log(err);
         }
       );
+
   }
 }

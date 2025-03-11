@@ -11,13 +11,16 @@ import {
   UntypedFormGroup,
   UntypedFormBuilder,
   Validators,
+  FormGroup,
+  FormArray,
 } from "@angular/forms";
 import {
   MatDialogRef,
-  MAT_DIALOG_DATA
+  MAT_DIALOG_DATA,
+  MatDialog,
 } from "@angular/material/dialog";
 import { MatDrawer } from "@angular/material/sidenav";
-import { MatStepper } from "@angular/material/stepper";
+import { MatStepper, MatStepperModule } from "@angular/material/stepper";
 import * as moment from "moment";
 import { CoreService } from "src/app/shared/core/core.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
@@ -27,6 +30,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { DatePipe } from "@angular/common";
+
 import {
   DateAdapter,
   MAT_DATE_LOCALE,
@@ -36,16 +40,21 @@ import { LocalService } from "src/app/core/services/local.service";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { ClientVueService } from "src/app/pages/admin/client-vue/client-vue.service";
 import { environment } from "src/environments/environment";
+import { MatTableDataSource } from "@angular/material/table";
+import { ImageModalComponent } from "src/app/shared/image-modal.component";
+import { LoaderComponent } from "src/app/shared/loader/loader.component";
 
 @Component({
-  selector: 'app-add-pap-place-affaire',
+  selector: "app-add-pap-place-affaire",
   standalone: true,
-  templateUrl: './add-pap-place-affaire.component.html',
-  styleUrl: './add-pap-place-affaire.component.css',
+  templateUrl: "./add-pap-place-affaire.component.html",
+  styleUrl: "./add-pap-place-affaire.component.css",
   imports: [
     MatFormFieldModule,
     MatInputModule,
+    MatStepperModule,
     MatIconModule,
+    LoaderComponent,
     AngularMaterialModule,
     MatDatepickerModule,
     MatNativeDateModule, //
@@ -55,15 +64,14 @@ import { environment } from "src/environments/environment";
     { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
     { provide: MatPaginatorIntl },
     SnackBarService,
-    MatDatepickerModule
+    MatDatepickerModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AddPapPlaceAffaireComponent {
-
+export class AddPapPlaceAffaireComponent implements OnInit {
   panelOpenState = false;
   @ViewChild("drawer") drawer: MatDrawer;
-  @ViewChild("stepper") private myStepper: MatStepper;
+  @ViewChild("stepper") private stepper: MatStepper;
   dialogTitle: string;
   id: string;
   initForm: UntypedFormGroup;
@@ -97,7 +105,7 @@ export class AddPapPlaceAffaireComponent {
   ng2TelOptions;
   idPiece;
   listeNoire: boolean = false;
-  currentUser: any;
+  currentProjectId: any;
 
   urlImage = environment.apiUrl + "image/getFile/";
 
@@ -108,134 +116,103 @@ export class AddPapPlaceAffaireComponent {
     @Inject(MAT_DIALOG_DATA) _data,
     private fb: UntypedFormBuilder,
     private coreService: CoreService,
+    private _matDialog: MatDialog,
     private snackbar: SnackBarService,
     private changeDetectorRefs: ChangeDetectorRef,
     private localService: LocalService,
-    private clientServive: ClientVueService,
+    private clientServive: ClientVueService
   ) {
-    this.currentUser=this.localService.getDataJson("user");
+    //this.currentProjectId = this.localService.getDataJson("user");
 
-    console.log("user connecter",this.currentUser)
-    console.log("==data fomrmr==================================");
-    console.log(_data.data.pays);
-    console.log("====================================");
+    this.currentProjectId = this.localService.getData("ProjectId");
+
+    console.log("user connecter", this.currentProjectId);
+
     if (_data?.action == "new") {
       this.initForms();
       this.labelButton = "Ajouter ";
+      this.createCoProprietaire();
     } else if (_data?.action == "edit") {
       this.labelButton = "Modifier ";
       this.id = _data.data.id;
       this.initForms(_data.data);
       console.log(_data.data);
-        this.initForm.get("sexe").setValue(_data.data.sexe);
-      const selectedCountry = _data.data.pays;
-
+      this.initForm.get("sexe").setValue(_data.data.sexe);
+      if (_data.data?.coProprietaire) {
+        this.contacts.data.push(_data.data.coProprietaire);
+        this.contacts._updateChangeSubscription();
+      }
     }
+
+    this.contactForm = this.fb.group({
+      coProprietaires: this.fb.array([]),
+    });
     this.action = _data?.action;
     this.canAdd = _data.canAdd;
     this.dialogTitle = this.labelButton + this.suffixe;
     this.ng2TelOptions = { initialCountry: "sn" };
-
-
   }
-
+  ngOnInit(): void {
+    this.createCoProprietaire();
+  }
 
   checkValidOnWhatsApp(event: any): void {
     const value = event.value;
     this.initForm.get("statutVulnerable")?.setValue(value);
   }
 
-
-
   goToStep(index) {
-    this.myStepper.selectedIndex = index;
+    this.stepper.selectedIndex = index;
+    console.log(index);
   }
 
-  initForms(donnees?) {
+  initForms(donnees?: any) {
     this.initForm = this.fb.group({
-      codePap: this.fb.control(donnees ? donnees.codePap : null, [
-        Validators.required,
-      ]),
-      caracteristiquePlaceAffaire: this.fb.control(
-        donnees ? donnees.caracteristiquePlaceAffaire : null,
-        []
-      ),
-      evaluationPerte: this.fb.control(
-        donnees ? donnees.evaluationPerte : null,
-        []
-      ),
-      nom: this.fb.control(donnees ? donnees.nom : null, [Validators.required]),
-      prenom: this.fb.control(donnees ? donnees.prenom : null, [
-        Validators.required,
-      ]),
-      codePlaceAffaire: this.fb.control(
-        donnees ? donnees.codePlaceAffaire : null,
+      prenom: [donnees?.prenom || "", Validators.required],
+      nom: [donnees?.nom || "", Validators.required],
+      sexe: [donnees?.sexe || "", Validators.required],
+      codePap: [donnees?.codePap || "", Validators.required],
+      nationalite: [donnees?.nationalite || "", Validators.required],
+      situationMatrimoniale: [donnees?.situationMatrimoniale || "", Validators.required],
+      commune: [donnees?.commune || "", Validators.required],
+      departement: [donnees?.departement || "", Validators.required],
+      nombrePlaceAffaire: [donnees?.nombrePlaceAffaire || "", Validators.required],
+      codePlaceAffaire: [donnees?.codePlaceAffaire || "", Validators.required],
+      evaluationPerte: [donnees?.evaluationPerte || "", Validators.required],
+      caracteristiquePlaceAffaire: [donnees?.caracteristiquePlaceAffaire || "", Validators.required],
+      perteArbreJeune: [donnees?.perteArbreJeune || "", Validators.required],
+      perteArbreAdulte: [donnees?.perteArbreAdulte || "", Validators.required],
+      statutPap: [donnees?.statutPap || "", Validators.required],
+      vulnerabilite: [donnees?.vulnerabilite || "", Validators.required],
+      typePni: [donnees?.typePni || "", Validators.required],
+      numeroPni: [donnees?.numeroPni || "", Validators.required],
+      surnom: [donnees?.surnom || "", Validators.required],
+      numeroTelephone: [donnees?.numeroTelephone || "", Validators.required],
+      membreFoyer: [donnees?.membreFoyer || "", Validators.required],
+      membreFoyerHandicape: [donnees?.membreFoyerHandicape || "", Validators.required],
+      perteEquipement: [donnees?.perteEquipement || "", Validators.required],
+      perteBatiment: [donnees?.perteBatiment || "", Validators.required],
+      perteTotale: [donnees?.perteTotale || "", Validators.required],
+      informationsEtendues: [donnees?.informationsEtendues || ""],
+      existePni: [donnees?.existePni || null],
+      photoPap: [donnees?.photoPap || null],
+      pointGeometriques: [donnees?.pointGeometriques || null],
+      superficie: [donnees?.superficie || null],
+      niveauEtude: [donnees?.niveauEtude || null],
+      religion: [donnees?.religion || null],
+      pj1: [donnees?.pj1 || null],
+      pj2: [donnees?.pj2 || null],
+      pj3: [donnees?.pj3 || null],
+      pj4: [donnees?.pj4 || null],
+      pj5: [donnees?.pj5 || null],
+      infos_complemenataires: [donnees?.infos_complemenataires || null],
+      projectId: [
+        donnees?.projectId || (this.currentProjectId ? +this.currentProjectId : null),
         [Validators.required]
-      ),
-      commune: this.fb.control(donnees ? donnees.commune : null, [
-
-      ]),
-      departement: this.fb.control(donnees ? donnees.departement : null, [
-
-      ]),
-      nombrePlaceAffaire: this.fb.control(
-        donnees ? donnees.nombrePlaceAffaire : null,
-        []
-      ),
-      surnom: this.fb.control(donnees ? donnees.surnom : null),
-      sexe: this.fb.control(donnees ? donnees.sexe : null, []),
-      existePni: this.fb.control(donnees ? donnees.existePni : null),
-      typePni: this.fb.control(donnees ? donnees.typePni : null),
-      numeroPni: this.fb.control(donnees ? donnees.numeroPni : null),
-      numeroTelephone: this.fb.control(
-        donnees ? donnees.numeroTelephone : null,
-        []
-      ),
-      photoPap: this.fb.control(donnees ? donnees.photoPap : null),
-      pointGeometriques: this.fb.control(
-        donnees ? donnees.pointGeometriques : null
-      ),
-      superficie: this.fb.control(donnees ? donnees.superficie : null),
-      nationalite: this.fb.control(donnees ? donnees.nationalite : null, [
-        ,
-      ]),
-      ethnie: this.fb.control(donnees ? donnees.ethnie : null),
-      langueParlee: this.fb.control(donnees ? donnees.langueParlee : null),
-      situationMatrimoniale: this.fb.control(
-        donnees ? donnees.situationMatrimoniale : null,
-        []
-      ),
-      niveauEtude: this.fb.control(donnees ? donnees.niveauEtude : null),
-      religion: this.fb.control(donnees ? donnees.religion : null),
-      membreFoyer: this.fb.control(donnees ? donnees.membreFoyer : null),
-      membreFoyerHandicape: this.fb.control(
-        donnees ? donnees.membreFoyerHandicape : null
-      ),
-      informationsEtendues: this.fb.control(
-        donnees ? donnees.informationsEtendues : null
-      ),
-      pj1: this.fb.control(donnees ? donnees.pj1 : null),
-      pj2: this.fb.control(donnees ? donnees.pj2 : null),
-      pj3: this.fb.control(donnees ? donnees.pj3 : null),
-      pj4: this.fb.control(donnees ? donnees.pj4 : null),
-      pj5: this.fb.control(donnees ? donnees.pj5 : null),
-      statutPap: this.fb.control(donnees ? donnees.statutPap : null, [
-
-      ]),
-      vulnerabilite: this.fb.control(donnees ? donnees.vulnerabilite : null),
-      infos_complemenataires: this.fb.control(
-        donnees ? donnees.infos_complemenataires : null
-      ),
-      projectId: this.fb.control(this.currentUser.projects ? this.currentUser.projects[0]?.id   : null, [
-        Validators.required,
-      ]),
+      ],
+      coProprietaire: [donnees?.coProprietaire || null],
     });
   }
-
-
-
-
-
 
   checkValidity(g: UntypedFormGroup) {
     Object.keys(g.controls).forEach((key) => {
@@ -249,10 +226,15 @@ export class AddPapPlaceAffaireComponent {
     });
   }
 
-
-
+  contactForm: FormGroup;
   addItems() {
     // if(this.listeNoire){
+
+    //this.initForm.get('coProprietaire').setValue(this.contactForm.value)
+
+    this.initForm
+      .get("coProprietaire")
+      .setValue(JSON.stringify(this.contactForm.value));
     console.log("====================================");
     console.log(this.initForm.value);
     console.log("====================================");
@@ -292,9 +274,6 @@ export class AddPapPlaceAffaireComponent {
   }
 
   updateItems() {
-    console.log("====================================");
-    console.log(this.initForm.value);
-    console.log("====================================");
     this.snackbar
       .showConfirmation(
         "Voulez-vous vraiment modifier cette personne affectée ?"
@@ -321,6 +300,9 @@ export class AddPapPlaceAffaireComponent {
               }
             },
             (error) => {
+              console.log("====================================");
+              console.log(error);
+              console.log("====================================");
               this.loader = false;
               this.loader = false;
               this.snackbar.showErrors(error);
@@ -337,7 +319,6 @@ export class AddPapPlaceAffaireComponent {
       this.updateItems();
     }
   }
-
 
   selectOnFile(evt, type, name) {
     let accept = [];
@@ -378,21 +359,222 @@ export class AddPapPlaceAffaireComponent {
     formData.append("file", file);
     this.changeDetectorRefs.detectChanges();
     const dataFile = { file: file };
-    this.clientServive
-      .saveStoreFile(formData)
-      .subscribe(
-        (resp) => {
-          if (resp) {
-            console.log(resp);
-            this.imageToff = `${this.urlImage + resp["fileName"]}`;
-            this.initForm.get("photoPap").setValue(this.imageToff);
-          }
-        },
-        (error) => {
-          console.log(error);
-          this.snackbar.showErrors(error);
+    this.loader = true;
+    this.clientServive.saveStoreFile(formData).subscribe(
+      (resp) => {
+        if (resp) {
+          console.log(resp);
+          this.imageToff = `${this.urlImage + resp["fileName"]}`;
+          this.initForm.get("photoPap").setValue(this.imageToff);
+          this.snackbar.openSnackBar(
+            "Fichier chargé avec succès : " + file.name,
+            "OK",
+            ["mycssSnackbarGreen"]
+          );
         }
-      );
+        this.loader = false;
+      },
+      (error) => {
+        console.log(error);
+        this.snackbar.showErrors(error);
+        this.loader = false;
+      }
+    );
   }
 
+  sexeOptions = [
+    { id: "M", name: "Masculin" },
+    { id: "F", name: "Féminin" },
+  ];
+
+  displayedColumns: string[] = ["nom", "prenom", "sexe", "telephone"];
+  contacts = new MatTableDataSource<any>();
+
+  get coProprietaires() {
+    return this.contactForm.get("coProprietaires") as FormArray;
+  }
+
+  // Fonction pour créer le formulaire
+  createCoProprietaire() {
+    this.contactForm = this.fb.group({
+      codeCoProprietaire: ["", Validators.required],
+      nomComplet: ["", Validators.required],
+      infoComplementaire: ["", Validators.required],
+      sexeCoProprietaire: ["", Validators.required],
+      // emailCoProprietaire: ["", [Validators.required, Validators.email]],
+      contactTelephonique: ["", Validators.required],
+    });
+  }
+
+  // Fonction pour ajouter un contact
+
+  addContact(): void {
+    this.contactForm.markAllAsTouched();
+
+    if (this.contactForm.valid) {
+      const newContact = this.contactForm.value;
+
+      // Ajoutez le nouveau contact à la source de données
+      this.contacts.data = [...this.contacts.data, newContact]; // Mettez à jour l'objet "data"
+
+      // Réinitialiser le formulaire
+      this.contactForm.reset();
+      this.contactForm.setValue({
+        codeCoProprietaire: "",
+        nomComplet: "",
+        age: "",
+        sexeCoProprietaire: "",
+        //  emailCoProprietaire: "",
+        contactTelephonique: "",
+      });
+
+      console.log(this.contacts.data); // Affiche le tableau mis à jour
+    } else {
+      console.log("Le formulaire est invalide");
+    }
+  }
+
+  openImageModal(imageUrl: string) {
+    if (imageUrl) {
+      this._matDialog.open(ImageModalComponent, {
+        data: { imageUrl: imageUrl },
+      });
+    }
+  }
+
+  //validation du formulaire
+
+  nextStep(stepper: MatStepper) {
+    const currentStep = stepper.selectedIndex;
+
+    switch (currentStep) {
+      case 0:
+        this.validateStep1();
+        break;
+      case 1:
+        this.validateStep2();
+        break;
+      case 2:
+        this.validateStep3();
+        break;
+      case 3:
+        this.validateStep4();
+        break;
+      case 4:
+        this.validateStep5();
+        break;
+    }
+    if (this.isStepValid(currentStep)) {
+      stepper.next();
+    }
+  }
+
+  validateStep1() {
+    const step1Controls = [
+      "prenom",
+      "nom",
+      "sexe",
+      "codePap",
+      "nationalite",
+      "situationMatrimoniale",
+      "commune",
+      "departement",
+      "nombrePlaceAffaire",
+    ];
+    this.markControlsAsTouched(step1Controls);
+  }
+
+  validateStep2() {
+    const step2Controls = [
+      "codePlaceAffaire",
+      "evaluationPerte",
+      "caracteristiquePlaceAffaire",
+      "perteArbreJeune",
+      "perteArbreAdulte",
+    ];
+    this.markControlsAsTouched(step2Controls);
+  }
+
+  validateStep3() {
+    const step3Controls = [
+      "statutPap",
+      "vulnerabilite",
+      "typePni",
+      "numeroPni",
+      "surnom",
+      "numeroTelephone",
+      "membreFoyer",
+      "membreFoyerHandicape",
+    ];
+    this.markControlsAsTouched(step3Controls);
+  }
+
+  validateStep4() {
+    if (this.contactForm.invalid) {
+      this.contactForm.markAllAsTouched();
+    }
+  }
+
+  validateStep5() {
+    const step5Controls = [
+      "perteEquipement",
+      "perteBatiment",
+      "perteTotale",
+      "informationsEtendues",
+    ];
+    this.markControlsAsTouched(step5Controls);
+  }
+
+  markControlsAsTouched(controls: string[]) {
+    controls.forEach((control) => {
+      this.initForm.get(control)?.markAsTouched();
+    });
+  }
+
+  isStepValid(stepIndex: number): boolean {
+    switch (stepIndex) {
+      case 0:
+        return (
+          this.initForm.get("prenom")?.valid &&
+          this.initForm.get("nom")?.valid &&
+          this.initForm.get("sexe")?.valid &&
+          this.initForm.get("codePap")?.valid &&
+          this.initForm.get("nationalite")?.valid &&
+          this.initForm.get("situationMatrimoniale")?.valid &&
+          this.initForm.get("commune")?.valid &&
+          this.initForm.get("departement")?.valid &&
+          this.initForm.get("nombrePlaceAffaire")?.valid
+        );
+      case 1:
+        return (
+          this.initForm.get("codePlaceAffaire")?.valid &&
+          this.initForm.get("evaluationPerte")?.valid &&
+          this.initForm.get("caracteristiquePlaceAffaire")?.valid &&
+          this.initForm.get("perteArbreJeune")?.valid &&
+          this.initForm.get("perteArbreAdulte")?.valid
+        );
+      case 2:
+        return (
+          this.initForm.get("statutPap")?.valid &&
+          this.initForm.get("vulnerabilite")?.valid &&
+          this.initForm.get("typePni")?.valid &&
+          this.initForm.get("numeroPni")?.valid &&
+          this.initForm.get("surnom")?.valid &&
+          this.initForm.get("numeroTelephone")?.valid &&
+          this.initForm.get("membreFoyer")?.valid &&
+          this.initForm.get("membreFoyerHandicape")?.valid
+        );
+      case 3:
+        return this.contactForm.valid;
+      case 4:
+        return (
+          this.initForm.get("perteEquipement")?.valid &&
+          this.initForm.get("perteBatiment")?.valid &&
+          this.initForm.get("perteTotale")?.valid &&
+          this.initForm.get("informationsEtendues")?.valid
+        );
+      default:
+        return false;
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import {
   ActivatedRouteSnapshot,
@@ -37,15 +37,68 @@ export class ServiceParent implements Resolve<any> {
     return this._modelLists.asObservable();
   }
 
-  list(url, max, offset): Observable<any[]> {
-    return this.http.get<any[]>(this.url+ `${url}`+"?max=" + max + "&offset=" + offset);
+  // list(url, max, offset): Observable<any[]> {
+  //   return this.http.get<any[]>(this.url+ `${url}`+"?max=" + max + "&offset=" + offset);
+  // }
+
+  list(
+    url: string,
+    max: number,
+    offset: number,
+    projectId?: number
+  ): Observable<any[]> {
+    let params = new HttpParams()
+      .set("max", max.toString())
+      .set("offset", offset.toString());
+    if (projectId != undefined && projectId != null) {
+      params = params.set("projectId", projectId.toString());
+    }
+    return this.http.get<any[]>(`${this.url}${url}`, { params });
   }
 
-  liste(url, max, offset,categorieLibelle): Observable<any[]> {
-    return this.http.get<any[]>(this.url+ `${url}`+"?max=" + max + "&offset="+offset+"&categorieLibelle="+categorieLibelle);
+  searchGlobal(
+    url: string,
+    searchTerm: string,
+    projectId?: number,
+    max: number = 100,
+    offset: number = 0,
+  ): Observable<any[]> {
+    let params = new HttpParams()
+      .set("searchTerm", searchTerm)
+      .set("offset", offset.toString())
+      .set("max", max.toString());
+
+    if (projectId != null) {
+      params = params.set("projectId", projectId.toString());
+    }
+    const fullUrl = `${this.url}${url+"/search"}`;
+
+    return this.http.get<any[]>(fullUrl, { params });
   }
 
-  listeByProject(url, max, offset,projectId): Observable<any[]> {
-    return this.http.get<any[]>(this.url+ `${url}`+"?max=" + max + "&offset="+offset+"&projectId="+projectId);
+  liste(url, max, offset, categorieLibelle): Observable<any[]> {
+    return this.http.get<any[]>(
+      this.url +
+        `${url}` +
+        "?max=" +
+        max +
+        "&offset=" +
+        offset +
+        "&categorieLibelle=" +
+        categorieLibelle
+    );
+  }
+
+  listeByProject(url, max, offset, projectId): Observable<any[]> {
+    return this.http.get<any[]>(
+      this.url +
+        `${url}` +
+        "?max=" +
+        max +
+        "&offset=" +
+        offset +
+        "&projectId=" +
+        projectId
+    );
   }
 }

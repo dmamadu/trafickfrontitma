@@ -103,16 +103,14 @@ export class AddFonctionUtilisateurComponent {
   }
 
   updatePlainte() {
-    console.log(this.initForm.value);
-    this.snackbar
-      .showConfirmation(`Voulez-vous vraiment modifier cette fonction `)
-      .then((result) => {
-        if (result["value"] == true) {
-          this.loader = true;
-          const value = this.initForm.value;
-          this.coreService
-            .updateItem(value, this.id, "fonctions")
-            .subscribe(
+    if (this.initForm.valid) {
+      this.snackbar
+        .showConfirmation(`Voulez-vous vraiment modifier cette fonction `)
+        .then((result) => {
+          if (result["value"] == true) {
+            this.loader = true;
+            const value = this.initForm.value;
+            this.coreService.updateItem(value, this.id, "fonctions").subscribe(
               (resp) => {
                 if (resp) {
                   this.loader = false;
@@ -135,8 +133,9 @@ export class AddFonctionUtilisateurComponent {
                 this.snackbar.showErrors(error);
               }
             );
-        }
-      });
+          }
+        });
+    }
   }
 
   checkRecap(type) {
@@ -158,40 +157,41 @@ export class AddFonctionUtilisateurComponent {
   }
 
   addItems() {
-    console.log("====================================");
-    console.log(this.initForm.value);
-    console.log("====================================");
-    this.snackbar
-      .showConfirmation(`Voulez-vous vraiment crée cette fonction `)
-      .then((result) => {
-        if (result["value"] == true) {
-          this.loader = true;
-          const value = this.initForm.value;
-          this.coreService.addItem(value, "fonctions").subscribe(
-            (resp) => {
-              if (resp["responseCode"] == 201) {
-                this.snackbar.openSnackBar("Fonction  ajoutée avec succés", "OK", [
-                  "mycssSnackbarGreen",
-                ]);
+    if (this.initForm.valid) {
+      this.snackbar
+        .showConfirmation(`Voulez-vous vraiment crée cette fonction `)
+        .then((result) => {
+          if (result["value"] == true) {
+            this.loader = true;
+            const value = this.initForm.value;
+            this.coreService.addItem(value, "fonctions").subscribe(
+              (resp) => {
+                if (resp["responseCode"] == 201) {
+                  this.snackbar.openSnackBar(
+                    "Fonction  ajoutée avec succés",
+                    "OK",
+                    ["mycssSnackbarGreen"]
+                  );
+                  this.loader = false;
+                  this.matDialogRef.close(resp["data"]);
+                  this.changeDetectorRefs.markForCheck();
+                } else {
+                  this.loader = false;
+                  this.changeDetectorRefs.markForCheck();
+                }
+              },
+              (error) => {
                 this.loader = false;
-                this.matDialogRef.close(resp["data"]);
+                console.log("====================================");
+                console.log(error);
+                console.log("====================================");
                 this.changeDetectorRefs.markForCheck();
-              } else {
-                this.loader = false;
-                this.changeDetectorRefs.markForCheck();
+                this.snackbar.showErrors(error);
               }
-            },
-            (error) => {
-              this.loader = false;
-              console.log("====================================");
-              console.log(error);
-              console.log("====================================");
-              this.changeDetectorRefs.markForCheck();
-              this.snackbar.showErrors(error);
-            }
-          );
-        }
-      });
+            );
+          }
+        });
+    }
   }
 
   getCatgories() {

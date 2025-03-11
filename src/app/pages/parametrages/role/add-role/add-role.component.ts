@@ -67,7 +67,7 @@ export class AddRoleComponent {
     private fb: UntypedFormBuilder,
     private coreService: CoreService,
     private snackbar: SnackBarService,
-    private changeDetectorRefs: ChangeDetectorRef,
+    private changeDetectorRefs: ChangeDetectorRef
   ) {
     if (_data?.action == "new") {
       this.initForms();
@@ -161,36 +161,40 @@ export class AddRoleComponent {
   }
 
   addItems() {
-    this.snackbar
-      .showConfirmation(`Voulez-vous vraiment crée ce role `)
-      .then((result) => {
-        if (result["value"] == true) {
-          this.loader = true;
-          const value = this.initForm.value;
-          this.coreService.addItem(value, "roles/createRole").subscribe(
-            (resp) => {
-              if (resp["responseCode"] == 201) {
-                this.snackbar.openSnackBar("Role  ajoutée avec succés", "OK", [
-                  "mycssSnackbarGreen",
-                ]);
+    if (this.initForm.valid) {
+      this.snackbar
+        .showConfirmation(`Voulez-vous vraiment crée ce role `)
+        .then((result) => {
+          if (result["value"] == true) {
+            this.loader = true;
+            const value = this.initForm.value;
+            this.coreService.addItem(value, "roles/createRole").subscribe(
+              (resp) => {
+                if (resp["responseCode"] == 201) {
+                  this.snackbar.openSnackBar(
+                    "Role  ajoutée avec succés",
+                    "OK",
+                    ["mycssSnackbarGreen"]
+                  );
+                  this.loader = false;
+                  this.matDialogRef.close(resp["data"]);
+                  this.changeDetectorRefs.markForCheck();
+                } else {
+                  this.loader = false;
+                  this.changeDetectorRefs.markForCheck();
+                }
+              },
+              (error) => {
                 this.loader = false;
-                this.matDialogRef.close(resp["data"]);
+                console.log("====================================");
+                console.log(error);
+                console.log("====================================");
                 this.changeDetectorRefs.markForCheck();
-              } else {
-                this.loader = false;
-                this.changeDetectorRefs.markForCheck();
+                this.snackbar.showErrors(error);
               }
-            },
-            (error) => {
-              this.loader = false;
-              console.log("====================================");
-              console.log(error);
-              console.log("====================================");
-              this.changeDetectorRefs.markForCheck();
-              this.snackbar.showErrors(error);
-            }
-          );
-        }
-      });
+            );
+          }
+        });
+    }
   }
 }
