@@ -34,10 +34,11 @@ mat-list-item{
 }
 
 h3 {
-  color: #3f51b5;
-  font-weight: 500;
-  font-size: 16px;
-  margin-top: 20px;
+  color: black;
+  font-weight: 600;
+  font-size: 17px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 h4 {
@@ -65,3 +66,7 @@ mat-list-item {
 
 
 
+
+mat-icon{
+  color: #D45C00;
+}

@@ -258,38 +258,17 @@ export class ListTacheComponent implements OnInit {
 
   //cette fonction permet de supprimer
   supprimerItems(id, information) {
-    console.log("====================================");
-    console.log(id);
-    console.log("====================================");
     this.snackbar
       .showConfirmation("Voulez-vous vraiment supprimer cette tache?")
       .then((result) => {
         if (result["value"] == true) {
-          this.deleteUser = true;
-          this.currentIndex = information;
-          this.showLoader = "isShow";
           const message = "tache  supprimé";
           this.coreService.deleteItem(id, this.url).subscribe(
             (resp) => {
-              this.showLoader = "isNotShow";
-              this.coreService
-                .list(this.url, this.offset, this.pageSize)
-                .subscribe((resp: any) => {
-                  const data = resp["data"] || resp;
-                  this.dataSource = new MatTableDataSource(data);
-                  this.dataSource.paginator = this.paginator;
-                  this.dataSource.sort = this.sort;
-                  this.datas = resp["data"] || data;
-                  this.length = resp["total"] || data.length;
-                  this.changeDetectorRefs.markForCheck();
-                  this.changeDetectorRefs.detectChanges();
-                  this.snackbar.openSnackBar(message + " avec succès", "OK", [
-                    "mycssSnackbarGreen",
-                  ]);
-                });
-              if (resp["200"]) {
-                this.getTaches();
-              }
+              this.snackbar.openSnackBar(message + " avec succès", "OK", [
+                "mycssSnackbarGreen",
+              ]);
+              this.getTaches();
             },
             (error) => {
               this.showLoader = "isNotShow";
@@ -319,8 +298,6 @@ export class ListTacheComponent implements OnInit {
         this.getTaches();
       }
     );
-
-    //   this._router.navigate(['tasks/create']);
   }
 
   updateItems(information): void {
@@ -333,7 +310,7 @@ export class ListTacheComponent implements OnInit {
       information,
       "",
       () => {
-        // this.getList();
+        this.getTaches();
       }
     );
   }
@@ -385,9 +362,9 @@ export class ListTacheComponent implements OnInit {
     console.log(information);
     this.snackbar.openModal(
       DetailComponent,
-      "45rem",
+      "60rem",
       "",
-      "38rem",
+      "45rem",
       information,
       "",
       () => {

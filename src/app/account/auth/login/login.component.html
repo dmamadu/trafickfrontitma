@@ -1,253 +1,84 @@
-<!-- <div class="h-screen  w-screen flex  ">
-
-  <div class="flex h-full  w-full  ">
-    <div class="w-full h-full hidden lg:block lg:w-[45%] bg-cover rounded-l-lg relative background-image">
-      <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-2xl font-bold">
-
-      </span>
+<div class="login-page">
+  <div class="login-card">
+    <!-- En-tête -->
+    <div class="card-header">
+      <div class="header-left">
+        <a routerLink="/home">
+          <h1 class="app-name">Inv<span class="orange-o">O</span>dis</h1>
+        </a>
+        <p class="app-description">Gestion des parties affectées</p>
+      </div>
+      <a routerLink="/home">
+        <img src="assets/images/logo/Logoinvodis.png" alt="Logo" class="app-logo">
+      </a>
     </div>
 
+    <!-- Formulaire -->
+    <div class="card-body">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <!-- Message d'erreur -->
+        @if(error) {
+        <div class="error-message">
+          <mat-icon>error</mat-icon>
+          <span>{{ error }}</span>
+        </div>
+        }
 
-
-    <div class="w-full h-full lg:w-[50%]  flex items-center justify-center " >
-      <div
-        class=" w-full  xl:w-[65%] h-full xl:h-[65%] flex items-center justify-center flex-col  rounded-2xl border  border-gray-950 shadow-xl">
-        <label for="" style="font-size: 25px; color: rgb(2, 95, 2); font-weight: bold;">Connexion</label>
-        <form action="" [formGroup]="loginForm" class="w-[60%] relative" (ngSubmit)="onSubmit()">
-
-          <div class="position-relative">
-            <div class="mb-4 w-full">
-              <label for="base-input"
-                class="block mb-2  text-sm font-medium text-gray-900 dark:text-white">Email</label>
-              <input type="text" class="form-control" placeholder="Entrer votre adresse mail" formControlName="email"
-                [ngClass]="{
-                'is-valid': f.email.valid || f.email.touched,
-                'is-invalid':f.email.invalid && f.email.touched
-              }"
-                class="bg-gray-50 border border-gray-300  form-control shadow-sm text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            </div>
-            @if(f.email.invalid && (f.email.dirty || f.email.touched)){
-            <div class="text-red-600 position-absolute left-1 top-20">
-              @if(f.email.errors.required){
-              <div>L'adresse mail est obligatoire</div>
-              }@if(f.email.errors.email){
-              <div>L'adresse mail est invalide</div>
-              }
-            </div>
-            }
-          </div>
-
-          <div class="position-relative">
-            <div class="mb-4 w-full">
-              <label for="base-input"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-              <input [type]="fieldTextType ? 'text' : 'password'" id="base-input" placeholder="*********************"
-                formControlName="password"
-                class="bg-gray-50 border  form-control  shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                [ngClass]="{ 'is-invalid': f.password.errors  && f.password.touched}">
-
-              <button class="btn btn-light ms-0 eye-toggle" type="button" id="password-addon">
-                <i class="mdi mdi-eye-outline" [ngClass]="{
-                    'mdi-eye-off-outline': !fieldTextType,
-                    'mdi-eye-outline': fieldTextType
-                  }" (click)="toggleFieldTextType()"></i>
-              </button>
-            </div>
-            @if(f.password.invalid && (f.password.dirty || f.password.touched)){
-            <div class="text-red-600 position-absolute top-20 left-1">
-              @if(f.password.errors.required){
-              <div>Le password est obligatoire</div>
-              }
-            </div>
-            }
-
-          </div>
-
-
-          <div class="flex justify-center">
-            <label for="" class=""> <a href="" routerLink="/auth/reset-password">Mot de passe oublié ? </a></label>
-          </div>
-
-          <div class="flex items-center justify-center">
-            <button class=" h-[50px] w-[200px] text-white  text-xl rounded-[25px]" [disabled]="loginForm.invalid"
-              style="background: linear-gradient(to right, #245363 0%, #5C918F 100%);">Connexion</button>
-          </div>
-          @if (submitted) {
-          <div class="absolute left-[50%] top-[75%]">
-            <app-loader-custom></app-loader-custom>
+        <!-- Champ Email -->
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" formControlName="email" placeholder="email@exemple.com"
+            [ngClass]="{ 'input-error': submitted && f.email.errors }">
+          @if(submitted && f.email.errors) {
+          <div class="validation-error">
+            @if(f.email.errors.required) {<span>Email requis</span>}
+            @if(f.email.errors.email) {<span>Format invalide</span>}
           </div>
           }
-
-        </form>
-        <div class="mt-5 text-center">
-          <p>
-            © {{ year }} ITMA. Crafted with
-            <i class="mdi mdi-heart text-danger"></i> by devTeam
-          </p>
-        </div>
-      </div>
-    </div>
-
-
-  </div>
-</div> -->
-
-
-
-
-<div class="account-pages pt-sm-5">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-8 col-lg-6 col-xl-5">
-        <div class="card overflow-hidden">
-          <div class="bg-primary-subtle">
-            <div class="row">
-              <div class="col-7">
-                <div class="text-primary p-4">
-                  <h5 class="text-primary">Se connecter !</h5>
-                </div>
-              </div>
-              <div class="col-5 align-self-end">
-                <img
-                  src="assets/images/logo_itma_png.png"
-                  alt=""
-                  class="img-fluid"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="card-body pt-0">
-            <div>
-              <a routerLink="/">
-                <div class="avatar-md profile-user-wid mb-4">
-                  <span class="avatar-title rounded-circle bg-light">
-                    <img
-                      src="assets/images/logo.svg"
-                      alt=""
-                      class="rounded-circle"
-                      height="34"
-                    />
-                  </span>
-                </div>
-              </a>
-            </div>
-            <div class="p-2">
-              <form
-                class="form-horizontal"
-                [formGroup]="loginForm"
-                (ngSubmit)="onSubmit()"
-              >
-                @if(error){
-                <alert type="danger" [dismissible]="false">{{ error }}</alert>
-                }
-
-                <div class="mb-3">
-                  <label for="email">Email</label>
-                  <input
-                    type="email"
-                    formControlName="email"
-                    class="form-control"
-                    id="email"
-                    placeholder="Email"
-                    [ngClass]="{ 'is-invalid': submitted && f.email.errors }"
-                  />
-                  @if(submitted && f.email.errors){
-                  <div class="invalid-feedback">
-                    @if(f.email.errors.required){
-                    <div>Email is required</div>
-                    }@if(f.email.errors.email){
-                    <div>Email must be a valid email address</div>
-                    }
-                  </div>
-                  }
-                </div>
-
-                <div class="mb-3">
-                  <label for="password">Password</label>
-                  <div class="input-group auth-pass-inputgroup">
-                    <input
-                      [type]="fieldTextType ? 'text' : 'password'"
-                      class="form-control"
-                      formControlName="password"
-                      placeholder="Enter password"
-                      [ngClass]="{
-                        'is-invalid': submitted && f.password.errors
-                      }"
-                    />
-
-                    <button
-                      class="btn btn-light ms-0"
-                      type="button"
-                      id="password-addon"
-                    >
-                      <i
-                        class="mdi mdi-eye-outline"
-                        [ngClass]="{
-                          'mdi-eye-off-outline': !fieldTextType,
-                          'mdi-eye-outline': fieldTextType
-                        }"
-                        (click)="toggleFieldTextType()"
-                      ></i>
-                    </button>
-                    @if(submitted && f.password.errors){
-                    <div class="invalid-feedback">
-                      @if(f.password.errors.required){
-                      <span>Password is required</span>
-                      }
-                    </div>
-                    }
-                  </div>
-                </div>
-
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="remember-check"
-                  />
-                  <label class="form-check-label" for="remember-check">
-                    Remember me
-                  </label>
-                </div>
-
-                <!-- <div id="elmLoader" class="text-center d-none">
-                  <div
-                    class="spinner-border text-primary avatar-sm"
-                    role="status"
-                  >
-                    <span class="visually-hidden">Loading...</span>
-                  </div>
-                </div> -->
-
-
-                <div class="mt-3 flex justify-center items-center gap-0.5">
-                  <button class="btn btn-info flex-1">
-                    <a routerLink="/home" href="javascript: void(0);">
-                      Retour à la page d'accueille
-                    </a>
-                  </button>
-                  <button class="btn btn-primary flex justify-center items-center flex-1" type="submit" [disabled]="loginForm.invalid">
-                    <mat-progress-spinner *ngIf="submitted" class="circle-loader" color="accent" [mode]="'indeterminate'"
-                    [strokeWidth]="2" [diameter]="15"></mat-progress-spinner>
-
-                  <span *ngIf="!submitted">Se connecter</span>
-                  </button>
-
-                </div>
-
-                <div class="mt-4 text-center">
-                  <a routerLink="/auth/reset-password" class="text-muted"
-                    ><i class="mdi mdi-lock mr-1"></i> Mot de passe oublié?</a
-                  >
-                </div>
-              </form>
-            </div>
-          </div>
         </div>
 
-      </div>
+        <!-- Champ Mot de passe -->
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <div class="password-group">
+            <input [type]="fieldTextType ? 'text' : 'password'" id="password" formControlName="password"
+              placeholder="••••••••" [ngClass]="{ 'input-error': submitted && f.password.errors }">
+            <button type="button" class="toggle-password" (click)="toggleFieldTextType()">
+              <mat-icon>{{ fieldTextType ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          @if(submitted && f.password.errors) {
+          <div class="validation-error">
+            @if(f.password.errors.required) {<span>Mot de passe requis</span>}
+          </div>
+          }
+        </div>
+
+        <!-- Options -->
+        <div class="form-options">
+          <label class="remember-me">
+            <input type="checkbox" id="remember">
+            <span>Se souvenir de moi</span>
+          </label>
+          <a routerLink="/auth/reset-password" class="forgot-password">Mot de passe oublié ?</a>
+        </div>
+
+        <!-- Boutons -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-back" routerLink="/home">
+            <mat-icon>arrow_back</mat-icon>
+            Retour
+          </button>
+          <button type="submit" class="btn btn-login" [disabled]="loginForm.invalid">
+            @if(submitted) {
+            <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+            <mat-icon>login</mat-icon>
+            Connexion
+            }
+          </button>
+        </div>
+      </form>
     </div>
   </div>
-
-  <!-- end container -->
 </div>

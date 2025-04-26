@@ -1,30 +1,42 @@
-<div class="main container">
-  <div class="close">
-    <span (click)="closeModal()">
+<div class="project-modal-container">
+  <div class="modal-header">
+    <img class="logo" src="assets/images/logo/Logoinvodis.png" alt="Logo">
+    <button mat-icon-button class="close-btn" (click)="closeModal()">
       <mat-icon>close</mat-icon>
-    </span>
-  </div>
-  <div class="project-selection-container">
-    <!-- Texte d'accueil -->
-    <div class="welcome-message">
-      <h2><strong>{{ appName }}</strong></h2>
-      <p>Veuillez sélectionner le projet que vous souhaitez consulter.</p>
-    </div>
-
-    <!-- Liste des projets -->
-    <div *ngIf="projects.length > 0" class="project-select">
-      <select (change)="onProjectSelect($event.target.value)" [value]="selectedProjectId">
-        <option value="" selected> Sélectionner le projet</option>
-        <option *ngFor="let project of projects" [value]="project.id">
-          {{ project.libelle }}
-        </option>
-      </select>
-    </div>
-
-    <!-- Aucun projet disponible -->
-    <div *ngIf="projects.length === 0" class="no-projects">
-      <p>Aucun projet disponible.</p>
-    </div>
+    </button>
   </div>
 
+  <div class="modal-content">
+    <h2 class="app-title">Inv<span class="orange-o">O</span>dis</h2>
+    <p class="app-subtitle">Sélectionnez un projet à consulter</p>
+    <div class="project-selection-area">
+      <!-- Cas avec projets -->
+      <div *ngIf="projects.length > 0" class="projects-list">
+        <mat-form-field appearance="outline" class="project-selector">
+          <mat-label>Projets disponibles</mat-label>
+          <mat-select (selectionChange)="onProjectSelect($event.value)" [value]="selectedProjectId">
+            <mat-option *ngFor="let project of projects" [value]="project.id">
+              <div class="project-option">
+                <mat-icon class="project-icon">folder</mat-icon>
+                <span>{{ project.libelle }}</span>
+              </div>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Cas sans projets -->
+      <div *ngIf="projects.length === 0" class="empty-state">
+        <div class="empty-content">
+          <mat-icon class="empty-icon">folder_off</mat-icon>
+          <h3>Aucun projet disponible</h3>
+          <p>Commencez par créer un nouveau projet</p>
+          <button mat-raised-button class="create-btn">
+            <mat-icon>add</mat-icon>
+            Nouveau projet
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

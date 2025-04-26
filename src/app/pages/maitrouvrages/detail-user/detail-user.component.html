@@ -8,60 +8,99 @@
 </mat-toolbar>
 <div class="bg-white shadow-lg rounded-lg p-6">
 
-
   <!-- Header avec l'image et le nom -->
   <div class="flex items-center space-x-4">
-    <img
-      *ngIf="user?.imageUrl"
-      [src]="user.imageUrl"
-      alt="Photo de profil"
-      class="w-16 h-16 rounded-full border border-gray-300"
-    />
+    <div class="relative">
+      <img
+        *ngIf="user?.imageUrl"
+        [src]="user.imageUrl"
+        alt="Photo de profil"
+        class="w-16 h-16 rounded-full border-2 border-[#245363]"
+      />
+      <mat-icon *ngIf="!user?.imageUrl" class="w-16 h-16 text-[#93C5AF]">account_circle</mat-icon>
+    </div>
     <div>
-      <h2 class="text-lg font-bold">{{ user?.firstname }} {{ user?.lastname }}</h2>
-      <p class="text-sm text-gray-600">{{ user?.email }}</p>
+      <h2 class="text-lg font-bold text-[#245363] flex items-center">
+        <mat-icon class="text-[#FF9800] mr-2">person</mat-icon>
+        {{ user?.firstname }} {{ user?.lastname }}
+      </h2>
+      <p class="text-sm text-gray-600 flex items-center">
+        <mat-icon class="text-gray-500 mr-1" style="font-size: 16px; width: 16px; height: 16px;">email</mat-icon>
+        {{ user?.email }}
+      </p>
     </div>
   </div>
 
   <!-- Informations principales -->
   <div class="mt-4 grid grid-cols-2 gap-4">
-    <div>
-      <p class="text-gray-500">Localité :</p>
-      <p class="font-semibold">{{ user?.locality || 'N/A' }}</p>
+    <div class="flex items-start">
+      <mat-icon class="text-[#245363] mr-2 mt-0.5">location_on</mat-icon>
+      <div>
+        <p class="text-gray-500 text-sm">Localité</p>
+        <p class="font-semibold">{{ user?.locality || 'Non renseigné' }}</p>
+      </div>
     </div>
-    <div>
-      <p class="text-gray-500">Contact :</p>
-      <p class="font-semibold">{{ user?.contact || 'N/A' }}</p>
+
+    <div class="flex items-start">
+      <mat-icon class="text-[#245363] mr-2 mt-0.5">phone</mat-icon>
+      <div>
+        <p class="text-gray-500 text-sm">Contact</p>
+        <p class="font-semibold">{{ user?.contact || 'Non renseigné' }}</p>
+      </div>
     </div>
-    <div>
-      <p class="text-gray-500">Sexe :</p>
-      <p class="font-semibold">{{ user?.sexe || 'N/A' }}</p>
+
+    <div class="flex items-start">
+      <mat-icon class="text-[#245363] mr-2 mt-0.5">wc</mat-icon>
+      <div>
+        <p class="text-gray-500 text-sm">Sexe</p>
+        <p class="font-semibold">{{ user?.sexe || 'Non renseigné' }}</p>
+      </div>
     </div>
-    <div>
-      <p class="text-gray-500">Fonction :</p>
-      <p class="font-semibold">{{ user?.fonction?.libelle || 'Non défini' }}</p>
+
+    <div class="flex items-start">
+      <mat-icon class="text-[#245363] mr-2 mt-0.5">work</mat-icon>
+      <div>
+        <p class="text-gray-500 text-sm">Fonction</p>
+        <p class="font-semibold">{{ user?.fonction?.libelle || 'Non définie' }}</p>
+      </div>
     </div>
-    <div>
-      <p class="text-gray-500">Catégorie :</p>
-      <p class="font-semibold">{{ user?.categorie?.libelle || 'N/A' }}</p>
+
+    <div class="flex items-start">
+      <mat-icon class="text-[#245363] mr-2 mt-0.5">category</mat-icon>
+      <div>
+        <p class="text-gray-500 text-sm">Catégorie</p>
+        <p class="font-semibold">{{ user?.categorie?.libelle || 'Non définie' }}</p>
+      </div>
     </div>
-    <div>
-      <p class="text-gray-500">Rôle :</p>
-      <p class="font-semibold">{{ user?.roles?.[0]?.name || 'N/A' }}</p>
+
+    <div class="flex items-start">
+      <mat-icon class="text-[#245363] mr-2 mt-0.5">security</mat-icon>
+      <div>
+        <p class="text-gray-500 text-sm">Rôle</p>
+        <p class="font-semibold">{{ user?.roles?.[0]?.name || 'Non défini' }}</p>
+      </div>
     </div>
   </div>
 
   <!-- Projets associés -->
   <div class="mt-6">
-    <h3 class="text-lg font-bold">Projets</h3>
+    <h3 class="text-lg font-bold text-[#245363] flex items-center">
+      <mat-icon class="text-[#FF9800] mr-2">folder</mat-icon>
+      Projets associés
+    </h3>
     <ul class="mt-2 space-y-2">
-      <li *ngFor="let project of user?.projects">
+      <li *ngFor="let project of user?.projects" class="flex items-center">
+        <mat-icon class="text-[#93C5AF] mr-2">description</mat-icon>
         <a
           [routerLink]="['/projets', project.id]"
-          class="text-blue-500 hover:underline"
+          class="text-[#245363] hover:text-[#FF9800] hover:underline"
         >
           {{ project.libelle }}
         </a>
+      </li>
+      <li *ngIf="!user?.projects?.length" class="text-gray-500 italic flex items-center">
+        <mat-icon class="text-gray-400 mr-2">info</mat-icon>
+        Aucun projet associé
       </li>
     </ul>
   </div>

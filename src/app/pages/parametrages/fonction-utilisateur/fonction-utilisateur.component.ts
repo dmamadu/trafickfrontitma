@@ -105,7 +105,7 @@ export class FonctionUtilisateurComponent implements OnInit {
       },
       {
         icon: "bxs-trash-alt",
-        couleur: "red",
+        couleur: "#D45C00",
         size: "icon-size-4",
         title: "Supprimer",
         isDisabled: this.hasDelete,

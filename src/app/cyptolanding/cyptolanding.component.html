@@ -1,13 +1,15 @@
-<nav class="fixed top-0 left-0 w-full bg-white shadow-md z-50" (window:scroll)="windowScroll()" id="navbar">
+<nav class="fixed top-0 left-0 w-full  shadow-md z-50" (window:scroll)="windowScroll()" id="navbar">
   <div class="container mx-auto px-4 flex items-center justify-between">
     <!-- Logo -->
     <a class="flex items-center" routerLink="/">
-      <img src="assets/images/logo_itma_png.png" alt="" height="25" class="h-6 hidden dark:block" />
-      <img src="assets/images/logo_itma_png.png" alt="" height="25" class="h-6 dark:hidden" />
+      <img src="assets/images/logo/Logoinvodis.png" alt="" height="100%" class="hidden dark:block" />
+      <img src="assets/images/logo/Logoinvodis.png" alt="" height="100%" class=" dark:hidden" />
     </a>
 
     <!-- Mobile menu button -->
-    <button type="button" class="text-gray-700 text-lg lg:hidden px-3 py-2" (click)="toggleMenu()">
+    <button type="button"
+      class="text-white text-lg lg:hidden px-3 py-2 hover:text-gray-300 transition-colors duration-300"
+      (click)="toggleMenu()">
       <i class="fa fa-fw fa-bars"></i>
     </button>
 
@@ -17,53 +19,55 @@
       id="topnav-menu-content">
       <ul class="flex flex-col lg:flex-row lg:space-x-6 w-full lg:w-auto text-center lg:text-left" id="topnav-menu">
         <li class="nav-item">
-          <a class="text-gray-700 hover:text-blue-500 transition-all duration-300" href="javascript: void(0);"
+          <a class="text-white hover:text-gray-300 transition-colors duration-300" href="javascript: void(0);"
             [ngxScrollTo]="'home'"
-            [ngClass]="{'text-blue-500 font-semibold border-b-2 border-blue-500': currentSection === 'home'}">
+            [ngClass]="{'text-gray-300 font-semibold border-b-2 border-gray-300': currentSection === 'home'}">
             Accueil
           </a>
         </li>
         <li class="nav-item">
-          <a class="text-gray-700 hover:text-blue-500 transition-all duration-300" href="javascript: void(0);"
-            [ngxScrollTo]="'about'"
-            [ngClass]="{'text-blue-500 font-semibold border-b-2 border-blue-500': currentSection === 'about'}">
-            A propos de nous
+          <a class="text-white hover:text-gray-300 transition-colors duration-300" href="javascript: void(0);"
+            [ngxScrollTo]="'solution'"
+            [ngClass]="{'text-gray-300 font-semibold border-b-2 border-gray-300': currentSection === 'about'}">
+            Solutions
           </a>
         </li>
         <li class="nav-item">
-          <a class="text-gray-700 hover:text-blue-500 transition-all duration-300" href="javascript: void(0);"
+          <a class="text-white hover:text-gray-300 transition-colors duration-300" href="javascript: void(0);"
+            [ngxScrollTo]="'features-section'"
+            [ngClass]="{'text-gray-300 font-semibold border-b-2 border-gray-300': currentSection === 'faqs'}">
+            Fonctionnalités
+          </a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="text-white hover:text-gray-300 transition-colors duration-300" href="javascript: void(0);"
             [ngxScrollTo]="'contact-us'" [ngxScrollToOffset]="5"
-            [ngClass]="{'text-blue-500 font-semibold border-b-2 border-blue-500': currentSection === 'contact-us'}">
+            [ngClass]="{'text-gray-300 font-semibold border-b-2 border-gray-300': currentSection === 'contact-us'}">
             Nous contacter
           </a>
-        </li>
+        </li> -->
         <li class="nav-item">
-          <a class="text-gray-700 hover:text-blue-500 transition-all duration-300" href="javascript: void(0);"
-            [ngxScrollTo]="'team'" [ngxScrollToOffset]="5"
-            [ngClass]="{'text-blue-500 font-semibold border-b-2 border-blue-500': currentSection === 'team'}">
-            Equipe
+          <a class="text-white hover:text-gray-300 transition-colors duration-300" href="javascript: void(0);"
+            [ngxScrollTo]="'benefits-section'" [ngxScrollToOffset]="5"
+            [ngClass]="{'text-gray-300 font-semibold border-b-2 border-gray-300': currentSection === 'team'}">
+            Parties Prenantes
           </a>
         </li>
         <li class="nav-item">
-          <a class="text-gray-700 hover:text-blue-500 transition-all duration-300" href="javascript: void(0);"
-            [ngxScrollTo]="'news'" [ngxScrollToOffset]="5"
-            [ngClass]="{'text-blue-500 font-semibold border-b-2 border-blue-500': currentSection === 'news'}">
-            News
+          <a class="text-white hover:text-gray-300 transition-colors duration-300" href="javascript: void(0);"
+            [ngxScrollTo]="'contact-us'" [ngxScrollToOffset]="5"
+            [ngClass]="{'text-gray-300 font-semibold border-b-2 border-gray-300': currentSection === 'news'}">
+            Contact
           </a>
         </li>
-        <li class="nav-item">
-          <a class="text-gray-700 hover:text-blue-500 transition-all duration-300" href="javascript: void(0);"
-            [ngxScrollTo]="'faqs'"
-            [ngClass]="{'text-blue-500 font-semibold border-b-2 border-blue-500': currentSection === 'faqs'}">
-            FAQ
-          </a>
-        </li>
+
       </ul>
 
-      <!-- Sign In Button -->
+      <!-- Sign In Button - Version améliorée -->
       <div class="my-2 lg:my-0">
-        <a routerLink="/auth/login" href="javascript: void(0);"
-          class="inline-block px-4 py-2 border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white rounded transition-all duration-300">
+        <a routerLink="/auth/login" href="javascript: void(0);" class="inline-block px-6 py-2 bg-[#D45C00] text-white hover:bg-[#E66900] hover:shadow-lg rounded-md
+                 transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2
+                 focus:ring-[#D45C00] focus:ring-opacity-50">
           Se connecter
         </a>
       </div>
@@ -77,660 +81,526 @@
 <div appScrollspy [spiedTags]="['SECTION']" (sectionChange)="onSectionChange($event)">
   <section class="section hero-section bg-ico-hero" id="home">
 
-    <div class="container mx-auto flex flex-col lg:flex-row items-center gap-8 px-4 lg:px-0">
+    <div class="container mx-auto flex flex-col lg:flex-row items-center  lg:px-0">
       <!-- Première colonne -->
-      <div class="lg:w-1/2 text-center lg:text-left">
-        <div class="text-white-50">
-          <h1 class="text-white font-semibold text-3xl mb-3">Bienvenue sur notre plateforme</h1>
-          <p class="text-gray-300 text-base">Notre objectif, faciliter la gestion et la transparence de votre projet.
-          </p>
+      <div class="lg:w-1/2">
+        <img src="assets/images/macBocInvodis.png" alt="Bienvenue sur notre plateforme" class="max-w-full h-auto mb-3">
 
-        </div>
       </div>
-
       <!-- Deuxième colonne -->
-      <div class="lg:w-1/2 bg-gray-800 p-6 rounded-lg">
-        <div class="banner text-white">
-          <h1 class="text-2xl font-bold mb-4">Bienvenue sur notre plateforme</h1>
-          <p class="text-gray-300 mb-4">Notre objectif, faciliter la gestion et la transparence de votre projet.</p>
-          <div class="infos">
-            <div class="mb-4">
-              <span class="block text-lg font-semibold">RENDRE L’INFORMATION DU PROJET ACCESSIBLE À TOUTES LES PARTIES
-                CONCERNÉES :</span>
-            </div>
-            <div>
-              <ul class="space-y-2">
-                <li class="flex items-center"><span class="icon mr-2">👤</span> CHEF DE PROJET</li>
-                <li class="flex items-center"><span class="icon mr-2">💼</span> BAILLEUR</li>
-                <li class="flex items-center"><span class="icon mr-2">💰</span> INVESTISSEUR</li>
-                <li class="flex items-center"><span class="icon mr-2">📋</span> PARTIE AFFECTÉE</li>
-                <li class="flex items-center"><span class="icon mr-2">📌</span> ETC</li>
-              </ul>
-            </div>
-          </div>
+      <div class="banner text-white">
+        <h1 class="text-2xl font-bold mb-4 mt-5">Une application de
+          gestion des parties prenantes</h1>
+        <p class="text-gray-300 mb-4">Invodis est une plateforme collaborative qui simplifie la gestion des
+          déplacements involontaires de populations, comme pour les projets d’infrastructure ou les crises
+          humanitaires. Elle connecte tous les acteurs clés autour d’un outil de gestion efficace et simple
+          d’utilisation.</p>
+        <div class="lg:my-0">
+          <a href="javascript: void(0);" class="inline-block px-6 py-2 bg-[#D45C00] text-white hover:bg-[#E66900] hover:shadow-lg rounded-md
+                       transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2
+                       focus:ring-[#D45C00] focus:ring-opacity-50">
+            Commencer maintenant
+          </a>
         </div>
       </div>
     </div>
 
 
   </section>
-  <!-- hero section end -->
 
-  <!-- currency price section start -->
-  <!-- <section class="section bg-white p-0">
+  <section>
+    <div class="custom-stats-container">
+      <div class="stats-row">
+        <!-- Années d'expérience -->
+        <div class="stat-item">
+          <h2 class="stat-number">0 <span>+</span></h2>
+          <p class="stat-label">Années d'expérience</p>
+        </div>
+
+        <div class="stat-separator"></div>
+
+        <!-- Acteurs connectés -->
+        <div class="stat-item">
+          <h2 class="stat-number">0 <span> +</span></h2>
+          <p class="stat-label">Acteurs connectés</p>
+        </div>
+
+        <div class="stat-separator"></div>
+
+        <!-- Opérations de réinstallation -->
+        <div class="stat-item">
+          <h2 class="stat-number">0 <span>+</span></h2>
+          <p class="stat-label">Opérations de réinstallation</p>
+        </div>
+
+        <div class="stat-separator"></div>
+
+        <!-- Parties prenantes satisfaites -->
+        <div class="stat-item">
+          <h2 class="stat-number">0 <span>+</span></h2>
+          <p class="stat-label">Parties prenantes satisfaites</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+
+
+  <div class="stakeholder-section py-5">
     <div class="container">
-      <div class="currency-price">
-        <div class="row">
-          <div class="col-md-4">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex">
-                  <div class="flex-shrink-0 me-3">
-                    <div class="avatar-xs">
-                      <span class="avatar-title rounded-circle bg-warning-subtle text-warning font-size-18">
+      <div class="row align-items-stretch">
 
-                      </span>
-                    </div>
-                  </div>
-                  <div class="flex-grow-1">
-                    <p class="text-muted"></p>
-                    <h5></h5>
-                    <p class="text-muted text-truncate mb-0"></p>
-                  </div>
-                </div>
-              </div>
+        <!-- Colonne texte -->
+        <div class="col-md-6 py-4 py-md-0 ps-md-5 d-flex align-items-center">
+          <div class="stakeholder-content">
+            <h2 class="title mb-4 fw-bold">Pourquoi la gestion des parties prenantes est essentielle ?</h2>
+
+            <div class="text-content">
+              <p class="mb-0 fs-5 lh-base">
+                Les opérations de réinstallation impliquent des dizaines d'acteurs (gouvernements, ONG, communautés...).
+                Sans coordination centralisée, les risques de conflits, de retards et de mauvaise allocation des
+                ressources sont élevés.
+              </p>
             </div>
           </div>
+        </div>
+
+        <!-- Colonne image -->
+        <div class="col-md-6 d-flex align-items-center">
+          <div class="stakeholder-img h-100 w-100 rounded-3 overflow-hidden">
+            <img src="assets/images/MYG.png" alt="Gestion des parties prenantes"
+              class="img-fluid h-100 object-fit-cover">
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- solutions-section.component.html -->
+  <section class="solution" id="solution">
+    <div class="solutions-section position-relative py-5">
+      <!-- Image de fond -->
+      <div class="background-image"></div>
+
+      <div class="container position-relative z-index-1 py-4">
+        <h1 class="section-title text-center mb-5 text-white">Solutions</h1>
+
+        <div class="row g-4">
+          <!-- Première ligne - 3 cartes -->
           <div class="col-md-4">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex">
-                  <div class="flex-shrink-0 me-3">
-                    <div class="avatar-xs">
-                      <span class="avatar-title rounded-circle bg-primary-subtle text-primary font-size-18">
-                      </span>
-                    </div>
-                  </div>
-                  <div class="flex-grow-1">
-                    <p class="text-muted"></p>
-                    <h5></h5>
-                    <p class="text-muted text-truncate mb-0"></p>
-                  </div>
-                </div>
+            <div class="solution-card h-100 firstSection">
+              <div class="card-icon ">
+                <i class="bi bi-chat-square-text"></i>
               </div>
+              <h3 class="card-title">Amélioration de la communication</h3>
+              <p class="card-text">
+                À travers des canaux de communication centralisés, des notifications, alertes et des forums de
+                discussions.
+              </p>
             </div>
           </div>
+
           <div class="col-md-4">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex">
-                  <div class="flex-shrink-0 me-3">
-                    <div class="avatar-xs">
-                      <span class="avatar-title rounded-circle bg-info-subtle text-info font-size-18">
-                      </span>
-                    </div>
-                  </div>
-                  <div class="flex-grow-1">
-                    <p class="text-muted"></p>
-                    <h5></h5>
-                    <p class="text-muted text-truncate mb-0"></p>
-                  </div>
-                </div>
+            <div class="solution-card h-100">
+              <div class="card-icon">
+                <i class="bi bi-graph-up"></i>
               </div>
+              <h3 class="card-title">Suivi des progrès</h3>
+              <p class="card-text">
+                À travers des tableaux de bord et rapports, suivi des tâches et objectifs, et des indicateurs de
+                performance clés (KPI).
+              </p>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="solution-card h-100">
+              <div class="card-icon ">
+                <i class="bi bi-people-fill"></i>
+              </div>
+              <h3 class="card-title">Coordination entre les parties prenantes</h3>
+              <p class="card-text">
+                À travers une gestion des rôles et des responsabilités, un partage de documents et de ressources et un
+                suivi des interactions.
+              </p>
+            </div>
+          </div>
+
+          <!-- Deuxième ligne - 2 cartes centrées -->
+          <div class="col-md-6">
+            <div class="solution-card h-100">
+              <div class="card-icon ">
+                <i class="bi bi-exclamation-triangle"></i>
+              </div>
+              <h3 class="card-title">Gestion des risques et des conflits</h3>
+              <p class="card-text">
+                Alertes sur les problèmes potentiels et outils de résolution de conflits.
+              </p>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="solution-card h-100">
+              <div class="card-icon ">
+                <i class="bi bi-laptop"></i>
+              </div>
+              <h3 class="card-title">Accessibilité et collaboration à distance</h3>
+              <p class="card-text">
+                À travers accès mobile et multiplateforme, et une collaboration en temps réel.
+              </p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section> -->
-  <!-- currency price section end -->
 
-
-  <!-- about section start -->
-  <section class="pt-16 bg-white" id="about">
-    <div class="container mx-auto px-4 py-6">
-      <div class="text-center mb-8">
-        <h2 class="text-2xl font-semibold text-black">À propos de nous</h2>
-      </div>
-
-      <div class="flex flex-wrap items-center">
-        <!-- Colonne gauche -->
-        <div class="w-full lg:w-5/12">
-          <div class="text-black us-about">
-            <p class="p-2">
-              Notre plateforme est conçue pour rendre la gestion de projets simple, transparente et accessible. Nous
-              permettons aux chefs de projet, aux bailleurs, aux investisseurs, et aux parties affectées d'accéder à une
-              information claire et centralisée pour une prise de décision éclairée. Grâce à notre expertise et aux
-              technologies modernes, nous assurons un suivi de projet fluide et transparent, adapté aux besoins de
-              chaque partie concernée.
-            </p>
-            <div class="mt-6 flex gap-4">
-              <a href="#" class="px-6 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600">Lire Plus</a>
-              <a href="#" class="px-6 py-2 border border-blue-500 text-blue-500 rounded hover:bg-blue-100">Comment ça
-                marche</a>
-            </div>
-
-            <div class="mt-8 flex gap-6">
-              <div>
-                <h4 class="text-2xl font-bold">XXX</h4>
-                <p class="text-sm">Projets gérés</p>
-              </div>
-              <div>
-                <h4 class="text-2xl font-bold">XXXX</h4>
-                <p class="text-sm">Utilisateurs</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Colonne droite -->
-        <div class="w-full lg:w-6/12 lg:ml-auto mt-8 lg:mt-0">
-          <!-- <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div class="border rounded-lg shadow-sm">
-              <div class="p-4">
-                <div class="text-green-500 text-3xl mb-4">
-
-                </div>
-                <h5 class="text-lg font-medium"></h5>
-                <p class="text-sm text-gray-600"></p>
-              </div>
-              <div class="border-t p-4 text-center">
-                <a href="#" class="text-blue-500 font-medium hover:underline">En savoir plus</a>
-              </div>
-            </div>
-            <div class="border rounded-lg shadow-sm mt-6 sm:mt-12 lg:mt-0">
-              <div class="p-4">
-                <div class="text-green-500 text-3xl mb-4">
-
-                </div>
-                <h5 class="text-lg font-medium"></h5>
-                <p class="text-sm text-gray-600"></p>
-              </div>
-              <div class="border-t p-4 text-center">
-                <a href="#" class="text-blue-500 font-medium hover:underline">En savoir plus</a>
-              </div>
-            </div>
-          </div> -->
-        </div>
-      </div>
-
-      <hr class="my-12 border-gray-300">
-
-      <!-- Carrousel -->
-      <!-- <div class="flex justify-center">
-          <div class="flex gap-6">
-            <img src="assets/images/clients/1.png" alt="client-img" class="w-20 h-20 object-contain">
-            <img src="assets/images/clients/2.png" alt="client-img" class="w-20 h-20 object-contain">
-            <img src="assets/images/clients/3.png" alt="client-img" class="w-20 h-20 object-contain">
-            <img src="assets/images/clients/4.png" alt="client-img" class="w-20 h-20 object-contain">
-            <img src="assets/images/clients/5.png" alt="client-img" class="w-20 h-20 object-contain">
-            <img src="assets/images/clients/6.png" alt="client-img" class="w-20 h-20 object-contain">
-          </div>
-        </div> -->
-    </div>
   </section>
 
-  <!-- about section end -->
 
 
-  <!-- recalkmation-->
+  <div class="solution-section py-5">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6 d-none d-md-block">
+          <div class="solution-image rounded-4 overflow-hidden shadow">
+            <img src="assets/images/MOBILEAPP.png" alt="Application de gestion de réinstallation" class="img-fluid">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="solution-card p-4 p-lg-5 shadow-sm rounded-3 bg-white">
+            <h2 class="section-title mb-4 text-[#D45C00]">Comment résoudre ce problème ?</h2>
 
-  <section class="partie-affectee">
-    <div class="partie-affectee-container">
-      <h2>Exprimez votre Réclamation</h2>
-      <p>Vous pouvez partager vos préoccupations en cliquant sur le bouton ci-dessous pour remplir le formulaire de
-        réclamation.</p>
-      <button class="open-complaint-btn" (click)="openComplaintModal()">Faire une réclamation</button>
-    </div>
+            <div class="solution-content">
+              <p class="lead mb-4">
+                Invocés met en place une application innovante et taillée sur mesure de gestion de la réinstallation
+                et des parties prenantes, conformément aux meilleures pratiques mondiales.
+              </p>
 
-    <!-- Modal -->
-    <div class="modal" [ngClass]="{ 'is-open': modalOpen }">
-      <div class="modal-content">
-        <button class="close-btn" (click)="closeComplaintModal()">×</button>
-        <h3>Formulaire de plainte</h3>
-
-        <form [formGroup]="complaintForm" class="py-2">
-
-          <div class="flex gap-2">
-            <!-- Nom et Prénom (alignés côte à côte) -->
-            <div class="form-group">
-              <label for="first-name">Prénom <strong class="text-red">*</strong></label>
-              <input type="text" id="first-name" formControlName="firstName" placeholder="Votre prénom" required />
+              <p class="mb-4">
+                L'application aide à résoudre les défis liés à la relocalisation de populations avec des outils
+                permettant une meilleure communication, un suivi des progrès et une coordination efficace.
+              </p>
             </div>
 
-            <div class="form-group">
-              <label for="last-name">Nom <strong class="text-red">*</strong></label>
-              <input type="text" id="last-name" formControlName="lastName" placeholder="Votre nom" required />
+            <div class="text-start mt-4 pt-2">
+              <a href="#" class="btn bg-[#D45C00] btn-lg px-4 text-white">
+                En savoir plus <i class="bi bi-arrow-right ms-2"></i>
+              </a>
             </div>
           </div>
-
-          <div class="flex gap-2">
-            <!-- Informations de contact (alignées côte à côte) -->
-            <div class="form-group">
-              <label for="email">Email <strong class="text-red">*</strong></label>
-              <input type="email" id="email" formControlName="email" placeholder="Votre email" required />
-            </div>
-
-            <div class="form-group">
-              <label for="phone">Téléphone <strong class="text-red">*</strong></label>
-              <input type="tel" id="phone" formControlName="phone" placeholder="Votre numéro de téléphone" required />
-            </div>
-          </div>
-
-          <!-- Type de plainte -->
-          <div class="form-group">
-            <label for="complaint-type">Type de plainte <strong class="text-red">*</strong></label>
-            <select id="complaint-type" formControlName="complaintType" required>
-              <option value="" disabled selected>Choisissez un type de plainte</option>
-              <option value="abuse">Abus de pouvoir</option>
-              <option value="negligence">Négligence</option>
-              <option value="fraud">Fraude</option>
-              <option value="other">Autre</option>
-            </select>
-          </div>
-
-          <!-- Description de la plainte -->
-          <div class="form-group">
-            <label for="complaint-description">Description de la plainte <strong class="text-red">*</strong> </label>
-            <textarea id="complaint-description" formControlName="complaintDescription"
-              placeholder="Décrivez la plainte..." rows="5" required></textarea>
-          </div>
-          <div *ngIf="errorMessage" class="text-red-500 text-xl">
-            {{errorMessage}}
-          </div>
-
-          <!-- Bouton de soumission -->
-          <button type="submit" class="submit-btn" (click)="submitComplaint()">Envoyer la plainte</button>
-        </form>
+        </div>
       </div>
     </div>
-  </section>
-
+  </div>
 
   <!--fin reclamation-->
-
-
-
-
-  <!-- Team start -->
-  <section class="section" id="team">
+  <section class="features-section py-5" id="features-section">
     <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="text-center mb-5">
-            <div class="text-2xl font-semibold text-black">Equipe</div>
+      <div class="text-center mb-5">
+        <h2 class="section-title">Fonctionnalités</h2>
+        <p class="section-subtitle">Découvrez les principales fonctionnalités de notre plateforme</p>
+      </div>
+
+      <div class="row g-4 mb-4">
+        <div class="col-md-3" *ngFor="let feature of topFeatures">
+          <div class="feature-card card h-100 shadow-sm">
+            <div class="feature-image-wrapper">
+              <img [src]="feature.image" [alt]="feature.title" class="feature-image">
+            </div>
+            <div class="card-content p-3">
+              <h3 class="feature-title">{{feature.title}}</h3>
+              <p class="feature-description">{{feature.description}}</p>
+            </div>
           </div>
         </div>
       </div>
-      <!-- end row -->
 
-      <div class="col-lg-12">
-
-        <ngx-slick-carousel dir="ltr" [config]="config" class="events navs-carousel">
-          <div ngxSlickItem style="width: 264px; margin-right: 24px;">
-            <div class="item">
-              <div class="card text-center team-box">
-                <div class="card-body">
-                  <div>
-                    <img src="assets/images/users/user-dummy-img.jpg" alt="" class="rounded">
-                  </div>
-
-                  <div class="mt-3">
-                    <h3>Pape Ousseynou Sy</h3>
-                    <P class="text-muted mb-0">CEO & Lead</P>
-                  </div>
-                </div>
-                <div class="card-footer bg-transparent border-top">
-                  <div class="d-flex mb-0 team-social-links">
-                    <div class="flex-fill network-link">
-                      <a href="javascript: void(0);" tooltip="Facebook">
-                        <i class="mdi mdi-facebook"></i>
-                      </a>
-                    </div>
-                    <div class="flex-fill network-link">
-                      <a href="javascript: void(0);" tooltip="Linkedin">
-                        <i class="mdi mdi-linkedin"></i>
-                      </a>
-                    </div>
-                    <div class="flex-fill network-link">
-                      <a href="javascript: void(0);" tooltip="Google">
-                        <i class="mdi mdi-google"></i>
-                      </a>
-                    </div>
-                  </div>
-                </div>
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-4" *ngFor="let feature of bottomFeatures">
+          <div class="feature-card card h-100 shadow-sm">
+            <div class="card-body text-center">
+              <div class="feature-image mb-3">
+                <img [src]="feature.image" [alt]="feature.title" class="img-fluid">
               </div>
+              <h3 class="feature-title">{{feature.title}}</h3>
+              <p class="feature-description">{{feature.description}}</p>
             </div>
           </div>
-          <div ngxSlickItem style="width: 264px; margin-right: 24px;">
-            <div class="item">
-              <div class="card text-center team-box">
-                <div class="card-body">
-                  <div>
-                    <img src="assets/images/users/user-dummy-img.jpg" alt="" class="rounded">
-                  </div>
-
-                  <div class="mt-3">
-                    <h3>Massete Niang</h3>
-                    <P class="text-muted mb-0">Developpeur</P>
-                  </div>
-                </div>
-                <div class="card-footer bg-transparent border-top">
-                  <div class="d-flex mb-0 team-social-links">
-                    <div class="flex-fill network-link">
-                      <a href="javascript: void(0);" tooltip="Facebook">
-                        <i class="mdi mdi-facebook"></i>
-                      </a>
-                    </div>
-                    <div class="flex-fill network-link">
-                      <a href="javascript: void(0);" tooltip="Linkedin">
-                        <i class="mdi mdi-linkedin"></i>
-                      </a>
-                    </div>
-                    <div class="flex-fill network-link">
-                      <a href="javascript: void(0);" tooltip="Google">
-                        <i class="mdi mdi-google"></i>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div ngxSlickItem style="width: 264px; margin-right: 24px;">
-            <div class="item">
-              <div class="card text-center team-box">
-                <div class="card-body">
-                  <div>
-                    <img src="assets/images/users/user-dummy-img.jpg" alt="" class="rounded">
-                  </div>
-                  <div class="mt-3">
-                    <h3>Adonis Madior Berry</h3>
-                    <P class="text-muted mb-0">Project Manager</P>
-                  </div>
-                </div>
-                <div class="card-footer bg-transparent border-top">
-                  <div class="d-flex mb-0 team-social-links">
-                    <div class="flex-fill network-link">
-                      <a href="javascript: void(0);" tooltip="Facebook">
-                        <i class="mdi mdi-facebook"></i>
-                      </a>
-                    </div>
-                    <div class="flex-fill network-link">
-                      <a href="javascript: void(0);" tooltip="Linkedin">
-                        <i class="mdi mdi-linkedin"></i>
-                      </a>
-                    </div>
-                    <div class="flex-fill network-link">
-                      <a href="javascript: void(0);" tooltip="Google">
-                        <i class="mdi mdi-google"></i>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div ngxSlickItem style="width: 264px; margin-right: 24px;">
-            <div class="item">
-              <div class="card text-center team-box">
-                <div class="card-body">
-                  <div>
-                    <img src="assets/images/users/user-dummy-img.jpg" alt="" class="rounded">
-                  </div>
-
-                  <div class="mt-3">
-                    <h3>Ndack Indou Fall Ba</h3>
-                    <P class="text-muted mb-0">Directrice général</P>
-                  </div>
-                </div>
-                <div class="card-footer bg-transparent border-top">
-                  <div class="d-flex mb-0 team-social-links">
-                    <div class="flex-fill network-link">
-                      <a href="javascript: void(0);" tooltip="Facebook">
-                        <i class="mdi mdi-facebook"></i>
-                      </a>
-                    </div>
-                    <div class="flex-fill network-link">
-                      <a href="javascript: void(0);" tooltip="Linkedin">
-                        <i class="mdi mdi-linkedin"></i>
-                      </a>
-                    </div>
-                    <div class="flex-fill network-link">
-                      <a href="javascript: void(0);" tooltip="Google">
-                        <i class="mdi mdi-google"></i>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </ngx-slick-carousel>
-
+        </div>
       </div>
-      <!-- end row -->
     </div>
-    <!-- end container -->
   </section>
-  <!-- Team end -->
 
-  <!-- Blog start -->
-  <section class="section bg-white" id="news">
+
+  <!---benefits-->
+
+
+  <section class="benefits-section py-5" id="benefits-section">
     <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="text-center mb-5">
-            <div class="text-2xl py-2 font-semibold text-black">Informations</div>
-            <h2>Dernieres nouvelles</h2>
-          </div>
-        </div>
+      <div class="text-center mb-5">
+        <h2 class="section-title">Avantages pour nos bénéficiaires</h2>
+        <div class="title-underline"></div>
       </div>
-      <!-- end row -->
 
-      <div class="row">
-        <div class="col-xl-4 col-sm-6">
-          <div class="blog-box mb-4 mb-xl-0">
-            <div class="position-relative">
-              <img src="assets/images/team-business-people.jpg" alt="" class="rounded img-fluid mx-auto d-block  w-100">
-            </div>
+      <div class="row ">
+        <div class="col-md-8 col-lg-6 my-2" *ngFor="let benefit of benefits">
+          <div class="benefit-card border rounded overflow-hidden h-100">
+            <div class="row g-0 h-100">
+              <!-- Colonne image -->
+              <div class="col-md-5 h-100">
+                <img [src]="benefit.image" [alt]="benefit.title" class="h-100 w-100 object-fit-cover">
+              </div>
 
-            <div class="mt-4 text-muted">
-              <p class="mb-2"><i class="bx bx-calendar me-1"></i> 04 Mar, 2020</p>
-              <h5 class="mb-3">Rencontre avec les parties affectées</h5>
-              <p>Dans le cadre de l'élaboration du par , l'équipe a eu à rencontrer les parties affectées</p>
-
-              <div>
-                <a href="javascript: void(0);">Read more</a>
+              <!-- Colonne contenu -->
+              <div class="col-md-7 p-4 d-flex flex-column">
+                <h3 class="benefit-title fs-5 mb-3">{{benefit.title}}</h3>
+                <p class="benefit-description flex-grow-1">
+                  {{benefit.description}}
+                </p>
               </div>
             </div>
           </div>
         </div>
-
-        <div class="col-xl-4 col-sm-6">
-          <div class="blog-box mb-4 mb-xl-0">
-
-            <div class="position-relative">
-              <img src="assets/images/premium_photo.jpg" alt="" class="rounded img-fluid mx-auto d-block  w-100">
-            </div>
-            <div class="mt-4 text-muted">
-              <p class="mb-2"><i class="bx bx-calendar me-1"></i> 12 Feb, 2020</p>
-              <h5 class="mb-3">Recensement</h5>
-              <p>
-                Le recensement constitue une étape cruciale dans la gestion des populations et la planification des
-                projets de développement.
-                Dans le cadre de ce projet, l'équipe a mené une opération de recensement approfondie</p>
-              <div>
-                <a href="javascript: void(0);">Read more</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xl-4 col-sm-6">
-          <div class="blog-box mb-4 mb-xl-0">
-            <div class="position-relative">
-              <img src="assets/images/relogemeng.jpg" alt="" class="rounded img-fluid mx-auto d-block  w-100">
-            </div>
-
-            <div class="mt-4 text-muted">
-              <p class="mb-2"><i class="bx bx-calendar me-1"></i> 06 Jan, 2020</p>
-              <h5 class="mb-3">Relogement des personnes déplacées</h5>
-              <p>
-                Dans le cadre de ce projet, l'équipe a travaillé activement pour fournir une solution de relogement aux
-                personnes déplacées.
-                Ce processus a impliqué plusieurs étapes clés, notamment l'identification des bénéficiaires,
-                l'évaluation de leurs besoins spécifiques,
-              </p>
-              <div>
-                <a href="javascript: void(0);">Read more</a>
+        <div class="row justify-content-center my-3">
+          <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+              <div class="row justify-content-center">
+                <div class="col-md-8 mb-4" *ngFor="let benefit of benefitsOne">
+                  <div class="benefit-card border rounded overflow-hidden h-100">
+                    <div class="row g-0 h-100">
+                      <div class="col-md-5 h-100">
+                        <img [src]="benefit.image" [alt]="benefit.title" class="h-100 w-100 object-fit-cover">
+                      </div>
+                      <div class="col-md-7 p-4 d-flex flex-column">
+                        <h3 class="benefit-title fs-5 mb-3">{{benefit.title}}</h3>
+                        <p class="benefit-description flex-grow-1">
+                          {{benefit.description}}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- end row -->
     </div>
-    <!-- end container -->
   </section>
-  <!-- Blog end -->
+
+
+  <!--notre App-->
+
+  <!-- checklist.component.html -->
+  <!-- checklist.component.html -->
+  <div class="container my-5">
+    <div class="row">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="text-center mb-5">
+              <h2 class="section-title">Que fait notre application concrètement ?</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Colonne pour la checklist -->
+          <div class="col-md-7">
+            <div class="checklist-container">
+              <div class="checklist-item">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="check1" checked disabled>
+                  <label class="form-check-label" for="check1">
+                    <strong>Intégration des données de recensement des parties prenantes affectées</strong><br>
+                    <p> Identification - Géolocalisation des pertes - Vulnérabilité</p>
+                  </label>
+                </div>
+              </div>
+
+              <div class="checklist-item">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="check2" checked disabled>
+                  <label class="form-check-label" for="check2">
+                    <strong>Suivi en temps réel de la mise en œuvre du processus de réinstallation</strong><br>
+                    <p>
+                      Préparation des dossiers individuels - dossiers communautaires<br>
+                      Paiement des compensations - Restauration des moyens de subsistance
+                    </p>
+
+                  </label>
+                </div>
+              </div>
+
+              <div class="checklist-item">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="check3" checked disabled>
+                  <label class="form-check-label" for="check3">
+                    <strong>Coordination des actions</strong><br>
+                    <p>
+                      Outils de communication intégrés - Alertes pour éviter les retards
+                    </p>
+                  </label>
+                </div>
+              </div>
+
+              <div class="checklist-item">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="check4" checked disabled>
+                  <label class="form-check-label" for="check4">
+                    <strong>Garantie de transparence</strong><br>
+                    <p>
+                      Accès aux données selon les droits d'accès de chaque partie prenante
+                    </p>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Colonne pour la vidéo -->
+          <div class="col-md-5">
+            <div class="video-demo-section h-100">
+              <div class="video-placeholder ratio ratio-16x9 bg-light">
+                <!-- Placeholder pour la vidéo -->
+                <div class="d-flex justify-content-center align-items-center h-100">
+                  <i class="bi bi-play-circle-fill text-muted" style="font-size: 3rem;"></i>
+                </div>
+
+                <!-- <video controls class="w-100">
+                <source src="assets/videos/demo.mp4" type="video/mp4">
+                Votre navigateur ne supporte pas la vidéo.
+              </video> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 
   <!-- Faqs start -->
   <section class="section" id="faqs">
     <div class="container">
-      <!-- Title Section -->
       <div class="row">
         <div class="col-lg-12">
           <div class="text-center mb-5">
-            <div class="text-2xl py-2 font-semibold text-black">FAQs</div>
-            <h2>Questions fréquemments posées</h2>
+            <h2 class="section-title">Questions fréquemments posées</h2>
           </div>
         </div>
       </div>
+      <div class="faq-container">
+        <!-- Question 1 -->
+        <div class="faq-item" [class.active]="activeIndex === 0" (click)="toggleItem(0)">
+          <div class="faq-header">
+            <h3 class="faq-question">Qui peut utiliser Invodis ?</h3>
+            <span class="faq-icon">
+              <i class="mdi" [class.mdi-chevron-up]="activeIndex === 0"
+                [class.mdi-chevron-down]="activeIndex !== 0"></i>
+            </span>
+          </div>
+          <div class="faq-answer" [class.show]="activeIndex === 0">
+            <p>Invodis est conçue pour tous les acteurs impliqués dans les projets de déplacement involontaire :</p>
+            <ul class="faq-list">
+              <li>
+                <i class="mdi mdi-bank-outline"></i>
+                <strong>Gouvernements</strong> (suivi des dossiers, conformité légale)
+              </li>
+              <li>
+                <i class="mdi mdi-handshake-outline"></i>
+                <strong>ONG & organisations humanitaires</strong> (coordination sur le terrain)
+              </li>
+              <li>
+                <i class="mdi mdi-account-group-outline"></i>
+                <strong>Communautés affectées</strong> (accès aux informations clés)
+              </li>
+              <li>
+                <i class="mdi mdi-office-building-outline"></i>
+                <strong>Entreprises</strong> (gestion des compensations et logistique)
+              </li>
+            </ul>
+            <p class="faq-note">Chaque utilisateur a un accès personnalisé en fonction de son rôle.</p>
+          </div>
+        </div>
 
-      <!-- FAQ Tabs -->
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="vertical-nav">
-            <div class="row">
-              <div class="col-lg-12">
-                <tabset [justified]="true" class="nav-pills custom-vertical-tabs">
+        <!-- Question 2 -->
+        <div class="faq-item" [class.active]="activeIndex === 1" (click)="toggleItem(1)">
+          <div class="faq-header">
+            <h3 class="faq-question">Comment Invodis garantit-elle la sécurité des données ?</h3>
+            <span class="faq-icon">
+              <i class="mdi" [class.mdi-chevron-up]="activeIndex === 1"
+                [class.mdi-chevron-down]="activeIndex !== 1"></i>
+            </span>
+          </div>
+          <div class="faq-answer" [class.show]="activeIndex === 1">
+            <p>Nous priorisons la confidentialité et l'intégrité des données :</p>
+            <ul class="faq-list faq-security">
+              <li>
+                <i class="mdi mdi-lock-outline"></i>
+                Chiffrement SSL/TLS pour toutes les communications
+              </li>
+              <li>
+                <i class="mdi mdi-server"></i>
+                Serveurs hébergés en Europe (RGPD compatible)
+              </li>
+              <li>
+                <i class="mdi mdi-account-key"></i>
+                Accès restreint par rôles (ex : une ONG ne voit que ses dossiers)
+              </li>
+              <li>
+                <i class="mdi mdi-shield-check"></i>
+                Audit régulier par des experts en cybersécurité
+              </li>
+            </ul>
+          </div>
+        </div>
 
-                  <!-- General Questions Tab -->
-                  <tab class="px-4">
-                    <ng-template tabHeading>
-                      <i class="bx bx-help-circle nav-icon d-block mb-2"></i>
-                      <p class="fw-bold mb-0">General Questions</p>
-                    </ng-template>
-                    <div class="card">
-                      <div class="card-body">
-                        <h4 class="card-title mb-4">General Questions</h4>
-                        <accordion [closeOthers]="true" class="custom-accordion">
-                          <accordion-group heading="What is Lorem Ipsum?" #faq class="accordion-list p-0">
-                            <span accordion-heading class="float-end">
-                              <i class="mdi"
-                                [ngClass]="!faq?.isOpen ? 'mdi mdi-plus accor-plus-icon' : 'mdi mdi-minus accor-plus-icon'"></i>
-                            </span>
-                            <div class="card-body p-0">
-                              <p class="mb-0">Everyone realizes why a new common language would be desirable...</p>
-                            </div>
-                          </accordion-group>
+        <!-- Question 2 -->
+        <div class="faq-item" [class.active]="activeIndex === 2" (click)="toggleItem(2)">
+          <div class="faq-header">
+            <h3 class="faq-question">Quelles sont les localités concernées dans Invodis ?</h3>
+            <span class="faq-icon">
+              <i class="mdi" [class.mdi-chevron-up]="activeIndex === 2"
+                [class.mdi-chevron-down]="activeIndex !== 2"></i>
+            </span>
+          </div>
+          <div class="faq-answer" [class.show]="activeIndex === 2">
 
-                          <accordion-group heading="Why do we use it?" #faq1 class="accordion-list p-0">
-                            <span accordion-heading class="float-end">
-                              <i class="mdi"
-                                [ngClass]="!faq1?.isOpen ? 'mdi mdi-plus accor-plus-icon' : 'mdi mdi-minus accor-plus-icon'"></i>
-                            </span>
-                            <div class="card-body p-0">
-                              <p class="mb-0">If several languages coalesce, the grammar of the resulting...</p>
-                            </div>
-                          </accordion-group>
+          </div>
+        </div>
 
-                          <accordion-group heading="Where does it come from?" #faq2 class="accordion-list p-0">
-                            <span accordion-heading class="float-end">
-                              <i class="mdi"
-                                [ngClass]="!faq2?.isOpen ? 'mdi mdi-plus accor-plus-icon' : 'mdi mdi-minus accor-plus-icon'"></i>
-                            </span>
-                            <div class="card-body p-0">
-                              <p class="mb-0">It will be as simple as Occidental...</p>
-                            </div>
-                          </accordion-group>
+        <!-- Question 2 -->
+        <div class="faq-item" [class.active]="activeIndex === 3" (click)="toggleItem(3)">
+          <div class="faq-header">
+            <h3 class="faq-question">Peut-on personnaliser Invodis pour des lois locales ?</h3>
+            <span class="faq-icon">
+              <i class="mdi" [class.mdi-chevron-up]="activeIndex === 3"
+                [class.mdi-chevron-down]="activeIndex !== 3"></i>
+            </span>
+          </div>
+          <div class="faq-answer" [class.show]="activeIndex === 3">
 
-                          <accordion-group heading="Where can I get some?" #faq3 class="accordion-list p-0">
-                            <span accordion-heading class="float-end">
-                              <i class="mdi"
-                                [ngClass]="!faq3?.isOpen ? 'mdi mdi-plus accor-plus-icon' : 'mdi mdi-minus accor-plus-icon'"></i>
-                            </span>
-                            <div class="card-body p-0">
-                              <p class="mb-0">To an English person, it will seem like simplified English...</p>
-                            </div>
-                          </accordion-group>
-                        </accordion>
-                      </div>
-                    </div>
-                  </tab>
+          </div>
+        </div>
+        <div class="faq-item" [class.active]="activeIndex === 4" (click)="toggleItem(4)">
+          <div class="faq-header">
+            <h3 class="faq-question">Comment les communautés sans internet y accèdent-elles ?</h3>
+            <span class="faq-icon">
+              <i class="mdi" [class.mdi-chevron-up]="activeIndex === 4"
+                [class.mdi-chevron-down]="activeIndex !== 4"></i>
+            </span>
+          </div>
+          <div class="faq-answer" [class.show]="activeIndex === 4">
 
-                  <!-- Token Sale Tab -->
-                  <tab class="px-4">
-                    <ng-template tabHeading>
-                      <i class="bx bx-receipt nav-icon d-block mb-2"></i>
-                      <p class="fw-bold mb-0">Token Sale</p>
-                    </ng-template>
-                    <div class="card">
-                      <div class="card-body">
-                        <h4 class="card-title mb-4">Token Sale</h4>
-                        <accordion [closeOthers]="true" class="custom-accordion">
-                          <accordion-group heading="Why do we use it?" #faq4 class="accordion-list p-0">
-                            <span accordion-heading class="float-end">
-                              <i class="mdi"
-                                [ngClass]="!faq4?.isOpen ? 'mdi mdi-plus accor-plus-icon' : 'mdi mdi-minus accor-plus-icon'"></i>
-                            </span>
-                            <div class="card-body p-0">
-                              <p class="mb-0">If several languages coalesce...</p>
-                            </div>
-                          </accordion-group>
-                          <accordion-group heading="What is Lorem Ipsum?" #faq5 class="accordion-list p-0">
-                            <span accordion-heading class="float-end">
-                              <i class="mdi"
-                                [ngClass]="!faq5?.isOpen ? 'mdi mdi-plus accor-plus-icon' : 'mdi mdi-minus accor-plus-icon'"></i>
-                            </span>
-                            <div class="card-body p-0">
-                              <p class="mb-0">Everyone realizes why a new common language would be desirable...</p>
-                            </div>
-                          </accordion-group>
-                        </accordion>
-                      </div>
-                    </div>
-                  </tab>
-
-                  <!-- Roadmap Tab -->
-                  <tab class="px-4">
-                    <ng-template tabHeading>
-                      <i class="bx bx-timer nav-icon d-block mb-2"></i>
-                      <p class="fw-bold mb-0">Roadmap</p>
-                    </ng-template>
-                    <div class="card">
-                      <div class="card-body">
-                        <h4 class="card-title mb-4">Roadmap</h4>
-                        <accordion [closeOthers]="true" class="custom-accordion">
-                          <accordion-group heading="Where can I get some?" #faq6 class="accordion-list p-0">
-                            <span accordion-heading class="float-end">
-                              <i class="mdi"
-                                [ngClass]="!faq6?.isOpen ? 'mdi mdi-plus accor-plus-icon' : 'mdi mdi-minus accor-plus-icon'"></i>
-                            </span>
-                            <div class="card-body p-0">
-                              <p class="mb-0">To an English person, it will seem like simplified English...</p>
-                            </div>
-                          </accordion-group>
-                        </accordion>
-                      </div>
-                    </div>
-                  </tab>
-
-                </tabset>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -742,94 +612,70 @@
   <!--Contact-->
 
   <section class="contact" id="contact-us">
-    <div class="contact-container">
-      <div class="contact-info">
-        <h2>Nous contacter</h2>
-        <p>Nous serions ravis d'échanger avec vous ! Remplissez le formulaire ci-dessous, et notre équipe vous répondra
-          dans les plus brefs délais.</p>
-      </div>
-      <div class="contact-form">
-        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
-          <!-- Champ Motif -->
-          <div class="form-group">
-            <label for="motif">Motif</label>
-            <select id="motif" formControlName="motif" required>
-              <option value="" disabled selected>Choisissez un motif</option>
-              <option value="demande">Demande d'information</option>
-              <option value="support">Support technique</option>
-              <option value="suggestion">Suggestion</option>
-              <option value="autre">Autre</option>
-            </select>
-            <!-- Message d'erreur pour le champ Motif -->
-            <div *ngIf="contactForm.get('motif').touched && contactForm.get('motif').invalid" class="error-message">
-              <small *ngIf="contactForm.get('motif').hasError('required')">Le motif est requis.</small>
+    <div class="container-fluid contact-container py-5">
+      <div class="row align-items-center">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="text-center mb-5">
+              <h2 class="section-title">Prêt à transformer la gestion de vos projets ?</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="row px-5 d-flex items-center">
+          <!-- Section Image -->
+          <div class="col-lg-6 d-none d-lg-block">
+            <div class="contact-image-container">
+              <img src="assets/images/Frame4.png" alt="Gestion de projets" class="img-fluid rounded shadow">
+            </div>
+          </div>
+          <!-- Formulaire de contact -->
+          <div class="col-lg-6">
+            <div class="contact-form-container p-5 p-lg-5 shadow rounded">
+
+              <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+                <div class="mb-3">
+                  <label for="name" class="form-label">Nom</label>
+                  <input type="text" class="form-control" id="name" formControlName="name" required>
+                  <div *ngIf="contactForm.get('name').touched && contactForm.get('name').invalid" class="error-message">
+                    <small *ngIf="contactForm.get('name').hasError('required')">Le nom est requis.</small>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="email" formControlName="email" required>
+                  <div *ngIf="contactForm.get('email').touched && contactForm.get('email').invalid"
+                    class="error-message">
+                    <small *ngIf="contactForm.get('email').hasError('required')">L'email est requis.</small>
+                    <small *ngIf="contactForm.get('email').hasError('email')">L'email doit être valide.</small>
+                  </div>
+                </div>
+
+                <div class="mb-4">
+                  <label for="message" class="form-label">Message</label>
+                  <textarea class="form-control" id="message" rows="4" formControlName="message" required></textarea>
+                  <div *ngIf="contactForm.get('message').touched && contactForm.get('message').invalid"
+                    class="error-message">
+                    <small *ngIf="contactForm.get('message').hasError('required')">Le message est requis.</small>
+                  </div>
+                </div>
+
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary btn-lg" [disabled]="!contactForm.valid || loader">
+                    <span *ngIf="!loader">Contactez-nous rapidement</span>
+                    <span *ngIf="loader">
+                      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                      Envoi en cours...
+                    </span>
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
 
-          <!-- Champs Nom et Email -->
-          <div class="form-row">
-            <div class="form-group">
-              <label for="name">Nom complet</label>
-              <input type="text" id="name" formControlName="name" placeholder="Votre nom complet" required>
-              <!-- Message d'erreur pour le champ Nom -->
-              <div *ngIf="contactForm.get('name').touched && contactForm.get('name').invalid" class="error-message">
-                <small *ngIf="contactForm.get('name').hasError('required')">Le nom est requis.</small>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" formControlName="email" placeholder="Votre adresse email" required>
-              <!-- Message d'erreur pour le champ Email -->
-              <div *ngIf="contactForm.get('email').touched && contactForm.get('email').invalid" class="error-message">
-                <small *ngIf="contactForm.get('email').hasError('required')">L'email est requis.</small>
-                <small *ngIf="contactForm.get('email').hasError('email')">L'email doit être valide.</small>
-              </div>
-            </div>
-          </div>
+        </div>
 
-          <!-- Champs Numéro de téléphone et Sujet -->
-          <div class="form-row">
-            <div class="form-group">
-              <label for="phone">Numéro de téléphone</label>
-              <input type="tel" id="phone" formControlName="phone" placeholder="Votre numéro de téléphone" required>
-              <!-- Message d'erreur pour le champ Numéro de téléphone -->
-              <div *ngIf="contactForm.get('phone').touched && contactForm.get('phone').invalid" class="error-message">
-                <small *ngIf="contactForm.get('phone').hasError('required')">Le numéro de téléphone est requis.</small>
-                <small *ngIf="contactForm.get('phone').hasError('pattern')">Le numéro de téléphone doit contenir 10
-                  chiffres.</small>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="subject">Sujet</label>
-              <input type="text" id="subject" formControlName="subject" placeholder="Le sujet de votre message"
-                required>
-              <!-- Message d'erreur pour le champ Sujet -->
-              <div *ngIf="contactForm.get('subject').touched && contactForm.get('subject').invalid"
-                class="error-message">
-                <small *ngIf="contactForm.get('subject').hasError('required')">Le sujet est requis.</small>
-              </div>
-            </div>
-          </div>
-
-          <!-- Champ Message -->
-          <div class="form-group full-width">
-            <label for="message">Message</label>
-            <textarea id="message" formControlName="message" placeholder="Écrivez votre message ici..." rows="5"
-              required></textarea>
-            <!-- Message d'erreur pour le champ Message -->
-            <div *ngIf="contactForm.get('message').touched && contactForm.get('message').invalid" class="error-message">
-              <small *ngIf="contactForm.get('message').hasError('required')">Le message est requis.</small>
-            </div>
-          </div>
-
-          <!-- Bouton Envoyer -->
-          <button type="submit" class="submit-btn">
-            <mat-progress-spinner *ngIf="loader" class="circle-loader" color="accent" [mode]="'indeterminate'"
-              [strokeWidth]="4" [diameter]="30"></mat-progress-spinner>
-            <span *ngIf="!loader">Envoyer</span>
-          </button>
-
-        </form>
       </div>
     </div>
   </section>
@@ -839,31 +685,39 @@
   <!--Fin contact-->
 
   <!-- Footer start -->
-  <footer class="bg-gray-100 text-black py-12">
+  <footer class="bg-[#000000] text-white py-14">
     <div class="container mx-auto px-6">
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-12 py-5">
+
+        <div>
+          <h5 class="text-2xl md:text-3xl font-semibold mb-4">Invodis</h5>
+          <p>Solutions innovantes pour <br> gestion des délocalisations.</p>
+        </div>
 
         <!-- Company Section -->
         <div>
-          <h5 class="text-2xl md:text-3xl font-semibold mb-4">Company</h5>
+          <h5 class="text-2xl md:text-3xl font-semibold mb-4">Liens Rapides</h5>
           <ul class="space-y-2">
-            <li><a href="javascript: void(0);" class="hover:text-blue-400 text-lg sm:text-base">A propos de nous</a>
+            <li><a href="javascript: void(0);" class="hover:text-blue-400 text-lg sm:text-base">Mentions légales</a>
             </li>
-            <li><a href="javascript: void(0);" class="hover:text-blue-400 text-lg sm:text-base">Features</a></li>
-            <li><a href="javascript: void(0);" class="hover:text-blue-400 text-lg sm:text-base">Equipe</a></li>
-            <li><a href="javascript: void(0);" class="hover:text-blue-400 text-lg sm:text-base">News</a></li>
-            <li><a href="javascript: void(0);" class="hover:text-blue-400 text-lg sm:text-base">FAQ</a></li>
+            <li><a href="javascript: void(0);" class="hover:text-blue-400 text-lg sm:text-base">Politiques de
+                confidentialité</a></li>
+            <li><a href="javascript: void(0);" class="hover:text-blue-400 text-lg sm:text-base">À Propos</a></li>
+            <li><a href="javascript: void(0);" class="hover:text-blue-400 text-lg sm:text-base">Soutien ou
+                Partenariats</a></li>
           </ul>
         </div>
 
         <!-- Contact Section -->
         <div>
           <h3 class="text-xl md:text-2xl font-semibold mb-4">Contact</h3>
-          <p class="mb-2 text-lg sm:text-base">Téléphone : 33 822 25 24</p>
-          <p class="mb-2 text-lg sm:text-base">Adresse: 11 Rue Vincens, Dakar, Sénégal</p>
-          <p class="mb-2 text-lg sm:text-base">Téléphone: +123 456 789</p>
-          <p class="text-lg sm:text-base">Email: contact.com</p>
+          <div class="flex items-center mb-2">
+            <p class="text-lg sm:text-base">contact&#64;invodis.com</p>
+          </div>
+          <div class="flex items-center">
+            <p class="text-lg sm:text-base">+33 1 23 45 67 89</p>
+          </div>
         </div>
 
         <!-- Social Media Section -->
@@ -882,12 +736,10 @@
       <!-- Footer Bottom -->
       <hr class="my-6 border-gray-700">
 
-      <div class="flex justify-between items-center">
-        <div class="flex items-center space-x-4">
-          <img src="assets/images/logo_itma_png.png" alt="Logo" class="h-6">
-          <p class="text-lg sm:text-base">&copy; {{year}} ITMA. Design & Develop by Team Dev</p>
+      <div class="flex justify-content-center">
+        <div class="flex items-center justify-center space-x-4">
+          <p class="text-lg sm:text-base">&copy; {{year}} Invodis. Tous droits réservés.</p>
         </div>
-        <p class="text-lg sm:text-base text-gray-400">&copy; 2024 ITMOBILE. Tous droits réservés.</p>
       </div>
 
     </div>

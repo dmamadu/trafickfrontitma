@@ -467,6 +467,7 @@ export class AddPapPlaceAffaireComponent implements OnInit {
     if (this.isStepValid(currentStep)) {
       stepper.next();
     }
+
   }
 
   validateStep1() {
@@ -509,10 +510,8 @@ export class AddPapPlaceAffaireComponent implements OnInit {
     this.markControlsAsTouched(step3Controls);
   }
 
-  validateStep4() {
-    if (this.contactForm.invalid) {
-      this.contactForm.markAllAsTouched();
-    }
+  validateStep4(): boolean {
+    return this.contacts.data.length > 0;
   }
 
   validateStep5() {
@@ -565,7 +564,7 @@ export class AddPapPlaceAffaireComponent implements OnInit {
           this.initForm.get("membreFoyerHandicape")?.valid
         );
       case 3:
-        return this.contactForm.valid;
+        return this.contacts.data.length > 0;
       case 4:
         return (
           this.initForm.get("perteEquipement")?.valid &&

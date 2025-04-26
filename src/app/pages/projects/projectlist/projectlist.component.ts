@@ -11,6 +11,7 @@ import { ToastrService } from "ngx-toastr";
 import { ModalDirective } from "ngx-bootstrap/modal";
 import { ButtonAction } from "src/app/shared/tableau/tableau.component";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
+import { AddComponent } from "../add/add.component";
 
 @Component({
   selector: "app-projectlist",
@@ -82,15 +83,39 @@ export class ProjectlistComponent implements OnInit {
 
   myImage: string;
 
-
-
-
   selectItem(item: any) {
     this.sharedService.setSelectedItem(item);
     this.router.navigate(["/projects/update"]);
   }
 
+  // updateItems(information): void {
+  //   console.log(information);
+  //   this.snackbar.openModal(
+  //     AddComponent,
+  //     "57rem",
+  //     "edit",
+  //     "38",
+  //     information,
+  //     "",
+  //     () => {
+  //       this.loadProject();
+  //     }
+  //   );
+  // }
 
+  updateItems(information: any): void {
+    this.snackbar.openModal(
+      AddComponent,
+      "60rem",
+      "edit",
+      "",
+      information,
+      "",
+      () => {
+        this.loadProject();
+      }
+    );
+  }
 
   delet(userId: number) {
     this.snackbar
@@ -119,8 +144,6 @@ export class ProjectlistComponent implements OnInit {
     this.removeItemModal?.show();
   }
 
-
-
   filterTable(event: any) {
     const searchValue = event.target.value.toLowerCase();
     if (searchValue) {
@@ -145,7 +168,7 @@ export class ProjectlistComponent implements OnInit {
       {
         th: "Date début",
         td: "datedebut",
-      }
+      },
     ];
   }
 
@@ -157,11 +180,11 @@ export class ProjectlistComponent implements OnInit {
         size: "icon-size-4",
         title: "Modifier",
         isDisabled: this.hasUpdate,
-        action: (element?) => this.selectItem(element),
+        action: (element?) => this.updateItems(element),
       },
       {
         icon: "bxs-trash-alt",
-        couleur: "red",
+        couleur: "#D45C00",
         size: "icon-size-4",
         title: "Supprimer",
         isDisabled: this.hasDelete,
@@ -169,7 +192,7 @@ export class ProjectlistComponent implements OnInit {
       },
       {
         icon: "bxs-info-circle",
-        couleur: "#00bfff	",
+        couleur: "black	",
         size: "icon-size-4",
         title: "détail",
         isDisabled: this.hasDelete,
@@ -180,5 +203,20 @@ export class ProjectlistComponent implements OnInit {
 
   redirectToOverview(id: number): void {
     this.router.navigate(["/overview", id]);
+  }
+
+  datas = [];
+  addItems(): void {
+    this.snackbar.openModal(
+      AddComponent,
+      "60rem",
+      "new",
+      "",
+      this.datas,
+      "",
+      () => {
+        this.loadProject();
+      }
+    );
   }
 }

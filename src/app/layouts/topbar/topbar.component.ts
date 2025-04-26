@@ -13,6 +13,7 @@ import { changesLayout } from "src/app/store/layouts/layout.actions";
 import { getLayoutMode } from "src/app/store/layouts/layout.selector";
 import { RootReducerState } from "src/app/store";
 import { Auth, User } from "src/app/store/Authentication/auth.models";
+import { SnackBarService } from "src/app/shared/core/snackBar.service";
 
 @Component({
   selector: "app-topbar",
@@ -42,6 +43,7 @@ export class TopbarComponent implements OnInit {
     private router: Router,
     private authService: AuthenticationService,
     public languageService: LanguageService,
+    private snackbar: SnackBarService,
     public translate: TranslateService,
     public _cookiesService: CookieService,
     public store: Store<RootReducerState>
@@ -122,9 +124,20 @@ export class TopbarComponent implements OnInit {
   /**
    * Logout the user
    */
+
+
   logout() {
-    this.authService.logout();
-    this.router.navigate(["/auth/login"]);
+    this.snackbar
+      .showConfirmation("Voulez-vous vraiment vous déconnecter ?")
+      .then((result) => {
+        if (result["value"] == true) {
+          this.authService.logout();
+          this.router.navigate(["/auth/login"]);
+        }
+      });
+    // }else if(!this.listeNoire){
+    //
+    // }
   }
 
   /**

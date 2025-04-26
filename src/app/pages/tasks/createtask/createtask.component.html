@@ -22,11 +22,11 @@
                 </mat-form-field>
               </div>
               <div class="row ">
-                  <mat-form-field class="w-full" appearance="outline">
-                    <mat-label>Description</mat-label>
-                    <textarea matInput formControlName="description" placeholder="Décrivez ici..." rows="3"></textarea>
-                    <mat-error>Le champ est obligatoire</mat-error>
-                  </mat-form-field>
+                <mat-form-field class="w-full" appearance="outline">
+                  <mat-label>Description</mat-label>
+                  <textarea matInput formControlName="description" placeholder="Décrivez ici..." rows="3"></textarea>
+                  <mat-error>Le champ est obligatoire</mat-error>
+                </mat-form-field>
               </div>
               <div>
                 <label class="col-form-label col-lg-2">Date estimée</label>
@@ -52,23 +52,7 @@
                 </div>
               </div>
 
-
-              <!-- <div class="form-group mb-1">
-                <label class="col-form-label">Assigné<span class="text-danger">*</span></label>
-                <ul class="list-unstyled user-list validate" id="taskassignee">
-                  @for(data of listMo;track $index){
-                  <li>
-                    <div class="form-check form-check-primary mb-2 d-flex align-items-center">
-                      <input class="form-check-input" type="checkbox" [checked]="data.checked == true"
-                        (change)="slectMember($index)">
-                      <label class="form-check-label ms-2">{{data.firstname}}</label>
-                      <img [src]="data.imageUrl" alt="" class="rounded-circle avatar-xs m-1" alt="" />
-                    </div>
-                  </li>
-                  }
-                </ul>
-              </div> -->
-              <div class="mb-3 position-relative">
+              <!-- <div class="mb-3 position-relative">
 
                 <label for="task-assign-input" class="form-label">Assigné à</label>
                 <div *ngIf="assignList && assignList.length > 0" class="d-flex flex-wrap mb-2">
@@ -96,19 +80,61 @@
                             <a class="dropdown-item d-flex align-items-center"
                               [ngClass]="{'active': data.checked === '1'}" href="javascript:void(0);"
                               (click)="slectMember(i)">
-                              <!-- <div class="avatar-xs flex-shrink-0 me-2">
-                                @if (data.image) {
-                                <img [src]="getImageFromBase64(data.image.type,data.image.image)" alt=""
-                                  class="img-fluid rounded-circle" />
-                                }
-
-                              </div> -->
                               <div class="flex-grow-1">{{ data.lastname }}</div>
                             </a>
                           </li>
                         </ng-container>
                       </ul>
                     </ngx-simplebar>
+                  </div>
+                </div>
+              </div> -->
+              <div class="mb-3 position-relative">
+                <label class="form-label">Assigné à</label>
+
+                <!-- Utilisateurs sélectionnés - Version compacte -->
+                <div *ngIf="assignList.length > 0" class="selected-users-box mb-2 p-2 bg-light rounded"
+                     style="max-height: 80px; overflow-y: auto;">
+                  <div class="d-flex flex-wrap gap-1">
+                    <div *ngFor="let user of assignList" class="selected-user-item">
+                      <div class="d-flex align-items-center bg-white p-1 pe-2 rounded border">
+                        @if (user.image) {
+                          <img [src]="getImageFromBase64(user.image.type, user.image.image)"
+                               alt="{{user.lastname}}"
+                               class="rounded-circle avatar-xs me-1">
+                        } @else {
+                          <div class="avatar-xs me-1 bg-[#D45C00] rounded-circle d-flex align-items-center justify-content-center">
+                            <span class="text-white small">{{user.lastname | slice:0:1}}</span>
+                          </div>
+                        }
+                        <span class="small">{{user.lastname}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Liste scrollable des MO -->
+                <div class="mo-list-container border rounded" style="height: 100px; overflow-y: auto;">
+                  <div *ngFor="let mo of listMo"
+                       class="mo-list-item p-2 d-flex align-items-center cursor-pointer border-bottom"
+                       [class.bg-light]="isSelected(mo)"
+                       (click)="toggleUserSelection(mo)">
+
+                    @if (mo.image) {
+                      <img [src]="getImageFromBase64(mo.image.type, mo.image.image)"
+                           alt="{{mo.lastname}}"
+                           class="rounded-circle avatar-xs me-2">
+                    } @else {
+                      <div class="avatar-xs me-2 bg-secondary rounded-circle d-flex align-items-center justify-content-center">
+                        <span class="text-white small">{{mo.lastname | slice:0:1}}</span>
+                      </div>
+                    }
+
+                    <span class="small">{{mo.lastname}} {{mo.firstname}}</span>
+
+                    <span class="ms-auto">
+                      <i class="mdi mdi-check-circle text-success" *ngIf="isSelected(mo)"></i>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -128,10 +154,11 @@
           </div>
           <div class="justify-content-end flex items-center flex-row">
             <div class="mx-2">
-              <button type="submit" class="btn btn-success w-[100px]" (click)="checkRecap(action)">{{ labelButton }}</button>
+              <button type="submit" class="bg-[green]  botn  text-white  w-[100px]" (click)="checkRecap(action)">{{
+                labelButton }}</button>
             </div>
             <div class="">
-              <button class="btn btn-danger cursor-pointer w-[100px]" (click)="annuler()">Annuler</button>
+              <button class="bg-[#D45C00] botn text-white cursor-pointer w-[100px]" (click)="annuler()">Annuler</button>
             </div>
           </div>
 

@@ -1,15 +1,22 @@
-.card h5
-{
-  font-size: 16px;
-  color: black;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  font-weight: 500;
+.task-detail-container {
+  .mat-icon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+  }
+
+  .border-orange {
+    border-color: #D45C00;
+  }
+
+  .hover\:bg-orange-700:hover {
+    background-color: #b84c00;
+  }
 }
 
-.card
-{
-  border-radius: 5px;
+/* Pipe pour formater le statut */
+.statutPipe {
+  text-transform: capitalize;
 }
 
 

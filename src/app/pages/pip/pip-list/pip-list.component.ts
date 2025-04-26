@@ -14,10 +14,9 @@ import { MatTableDataSource } from "@angular/material/table";
 import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { UntypedFormGroup } from "@angular/forms";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { DatePipe } from "@angular/common";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
-import { TesterComponent } from "../../tester/tester.component";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import {
   MAT_DIALOG_DATA,
@@ -27,7 +26,7 @@ import {
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import * as XLSX from "xlsx";
 import { PipAddComponent } from "../pip-add/pip-add.component";
-import { Pap, ResponsePap } from "../pip.model";
+import { Pap } from "../pip.model";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { ToastrService } from "ngx-toastr";
 import { SharedService } from "../../projects/shared.service";
@@ -185,7 +184,7 @@ export class PipListComponent implements OnInit {
       },
       {
         icon: "bxs-trash-alt",
-        couleur: "red",
+        couleur: "#D45C00",
         size: "icon-size-4",
         title: "Supprimer",
         isDisabled: this.hasDelete,
@@ -193,7 +192,7 @@ export class PipListComponent implements OnInit {
       },
       {
         icon: "bxs-info-circle",
-        couleur: "#00bfff",
+        couleur: "black",
         size: "icon-size-4",
         title: "détail",
         isDisabled: this.hasDelete,
@@ -601,9 +600,9 @@ export class PipListComponent implements OnInit {
   addItems(): void {
     this.snackbar.openModal(
       PipAddComponent,
-      "55rem",
+      "50rem",
       "new",
-      "",
+      "45rem",
       this.datas,
       "",
       () => {

@@ -1,0 +1,25 @@
+.avatar-title {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.limited-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+::ng-deep .telephone {
+  .country-selector {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .mat-mdc-select-trigger {
+    width: auto !important;
+  }
+}

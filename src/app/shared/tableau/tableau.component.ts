@@ -93,6 +93,8 @@ export class TableauComponent implements OnInit {
     this.dataSource = new MatTableDataSource(this.data);
   }
 
+
+
   @Input()
   set data(data: any) {
     this._data = data ? data : [];
@@ -271,6 +273,8 @@ export class TableauComponent implements OnInit {
   }
 
   protected readonly length = length;
+
+
 }
 
 export type ButtonAction = {

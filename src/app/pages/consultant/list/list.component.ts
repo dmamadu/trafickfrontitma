@@ -146,7 +146,7 @@ export class ListComponent implements OnInit {
       },
       {
         icon: "bxs-trash-alt",
-        couleur: "red",
+        couleur: "#D45C00",
         size: "icon-size-4",
         title: "Supprimer",
         isDisabled: this.hasDelete,
@@ -154,7 +154,7 @@ export class ListComponent implements OnInit {
       },
       {
         icon: "bxs-info-circle",
-        couleur: "#00bfff	",
+        couleur: "black	",
         size: "icon-size-4",
         title: "détail",
         isDisabled: this.hasDelete,

@@ -61,10 +61,9 @@
 
   </table>
   <div *ngIf="dataSource.data?.length === 0" class="w-full text-center py-4">
-    <p style="color: red;">La liste est vide.</p>
+    <p style="color: #D55E00;">La liste est vide.</p>
   </div>
 </div>
 <mat-paginator *ngIf="dataSource.data?.length!=0" class="paginator c-paginator" #paginator (page)="pageChanged($event)"
   [length]="total" [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions">
 </mat-paginator>
-

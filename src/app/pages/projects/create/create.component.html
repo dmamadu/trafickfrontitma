@@ -141,37 +141,33 @@
             </div>
             <div class="inner-repeater mb-4">
               <form [formGroup]="form">
+                <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                  <mat-icon class="mr-2 text-[#D45C00]">rule</mat-icon>
+                  Normes du projet
+                </label>
+
                 <div class="inner mb-0 row" formArrayName="members">
-                  <label class="col-form-label col-lg-2 titre-input">Normes : </label>
-                  @for(data of members.controls;track $index){
-                  <div class="inner col-lg-10 ms-md-auto" [formGroupName]="$index">
-                    <div class="mb-3 row align-items-center">
-                      <div class="col-md-4">
-                        <input type="text" formControlName="titre" class="inner form-control" placeholder="Titre..." />
-                      </div>
-                      <div class="col-md-6">
-                        <div class="mt-4 mt-md-0">
-                          <textarea type="text" formControlName="description" class="inner form-control"
-                            placeholder="Valeur..."></textarea>
-                        </div>
-                      </div>
-                      <div class="col-md-2">
-                        <div class="mt-2 mt-md-0 d-grid">
-                          <input type="button" class="btn btn-danger inner" value="Delete"
-                            (click)="deleteMember($index)" />
-                        </div>
-                      </div>
+                  @for(data of members.controls; track $index){
+                  <div class="inner col-lg-12 ms-md-auto mb-3" [formGroupName]="$index">
+                    <div class="flex flex-col md:flex-row gap-3 items-end">
+                      <mat-form-field appearance="outline" class="flex-grow">
+                        <mat-label>Titre</mat-label>
+                        <input matInput type="text" formControlName="titre" placeholder="Titre de la norme">
+                      </mat-form-field>
+
+                      <mat-form-field appearance="outline" class="flex-grow">
+                        <mat-label>Description</mat-label>
+                        <textarea matInput formControlName="description" placeholder="Description de la norme"></textarea>
+                      </mat-form-field>
+
+                      <button type="button" mat-icon-button color="warn" (click)="deleteMember($index)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
                     </div>
                   </div>
                   }
                 </div>
               </form>
-              <div class="row justify-content-end">
-                <div class="col-lg-10">
-                  <input data-repeater-create type="button" class="btn bgPrimaire inner" value="Ajouter une norme"
-                    (click)="addMember()" [disabled]="form.invalid" />
-                </div>
-              </div>
             </div>
           </div>
           <!-- end card body -->
@@ -306,8 +302,8 @@
 
     <app-loader-data *ngIf="isloading"></app-loader-data>
     <div class="col-lg-8">
-      <div class="text-end mb-4">
-        <button type="submit" id="addContact-btn" class="btn bg-[#245363] text-white hover:bg-[#93C5AF]"> {{ buttonText
+      <div class="text-end mb-2">
+        <button type="submit" id="addContact-btn" class="btn bg-[green] text-white hover:bg-[green]"> {{ buttonText
           }}</button>
       </div>
     </div>

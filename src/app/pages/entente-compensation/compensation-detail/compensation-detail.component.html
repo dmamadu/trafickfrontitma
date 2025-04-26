@@ -108,11 +108,11 @@
   <div fxLayout="row" fxLayoutGap="40px">
     <div fxFlex="50">
       <h4>Signature du PAP</h4>
-      <img [src]="compensation.urlSignaturePap" alt="Signature du PAP" class="signature-image">
+      <img [src]="compensation.urlSignaturePap"    (click)="openImageModal(compensation.urlSignaturePap)" alt="Signature du PAP" class="signature-image">
     </div>
     <div fxFlex="50">
       <h4>Signature du Responsable</h4>
-      <img [src]="compensation.urlSignatureResponsable" alt="Signature du Responsable" class="signature-image">
+      <img [src]="compensation.urlSignatureResponsable"  (click)="openImageModal(compensation.urlSignatureResponsable)" alt="Signature du Responsable" class="signature-image">
     </div>
   </div>
 

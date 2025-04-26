@@ -89,4 +89,21 @@ export class OverviewComponent implements OnInit {
     return url.substring(url.lastIndexOf('/') + 1);
   }
 
+
+  getStatusClass(status: string): string {
+    switch(status?.toLowerCase()) {
+      case 'completed':
+      case 'complété':
+        return 'completed';
+      case 'inprogress':
+      case 'en cours':
+        return 'en-cours';
+      case 'en attente':
+      case 'pending':
+        return 'en-attente';
+      default:
+        return '';
+    }
+  }
+
 }

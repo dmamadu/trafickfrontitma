@@ -1,0 +1,10 @@
+
+div > p:first-child {
+  color: black;
+  font-weight: 600;
+  font-size: 17px;
+}
+
+mat-icon{
+  color: #D45C00;
+}

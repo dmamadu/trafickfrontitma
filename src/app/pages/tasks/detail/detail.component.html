@@ -1,80 +1,109 @@
-<div class="">
-
-  <div class="bgPrimaire py-3  px-1 d-flex items-center justify-between">
-    <label for="" class="text-xl">Détail d'une tache</label>
-    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
+<div class="task-detail-container bg-white rounded-lg overflow-hidden">
+  <!-- En-tête -->
+  <div class="bg-[green] py-4 px-6 flex items-center justify-between shadow-sm">
+    <h2 class="text-xl font-semibold text-white">
+      <mat-icon class="align-middle mr-2">assignment</mat-icon>
+      Détail de la tâche
+    </h2>
+    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Fermer" class="text-white hover:bg-orange-700">
       <mat-icon>close</mat-icon>
     </button>
   </div>
 
-  <div class="row">
-    <div class="col-lg-8">
-      <div class="card shadow-md">
-        <div class="card-body">
-          <div class="d-flex">
-            <div class="flex-grow-1 overflow-hidden">
-              <h5 class="font-size-15 ">Libellé :</h5>
-              <p class="text-truncate font-size-15">{{tache.libelle}}</p>
-            </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+    <!-- Colonne principale -->
+    <div class="md:col-span-2">
+      <div class="bg-white rounded-lg shadow-md p-6 border border-gray-100">
+        <!-- Libellé -->
+        <div class="mb-6">
+          <div class="flex items-center text-[#D45C00] mb-2">
+            <mat-icon class="mr-2">title</mat-icon>
+            <h3 class="text-lg font-medium">Libellé</h3>
           </div>
+          <p class="text-gray-800 pl-8">{{tache.libelle}}</p>
+        </div>
 
-          <h5 class="font-size-15 mt-4">Description :</h5>
-
-          <p class="">{{tache.description}}</p>
-          <div class="row task-dates">
-            <div class="col-sm-4 col-6">
-              <div class="mt-4">
-                <h5 class=""><i class="bx bx-calendar me-1"></i> Start Date</h5>
-                <p class=" mb-0">{{tache.dateDebut}}</p>
-              </div>
-            </div>
-
-            <div class="col-sm-4 col-6">
-              <div class="mt-4">
-                <h5 class=""><i class="bx bx-calendar-check "></i> Due Date</h5>
-                <p class=" mb-0">{{tache.dateFin}}</p>
-              </div>
-            </div>
+        <!-- Description -->
+        <div class="mb-6">
+          <div class="flex items-center text-[#D45C00] mb-2">
+            <mat-icon class="mr-2">description</mat-icon>
+            <h3 class="text-lg font-medium">Description</h3>
           </div>
-          <div class="my-2">
-            <h5 for="">Statut : </h5>
-            <span>{{tache.statut}}</span>
+          <div class="bg-gray-50 p-4 rounded border border-gray-200">
+            <p class="text-gray-800 whitespace-pre-line">{{tache.description}}</p>
           </div>
         </div>
-      </div>
 
-
-    </div>
-    <!-- end col -->
-
-    <div class="col-lg-4">
-      <div class="card">
-        <div class="card-body">
-          <h2 class="card-title mb-4  text-xl font-bold">Personnes imputées</h2>
-
-          <div class="table-responsive">
-            <table class="table align-middle table-nowrap">
-              <tbody>
-                @for (item of tache.utilisateurs; track $index) {
-                <tr>
-                  <td style="width: 50px;"><img src="assets/images/users/avatar-2.jpg" class="rounded-circle avatar-xs"
-                      alt=""></td>
-                  <td>
-                    <h5 class="font-size-14 m-0"><a href="" class="text-dark">{{item.lastname}}</a></h5>
-                  </td>
-                  <td>
-
-                  </td>
-                </tr>
-                }
-              </tbody>
-            </table>
+        <!-- Dates -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div class="bg-gray-50 p-4 rounded border border-gray-200">
+            <div class="flex items-center text-[#D45C00] mb-2">
+              <mat-icon class="mr-2">event</mat-icon>
+              <h3 class="text-lg font-medium">Date de début</h3>
+            </div>
+            <p class="text-gray-800">{{tache.dateDebut | date:'dd/MM/yyyy'}}</p>
           </div>
+
+          <div class="bg-gray-50 p-4 rounded border border-gray-200">
+            <div class="flex items-center text-[#D45C00] mb-2">
+              <mat-icon class="mr-2">event_available</mat-icon>
+              <h3 class="text-lg font-medium">Date de fin</h3>
+            </div>
+            <p class="text-gray-800">{{tache.dateFin | date:'dd/MM/yyyy'}}</p>
+          </div>
+        </div>
+
+        <!-- Statut -->
+        <div class="flex items-center">
+          <mat-icon class="text-[#D45C00] mr-2">flag</mat-icon>
+          <h3 class="text-lg font-medium text-[#D45C00] mr-3">Statut :</h3>
+          <span class="px-3 py-1 rounded-full text-sm font-medium"
+                [ngClass]="{
+                  'bg-green-100 text-green-800': tache.statut === 'complete',
+                  'bg-amber-100 text-amber-800': tache.statut === 'en-cours',
+                  'bg-gray-100 text-gray-800': tache.statut === 'en-attente'
+                }">
+            {{formatStatut(tache.statut)}}
+          </span>
         </div>
       </div>
     </div>
-    <!-- end col -->
+
+    <!-- Colonne latérale - Personnes assignées -->
+    <div class="md:col-span-1">
+      <div class="bg-white rounded-lg shadow-md p-6 border border-gray-100 h-full">
+        <div class="flex items-center text-[#D45C00] mb-4">
+          <mat-icon class="mr-2">group</mat-icon>
+          <h2 class="text-xl font-bold">Personnes assignées</h2>
+        </div>
+
+        <div class="space-y-3">
+          @for (item of tache.utilisateurs; track $index) {
+          <div class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition">
+            <div class="relative">
+              @if (item.image) {
+                <img [src]="getImageFromBase64(item.image.type, item.image.image)"
+                     class="w-10 h-10 rounded-full object-cover border-2 border-[#D45C00]">
+              } @else {
+                <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center border-2 border-[#D45C00]">
+                  <span class="text-gray-600 font-medium">{{item.lastname | slice:0:1}}</span>
+                </div>
+              }
+              <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+            </div>
+            <div class="ml-3">
+              <h4 class="text-sm font-medium text-gray-900">{{item.lastname}} {{item.firstname}}</h4>
+              <p class="text-xs text-gray-500">{{item.contact || 'Non spécifié'}}</p>
+            </div>
+          </div>
+          } @empty {
+          <div class="text-center py-4 text-gray-500">
+            <mat-icon class="text-gray-400">group_off</mat-icon>
+            <p>Aucune personne assignée</p>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
   </div>
-  <!-- end row -->
-  <!-- end row -->
 </div>

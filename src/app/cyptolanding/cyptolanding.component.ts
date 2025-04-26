@@ -69,7 +69,6 @@ export class CyptolandingComponent implements OnInit {
       });
 
     this.initForm();
-    this.initComplaintForm();
   }
 
   getDays(t) {
@@ -149,60 +148,17 @@ export class CyptolandingComponent implements OnInit {
   // Fonction d'initialisation du formulaire
   private initForm() {
     this.contactForm = this.fb.group({
-      motif: ["", Validators.required],
       name: ["", Validators.required],
       email: ["", [Validators.required, Validators.email]],
-      phone: ["", Validators.required],
-      subject: ["", Validators.required],
       message: ["", Validators.required],
       dateCreation: [new Date()],
     });
   }
 
-  // Fonction d'initialisation du formulaire
-  private initComplaintForm() {
-    this.complaintForm = this.fb.group({
-      firstName: ["", Validators.required],
-      lastName: ["", Validators.required],
-      email: ["", [Validators.required, Validators.email]],
-      phone: ["", [Validators.required]],
-      complaintType: ["", Validators.required],
-      complaintDescription: ["", Validators.required],
-    });
-  }
 
-  errorMessage: string = "";
-  // Soumettre la plainte
-  submitComplaint() {
-    console.log(this.complaintForm.value);
 
-    if (this.complaintForm.valid) {
-      const complaintData = this.complaintForm.value;
-      this.complaintService.submitComplaint(complaintData).subscribe(
-        (response) => {
-          console.log("Réponse du serveur :", response);
-          this.closeComplaintModal();
-          this.snackbar.openSnackBar(
-            "Votre plainte a été enregistrée avec succés,Nous vous contacterons bientôt",
-            "OK",
-            ["mycssSnackbarGreen"]
-          );
-          this.complaintForm.reset();
-        },
-        (error) => {
-          console.error("Erreur lors de l'envoi de la plainte :", error);
-          this.snackbar.showErrors(error);
-        }
-      );
-    } else {
-      this.errorMessage = "Veuillez remplir correctement tous les champs.";
-      // this.snackbar.openSnackBar(
-      //   "Veuillez remplir correctement tous les champs.",
-      //   "OK",
-      //   ["mycssSnackbarRed"]
-      // );
-    }
-  }
+
+
 
   onSubmit() {
     this.contactForm.markAllAsTouched();
@@ -214,7 +170,7 @@ export class CyptolandingComponent implements OnInit {
         (response) => {
           console.log("Réponse du serveur:", response);
           this.snackbar.openSnackBar(
-            "Votre mail a été envoyé avec succès! ,et vous serez contacté bientôt",
+            "Votre mail a été envoyé avec succès! et vous serez contacté bientôt",
             "OK",
             ["mycssSnackbarGreen"]
           );
@@ -229,4 +185,135 @@ export class CyptolandingComponent implements OnInit {
       );
     }
   }
+
+  topFeatures = [
+    {
+      title: "Gestion des parties prenantes",
+      description: "Suivi de l'implication, des rôles, et des responsabilités.",
+      image: "assets/images/GPP.png",
+    },
+    {
+      title: "Suivi des projets",
+      description: "Chronologie, jalons, et suivi de l'avancement.",
+      image: "assets/images/SP.png",
+    },
+    {
+      title: "Communication et collaboration",
+      description:
+        "Outils de communication entre les parties prenantes, partage de documents.",
+      image: "assets/images/CC.png",
+    },
+    {
+      title: "Carte interactive",
+      description:
+        "Carte de google map avec des géofences qui délimitent les zones affectées des projets",
+      image: "assets/images/CI.png",
+    },
+  ];
+
+  bottomFeatures = [
+    {
+      title: "Rapports et analyses",
+      description:
+        "Tableau de bord pour évaluer l'impact, le progrès et les besoins.",
+      image: "assets/images/RA.png",
+    },
+    {
+      title: "Gestion des plaintes",
+      description:
+        "Enregistrement, suivi et résolution des plaintes via un système traçable",
+      image: "assets/images/GP.png",
+    },
+    {
+      title: "Gestion des compensations",
+      description:
+        "Suivi des demandes, validation des critères, et versement des indemnités",
+      image: "assets/images/GC.png",
+    },
+  ];
+
+  //benefits
+
+  benefits = [
+    {
+      title: "Les Gouvernements",
+      description:
+        "Amélioration de la coordination et de la transparence et assurance de la conformité",
+      image: "assets/images/GOV.png",
+    },
+    {
+      title: "Les Organismes Humanitaires",
+      description: "Suivi des ressources et des besoins",
+      image: "assets/images/ORG.png",
+    },
+    {
+      title: "Les Communautés",
+      description:
+        "Garantie d'une meilleure prise en compte de leurs besoins et des délais respectés",
+      image: "assets/images/COM.png",
+    },
+    {
+      title: "Les Entreprises partenaires",
+      description: "Optimisation des ressources et des logistiques",
+      image: "assets/images/ENTR.png",
+    },
+    // {
+    //   title: "Institutions financières de développement",
+    //   description:
+    //     "Amélioration du suivi environnemental et social des projets",
+    //   image: "assets/images/institutions.png",
+    // },
+  ];
+
+  benefitsOne = [
+    {
+      title: "Institutions financières de développement",
+      description:
+        "Amélioration du suivi environnemental et social des projets",
+      image: "assets/images/INST.png",
+    },
+  ];
+
+  isOpen: boolean = false;
+
+toggle() {
+  this.isOpen = !this.isOpen;
+}
+
+
+faqItems = [
+  {
+    question: "Qui peut utiliser Invodis ?",
+    answer: "Everyone realizes why a new common language would be desirable...",
+    isOpen: false
+  },
+  {
+    question: "Comment Invodis garantit-elle la sécurité des données ?",
+    answer: "If several languages coalesce, the grammar of the resulting...",
+    isOpen: false
+  },
+  {
+    question: "Quelles sont les localités concernées dans Invodis ?",
+    answer: "It will be as simple as Occidental...",
+    isOpen: false
+  },
+  {
+    question: "Peut-on personnaliser Invodis pour des lois locales ?",
+    answer: "To an English person, it will seem like simplified English...",
+    isOpen: false
+  },
+  {
+    question: "Comment les communautés sans internet y accèdent-elles ?",
+    answer: "To an English person, it will seem like simplified English...",
+    isOpen: false
+  }
+];
+
+
+activeIndex: number | null = null;
+
+  toggleItem(index: number): void {
+    this.activeIndex = this.activeIndex === index ? null : index;
+  }
+
 }

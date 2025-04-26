@@ -208,7 +208,11 @@ dropzone>.dropzone.dz-wrapper {
 
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0;
+  //  font-family: Roboto, "Helvetica Neue", sans-serif;
+   font-family: 'Questrial', sans-serif;
+
+  }
 
 
 
@@ -300,7 +304,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 border-tt{
-  border: 1px solid #f3903d !important;
+  border: 1px solid #D45C00 !important;
 }
 
 .border-t {
@@ -333,7 +337,7 @@ border-tt{
   padding-left: 35px !important;
   padding-right: 35px !important;
   &:hover {
-      background: #3d86f3 !important;
+      background: #0C8439 !important;
      // border: 2px solid #fff !important;
       .textForms {
           color: #fff;
@@ -345,7 +349,7 @@ border-tt{
   width: auto;
   height: auto;
   color: #FFFFFF !important;
-  background-color: $redColor !important;
+  background-color: #D45C00 !important;
   padding-left: 35px !important;
   padding-right: 35px !important;
 }
@@ -568,7 +572,7 @@ submit-button-grid {
   background-size: cover;
   border-radius: 8px !important;
   border: 1px solid !important;
-  border-color: #00316c !important;
+  border-color: #D45C00 !important;
 }
 
 .fuse-widget-front-filtre-bis {
@@ -577,7 +581,7 @@ submit-button-grid {
   background-size: cover;
   border-radius: 8px !important;
   border: 1px solid !important;
-  border-color: #00316c !important;
+  border-color: #D45C00 !important;
   margin-bottom: 50px;
 }
 
@@ -887,7 +891,7 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
 //   width: 125px;
 //   height: auto;
 //   color: $white !important;
-//   background: #00316c 0% 0% no-repeat padding-box !important;
+//   background: black 0% 0% no-repeat padding-box !important;
 //   padding-left: 35px !important;
 //   padding-right: 35px !important;
 // }
@@ -961,7 +965,7 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #01144fe6 !important;
+  background: #000000 !important;
 }
 
 ::-webkit-scrollbar-track {
@@ -970,7 +974,7 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
 
 //end scrollbar style
 .c-colorHeader {
-  background: #004d72 !important;
+  background: #000000 !important;
 }
 
 .mat-mdc-tooltip {
@@ -990,14 +994,14 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
 }
 
 .global {
-  background: #f3903d;
+  background: #D45C00;
   padding: 0px 20px 0px 10px;
   border-radius: 25px;
   font-size: 28px;
 }
 
 .sunu {
-  background: #f3903d;
+  background: #D45C00;
   padding: 0px 10px 0 18px;
   //clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
   margin-left: -10px;
@@ -1019,12 +1023,12 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
 }
 
 .backToolbar {
-  background: #00316c !important;
+  background: green !important;
 
 }
 
 .c_formulaire {
-  border: 30px solid #00316c;
+  border: 30px solid green;
 
 }
 
@@ -1034,10 +1038,10 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
 }
 
 .closeButton {
-  background: #f3433d !important;
+  background: #D55E00 !important;
 
   mat-icon {
-      color: #0833e2 !important;
+      color: black !important;
   }
 }
 
@@ -1082,7 +1086,7 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
   border: none;
   border-radius: 15px !important;
   background: #fff;
-  color: #545454;
+  color: #000000;
   font-family: inherit, sans-serif;
   font-size: 1rem;
 }
@@ -1091,7 +1095,7 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
   border: 0;
   border-radius: 0.25em;
   background: initial;
-  background-color: #01144fe6 !important;
+  background-color: #000000 !important;
   color: #fff;
   font-size: 1em;
 }
@@ -1100,7 +1104,7 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
   border: 0;
   border-radius: 0.25em;
   background: initial;
-  background-color: #ff0000c4 !important;
+  background-color: #D45C00 !important;
   color: #fff;
   font-size: 1em;
 }
@@ -1149,7 +1153,7 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
   border: none;
   border-radius: 5px;
   background: #fff;
-  color: #545454;
+  color: #000000;
   font-family: inherit, sans-serif;
   font-size: 12px !important;
 }
@@ -1159,8 +1163,8 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
 }
 
 .swal2-icon.swal2-info {
-  border-color: #999999 !important;
-  color: #999999 !important;
+  border-color: #000000 !important;
+  color: #000000 !important;
 }
 
 .swal2-html-container {
@@ -1169,13 +1173,13 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
 
 //end swal
 .c_btnAccount {
-  background: #dce2e9c7 !important;
+  background: #0C8439 !important;
   margin-top: 14px;
 }
 .c_btnAccountF {
-  background: #05001b	 !important;
+  background: #0C8439	 !important;
   &:hover {
-      background: #0d2201 !important;
+      background: #0C8439 !important;
       .c_icons {
           color: #FFFFFF !important;
       }
@@ -1200,12 +1204,12 @@ body.light .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floatin
 .c_btnAccountR {
   background: #dce2e9c7 !important;
   .c_icons {
-      color: red !important;
+      color: #D45C00 !important;
   }
   &:hover {
       background: rgba(220, 226, 233, 0.34) !important;
       .c_icons {
-          color: red !important;
+          color: #D45C00 !important;
       }
   }
 }
@@ -1309,10 +1313,10 @@ fuse-vertical-navigation.fuse-vertical-navigation-appearance-compact .fuse-verti
 .submit-button-renvoi {
   border-radius: 20px !important;
   background: #FFFFFF !important;
-  color: #f3903d !important;
+  color: #D45C00 !important;
   border: 2px solid var(--ColorDefault) !important;
   &:hover {
-      background: #3d8ff3 !important;
+      background: #009036 !important;
       border: 2px solid #fff !important;
       .textForms-renvoi {
           color: #fff !important;
@@ -1392,7 +1396,7 @@ fuse-vertical-navigation.fuse-vertical-navigation-appearance-compact .fuse-verti
 }
 
 .c_color_active {
-  color: #00316c !important;
+  color: black !important;
 }
 
 .c_padding {
@@ -1415,7 +1419,7 @@ hr {
 }
 
 .custom_ajouter {
-  background: #00316c !important;
+  background: black !important;
 }
 
 .floatRight {
@@ -1438,7 +1442,7 @@ body .light .mat-header-cell {
   font-size: 16px !important;
   font-weight: bold !important;
   text-transform: uppercase !important;
-  color: #00316c !important;
+  color: black !important;
 }
 
 .c-billetage {
@@ -1474,7 +1478,7 @@ body .light .mat-header-cell {
   font-size: 14px !important;
   font-weight: bold !important;
   text-transform: uppercase !important;
-  color: #00316c !important;
+  color: black !important;
 }
 
 .cust_label {
@@ -1484,7 +1488,7 @@ body .light .mat-header-cell {
   }
   font-size: 14px !important;
   font-weight: bold !important;
-  color: #00316c !important;
+  color: black !important;
 }
 
 .cust_labels {
@@ -1536,51 +1540,51 @@ body .light .mat-header-cell {
 }
 
 .c-border-1 {
-  border: 2px solid #00316c !important;
+  border: 2px solid black !important;
 }
 
 .c-border-2 {
-  border: 2px solid #00316c !important;
+  border: 2px solid black !important;
 }
 
 .c-border-3 {
-  border: 1px solid #00316c !important;
+  border: 1px solid black !important;
 }
 
 .c-border-4 {
-  border: 1px solid #00316c !important;
+  border: 1px solid black !important;
 }
 
 .c-colornbre-1 {
-  color: #00316c !important;
+  color: black !important;
 }
 
 .c-colornbre-2 {
-  color: #00316c !important;
+  color: black !important;
 }
 
 .c-colornbre-3 {
-  color: #00316c !important;
+  color: black !important;
 }
 
 .c-colornbre-4 {
-  color: #00316c !important;
+  color: black !important;
 }
 
 .bg-card-1 {
-  background: #00316c;
+  background: black;
 }
 
 .bg-card-2 {
-  background: #00316c;
+  background: black;
 }
 
 .bg-card-3 {
-  background: #00316c;
+  background: black;
 }
 
 .bg-card-4 {
-  background: #00316c;
+  background: black;
 }
 
 .matdrawer {
@@ -1591,7 +1595,7 @@ body .light .mat-header-cell {
 .textAgen {
   margin-top: 5px;
   font-weight: bold;
-  color: #1a2b60;
+  color: black;
   font-size: 15px;
   text-transform: uppercase;
 }
@@ -1603,7 +1607,7 @@ body .light .mat-header-cell {
 .buttonTer {
   border-radius: 5px;
   background: #ffffff !important;
-  border: 1px solid #f3903d !important;
+  border: 1px solid #D45C00 !important;
 }
 
 .textFormP {
@@ -1611,51 +1615,51 @@ body .light .mat-header-cell {
 }
 
 .c-borders-1 {
-  border: 2px solid #00316c !important;
+  border: 2px solid black !important;
 }
 
 .c-borders-2 {
-  border: 2px solid #00316c !important;
+  border: 2px solid black !important;
 }
 
 .c-borders-3 {
-  border: 1px solid #00316c !important;
+  border: 1px solid black !important;
 }
 
 .c-borders-4 {
-  border: 1px solid #00316c !important;
+  border: 1px solid black !important;
 }
 
 .c-colornbres-1 {
-  color: #00316c !important;
+  color: black !important;
 }
 
 .c-colornbres-2 {
-  color: #00316c !important;
+  color: black !important;
 }
 
 .c-colornbres-3 {
-  color: #00316c !important;
+  color: black !important;
 }
 
 .c-colornbres-4 {
-  color: #00316c !important;
+  color: black !important;
 }
 
 .bg-card-1 {
-  background: #00316c;
+  background: black;
 }
 
 .bg-card-2 {
-  background: #00316c;
+  background: black;
 }
 
 .bg-card-3 {
-  background: #00316c;
+  background: black;
 }
 
 .bg-card-4 {
-  background: #00316c;
+  background: black;
 }
 
 .matdrawer {
@@ -1677,7 +1681,7 @@ body .light .mat-expansion-panel-header.mat-expanded {
 }
 
 .c_titreH {
-  color: #00316c !important;
+  color: black !important;
   font-size: 16px !important;
 }
 
@@ -1686,7 +1690,7 @@ body .light .mat-expansion-panel-header.mat-expanded {
 }
 
 .c_backToolbar {
-  background-color: #00316c !important;
+  background-color: black !important;
 }
 
 .tableP {
@@ -1714,7 +1718,7 @@ body .light .mat-expansion-panel-header.mat-expanded {
 
 .example-input {
   border: 1px solid !important;
-  border-color: #00316c !important;
+  border-color: black !important;
   border-radius: 5px !important;
   background-color: #f3f5f7 !important;
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", sans-serif;
@@ -1764,7 +1768,7 @@ body .light .mat-expansion-panel-header.mat-expanded {
 }
 
 .entete {
-  background: #00316c;
+  background: black;
   color: white;
 }
 
@@ -1782,7 +1786,7 @@ body .light .mat-expansion-panel-header.mat-expanded {
 
 .titleProduit {
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", sans-serif;
-  color: #00316c !important;
+  color: black !important;
   font-size: 18px !important;
   margin-bottom: 30px !important;
   font-weight: bold;
@@ -1792,7 +1796,7 @@ body .light .mat-expansion-panel-header.mat-expanded {
 .fraisTitle {
   margin-bottom: 20px;
   font-weight: bold;
-  color: #00316c;
+  color: black;
   font-size: 14px;
 }
 
@@ -1805,7 +1809,7 @@ body.light .mat-mdc-tab-group.mat-primary .mat-ink-bar,
 body.light .mat-mdc-tab-nav-bar.mat-primary .mat-ink-bar,
 body .light .mat-tab-group.mat-primary .mat-ink-bar,
 body .light .mat-tab-nav-bar.mat-primary .mat-ink-bar {
-  background-color: #00316c;
+  background-color: black;
 }
 
 /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
@@ -1860,7 +1864,7 @@ body .light .mat-tab-nav-bar.mat-primary .mat-ink-bar {
 .titlePro {
   font-weight: bold;
   margin: 10px;
-  background: #00316c;
+  background: black;
   color: white;
   display: inline-block;
   padding: 5px 40px 5px 40px;
@@ -2164,7 +2168,7 @@ body .light .mat-tab-nav-bar.mat-primary .mat-ink-bar {
 
 .colorTitle
 {
-  color: rgba(0, 0, 255, 0.516);
+  color: #D45C00;
 }
 
 
@@ -2199,16 +2203,16 @@ body .light .mat-tab-nav-bar.mat-primary .mat-ink-bar {
 
 ///style by mamadou
 .couleurPrimary {
-  color: #134b86;
+  color: #000000;
 }
 
 .bgPrimaire{
-  background-color: #011340;
+  background-color:green;
   color: white !important;;
 }
 
 .bgPrimaire:hover{
-  background-color: #00316c;
+  background-color: green;
 }
 
 
@@ -2233,11 +2237,25 @@ body .light .mat-tab-nav-bar.mat-primary .mat-ink-bar {
 }
 
 .color-picker:hover {
-  border-color: #3F51B5;
+  border-color: #D45C00;
 }
 
 .color-picker:focus {
   outline: none;
-  border-color: #3F51B5;
-  box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
+  border-color: #D45C00;
+  box-shadow: 0 0 5px #D45C00;
+}
+
+
+
+::ng-deep .telephone {
+  .country-selector {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .mat-mdc-select-trigger {
+    width: auto !important;
+  }
 }

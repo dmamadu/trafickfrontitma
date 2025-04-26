@@ -11,6 +11,7 @@ import { ColorService } from "src/app/core/services/color.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { SelectProjectComponent } from "../select-project/select-project.component";
 import { MatDialog } from "@angular/material/dialog";
+import { TokenStorageService } from "src/app/core/services/token-storage.service";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
@@ -39,6 +40,7 @@ export class LoginComponent implements OnInit {
     private authenticationService: AuthenticationService,
     public toastr: ToastrService,
     private colorService: ColorService,
+    private tokenStorage: TokenStorageService,
     private localService: LocalService,
     private snackbar: SnackBarService,
     private _matDialog: MatDialog
@@ -86,13 +88,14 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     this.loader = true;
-
     return this.authenticationService
       .login(this.f.email.value, this.f.password.value)
       .subscribe(
         (user: Auth) => {
           console.log(user);
-          this.localService.saveDataJson("user", user.user);
+          localStorage.setItem("token",user.token);
+          //this.localService.saveDataJson("user", user.user);
+         // this.tokenStorage.saveToken(user.token);
           if (user.user.projects && user.user.projects.length > 1) {
             this.router.navigate(["/select-project"]);
           } else if (user.user.projects && user.user.projects.length === 1) {

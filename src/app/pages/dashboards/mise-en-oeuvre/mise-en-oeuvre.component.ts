@@ -95,16 +95,16 @@ export class MiseEnOeuvreComponent implements OnInit {
     series: [20, 40],
     chart: {
       type: "pie",
-      width: 380,
+      width: 330,
     },
     labels: ["Vulnérables", "Non vulnérables"],
-    colors: ["#FF5733", "#33FF57"],
+    colors: ["#0C8439", "#D45C00"],
     legend: {
       position: "bottom",
     },
   };
 
-  categories = ["Opérateurs économiques", "Agricoles", "Places affaires"];
+  categories = ["Agricoles", "Places affaires"];
 
   barChart = {
     series: [
@@ -119,13 +119,13 @@ export class MiseEnOeuvreComponent implements OnInit {
     ],
     chart: {
       type: "bar",
-      height: 350,
+      height: 320,
       stacked: true,
     },
     xaxis: {
-      categories: ["Agricole", "Place d'affaire", "Économique"],
+      categories: ["Agricole", "Place d'affaire"],
     },
-    colors: ["#FF5733", "#33FF57"],
+    colors: ["#0C8439", "#D45C00"],
     legend: {
       position: "top",
     },
@@ -140,17 +140,17 @@ export class MiseEnOeuvreComponent implements OnInit {
     series: [
       {
         name: "Total des compensations",
-        data: [100000, 80000, 60000],
+        data: [100000, 60000],
       },
     ],
     chart: {
       type: "bar",
-      height: 350,
+      height: 320,
     },
     xaxis: {
       categories: this.categories,
     },
-    colors: ["#008FFB"],
+    colors: ["#0C8439"],
     dataLabels: {
       enabled: true,
       formatter: function (val) {
@@ -185,13 +185,13 @@ export class MiseEnOeuvreComponent implements OnInit {
   papEconomiqueCount: number = 0;
 
   pieChart = {
-    series: [0, 0, 0],
+    series: [0, 0],
     chart: {
       type: "pie",
-      width: 380,
+      width: 330,
     },
-    labels: ["Opérateurs économiques", "Agricoles", "Places affaires"],
-    colors: ["#FF5733", "#33FF57", "#3357FF"],
+    labels: ["Agricoles", "Places affaires"],
+    colors: ["#D45C00", "#0C8439"],
     legend: {
       position: "bottom",
     },
@@ -266,7 +266,6 @@ export class MiseEnOeuvreComponent implements OnInit {
 
   updatePieChart() {
     this.pieChart.series = [
-      this.papEconomiqueCount,
       this.papAgricoleCount,
       this.databasePapPlaceAffaireCount,
     ];
@@ -305,11 +304,7 @@ export class MiseEnOeuvreComponent implements OnInit {
       databasePapPlaceAffaire: { male: 0, female: 0 },
       papEconomique: { male: 0, female: 0 },
     };
-    const categories = [
-      "papAgricole",
-      "databasePapPlaceAffaire",
-      "papEconomique",
-    ];
+    const categories = ["papAgricole", "databasePapPlaceAffaire"];
     categories.forEach((category) => {
       this.getPapByCategory(category);
     });

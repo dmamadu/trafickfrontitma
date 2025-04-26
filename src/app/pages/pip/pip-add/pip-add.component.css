@@ -5,3 +5,34 @@
 .contact-table mat-table {
   width: 100%;
 }
+
+
+/* Conteneur pour les éléments fixes en haut */
+.fixed-top {
+  position: sticky;
+  top: 0;
+  background: white; /* Fond blanc pour éviter la transparence */
+  z-index: 1; /* Assure que les éléments fixes sont au-dessus du tableau */
+  padding: 16px; /* Espacement */
+  border-bottom: 1px solid #ccc; /* Ligne de séparation */
+}
+
+/* Conteneur pour le tableau avec défilement */
+.scrollable-table {
+  flex: 1; /* Prend tout l'espace disponible */
+  overflow-y: auto; /* Active le défilement vertical */
+  margin-top: 16px; /* Espacement entre les éléments fixes et le tableau */
+}
+
+
+::ng-deep .telephone {
+  .country-selector {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .mat-mdc-select-trigger {
+    width: auto !important;
+  }
+}

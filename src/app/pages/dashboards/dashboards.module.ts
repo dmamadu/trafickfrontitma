@@ -29,6 +29,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { MatPaginatorIntl } from "@angular/material/paginator";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { MiseEnOeuvreComponent } from './mise-en-oeuvre/mise-en-oeuvre.component';
+import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 @NgModule({
   declarations: [
     DefaultComponent,
@@ -58,6 +59,7 @@ import { MiseEnOeuvreComponent } from './mise-en-oeuvre/mise-en-oeuvre.component
     NgxPaginationModule,
     PdfViewerModule,
     ModalModule.forRoot(),
+    AngularMaterialModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [

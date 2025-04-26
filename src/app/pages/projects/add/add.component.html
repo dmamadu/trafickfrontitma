@@ -1,0 +1,414 @@
+<div class="">
+  <div class="bg-[#D45C00] py-2 px-6 flex items-center justify-between shadow-sm">
+    <h2 class="text-xl font-semibold text-white">
+      <mat-icon class="align-middle mr-2">assignment</mat-icon>
+      {{textHead}}
+    </h2>
+    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Fermer" class="text-white hover:bg-green-600">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="projectForm" (ngSubmit)="save()">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <input type="hidden" formControlName="id">
+
+            <!-- Section Logo -->
+            <div class="row">
+              <div class="col-lg-12 text-center mb-2">
+                <div class="position-relative d-inline-block">
+                  <label class="text-xl font-bold my-1 text-[#D45C00] flex items-center justify-center">
+                    <mat-icon class="mr-2">image</mat-icon>
+                    Logo du projet
+                  </label>
+                  <div class="position-absolute bottom-0 end-0">
+                    <label for="member-image-input" class="mb-0 cursor-pointer">
+                      <mat-icon class="text-[#D45C00] bg-white rounded-full p-1 hover:bg-gray-100">edit</mat-icon>
+                    </label>
+                    <input class="form-control d-none" id="member-image-input" type="file"
+                      accept="image/png, image/gif, image/jpeg"
+                      (change)="selectOnFile($event,'photo_profile','Thumbnail')">
+                    @if (uploadedImage) {
+                    <div>
+                      <button type="button" mat-icon-button color="warn" class="mt-1" (click)="deleteImage()">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                    }
+                  </div>
+                  <div class="avatar-lg mt-3">
+                    <div class="avatar-title bg-gray-100 rounded-full">
+                      <img [src]="imageProjet ? imageProjet : 'assets/images/noImage.png'"
+                        class="avatar-md rounded-full h-auto cursor-pointer border-2 border-[#D45C00]"
+                        (click)="openImageModal()" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section Libellé -->
+            <div class="relative mb-2">
+              <label for="libelle-input" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                <mat-icon class="mr-2 text-[#D45C00]">title</mat-icon>
+                Libellé du projet
+              </label>
+              <mat-form-field appearance="outline" class="w-full">
+                <input matInput id="libelle-input" formControlName="libelle" placeholder="Nom du projet...">
+                <mat-icon matSuffix>edit</mat-icon>
+                @if(f.libelle.invalid && (f.libelle.dirty || f.libelle.touched)){
+                <mat-error>
+                  @if(f.libelle.errors.required){
+                  <span>Le nom est obligatoire</span>
+                  }
+                  @if(f.libelle.errors.minlength){
+                  <span>Minimum 3 caractères</span>
+                  }
+                  @if(f.libelle.errors.maxlength){
+                  <span>Maximum 150 caractères</span>
+                  }
+                </mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <!-- Section Description -->
+            <div class="relative mb-2">
+              <label for="projectdesc-input" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                <mat-icon class="mr-2 text-[#D45C00]">description</mat-icon>
+                Description
+              </label>
+              <mat-form-field appearance="outline" class="w-full">
+                <textarea matInput formControlName="description" id="projectdesc-input" rows="3"
+                  placeholder="Description du projet..."></textarea>
+                @if (f.description.invalid && (f.description.touched || f.description.dirty)) {
+                <mat-error>
+                  @if (f.description.errors.required) {
+                  <span>Description obligatoire</span>
+                  }
+                  @if (f.description.errors.minlength) {
+                  <span>Minimum 5 caractères</span>
+                  }
+                </mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <!-- Section Maitre d'ouvrage -->
+            <div class="my-4" *ngIf="lengthMo==0">
+              <button type="button" mat-raised-button color="primary" class="bg-[#D45C00] text-white"
+                (click)="addItems()">
+                <mat-icon class="mr-2">person_add</mat-icon>
+                Créer un Maitre d'ouvrage
+              </button>
+            </div>
+
+            <!-- Section Assignation -->
+            <!-- <div class="mb-2" *ngIf="lengthMo>0">
+              <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                <mat-icon class="mr-2 text-[#D45C00]">group</mat-icon>
+                Assigné à
+              </label>
+
+              <div *ngIf="assignList && assignList.length > 0" class="flex flex-wrap gap-2 mb-3">
+                @for(data of assignList; track $index){
+                <mat-chip class="!bg-[#D45C00] !text-white">
+                  @if (data.image) {
+                  <img [src]="data.imageUrl" alt="" class="rounded-full h-6 w-6 mr-2">
+                  }
+                  {{ data.lastname }}
+                </mat-chip>
+                }
+              </div>
+
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Selectionnez les membres</mat-label>
+                <mat-select multiple formControlName="assignees">
+                  @for(data of listMo; track $index){
+                  <mat-option [value]="data.id" (click)="slectMember(i)">
+                    <div class="flex items-center">
+                      @if (data.image) {
+                      <img [src]="data.imageUrl" alt="" class="rounded-full h-6 w-6 mr-2">
+                      }
+                      <span>{{ data.lastname }}</span>
+                    </div>
+                  </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div> -->
+
+            <div class="mb-3 position-relative">
+              <label class="form-label">Assigné à</label>
+
+              <!-- Utilisateurs sélectionnés - Version compacte -->
+              <div *ngIf="assignList.length > 0" class="selected-users-box mb-2 p-2 bg-light rounded"
+                style="max-height: 80px; overflow-y: auto;">
+                <div class="d-flex flex-wrap gap-1">
+                  <div *ngFor="let user of assignList" class="selected-user-item">
+                    <div class="d-flex align-items-center bg-white p-1 pe-2 rounded border">
+                      @if (user.image) {
+                      <img [src]="getImageFromBase64(user.image.type, user.image.image)" alt="{{user.lastname}}"
+                        class="rounded-circle avatar-xs me-1">
+                      } @else {
+                      <div
+                        class="avatar-xs me-1 bg-[#D45C00] rounded-circle d-flex align-items-center justify-content-center">
+                        <span class="text-white small">{{user.lastname | slice:0:1}}</span>
+                      </div>
+                      }
+                      <span class="small">{{user.lastname}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Liste scrollable des MO -->
+              <div class="mo-list-container border rounded" style="height: 100px; overflow-y: auto;">
+                <div *ngFor="let mo of listMo"
+                  class="mo-list-item p-2 d-flex align-items-center cursor-pointer border-bottom"
+                  [class.bg-light]="isSelected(mo)" (click)="toggleUserSelection(mo)">
+
+                  @if (mo.image) {
+                  <img [src]="getImageFromBase64(mo.image.type, mo.image.image)" alt="{{mo.lastname}}"
+                    class="rounded-circle avatar-xs me-2">
+                  } @else {
+                  <div
+                    class="avatar-xs me-2 bg-secondary rounded-circle d-flex align-items-center justify-content-center">
+                    <span class="text-white small">{{mo.lastname | slice:0:1}}</span>
+                  </div>
+                  }
+
+                  <span class="small">{{mo.lastname}} {{mo.firstname}}</span>
+
+                  <span class="ms-auto">
+                    <i class="mdi mdi-check-circle text-success" *ngIf="isSelected(mo)"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section Normes -->
+            <div class="inner-repeater mb-2">
+              <form [formGroup]="form">
+                <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                  <mat-icon class="mr-2 text-[#D45C00]">rule</mat-icon>
+                  Normes du projet
+                </label>
+
+                <div class="inner mb-0 row" formArrayName="members">
+                  @for(data of members.controls; track $index){
+                  <div class="inner col-lg-12 ms-md-auto mb-3" [formGroupName]="$index">
+                    <div class="flex flex-col md:flex-row gap-3 items-end">
+                      <mat-form-field appearance="outline" class="flex-grow">
+                        <mat-label>Titre</mat-label>
+                        <input matInput type="text" formControlName="titre" placeholder="Titre de la norme">
+                      </mat-form-field>
+
+                      <mat-form-field appearance="outline" class="flex-grow">
+                        <mat-label>Description</mat-label>
+                        <textarea matInput formControlName="description"
+                          placeholder="Description de la norme"></textarea>
+                      </mat-form-field>
+
+                      <button type="button" mat-icon-button color="warn" (click)="deleteMember($index)">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                  }
+                </div>
+              </form>
+
+              <div class="flex justify-end mt-2">
+                <button type="button" mat-stroked-button color="primary" (click)="addMember()"
+                  [disabled]="form.invalid">
+                  <mat-icon class="mr-2">add</mat-icon>
+                  Ajouter une norme
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne de droite -->
+      <div class="col-lg-4">
+        <!-- Card Statut -->
+        <div class="card shadow-sm border-0 mb-2">
+          <div class="card-body">
+            <h5 class="card-title mb-1 text-[#D45C00] flex items-center">
+              <mat-icon class="mr-2">flag</mat-icon>
+              Statut du projet
+            </h5>
+
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>État</mat-label>
+              <mat-select formControlName="status">
+                <mat-option value="Completed">Terminé</mat-option>
+                <mat-option value="Inprogress">En cours</mat-option>
+                <mat-option value="Delay">En retard</mat-option>
+              </mat-select>
+              @if(f.status.invalid && f.status.touched){
+              <mat-error>Veuillez sélectionner un statut</mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Card Dates -->
+        <div class="card shadow-sm border-0 mb-2">
+          <div class="card-body">
+            <h5 class="card-title mb-1 text-[#D45C00] flex items-center">
+              <mat-icon class="mr-2">date_range</mat-icon>
+              Période du projet
+            </h5>
+
+            <div class="mb-2">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Date de début</mat-label>
+                <input matInput [matDatepicker]="picker1" formControlName="datedebut">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+                @if(f.datedebut.invalid && (f.datedebut.dirty || f.datedebut.touched)){
+                <mat-error>
+                  @if(f.datedebut.errors.required){
+                  <span>Date de début requise</span>
+                  }
+                </mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <div>
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Date de fin</mat-label>
+                <input matInput [matDatepicker]="picker2" formControlName="datefin">
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+                @if(f.datefin.invalid && (f.datefin.dirty || f.datefin.touched)){
+                <mat-error>
+                  @if(f.datefin.errors.required){
+                  <span>Date de fin requise</span>
+                  }
+                </mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            @if(projectForm.errors?.dateInvalid && (f.datedebut.touched || f.datefin.touched)){
+            <div class="text-red-600 text-sm mt-1">
+              <mat-icon class="align-text-bottom mr-1">error</mat-icon>
+              La date de fin doit être après la date de début
+            </div>
+            }
+          </div>
+        </div>
+
+        <!-- Card Couleurs -->
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <h5 class="card-title mb-3 text-[#D45C00] flex items-center">
+              <mat-icon class="mr-2">palette</mat-icon>
+              Couleurs du projet
+            </h5>
+
+            <div class="grid grid-cols-1 gap-4">
+              <!-- Couleur primaire -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Couleur primaire</label>
+                <div class="flex items-center gap-2">
+                  <input type="text" class="form-control color-picker flex-grow" formControlName="primaryColor"
+                    [(colorPicker)]="projectForm.value.primaryColor" [style.background]="projectForm.value.primaryColor"
+                    [value]="projectForm.value.primaryColor" [cpPresetColors]="presetColors">
+                  <mat-icon class="text-[#D45C00]">brush</mat-icon>
+                </div>
+                @if (projectForm.get('primaryColor').invalid && (projectForm.get('primaryColor').dirty ||
+                projectForm.get('primaryColor').touched)) {
+                <div class="text-red-600 text-xs mt-1">
+                  <mat-icon class="align-text-bottom" style="font-size: 14px">error</mat-icon>
+                  Couleur requise
+                </div>
+                }
+              </div>
+
+              <!-- Couleur secondaire -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Couleur secondaire</label>
+                <div class="flex items-center gap-2">
+                  <input type="text" class="form-control color-picker flex-grow" formControlName="secondaryColor"
+                    [(colorPicker)]="projectForm.value.secondaryColor"
+                    [style.background]="projectForm.value.secondaryColor" [value]="projectForm.value.secondaryColor"
+                    [cpPresetColors]="presetColors">
+                  <mat-icon class="text-green-600">brush</mat-icon>
+                </div>
+                @if (projectForm.get('secondaryColor').invalid && (projectForm.get('secondaryColor').dirty ||
+                projectForm.get('secondaryColor').touched)) {
+                <div class="text-red-600 text-xs mt-1">
+                  <mat-icon class="align-text-bottom" style="font-size: 14px">error</mat-icon>
+                  Couleur requise
+                </div>
+                }
+              </div>
+
+              <!-- Couleur d'accentuation -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Couleur d'accentuation</label>
+                <div class="flex items-center gap-2">
+                  <input type="text" class="form-control color-picker flex-grow" formControlName="accentColor"
+                    [(colorPicker)]="projectForm.value.accentColor" [style.background]="projectForm.value.accentColor"
+                    [value]="projectForm.value.accentColor" [cpPresetColors]="presetColors">
+                  <mat-icon class="text-gray-600">brush</mat-icon>
+                </div>
+                @if (projectForm.get('accentColor').invalid && (projectForm.get('accentColor').dirty ||
+                projectForm.get('accentColor').touched)) {
+                <div class="text-red-600 text-xs mt-1">
+                  <mat-icon class="align-text-bottom" style="font-size: 14px">error</mat-icon>
+                  Couleur requise
+                </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <app-loader-data *ngIf="isloading"></app-loader-data>
+
+    <div class="col-lg-8 mt-4 my-2">
+      <div class="text-end">
+        <button type="submit" class="
+        bg-[#D45C00] text-white hover:bg-[#c05300]
+        p-2
+        rounded
+      ">
+          <h2 class="text-xl font-semibold text-white">
+            <mat-icon class="align-middle mr-2">{{ buttonText == 'Modifier le projet' ? 'edit' : 'assignment'
+              }}</mat-icon>
+            {{ buttonText }}
+          </h2>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Modal pour afficher l'image en grand -->
+<ng-template #imageModal>
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg max-w-4xl w-full">
+      <div class="flex justify-between items-center border-b p-4">
+        <h2 class="text-xl font-semibold text-[#D45C00]">Visualiser l'image</h2>
+        <button mat-icon-button (click)="closeImageModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="p-4 flex justify-center">
+        <img [src]="imageProjet" class="max-h-[70vh] max-w-full" alt="Image en grand" />
+      </div>
+    </div>
+  </div>
+</ng-template>

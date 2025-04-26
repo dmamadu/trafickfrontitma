@@ -3,6 +3,9 @@
 //
 
 .custom-accordion {
+  p{
+    color: black;
+  }
     .accordion-list {
 
         .accor-plus-icon {
@@ -70,7 +73,7 @@
 
 
     .card-body {
-        color: var(--#{prefix}secondary-color);
+        color: black;
     }
 }
 

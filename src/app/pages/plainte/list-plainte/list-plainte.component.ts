@@ -33,6 +33,7 @@ import { DatatableComponent } from "src/app/shared/datatable/datatable.component
 import { ExportService } from "src/app/shared/core/export.service";
 import { DetailPlainteComponent } from "src/app/detail-plainte/detail-plainte.component";
 import { PlainteDetailComponent } from "../palainte-detail/plainte-detail.component";
+import { FlatpickrModule } from "angularx-flatpickr";
 
 @Component({
   selector: "app-list-plainte",
@@ -57,6 +58,7 @@ import { PlainteDetailComponent } from "../palainte-detail/plainte-detail.compon
     UIModule,
     AngularMaterialModule,
     DatatableComponent,
+    FlatpickrModule
   ],
   styleUrl: "./list-plainte.component.css",
 })
@@ -165,7 +167,7 @@ export class ListPlainteComponent implements OnInit {
       },
       {
         icon: "bxs-trash-alt",
-        couleur: "red",
+        couleur: "#D55E00",
         size: "icon-size-4",
         title: "Supprimer",
         isDisabled: this.hasDelete,
@@ -173,7 +175,7 @@ export class ListPlainteComponent implements OnInit {
       },
       {
         icon: "bxs-info-circle",
-        couleur: "#00bfff	",
+        couleur: "black	",
         size: "icon-size-4",
         title: "détail",
         isDisabled: this.hasDelete,
@@ -326,7 +328,7 @@ export class ListPlainteComponent implements OnInit {
   addItems(): void {
     this.snackbar.openModal(
       AddPlainteComponent,
-      "55rem",
+      "65rem",
       "new",
       "",
       this.datas,

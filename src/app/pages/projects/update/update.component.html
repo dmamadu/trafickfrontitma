@@ -44,8 +44,17 @@
                         </div>
                       </div>
                     </label>
-                    <input class="form-control d-none" value="" id="project-image-input" type="file"
-                      accept="image/png, image/gif, image/jpeg" (change)="fileChange($event)">
+                    <input class="form-control d-none" id="member-image-input" type="file"
+                      accept="image/png, image/gif, image/jpeg"
+                      (change)="selectOnFile($event,'photo_profile','Thumbnail')">
+                    @if (uploadedImage) {
+                    <div>
+                      <button type="button" class="btn btn-danger btn-sm mt-1" id="delete-image-btn"
+                        (click)="deleteImage()">
+                        <i class="bx bx-trash me-1"></i>
+                      </button>
+                    </div>
+                    }
                   </div>
                   <div class="avatar-lg">
                     <div class="avatar-title bg-light rounded-circle">
@@ -76,6 +85,48 @@
                 }
               </div>
               }
+            </div>
+
+            <div class="mb-3 position-relative">
+
+              <label for="task-assign-input" class="form-label titre-input">Assigné à</label>
+              <div *ngIf="assignList && assignList.length > 0" class="d-flex flex-wrap mb-2">
+                <ng-container *ngFor="let data of assignList; let i = index">
+                  <div class="d-flex align-items-center me-3">
+                    @if (data.image) {
+                    <img [src]="data.imageUrl" alt="" class="rounded-circle avatar-xs me-2">
+                    }
+                    <span>{{ data.lastname }}</span>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="select-element" id="select-element" dropdown>
+                <button class="btn btn-light w-100 d-flex justify-content-between" dropdownToggle type="button"
+                  data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                  <span>Assigné à <b id="total-assignee" class="mx-1">{{assignList?.length}}</b> Members</span>
+                  <i class="mdi mdi-chevron-down"></i>
+                </button>
+                <div class="dropdown-menu w-100" *dropdownMenu>
+                  <ngx-simplebar style="max-height: 172px">
+                    <ul class="list-unstyled mb-0 assignto-list">
+                      <ng-container *ngFor="let data of listMo; let i = index">
+                        <li>
+                          <a class="dropdown-item d-flex align-items-center"
+                            [ngClass]="{'active': data.checked === '1'}" href="javascript:void(0);"
+                            (click)="slectMember(i)">
+                            <div class="avatar-xs flex-shrink-0 me-2">
+                              @if (data.image) {
+                              <img [src]="data.imageUrl" alt="" class="img-fluid rounded-circle" />
+                              }
+                            </div>
+                            <div class="flex-grow-1">{{ data.lastname }}</div>
+                          </a>
+                        </li>
+                      </ng-container>
+                    </ul>
+                  </ngx-simplebar>
+                </div>
+              </div>
             </div>
 
 
@@ -114,12 +165,8 @@
               </div>
             </div>
 
-
-
           </div>
-          <!-- end card body -->
         </div>
-        <!-- end card -->
 
       </div>
       <!-- end col -->
@@ -139,35 +186,6 @@
                 <option value="Delay">Delay</option>
               </select>
               <div class="invalid-feedback">Please select project status.</div>
-            </div>
-            <div class="relative">
-              <div class="mb-4">
-                <label class="form-label" for="project-visibility-input">Catégorie</label>
-                <input matInput id="libelle-input" [matAutocomplete]="autoDepatement" (change)="updateForm($event)"
-                  formControlName="categorie" type="text" class="form-control" [ngClass]="{
-                  'is-valid': f.categorie.valid || f.categorie.touched,
-                  'is-invalid':f.categorie.invalid && f.categorie.touched
-                }">
-                <mat-autocomplete #autoDepatement="matAutocomplete"
-                  (optionSelected)="updateFormWithSelectedOption($event)">
-                  <mat-option *ngFor="let suggestion of suggestions$ | async" [value]="suggestion">
-                    {{ suggestion }}
-                  </mat-option>
-                </mat-autocomplete>
-              </div>
-              @if(f.categorie.invalid && (f.categorie.dirty || f.categorie.touched)){
-              <div class="text-red-600 position-absolute left-1 top-16">
-                @if(f.categorie.errors.required){
-                <div>Veillez saisir la catégorie du projet</div>
-                }
-                @if(f.categorie.errors.minlength){
-                <div>Veillez saisir minimum trois caractéres</div>
-                }
-                @if(f.categorie.errors.maxlength){
-                <div>Veillez saisir au maximum 150 caractéres</div>
-                }
-              </div>
-              }
             </div>
           </div>
           <!-- end card body -->
@@ -210,7 +228,8 @@
 
           </div>
           }
-          <div *ngIf="projectForm.errors?.dateInvalid && (f.datedebut.touched || f.datefin.touched)" class="text-red-600 position-absolute left-1 top-17">
+          <div *ngIf="projectForm.errors?.dateInvalid && (f.datedebut.touched || f.datefin.touched)"
+            class="text-red-600 position-absolute left-1 top-17">
             La date de fin ne peut pas être inférieure à la date de début.
           </div>
         </div>
@@ -223,7 +242,8 @@
 
     <div class="col-lg-8">
       <div class="text-end mb-4">
-        <button type="submit" id="addContact-btn" class="btn bg-[#245363] text-white hover:bg-[#93C5AF]"> Modifier le projet</button>
+        <button type="submit" id="addContact-btn" class="btn bg-[green] text-white hover:bg-[green]"> Modifier le
+          projet</button>
       </div>
     </div>
     <!-- end row -->

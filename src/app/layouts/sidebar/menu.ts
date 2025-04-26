@@ -38,13 +38,13 @@ export const MENU: MenuItem[] = [
         link: "/projects/list",
         parentId: 40,
       },
-      {
-        id: 42,
-        label: "Créer",
-        icon: "bx-plus-circle",
-        link: "/projects/create",
-        parentId: 40,
-      }
+      // {
+      //   id: 42,
+      //   label: "Créer",
+      //   icon: "bx-plus-circle",
+      //   link: "/projects/create",
+      //   parentId: 40,
+      // }
     ],
   },
   {

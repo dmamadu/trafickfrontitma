@@ -11,7 +11,7 @@
 }
 .generate{
     width: fit-content !important;
-    background-color: #01316c;
+    background-color: green;
     border-radius: 22px !important;
     font-size: small;
 }
@@ -22,7 +22,7 @@
     margin: auto;
 }
 .iconColor{
-    color: darkblue !important;
+    color: green !important;
 }
 .butSearch{
     margin-left: auto;
@@ -50,7 +50,7 @@
 
 .titleProduit{
     font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", sans-serif;
-    color: #00316c !important;
+    color: green !important;
     font-size: 18px !important;
     margin-bottom: 30px !important;
     font-weight: bold;
@@ -58,7 +58,7 @@
   }
   .titleProduitLeft{
     font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", sans-serif;
-    color: #00316c !important;
+    color: green !important;
     font-size: 18px !important;
     margin-bottom: 30px !important;
     font-weight: bold;
@@ -85,12 +85,12 @@
   }
   .example-input{
     border: 1px solid !important;
-    border-color: #00316c !important;
+    border-color: green !important;
     border-radius: 5px !important;
     background-color: #f3f5f7 !important;
     font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", sans-serif;
     font-size: 15px !important;
-    color: #1a1616 !important;
+    color: #000000 !important;
     text-align: center !important;
     width: 50%;
     height: 25px;
@@ -125,7 +125,7 @@
     // border-radius: 5px 0px 5px 0px;
   }
   .entete{
-    background: #00316c;
+    background: green;
     color: white;
 }
 .tetePage{
@@ -135,7 +135,7 @@
     justify-content: center;
 }
 .tabTransaction{
-  border: 1px solid #00316c !important;
+  border: 1px solid green !important;
 }
 .nameT{
   font-weight: bold;

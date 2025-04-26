@@ -7,6 +7,7 @@ import {
 } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
+import { ImageModalComponent } from "src/app/shared/image-modal.component";
 import { UIModule } from "src/app/shared/ui/ui.module";
 
 interface PerteRecolte {
@@ -103,4 +104,14 @@ export class CompensationDetailComponent {
 
     return data;
   }
+
+
+     openImageModal(imageUrl: string) {
+        if (imageUrl) {
+          this._matDialog.open(ImageModalComponent, {
+            data: { imageUrl: imageUrl },
+          });
+        }
+      }
+
 }

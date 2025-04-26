@@ -1,107 +1,140 @@
-<div class="container-fluid">
-  <!-- start page title -->
-  <app-page-title title="Détail du projet" [breadcrumbItems]="breadCrumbItems" class="colorTitle"></app-page-title>
-  <!-- end page title -->
+<div class="container-fluid project-detail-container">
+  <!-- Titre de la page -->
+  <app-page-title title="Détail du projet" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 
   <div class="row">
+    <!-- Colonne principale -->
     <div class="col-lg-8">
-      <div class="card">
+      <div class="project-card">
         <div class="card-body">
-          <div class="d-flex">
-            <div class="flex-shrink-0 me-4">
-              <img [src]="DetailProject?.imageUrl ? DetailProject.imageUrl : 'assets/images/companies/img-1.png'" alt=""
-                class="avatar-sm">
+          <!-- En-tête du projet -->
+          <div class="project-header">
+            <div class="project-logo">
+              <img [src]="DetailProject?.imageUrl ? DetailProject.imageUrl : 'assets/images/project-default.png'"
+                alt="Logo du projet" class="project-avatar">
             </div>
-
-            <div class="flex-grow-1 overflow-hidden">
-              <h5 class="text-truncate font-size-15">{{DetailProject.libelle}}</h5>
-            </div>
-
-            <div class="mx-3 my-2" >
-              <label for="" class="text-black font-bold">Etat : </label>
-              <span class="mx-1">{{  DetailProject.status}}</span>
+            <div class="project-info">
+              <h1 class="project-title">{{DetailProject.libelle}}</h1>
+              <div class="project-status">
+                <span class="status-label">État :</span>
+                <span class="status-badge" [ngClass]="getStatusClass(DetailProject.status)">
+                  {{DetailProject.status}}
+                </span>
+              </div>
             </div>
           </div>
 
-          <h5 class="font-size-15 mt-4">Project Details :</h5>
+          <!-- Description du projet -->
+          <div class="project-description">
+            <h2 class="section-title">
+              <mat-icon>description</mat-icon> Détails du projet
+            </h2>
+            <p class="description-text">{{DetailProject.description}}</p>
+          </div>
 
-          <p class="text-muted">{{DetailProject.description}}</p>
-          <div class="row task-dates">
-            <div class="col-sm-4 col-6">
-              <div class="mt-4">
-                <h5 class="font-size-14"><i class="bx bx-calendar me-1 text-primary"></i> Start Date</h5>
-                <p class="text-muted mb-0">{{DetailProject.datedebut}}</p>
+          <!-- Dates du projet -->
+          <div class="project-dates">
+            <div class="date-item">
+              <div class="date-icon">
+                <mat-icon>event_available</mat-icon>
+              </div>
+              <div>
+                <h3 class="date-label">Date de début</h3>
+                <p class="date-value">{{DetailProject.datedebut | date:'dd/MM/yyyy'}}</p>
               </div>
             </div>
-
-            <div class="col-sm-4 col-6">
-              <div class="mt-4">
-                <h5 class="font-size-14"><i class="bx bx-calendar-check me-1 text-primary"></i> Due Date</h5>
-                <p class="text-muted mb-0">{{DetailProject.datefin}}</p>
+            <div class="date-item">
+              <div class="date-icon">
+                <mat-icon>event_busy</mat-icon>
+              </div>
+              <div>
+                <h3 class="date-label">Date de fin</h3>
+                <p class="date-value">{{DetailProject.datefin | date:'dd/MM/yyyy'}}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <!-- end col -->
 
+    <!-- Colonne latérale - Personnes affectées -->
     <div class="col-lg-4">
-      <div class="card">
+      <div class="team-card">
         <div class="card-body">
-          <h4 class="card-title mb-4 colorTitle">Personnes Affectées</h4>
+          <h2 class="section-title">
+            <mat-icon>people</mat-icon> Personnes Affectées
+          </h2>
 
-          <div class="table-responsive">
-            <table class="table align-middle table-nowrap">
-              <tbody>
-                @for (item of DetailProject.users; track $index) {
-                <tr>
-                  <td style="width: 50px;"><img src="assets/images/users/avatar-2.jpg" class="rounded-circle avatar-xs"
-                      alt=""></td>
-                  <td>
-                    <h5 class="font-size-14 m-0"><a href="" class="text-dark">{{item.lastname}}</a></h5>
-                  </td>
-                  <td></td>
-                </tr>
-                }
-
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- end col -->
-  </div>
-  <!-- end row -->
-
-  <div class="row">
-
-
-    <!-- end col -->
-
-    <div class="col-lg-6">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title mb-4 colorTitle">Normes du projets</h4>
-
-          @for (item of DetailProject.normes; track $index) {
-          <div class="d-flex mb-4">
-            <div class="flex-grow-1">
-              <h5 class="font-size-13 mb-1">{{item.titre}}</h5>
-              <p class="text-muted mb-1">
-                {{item.description}}
-              </p>
+          <!-- <div class="team-list">
+            @for (item of DetailProject.users; track $index) {
+            <div class="team-member">
+              <div class="member-avatar">
+                <img [src]="item.imageUrl || 'assets/images/users/avatar-default.png'"
+                     class="avatar-img" alt="{{item.lastname}}">
+              </div>
+              <div class="member-info">
+                <h3 class="member-name">{{item.lastname}}</h3>
+                <p class="member-role">{{item.role || 'Membre'}}</p>
+              </div>
             </div>
+            }
+          </div> -->
+          <div class="space-y-3">
+            @for (item of  DetailProject.users; track $index) {
+            <div class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition">
+              <div class="relative">
+                @if (item.image) {
+                <img [src]="getImageFromBase64(item.image.type, item.image.image)"
+                  class="w-10 h-10 rounded-full object-cover border-2 border-[#D45C00]">
+                } @else {
+                <div
+                  class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center border-2 border-[#D45C00]">
+                  <span class="text-gray-600 font-medium">{{item.lastname | slice:0:1}}</span>
+                </div>
+                }
+                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+              </div>
+              <div class="ml-3">
+                <h4 class="text-sm font-medium text-gray-900">{{item.lastname}} {{item.firstname}}</h4>
+                <p class="text-xs text-gray-500">{{item.contact || 'Non spécifié'}}</p>
+              </div>
+            </div>
+            } @empty {
+            <div class="text-center py-4 text-gray-500">
+              <mat-icon class="text-gray-400">group_off</mat-icon>
+              <p>Aucune personne assignée</p>
+            </div>
+            }
           </div>
-
-          }
-
-
         </div>
       </div>
     </div>
-    <!-- end col -->
   </div>
-  <!-- end row -->
+
+  <!-- Normes du projet -->
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="standards-card">
+        <div class="card-body">
+          <h2 class="section-title">
+            <mat-icon>rule</mat-icon> Normes du projet
+          </h2>
+
+          <div class="standards-list">
+            @for (item of DetailProject.normes; track $index) {
+            <div class="standard-item">
+              <div class="standard-icon">
+                <mat-icon>check_circle</mat-icon>
+              </div>
+              <div class="standard-content">
+                <h3 class="standard-title">{{item.titre}}</h3>
+                <p class="standard-description">{{item.description}}</p>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

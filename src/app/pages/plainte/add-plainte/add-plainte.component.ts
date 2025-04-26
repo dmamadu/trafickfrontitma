@@ -26,7 +26,6 @@ import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { ClientVueService } from "../../admin/client-vue/client-vue.service";
 import { AddComponent } from "../../tasks/add/add.component";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
-import { Image } from "src/app/shared/models/image.model";
 import { MAT_DATE_LOCALE, MatNativeDateModule } from "@angular/material/core";
 import { MatPaginatorIntl } from "@angular/material/paginator";
 import { MatDatepickerModule } from "@angular/material/datepicker";
@@ -197,25 +196,28 @@ export class AddPlainteComponent implements OnInit {
         [Validators.required]
       ),
       contact: this.fb.control(donnees ? donnees?.contact : null, [
-        Validators.required,
+        Validators.required
       ]),
 
       prenom: this.fb.control(donnees ? donnees?.prenom : null, [
-        Validators.required,
+        Validators.required
+      ]),
+      sexe: this.fb.control(donnees ? donnees?.sexe : null, [
+        Validators.required
       ]),
       nom: this.fb.control(donnees ? donnees?.nom : null, [
-        Validators.required,
+        Validators.required
       ]),
       codePap: this.fb.control(donnees ? donnees?.codePap : null, [
-        Validators.required,
+        Validators.required
       ]),
 
       vulnerabilite: this.fb.control(donnees ? donnees?.vulnerabilite : null, [
-        Validators.required,
+        Validators.required
       ]),
 
       email: this.fb.control(donnees ? donnees?.email : null, [
-        Validators.required,
+        Validators.required
       ]),
 
       situationMatrimoniale: this.fb.control(
@@ -227,7 +229,7 @@ export class AddPlainteComponent implements OnInit {
         [Validators.required]
       ),
       hasDocument: this.fb.control(donnees ? donnees?.hasDocument : null, [
-        Validators.required,
+        Validators.required
       ]),
 
       recommandation: this.fb.control(
@@ -235,7 +237,7 @@ export class AddPlainteComponent implements OnInit {
         [Validators.required]
       ),
       etat: this.fb.control(donnees ? donnees?.etat : null, [
-        Validators.required,
+        Validators.required
       ]),
       documentUrls: this.fb.array(
         donnees && donnees.documentUrls
@@ -542,7 +544,7 @@ export class AddPlainteComponent implements OnInit {
     this.documentUrls = allUrls;
   }
 
-  etats: string[] = ["Résolu", "En Attente", "En Cours"];
+  etats: string[] = ["Résolue", "En Attente", "En Cours"];
 
 
 
@@ -587,6 +589,10 @@ export class AddPlainteComponent implements OnInit {
       if (this.isStepValid(currentStep)) {
         stepper.next();
       }
+      console.log('====================================');
+      console.log(currentStep)
+      console.log(this.isStepValid(currentStep));
+      console.log('====================================');
     }
 
 
@@ -701,7 +707,7 @@ isStepValid(stepIndex: number): boolean {
     case 2:
       return (
         this.initForm.get("descriptionObjet")?.valid &&
-        this.initForm.get("hasDocument")?.valid &&
+        (this.initForm.get("hasDocument") ? this.initForm.get("hasDocument").valid : true) &&
         this.initForm.get("recommandation")?.valid &&
         this.initForm.get("etat")?.valid
       );

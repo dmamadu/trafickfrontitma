@@ -1,11 +1,11 @@
 <div class="flex flex-col flex-auto min-w-0">
   <div class="flex flex-col shadow bg-card">
     <div>
-      <img class="h-24 lg:h-24 object-fit w-full" src="../../../../assets/images/41.png" alt="Cover image">
+      <img class="h-24 lg:h-24 object-fit w-full" src="../../../../assets/images/banniere1.webp" alt="Cover image">
     </div>
     <div class="d-flex justify-between items-center ">
-      <div class="rounded-full cursor-pointer relative" matTooltip="Charger l'image du client" style="margin-left: 50px; margin-top: 5px;"
-        (click)="photoP.click()">
+      <div class="rounded-full cursor-pointer relative" matTooltip="Charger l'image du client"
+        style="margin-left: 50px; margin-top: 5px;" (click)="photoP.click()">
         <ng-container>
           <img class="w-20 h-20 rounded-full ring-4 ring-bg-card background_avatarNoImage" [src]="imagePath || noImage"
             alt="">
@@ -99,8 +99,8 @@
                 <div class="space-y-3" *ngFor="let item of menuData">
                   <label class="px-3 text-xs c_label">{{item?.title}}</label>
                   <hr>
-                  <button
-                    class="flex w-full items-center cursor-pointer px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
+                  <!-- <button
+                    class="flex w-full items-center cursor-pointer px-3 py-2 text-black transition-colors duration-300 transform rounded-lg dark:text-black hover:bg-black dark:black:bg-gray-800 dark:hover:text-black hover:text-black"
                     *ngFor="let child of item?.children"
                     [disabled]="(child.id =='bureau' || child.id == 'audit' || child.id =='wallet' || child.id == 'decouvert') || (infosPap?.statut ==='DEMISSION' ? child.id == 'transfert' : '') || (infosPap?.statut ==='DEMISSION' ? child.id == 'demande' : '')"
                     (click)="goToPanel(child.id)" [ngClass]="{
@@ -110,6 +110,20 @@
                       }">
                     <i class="bx {{child?.icon}} icon-size-5"></i>
                     <span class="mx-2 c_text_sm">{{child?.title}}</span>
+                  </button> -->
+                  <button
+                    class="flex w-full items-center cursor-pointer px-3 py-2 text-black transition-all duration-200 transform rounded-lg hover:bg-gray-100"
+                    *ngFor="let child of item?.children"
+                    [disabled]="(child.id =='bureau' || child.id == 'audit' || child.id =='wallet' || child.id == 'decouvert') || (infosPap?.statut ==='DEMISSION' ? child.id == 'transfert' : '') || (infosPap?.statut ==='DEMISSION' ? child.id == 'demande' : '')"
+                    (click)="goToPanel(child.id)" [ngClass]="{
+        'text-gray-700': !selectedPanel || selectedPanel !== child.id,
+        'bg-[#D45C00]/50 text-[#D45C00] border-l-4 border-[#D45C00]': selectedPanel && selectedPanel === child.id,
+        'opacity-50 cursor-not-allowed': (child.id =='bureau' || child.id == 'audit' || child.id =='wallet' || child.id == 'decouvert') || (infosPap?.statut ==='DEMISSION' ? child.id == 'transfert' : '') || (infosPap?.statut ==='DEMISSION' ? child.id == 'demande' : '')
+    }">
+                    <i class="bx {{child?.icon}} text-lg"
+                      [ngClass]="{'text-[#D45C00]': selectedPanel === child.id}"></i>
+                    <span class="mx-2 text-sm font-medium">{{child?.title}}</span>
+                    <span *ngIf="selectedPanel === child.id" class="ml-auto w-2 h-2 rounded-full bg-green-500"></span>
                   </button>
                 </div>
               </nav>

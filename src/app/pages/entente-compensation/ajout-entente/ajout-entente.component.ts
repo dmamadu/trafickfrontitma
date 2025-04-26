@@ -248,7 +248,7 @@ export class AjoutEntenteComponent implements OnInit {
     const total = fraisDeplacement + appuiRelocalisation;
     this.initForm
       .get("fraisTotalDeplacement")
-      ?.setValue(total, { emitEvent: false });
+      ?.setValue(+total, { emitEvent: false });
 
     this.calculerPerteTotale();
   }
@@ -323,19 +323,18 @@ export class AjoutEntenteComponent implements OnInit {
       //Frais deplacement
 
       fraisDeplacement: this.fb.control(
-        donnees ? donnees?.fraisDeplacement : 0,
+        donnees ? donnees?.fraisDeplacement : null,
         [Validators.required]
       ),
       appuiRelocalisation: this.fb.control(
-        donnees ? donnees?.appuiRelocalisation : 0,
+        donnees ? donnees?.appuiRelocalisation : null,
         [Validators.required]
       ),
 
       fraisTotalDeplacement: this.fb.control(
-        { value: donnees ? donnees.fraisTotalDeplacement : 0 },
+        donnees ? donnees.fraisTotalDeplacement : 0,
         [Validators.required]
       ),
-
       //Perte de terre
 
       superficieAffecte: this.fb.control(
@@ -410,6 +409,9 @@ export class AjoutEntenteComponent implements OnInit {
       .get("perteArbres")
       ?.setValue(JSON.stringify(this.arbres.value));
     console.log(this.initForm.value);
+    console.log('====================================');
+    console.log(this.initForm.valid);
+    console.log('====================================');
     if (this.initForm.valid) {
       this.snackbar
         .showConfirmation(`Voulez-vous vraiment ajouter cet entente `)
@@ -923,30 +925,36 @@ isStepValid(stepIndex: number): boolean {
         this.initForm.get("departement")?.valid &&
         this.initForm.get("commune")?.valid
       );
-    case 1:
-      return (
-        this.initForm.get("fraisDeplacement")?.valid &&
-        this.initForm.get("appuiRelocalisation")?.valid &&
-        this.initForm.get("fraisTotalDeplacement")?.valid
-      );
-    case 2:
-      return (
-        this.initForm.get("superficieAffecte")?.valid &&
-        this.initForm.get("baremeTypeSol")?.valid &&
-        this.initForm.get("perteTotalTerre")?.valid
-      );
-    case 3:
-      return (
-        this.initForm.get("produit")?.valid &&
-        this.initForm.get("rendement")?.valid &&
-        this.initForm.get("prix")?.valid
-      );
+      case 1:
+        return (
+          this.initForm.get("fraisDeplacement")?.valid &&
+          this.initForm.get("appuiRelocalisation")?.valid &&
+          this.initForm.get("fraisTotalDeplacement")?.valid &&
+          this.perteRevenueForm.valid &&
+          this.perteRevenueForm.get("pertes")?.valid
+        );
+        case 2:
+          return (
+            this.initForm.get("superficieAffecte")?.valid &&
+            this.initForm.get("baremeTypeSol")?.valid &&
+            this.initForm.get("perteTotalTerre")?.valid &&
+            this.equipementForm.valid &&
+            this.equipementForm.get("equipements")?.valid
+          );
+          case 3:
+            return (
+              // this.initForm.get("produit")?.valid &&
+              // this.initForm.get("rendement")?.valid &&
+              // this.initForm.get("prix")?.valid &&
+              this.recolteForm.valid && this.recolteForm.get("recoltes")?.valid
+            );
     case 4:
       return (
-        this.initForm.get("espece")?.valid &&
-        this.initForm.get("type")?.valid &&
-        this.initForm.get("nombre")?.valid &&
-        this.initForm.get("prix")?.valid
+        // this.initForm.get("espece")?.valid &&
+        // this.initForm.get("type")?.valid &&
+        // this.initForm.get("nombre")?.valid &&
+        // this.initForm.get("prix")?.valid
+        this.arbreForm.valid && this.arbreForm.get("arbres")?.valid
       );
     case 5:
       return (

@@ -3,14 +3,14 @@
   <app-loader-custom ></app-loader-custom>
 </div>
 
-<div class="container" *ngIf="!loadData ">
+<!-- <div class="container" *ngIf="!loadData ">
   <h1 class="couleurPrimary py-3">Statistiques dynamiques relatives à la mise en œuvre du PAR</h1>
   <div class="section-jobs">
     <h2 class="couleurPrimary">Statut des dossiers</h2>
     <div class="cards">
       <div class="card">Dossiers incomplets : <span>{{ dossiersIncomplets }}</span></div>
       <div class="card">Dossiers complets : <span>{{ dossiersComplets }}</span></div>
-      <div class="card">Ententes de compensation signées : <span>{{ ententesCompensation }}</span></div>
+      <div class="card">Ententes de compensation: <span>{{ ententesCompensation }}</span></div>
       <div class="card">Dossiers transmis pour paiement : <span>{{ dossiersTransmis }}</span></div>
       <div class="card">Nombre de PAP payées : <span>{{ papPayees }}</span></div>
     </div>
@@ -37,7 +37,7 @@
     </div>
   </div>
   <div>
-    <!-- Graphique en barres empilées pour les effectifs par genre -->
+
     <div class="chart-container">
       <h1 class="couleurPrimary">Effectif féminin et masculin par catégorie</h1>
       <apx-chart [series]="barChart.series" [chart]="barChart.chart" [xaxis]="barChart.xaxis" [colors]="barChart.colors"
@@ -45,9 +45,103 @@
       </apx-chart>
     </div>
 
-    <!-- Graphique en colonnes pour les compensations -->
+
     <div class="chart-container">
       <h1 class="couleurPrimary">Total des compensations par catégorie</h1>
+      <apx-chart [series]="compensationChart.series" [chart]="compensationChart.chart" [xaxis]="compensationChart.xaxis"
+        [colors]="compensationChart.colors" [dataLabels]="compensationChart.dataLabels">
+      </apx-chart>
+    </div>
+  </div>
+</div> -->
+
+
+<div class="container" *ngIf="!loadData">
+  <h1 class="couleurPrimary py-3">Statistiques dynamiques relatives à la mise en œuvre du PAR</h1>
+
+  <!-- Section Statut des dossiers avec icônes -->
+  <div class="section-jobs">
+    <h2 class="couleurPrimary">
+      <mat-icon>folder</mat-icon> Statut des dossiers
+    </h2>
+    <div class="cards">
+      <div class="card">
+        <mat-icon class="card-icon">folder_open</mat-icon>
+        <div class="card-content">
+          <div class="card-title">Dossiers incomplets</div>
+          <div class="card-value">{{ dossiersIncomplets }}</div>
+        </div>
+      </div>
+      <div class="card">
+        <mat-icon class="card-icon">folder</mat-icon>
+        <div class="card-content">
+          <div class="card-title">Dossiers complets</div>
+          <div class="card-value">{{ dossiersComplets }}</div>
+        </div>
+      </div>
+      <div class="card">
+        <mat-icon class="card-icon">description</mat-icon>
+        <div class="card-content">
+          <div class="card-title">Ententes de compensation</div>
+          <div class="card-value">{{ ententesCompensation }}</div>
+        </div>
+      </div>
+      <div class="card">
+        <mat-icon class="card-icon">send</mat-icon>
+        <div class="card-content">
+          <div class="card-title">Dossiers transmis pour paiement</div>
+          <div class="card-value">{{ dossiersTransmis }}</div>
+        </div>
+      </div>
+      <div class="card">
+        <mat-icon class="card-icon">payments</mat-icon>
+        <div class="card-content">
+          <div class="card-title">Nombre de PAP payées</div>
+          <div class="card-value">{{ papPayees }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-row">
+    <!-- Graphique circulaire avec icône -->
+    <div class="chart-container">
+      <h2 class="couleurPrimary">
+        <mat-icon>pie_chart</mat-icon> Effectif Désagrégé de PAP selon les Catégories
+      </h2>
+      <apx-chart [series]="pieChart.series" [chart]="pieChart.chart" [labels]="pieChart.labels"
+        [colors]="pieChart.colors" [legend]="pieChart.legend">
+      </apx-chart>
+    </div>
+
+    <!-- Graphique vulnérabilité avec icône -->
+    <div class="chart-container">
+      <h2 class="couleurPrimary">
+        <mat-icon>accessibility</mat-icon> Selon la vulnérabilité
+      </h2>
+      <apx-chart [series]="vulnerableChart.series" [chart]="vulnerableChart.chart" [labels]="vulnerableChart.labels"
+        [colors]="vulnerableChart.colors" [legend]="vulnerableChart.legend">
+      </apx-chart>
+    </div>
+  </div>
+
+  <!-- Graphique genre avec icône -->
+  <div class="last-charts-row">
+    <!-- Graphique genre avec icône -->
+    <div class="chart-container">
+      <h2 class="couleurPrimary">
+        <mat-icon>stacked_bar_chart</mat-icon> Effectif féminin et masculin par catégorie
+      </h2>
+      <apx-chart [series]="barChart.series" [chart]="barChart.chart" [xaxis]="barChart.xaxis" [colors]="barChart.colors"
+        [legend]="barChart.legend" [plotOptions]="barChart.plotOptions">
+      </apx-chart>
+    </div>
+
+    <!-- Graphique compensation avec icône -->
+    <div class="chart-container">
+      <h2 class="couleurPrimary">
+        <mat-icon>bar_chart</mat-icon> Total des compensations par catégorie
+      </h2>
       <apx-chart [series]="compensationChart.series" [chart]="compensationChart.chart" [xaxis]="compensationChart.xaxis"
         [colors]="compensationChart.colors" [dataLabels]="compensationChart.dataLabels">
       </apx-chart>

@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -16,6 +17,10 @@ import { dateValidator } from "src/app/shared/validator/datevalidator";
 import { Project, ResponseData, NormeProject, Mo } from "../project.model";
 import { SharedService } from "../shared.service";
 import { Image } from "src/app/shared/models/image.model";
+import { SnackBarService } from "src/app/shared/core/snackBar.service";
+import { ClientVueService } from "../../admin/client-vue/client-vue.service";
+import { MatDialog } from "@angular/material/dialog";
+import { environment } from "src/environments/environment";
 @Component({
   selector: "app-update",
   templateUrl: "./update.component.html",
@@ -25,17 +30,28 @@ export class UpdateComponent {
   suggestions$!: Observable<string[]>;
   listProject: Project[];
 
+  imageToff: any;
+
+  urlImage = environment.apiUrl + "fileAws/download/";
+  isloading: boolean = false;
   buttonText: string = "Créer le projet";
+  lengthMo: any;
+
   constructor(
     private fb: FormBuilder,
     private projectService: ProjectService,
     public toastr: ToastrService,
+    private snackbar: SnackBarService,
     private router: Router,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private dialog: MatDialog,
+    private clientServive: ClientVueService,
+    private _changeDetectorRef: ChangeDetectorRef
   ) {
     this.projectForm = this.fb.group(
       {
         id: [],
+        imageUrl: ["", [Validators.required, Validators.maxLength(500)]],
         libelle: [
           "",
           [
@@ -63,8 +79,6 @@ export class UpdateComponent {
         ],
         datedebut: ["", Validators.required],
         datefin: ["", Validators.required],
-        // image: ["", Validators.required],
-        attachedFiles: [],
         users: this.fb.array([]),
       },
       { validators: dateValidator() }
@@ -108,8 +122,6 @@ export class UpdateComponent {
       { label: "Create New", active: true },
     ];
     this.fetchMo();
-    this.selected = "";
-    this.hidden = true;
     this.assignMember = this.listMo;
     this.loadProject();
 
@@ -139,72 +151,23 @@ export class UpdateComponent {
           this.addMember(member);
         });
 
-        //files
-
-        item.files.forEach((file) => {
-          const dataURL = `data:${file.type};base64,${file.file}`;
-          const file1 = this.base64ToFile(
-            file.file,
-            file.name,
-            file.type,
-            dataURL
-          );
-          console.log(file1);
-          this.uploadedFiles.push(file1);
-
-          this.projectForm.patchValue({
-            attachedFiles: this.uploadedFiles,
-          });
-        });
-
-        console.log("====================================");
-        console.log(this.uploadedFiles);
-        console.log("====================================");
-
-        this.toff = this.getImageFromBase64(item.image.type, item.image.image);
-        console.log("====================================");
-        console.log("toff" + this.toff);
-        console.log("====================================");
-        this.buttonText = "Modifier le projet";
-        console.log("====================================");
-        console.log("biuio", this.buttonText);
-        console.log("====================================");
         this.listMo = item.users.map((user) => {
           return {
             ...user,
             checked: "1",
           };
         });
-        console.log("====================================");
-        console.log("users", this.listMo);
-        console.log("====================================");
         for (let index = 0; index < this.listMo.length; index++) {
           this.assignList.push(this.listMo[index]);
           this.assignListFormArray.push(this.fb.control(this.listMo[index]));
         }
-        // this.assignListFormArray.push(this.fb.control(this.listMo[id]));
         console.log("assis", this.assignList);
       }
     });
-
-    //loadimageforupdate
   }
 
   // File Upload
   imageURL: any;
-  onSelect(event: any) {
-    this.files.push(...event.addedFiles);
-    let file: File = event.addedFiles[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imageURL = reader.result as string;
-      this.f.image.patchValue(this.imageURL);
-      setTimeout(() => {
-        // this.profile.push(this.imageURL)
-      }, 100);
-    };
-    reader.readAsDataURL(file);
-  }
 
   assignList: any = [];
   slectMember(id: number) {
@@ -227,18 +190,6 @@ export class UpdateComponent {
     }
   }
 
-  create() {
-    return this.projectService
-      .add<ResponseData<Project>>(
-        "projects/createProject",
-        this.projectForm.value
-      )
-      .subscribe((data: ResponseData<Project>) => {
-        this.toastr.success(`${data.message}`);
-        this.projectForm.reset();
-      });
-  }
-
   uploadedImage!: File;
   toff: any;
 
@@ -258,34 +209,65 @@ export class UpdateComponent {
   }
   // filechange
   imageURLs: any;
-  fileChange(event: any) {
-    let fileList: any = event.target as HTMLInputElement;
-    let file: File = fileList.files[0];
-    this.uploadedImage = event.target.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      this.imageURLs = reader.result as string;
-      this.toff = this.imageURLs;
-      //  reader.readAsDataURL(this.uploadedImage);
-      document.querySelectorAll("#projectlogo-img").forEach((element: any) => {
-        element.src = this.imageURLs;
-      });
-      console.log("====================================");
-      console.log(this.imageURLs);
-      console.log("====================================");
-    };
-  }
-  // file upload
-  public dropzoneConfig: DropzoneConfigInterface = {
-    clickable: true,
-    addRemoveLinks: true,
-    previewsContainer: false,
-    acceptedFiles: null,
-  };
 
-  uploadedFiles: any[] = [];
-  uploadFiles1: File[] = [];
+  selectOnFile(evt, type, name) {
+    let accept = [];
+    let extension = "";
+    if (type === "photo_profile") {
+      accept = [".png", ".PNG", ".jpg", ".JPG", ".jpeg", ".JPEG"];
+      extension = "une image";
+    }
+    for (const file of evt.target.files) {
+      const index = file.name.lastIndexOf(".");
+      const strsubstring = file.name.substring(index, file.name.length);
+      const ext = strsubstring;
+      if (accept.indexOf(strsubstring) === -1) {
+        this.snackbar.openSnackBar(
+          "Ce fichier " + file.name + " n'est " + extension,
+          "OK",
+          ["mycssSnackbarRed"]
+        );
+        return;
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          if (type === "photo_profile") {
+            const img = new Image();
+            img.src = e.target.result;
+            this.saveStoreFile(file);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  }
+
+  imageProjet: any;
+  saveStoreFile(file) {
+    let formData = new FormData();
+    formData.append("file", file);
+    this._changeDetectorRef.detectChanges();
+    const dataFile = { file: file };
+    this.isloading = true;
+    this.clientServive.saveStoreFile(formData).subscribe(
+      (resp) => {
+        if (resp) {
+          console.log(resp);
+          this.imageProjet = `${this.urlImage + resp["fileName"]}`;
+          this.projectForm.get("imageUrl").setValue(this.imageProjet);
+          this.snackbar.openSnackBar("Image  joutée ", "OK", [
+            "mycssSnackbarGreen",
+          ]);
+        }
+        this.isloading = false;
+      },
+      (error) => {
+        this.isloading = false;
+        console.log(error);
+        this.snackbar.showErrors(error);
+      }
+    );
+  }
 
   updateForm(event: Event) {
     const inputValue = (event.target as HTMLInputElement).value;
@@ -293,20 +275,7 @@ export class UpdateComponent {
       categorie: inputValue,
     });
   }
-  updateFormWithSelectedOption(event: MatAutocompleteSelectedEvent) {
-    this.projectForm.patchValue({
-      categorie: event.option.value,
-    });
-  }
 
-  //task
-  // form:FormGroup = new FormGroup({
-  //   members: this.fb.array([]),
-  // });
-
-  /**
-   * Returns the form field value
-   */
   get members(): FormArray {
     return this.form.get("members") as FormArray;
   }
@@ -336,29 +305,26 @@ export class UpdateComponent {
   }
 
   listMo: Mo[] = [];
+
   fetchMo() {
     return this.projectService
-      .all<ResponseData<Mo[]>>("users/by_role?roleName=Maitre d'ouvrage")
-      .subscribe((users: ResponseData<Mo[]>) => {
+      .all("users/by_role?roleName=Maitre d'ouvrage")
+      .subscribe((users: any) => {
         this.listMo = users.data.map((user) => {
           return {
             ...user,
             checked: "0",
           };
         });
+        this.lengthMo = users.data.length;
+        console.log(users.data);
+        console.log("length: " + this.lengthMo);
       });
   }
-
   myImage: string;
-  getImageFromBase64(imageType: string, imageName: number[]): string {
-    const base64Representation = "data:" + imageType + ";base64," + imageName;
-    return base64Representation;
-  }
 
   update(): void {
     const projectRequest = this.projectForm.value;
-    const attachedFiles: File[] = this.projectForm.get("attachedFiles").value;
-    // Vérifier si uploadedImage est défini
     if (this.uploadedImage) {
       this.projectService
         .uploadImage(this.uploadedImage, this.uploadedImage.name)
@@ -371,7 +337,6 @@ export class UpdateComponent {
           },
           (error) => {
             console.error("Error uploading image:", error);
-            // Continuer avec la mise à jour du projet même en cas d'erreur de téléchargement d'image
             this.updateProject(projectRequest);
           }
         );
@@ -391,8 +356,6 @@ export class UpdateComponent {
         (data: ResponseData<Project>) => {
           console.log("Project updated successfully:", data);
           this.toastr.success(`${data.message}`);
-
-          // Upload attached files if there are any
           const attachedFiles: File[] =
             this.projectForm.get("attachedFiles").value;
           if (data) {
@@ -421,7 +384,7 @@ export class UpdateComponent {
   }
   updateNormeProjects(projectId: number, normeProjects: NormeProject[]): void {
     normeProjects.forEach((normeProject: any) => {
-      normeProject.project = { id: projectId }; // Assuming normeProject has a 'project' property that is an object
+      normeProject.project = { id: projectId };
       this.projectService.saveNormeProjet(normeProject, projectId).subscribe(
         (data) => {
           console.log("Norme updated successfully:", data);
@@ -431,36 +394,5 @@ export class UpdateComponent {
         }
       );
     });
-  }
-
-  // Conversion du Base64 en fichier
-  base64ToFile(
-    base64String: string,
-    fileName: string,
-    mimeType: string,
-    dataURL: string
-  ): File {
-    // Décoder la chaîne Base64 en une chaîne binaire
-    const byteString = atob(base64String);
-    const byteNumbers = new Array(byteString.length);
-    for (let i = 0; i < byteString.length; i++) {
-      byteNumbers[i] = byteString.charCodeAt(i);
-    }
-
-    // Créer un tableau de type Uint8Array à partir des octets
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: mimeType });
-
-    // Créer un objet File à partir du Blob
-    const file = new File([blob], fileName, { type: mimeType });
-
-    // Ajouter la propriété dataURL
-    Object.defineProperty(file, "dataURL", {
-      value: dataURL,
-      writable: false,
-      enumerable: true,
-    });
-
-    return file;
   }
 }

@@ -95,7 +95,7 @@ export class CreatetaskComponent implements OnInit {
   form = new UntypedFormGroup({
     member: new UntypedFormArray([new UntypedFormControl("")]),
   });
-  loader: boolean=false;
+  loader: boolean = false;
   hidden: boolean;
   selected: any;
   initForm: UntypedFormGroup;
@@ -137,6 +137,7 @@ export class CreatetaskComponent implements OnInit {
       { label: "Création d'une tache", active: true },
     ];
   }
+  currentProjectId: any;
 
   constructor(
     public matDialogRef: MatDialogRef<CreatetaskComponent>,
@@ -145,11 +146,12 @@ export class CreatetaskComponent implements OnInit {
     private fb: FormBuilder,
     private projectService: ProjectService,
     private coreService: CoreService,
-    private snackbar: SnackBarService,
-    private changeDetectorRefs: ChangeDetectorRef,
     private localService: LocalService,
-    private _router: Router
+    private snackbar: SnackBarService,
+    private changeDetectorRefs: ChangeDetectorRef
   ) {
+    this.currentProjectId = this.localService.getData("ProjectId");
+
     this.action = _data.action;
     if (_data?.action == "new") {
       this.initForms();
@@ -164,7 +166,28 @@ export class CreatetaskComponent implements OnInit {
     }
   }
 
-  initForms(donnees?) {
+  // initForms(donnees?) {
+  //   this.initForm = this.fb.group({
+  //     libelle: this.fb.control(donnees ? donnees?.libelle : null, [
+  //       Validators.required,
+  //     ]),
+  //     description: this.fb.control(donnees ? donnees?.description : null, [
+  //       Validators.required,
+  //     ]),
+  //     dateDebut: this.fb.control(donnees ? donnees?.dateDebut : null, [
+  //       Validators.required,
+  //     ]),
+  //     dateFin: this.fb.control(donnees ? donnees?.dateFin : null, [
+  //       Validators.required,
+  //     ]),
+  //     statut: this.fb.control(donnees ? donnees?.statut : null, [
+  //       Validators.required,
+  //     ]),
+  //     utilisateurs: this.fb.array([]),
+  //   });
+  // }
+
+  initForms(donnees?: any) {
     this.initForm = this.fb.group({
       libelle: this.fb.control(donnees ? donnees?.libelle : null, [
         Validators.required,
@@ -183,8 +206,13 @@ export class CreatetaskComponent implements OnInit {
       ]),
       utilisateurs: this.fb.array([]),
     });
-  }
 
+    if (donnees && donnees.utilisateurs) {
+      this.tacheToUpdate = donnees;
+      this.usersToUpdate = donnees.utilisateurs;
+    }
+    this.fetchMo();
+  }
   get assignListFormArray(): FormArray {
     return this.initForm.get("utilisateurs") as FormArray;
   }
@@ -206,32 +234,58 @@ export class CreatetaskComponent implements OnInit {
     }
   }
 
+  // fetchMo(): void {
+  //   this.projectService
+  //     .all<ResponseData<any[]>>("users/all")
+  //     .subscribe((response: ResponseData<any[]>) => {
+  //       console.log(response);
+  //       if (this.tacheToUpdate !== null) {
+  //         this.usersToUpdate = this.tacheToUpdate.utilisateurs;
+  //       }
+
+  //       this.listMo = response.data.map((user) => {
+  //         const isUserToUpdate = this.usersToUpdate.some(
+  //           (updateUser) => updateUser.id === user.id
+  //         );
+  //         return {
+  //           ...user,
+  //           checked: isUserToUpdate ? "1" : "0",
+  //         };
+  //       });
+
+  //       this.listMo.forEach((user) => {
+  //         if (user.checked === "1") {
+  //           this.assignListFormArray.push(this.fb.control(user));
+  //         }
+  //       });
+
+  //       console.log(this.listMo);
+  //     });
+  // }
   fetchMo(): void {
     this.projectService
       .all<ResponseData<any[]>>("users/all")
       .subscribe((response: ResponseData<any[]>) => {
-        console.log(response);
-        if (this.tacheToUpdate !== null) {
-          this.usersToUpdate = this.tacheToUpdate.utilisateurs;
-        }
-
         this.listMo = response.data.map((user) => {
-          const isUserToUpdate = this.usersToUpdate.some(
-            (updateUser) => updateUser.id === user.id
-          );
+          this.changeDetectorRefs.detectChanges();
+          const isAssigned =
+            this.usersToUpdate?.some((u) => u.id === user.id) ||
+            this.assignList.some((a) => a.id === user.id);
           return {
             ...user,
-            checked: isUserToUpdate ? "1" : "0",
+            checked: isAssigned ? "1" : "0",
           };
         });
 
-        this.listMo.forEach((user) => {
-          if (user.checked === "1") {
-            this.assignListFormArray.push(this.fb.control(user));
-          }
-        });
-
-        console.log(this.listMo);
+        // Ajoute les utilisateurs assignés au FormArray
+        if (this.usersToUpdate) {
+          this.usersToUpdate.forEach((user) => {
+            if (!this.assignList.some((a) => a.id === user.id)) {
+              this.assignList.push(user);
+              this.assignListFormArray.push(this.fb.control(user));
+            }
+          });
+        }
       });
   }
 
@@ -246,39 +300,44 @@ export class CreatetaskComponent implements OnInit {
   }
 
   addItems() {
-    if(this.initForm.valid){
+    console.log("====================================");
+    console.log(this.initForm.value);
+    console.log("====================================");
+    if (this.initForm.valid) {
       this.snackbar
-      .showConfirmation("Voulez-vous vraiment créé cette tache ?")
-      .then((result) => {
-        if (result["value"] == true) {
-          this.loader = true;
-          const value = this.initForm.value;
-          this.coreService.addItem(value, this.url).subscribe(
-            (resp) => {
-              if (resp["responseCode"] == 200) {
-                this.snackbar.openSnackBar("Tache  ajoutée avec succés", "OK", [
-                  "mycssSnackbarGreen",
-                ]);
-                this.loader = false;
-                this.matDialogRef.close(resp["data"]);
-              } else {
-                this.loader = false;
-                this.changeDetectorRefs.markForCheck();
-              }
-            },
-            (error) => {
-              this.loader = false;
-              this.changeDetectorRefs.markForCheck();
-              this.snackbar.showErrors(error);
-            }
-          );
-        }
-      });
-    }else{
-
+        .showConfirmation("Voulez-vous vraiment créé cette tache ?")
+        .then((result) => {
+          if (result["value"] == true) {
+            this.loader = true;
+            const value = this.initForm.value;
+            this.coreService
+              .addItemWithProject(value, this.url, +this.currentProjectId)
+              .subscribe(
+                (resp) => {
+                  console.log("====================================");
+                  console.log(resp);
+                  console.log("====================================");
+                  if (resp["responseCode"] == 200) {
+                    this.snackbar.openSnackBar(
+                      "Tache  ajoutée avec succés",
+                      "OK",
+                      ["mycssSnackbarGreen"]
+                    );
+                    this.matDialogRef.close(resp["data"]);
+                    this.loader = false;
+                    this.changeDetectorRefs.markForCheck();
+                  }
+                },
+                (error) => {
+                  this.loader = false;
+                  this.changeDetectorRefs.markForCheck();
+                  this.snackbar.showErrors(error);
+                }
+              );
+          }
+        });
+    } else {
     }
-
-
   }
 
   checkRecap(type) {
@@ -301,17 +360,12 @@ export class CreatetaskComponent implements OnInit {
             (resp) => {
               if (resp) {
                 this.loader = false;
-                //   this.matDialogRef.close(resp);
                 this.snackbar.openSnackBar(
                   "Consultant  modifié avec succés",
                   "OK",
                   ["mycssSnackbarGreen"]
                 );
-              } else {
-                this.loader = false;
-                this.snackbar.openSnackBar(resp["message"], "OK", [
-                  "mycssSnackbarRed",
-                ]);
+                this.matDialogRef.close(resp["data"]);
               }
             },
             (error) => {
@@ -326,5 +380,66 @@ export class CreatetaskComponent implements OnInit {
 
   annuler() {
     this.initForm.reset();
+  }
+
+  // Ajoutez ces nouvelles propriétés
+  userSearchText: string = "";
+  filteredUsers: any[] = [];
+
+  // Modifiez fetchMo()
+  // fetchMo(): void {
+  //   this.projectService.all<ResponseData<any[]>>("users/all").subscribe((response: ResponseData<any[]>) => {
+  //     this.listMo = response.data;
+  //     this.filteredUsers = [...this.listMo];
+
+  //     // Pré-sélection des utilisateurs existants
+  //     if (this.tacheToUpdate?.utilisateurs) {
+  //       this.tacheToUpdate.utilisateurs.forEach(user => {
+  //         if (!this.assignList.some(u => u.id === user.id)) {
+  //           this.assignList.push(user);
+  //           this.assignListFormArray.push(this.fb.control(user));
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
+
+  // Nouvelle méthode de filtrage
+  filterUsers(): void {
+    if (!this.userSearchText) {
+      this.filteredUsers = [...this.listMo];
+      return;
+    }
+
+    const searchText = this.userSearchText.toLowerCase();
+    this.filteredUsers = this.listMo.filter(
+      (user) =>
+        user.lastname.toLowerCase().includes(searchText) ||
+        user.firstname.toLowerCase().includes(searchText)
+    );
+  }
+
+  // Méthode pour vérifier la sélection
+  isSelected(user: any): boolean {
+    return this.assignList.some((u) => u.id === user.id);
+  }
+
+  // Méthode pour basculer la sélection
+  toggleUserSelection(user: any): void {
+    if (this.isSelected(user)) {
+      this.removeAssignee(user);
+    } else {
+      this.assignList.push(user);
+      this.assignListFormArray.push(this.fb.control(user));
+    }
+  }
+
+  // Méthode pour supprimer un assigné
+  removeAssignee(user: any): void {
+    const index = this.assignList.findIndex((u) => u.id === user.id);
+    if (index >= 0) {
+      this.assignList.splice(index, 1);
+      this.assignListFormArray.removeAt(index);
+    }
   }
 }

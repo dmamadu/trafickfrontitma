@@ -112,6 +112,8 @@ export class PipAddComponent implements OnInit {
   currentUser: any;
   dernierSegment: string;
 
+  currentProjectId: any;
+
   constructor(
     public matDialogRef: MatDialogRef<PipAddComponent>,
     @Inject(MAT_DIALOG_DATA) _data,
@@ -122,12 +124,8 @@ export class PipAddComponent implements OnInit {
     private router: Router,
     private localService: LocalService
   ) {
-    console.log("==data fomrmr==================================");
-    console.log(_data.data.pays);
-    console.log("====================================");
-
-    this.currentUser = this.localService.getDataJson("user");
-
+    // this.currentUser = this.localService.getDataJson("user");
+    this.currentProjectId = this.localService.getData("ProjectId");
     console.log("user connecter", this.currentUser);
     if (_data?.action == "new") {
       this.initForms();
@@ -171,42 +169,42 @@ export class PipAddComponent implements OnInit {
     this.initForm = this.fb.group({
       //first step
       libelle: this.fb.control(donnees ? donnees?.libelle : null, [
-        Validators.required,
+        Validators.required
       ]),
       statut: this.fb.control(donnees ? donnees?.statut : null, [
-        Validators.required,
+        Validators.required
       ]),
       courielPrincipal: this.fb.control(
         donnees ? donnees?.courielPrincipal : null,
         [Validators.required]
       ),
       adresse: this.fb.control(donnees ? donnees?.adresse : null, [
-        Validators.required,
+        Validators.required
       ]),
       localisation: this.fb.control(donnees ? donnees?.localisation : null, [
         Validators.required,
       ]),
       categorie: this.fb.control(donnees ? donnees?.categorie : null, [
-        Validators.required,
+        Validators.required
       ]),
       //step 3
       normes: this.fb.control(donnees ? donnees?.normes : null, [
-        Validators.required,
+        Validators.required
       ]),
       //projet
       project_id: this.fb.control(
-        this.currentUser.projects ? this.currentUser.projects[0]?.id : null,
+        this.currentProjectId ? this.currentProjectId : null,
         [Validators.required]
       ),
       contacts: [[]],
     });
   }
 
-  refresh(): void {
-    this.initForm.get("numeroIdentification").setValue(null);
-    this.initForm.get("dateDelivrancePiece").setValue(null);
-    this.initForm.get("dateValiditePiece").setValue(null);
-  }
+  // refresh(): void {
+  //   this.initForm.get("numeroIdentification").setValue(null);
+  //   this.initForm.get("dateDelivrancePiece").setValue(null);
+  //   this.initForm.get("dateValiditePiece").setValue(null);
+  // }
 
   firstStep() {
     if (
@@ -214,8 +212,7 @@ export class PipAddComponent implements OnInit {
       this.initForm.get("statut").invalid ||
       this.initForm.get("courielPrincipal").invalid ||
       this.initForm.get("adresse").invalid ||
-      this.initForm.get("localisation").invalid ||
-      this.initForm.get("categorie").invalid
+      this.initForm.get("localisation").invalid
     ) {
       return false;
     } else {
@@ -234,26 +231,6 @@ export class PipAddComponent implements OnInit {
   get phoneValue() {
     return this.initForm.controls["numeroTelephonePersonneContact"];
   }
-
-  // getNationalite(value: any) {
-  //   if (this.countries) {
-  //     const liste = this.countries.filter((type) => type.id == value);
-  //     return liste.length != 0 ? liste[0]?.nationalite : value;
-  //   }
-  // }
-
-  // getcategories() {
-  //   this.coreService.list("categoriesPip", 0, 10000).subscribe((response) => {
-  //     if (response["responseCode"] === 200) {
-  //       this.categories = response["data"];
-  //       console.log("====================================");
-  //       console.log(this.categories);
-  //       console.log("====================================");
-  //       this.changeDetectorRefs.markForCheck();
-  //     }
-  //   });
-  // }
-
   checkValidity(g: UntypedFormGroup) {
     Object.keys(g.controls).forEach((key) => {
       g.get(key).markAsDirty();
@@ -268,12 +245,9 @@ export class PipAddComponent implements OnInit {
 
   addItems() {
     this.initForm.get("contacts")?.setValue(this.contacts.data);
-   this.initForm.get("categorie").setValue(this.dernierSegment);
-
-    console.log(this.initForm.value);
-
+    this.initForm.get("categorie").setValue(this.dernierSegment);
     this.snackbar
-      .showConfirmation(`Voulez-vous vraiment ajouter ce pip ? `)
+      .showConfirmation(`Voulez-vous vraiment ajouter ? `)
       .then((result) => {
         if (result["value"] == true) {
           this.loader = true;
@@ -281,7 +255,7 @@ export class PipAddComponent implements OnInit {
           this.coreService.addItem(value, this.url).subscribe(
             (resp) => {
               if (resp["responseCode"] == 200) {
-                this.snackbar.openSnackBar("Pip  ajoutée avec succés", "OK", [
+                this.snackbar.openSnackBar("Ajoutée avec succés", "OK", [
                   "mycssSnackbarGreen",
                 ]);
                 this.loader = false;
@@ -377,8 +351,8 @@ export class PipAddComponent implements OnInit {
     this.contactForm = this.fb.group({
       nomContactPrincipal: ["", Validators.required],
       prenomContactPrincipal: ["", Validators.required],
-      adresseContactPrincipal: ["", Validators.required],
-      sexeContactPrincipal: ["", Validators.required],
+      // adresseContactPrincipal: ["", Validators.required],
+      // sexeContactPrincipal: ["", Validators.required],
       emailContactPrincipal: ["", [Validators.required, Validators.email]],
       telephoneContactPrincipal: ["", Validators.required],
     });
@@ -400,8 +374,8 @@ export class PipAddComponent implements OnInit {
       this.contactForm.setValue({
         nomContactPrincipal: "",
         prenomContactPrincipal: "",
-        adresseContactPrincipal: "",
-        sexeContactPrincipal: "",
+        // adresseContactPrincipal: "",
+        // sexeContactPrincipal: "",
         emailContactPrincipal: "",
         telephoneContactPrincipal: "",
       });
@@ -411,4 +385,26 @@ export class PipAddComponent implements OnInit {
       console.log("Le formulaire est invalide");
     }
   }
+
+
+  isStepValid(stepIndex: number): boolean {
+    switch (stepIndex) {
+      case 0:
+        return this.initForm.valid;
+      case 1:
+        return this.contactForm.valid;
+      case 2:
+        return this.initForm.get('normes')?.valid;
+      default:
+        return false;
+    }
+  }
+
+  onStepChange(event: any) {
+    const selectedIndex = event.selectedIndex;
+    if (selectedIndex > 0 && !this.isStepValid(selectedIndex - 1)) {
+      this.myStepper.selectedIndex = selectedIndex - 1;
+    }
+  }
+
 }

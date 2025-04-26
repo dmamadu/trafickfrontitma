@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 // routing
@@ -32,12 +32,16 @@ import { OverviewComponent } from "./overview/overview.component";
 import { CreateComponent } from "./create/create.component";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { ModalModule } from "ngx-bootstrap/modal";
-import { UpdateComponent } from './update/update.component';
+import { UpdateComponent } from "./update/update.component";
 import { NgxPaginationModule } from "ngx-pagination";
 import { NgxDocViewerModule } from "ngx-doc-viewer";
 import { TableauComponent } from "src/app/shared/tableau/tableau.component";
 import { LoaderComponent } from "../../shared/loader/loader.component";
-import { ColorPickerModule } from 'ngx-color-picker';
+import { ColorPickerModule } from "ngx-color-picker";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { MatPaginatorIntl } from "@angular/material/paginator";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import { ExportService } from "src/app/shared/core/export.service";
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -54,6 +58,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     UpdateComponent,
   ],
   imports: [
+    FlatpickrModule,
+    FlatpickrModule.forRoot(),
     CommonModule,
     ProjectsRoutingModule,
     UIModule,
@@ -75,13 +81,26 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     TableauComponent,
     BsDropdownModule,
     LoaderComponent,
-    ColorPickerModule
-],
+    ColorPickerModule,
+  ],
+
   providers: [
     {
       provide: DROPZONE_CONFIG,
       useValue: DEFAULT_DROPZONE_CONFIG,
     },
+    DatePipe,
+    {
+      provide: MatDialogRef,
+      useValue: [],
+    },
+    { provide: MAT_DIALOG_DATA, useValue: {} },
+    { provide: MatPaginatorIntl },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: { appearance: "outline" },
+    },
+    ExportService,
   ],
 })
 export class ProjectsModule {}

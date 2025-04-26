@@ -56,7 +56,7 @@ export class SelectProjectComponent {
   projects: any[] = [];
   selectedProjectId: number | null = null;
 
-  appName: string = "GestionPro";
+  appName: string = "InVodis";
 
   constructor(
     private localService: LocalService,
@@ -72,9 +72,6 @@ export class SelectProjectComponent {
   }
 
   onProjectSelect(projectId: number) {
-    console.log("====================================");
-    console.log(projectId);
-    console.log("====================================");
     const selectedProject = this.projects.find(
       (project) => project.id === projectId
     );

@@ -7,22 +7,120 @@
 }
 
 .custom-day.focused {
-  background-color: #e6e6e6;
+  background-color: #D45C00;
 }
 
 .custom-day.range,
 .custom-day:hover {
-  background-color: #7d90ee;
+  background-color: #D45C00;
   color: white;
 }
 
 .custom-day.faded {
-  background-color: #7d90ee;
+  background-color: #D45C00;
 }
 
 .custom-ckeditor {
   .ck-editor__editable {
-    max-height: 150; /* Limite la hauteur à 300px */
-    overflow-y: auto; /* Ajoute une barre de défilement verticale si le contenu dépasse la hauteur maximale */
+    max-height: 150;
+    overflow-y: auto;
   }
+}
+
+
+.botn{
+  padding:2px ;
+  border-radius: 5px;
+}
+
+
+.selected-users-container {
+  border: 1px solid #eee;
+  min-height: 60px;
+}
+
+.selected-user-badge {
+  .btn-close-sm {
+    font-size: 0.5rem;
+    padding: 0.25rem;
+    line-height: 1;
+  }
+}
+
+.user-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 4px;
+
+  &-item {
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
+
+    &.selected {
+      background-color: #e9f5ff;
+    }
+  }
+}
+
+.avatar-xs {
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+}
+
+
+.selected-users-box {
+  border: 1px dashed #ddd;
+}
+
+
+.selected-users-box {
+  border: 1px solid #eee;
+  background-color: #f8f9fa;
+
+  /* Style de la scrollbar */
+  &::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #adb5bd;
+    border-radius: 10px;
+  }
+}
+
+.mo-list-container {
+  border: 1px solid #dee2e6;
+
+  /* Style de la scrollbar */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #adb5bd;
+    border-radius: 10px;
+  }
+
+  &-item {
+    transition: background 0.15s ease;
+
+    &:hover {
+      background-color: #f1f1f1 !important;
+    }
+
+    &:last-child {
+      border-bottom: none !important;
+    }
+  }
+}
+
+.avatar-xs {
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
 }

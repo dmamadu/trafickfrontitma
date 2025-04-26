@@ -3,17 +3,14 @@ import {
   ChangeDetectorRef,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
-  NO_ERRORS_SCHEMA,
   OnInit,
   ViewChild,
 } from "@angular/core";
 import { UntypedFormGroup } from "@angular/forms";
 import {
-  MAT_DIALOG_DATA,
   MatDialog,
-  MatDialogRef,
 } from "@angular/material/dialog";
-import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
+import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { Router } from "@angular/router";
@@ -26,8 +23,6 @@ import {
   ButtonAction,
   TableauComponent,
 } from "src/app/shared/tableau/tableau.component";
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
-import { ExportService } from "src/app/shared/core/export.service";
 import { UIModule } from "src/app/shared/ui/ui.module";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 
@@ -112,7 +107,7 @@ export class RoleComponent implements OnInit {
       },
       {
         icon: "bxs-trash-alt",
-        couleur: "red",
+        couleur: "#D45C00",
         size: "icon-size-4",
         title: "Supprimer",
         isDisabled: this.hasDelete,
@@ -122,12 +117,8 @@ export class RoleComponent implements OnInit {
   }
 
   constructor(
-    private changeDetectorRefs: ChangeDetectorRef,
     private parentService: ServiceParent,
-    private _router: Router,
-    private datePipe: DatePipe,
     private snackbar: SnackBarService,
-    private _matDialog: MatDialog,
     private coreService: CoreService,
     //  public matDialogRef: MatDialogRef<>,
     private _changeDetectorRef: ChangeDetectorRef,

@@ -1,9 +1,8 @@
 export const environment = {
   production: false,
   defaultauth: "fakebackend",
-  //apiUrl: "https://solutiondigitale.sunuresto.com/",
- // apiUrl: "http://localhost:8081/",
  apiUrl:"https://solutiondigitale.sunuresto.com/",
+ //apiUrl:"http://localhost:8088/",
   //baseUrl: 'http://localhost:4200',
    // production: false,
     // apiURL: 'https://api.suntelecoms.com/SFD/api/',

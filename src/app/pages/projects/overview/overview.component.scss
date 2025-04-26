@@ -1,16 +1,272 @@
-.colorTitle{
-  color: #1a2b60;
+/* Variables de couleur */
+/* Styles généraux */
+.project-detail-container {
+  padding: 20px;
+  font-family: 'Roboto', sans-serif;
+  color: var(--text-color);
 }
 
-.card h5
-{
-  font-size: 16px;
-  color: black;
-  font-weight: 500;
-  margin-top: 10px;
-  margin-bottom: 10px;
+/* Cartes */
+.project-card,
+.team-card,
+.standards-card {
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: none;
+  margin-bottom: 24px;
+  background-color: var(--background-color);
 }
-.card{
-  border-radius: 15px;
 
+.card-body {
+  padding: 24px;
+}
+
+/* En-tête du projet */
+.project-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.project-logo {
+  margin-right: 20px;
+
+  .project-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 2px solid var(--secondary-color);
+  }
+}
+
+.project-info {
+  flex: 1;
+
+  .project-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+   // color: var(--primary-color);
+  }
+}
+
+.project-status {
+  display: flex;
+  align-items: center;
+
+  .status-label {
+    font-weight: 500;
+    margin-right: 8px;
+  }
+
+  .status-badge {
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 500;
+
+    &.en-cours {
+      background-color: #FFF3E0;
+      color: #E65100;
+    }
+
+    &.completed {
+      background-color: #E8F5E9;
+      color: #2E7D32;
+    }
+
+    &.en-attente {
+      background-color: #E3F2FD;
+      color: #1565C0;
+    }
+  }
+}
+
+/* Sections */
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+//  color: var(--primary-color);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  mat-icon {
+    color: #D45C00;
+  }
+}
+
+/* Description */
+.project-description {
+  margin-bottom: 24px;
+
+  .description-text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-color);
+  }
+}
+
+/* Dates */
+.project-dates {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+
+  .date-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: var(--hover-color);
+    padding: 16px;
+    border-radius: 8px;
+
+    .date-icon {
+      background-color: var(--primary-color);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      mat-icon {
+        font-size: 20px;
+      }
+    }
+
+    .date-label {
+      font-size: 14px;
+      font-weight: 500;
+      margin: 0 0 4px 0;
+      color: var(--primary-color);
+    }
+
+    .date-value {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0;
+      color: var(--text-color);
+    }
+  }
+}
+
+/* Équipe */
+.team-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.team-member {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: var(--hover-color);
+  }
+
+  .member-avatar {
+    .avatar-img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--secondary-color);
+    }
+  }
+
+  .member-info {
+    .member-name {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 4px 0;
+      color: var(--text-color);
+    }
+
+    .member-role {
+      font-size: 14px;
+      margin: 0;
+      color: #666;
+    }
+  }
+}
+
+mat-icon{
+  color: #D45C00;
+}
+
+/* Normes */
+.standards-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.standard-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background-color: var(--hover-color);
+  border-radius: 8px;
+  border-left: 4px solid var(--accent-color);
+
+  .standard-icon {
+    color: var(--accent-color);
+    margin-top: 4px;
+
+    mat-icon {
+      font-size: 24px;
+    }
+  }
+
+  .standard-content {
+    .standard-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+      color: var(--primary-color);
+    }
+
+    .standard-description {
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0;
+      color: var(--text-color);
+    }
+  }
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .project-header {
+    flex-direction: column;
+    text-align: center;
+
+    .project-logo {
+      margin-right: 0;
+      margin-bottom: 16px;
+    }
+  }
+
+  .standards-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .project-dates {
+    grid-template-columns: 1fr;
+  }
+
+  .card-body {
+    padding: 16px;
+  }
 }

@@ -1,12 +1,9 @@
 import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { UntypedFormGroup } from "@angular/forms";
 import { BsModalService, BsModalRef } from "ngx-bootstrap/modal";
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { ModalModule } from "ngx-bootstrap/modal";
 
-import {
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-} from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { MatTableDataSource } from "@angular/material/table";
 import { ToastrService } from "ngx-toastr";
 import { ServiceParent } from "src/app/core/services/serviceParent";
@@ -16,15 +13,24 @@ import { CommonModule } from "@angular/common";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { DndModule } from "ngx-drag-drop";
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { BsDropdownModule } from "ngx-bootstrap/dropdown";
 import { MatIconModule } from "@angular/material/icon";
+import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 
 @Component({
   selector: "app-detail",
   templateUrl: "./detail.component.html",
   standalone: true,
-  imports: [CommonModule, BrowserModule,BrowserAnimationsModule,BrowserAnimationsModule,
-      DndModule, ModalModule,MatIconModule],
+  imports: [
+    CommonModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    BrowserAnimationsModule,
+    DndModule,
+    ModalModule,
+    MatIconModule,
+    AngularMaterialModule,
+  ],
   styleUrls: ["./detail.component.scss"],
 })
 
@@ -134,5 +140,16 @@ export class DetailComponent implements OnInit {
           console.log(err);
         }
       );
+  }
+
+  // Dans votre composant
+  formatStatut(statut: string): string {
+    const statuts: { [key: string]: string } = {
+      "en-attente": "En attente",
+      approuve: "Approuvé",
+      "en-cours": "En cours",
+      complete: "Complété",
+    };
+    return statuts[statut] || statut;
   }
 }

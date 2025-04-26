@@ -567,7 +567,7 @@ export class PapDetailComponent implements OnInit {
     return [
       {
         icon: "bxs-info-circle",
-        couleur: "#00bfff	",
+        couleur: "#D55E00	",
         size: "icon-size-4",
         title: "détail",
         isDisabled: this.hasDelete,
@@ -576,11 +576,7 @@ export class PapDetailComponent implements OnInit {
     ];
   }
 
-  // detailItemsPlainte(id, information) {
-  //   console.log("ttetete", information);
-  //   this.localService.saveDataJson("plainte", information);
-  //   this._router.navigate(["plainte/detail"]);
-  // }
+
 
   detailItemsPlainte(element: any) {
     console.log(element);
@@ -601,7 +597,7 @@ export class PapDetailComponent implements OnInit {
     return [
       {
         icon: "bxs-info-circle",
-        couleur: "#00bfff	",
+        couleur: "#D55E00	",
         size: "icon-size-4",
         title: "détail",
         isDisabled: this.hasDelete,

@@ -1,16 +1,15 @@
-import { Component, Inject, OnInit, ViewChild } from "@angular/core";
+import { Component,OnInit, ViewChild } from "@angular/core";
 import { ChartType } from "./jobs.model";
 
 import { ChartComponent } from "ng-apexcharts";
 import { LocalService } from "src/app/core/services/local.service";
 import { User } from "src/app/store/Authentication/auth.models";
-import { UtilsService } from "src/app/shared/utils/utils.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { ListPvComponent } from "../list-pv/list-pv.component";
-import { Project } from "../../projects/project.model";
-import { CoreService } from "src/app/shared/core/core.service";
 import { ProjectService } from "src/app/core/services/project.service";
+import { ImageModalComponent } from "src/app/shared/image-modal.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: "app-jobs",
@@ -42,8 +41,8 @@ export class JobsComponent implements OnInit {
 
   public listPap: any[] = [];
   public vulnerabilityCounts = {
-    vulnerable: 0,
-    nonVulnerable: 0,
+    Faible: 0,
+    Moyenne: 0,
   };
   currentProjectId: any;
 
@@ -51,6 +50,7 @@ export class JobsComponent implements OnInit {
     private localService: LocalService,
     private parentService: ServiceParent,
     private projectService: ProjectService,
+    private _matDialog: MatDialog,
     private snackbar: SnackBarService
   ) {
     this.currentProjectId = this.localService.getData("ProjectId");
@@ -101,11 +101,14 @@ export class JobsComponent implements OnInit {
 
   classifyVulnerability(): void {
     if (this.listPap && this.listPap.length > 0) {
+      console.log("====================================");
+      console.log("listPap: " + this.listPap);
+      console.log("====================================");
       this.listPap.forEach((pap) => {
-        if (pap.statutVulnerable === "Oui") {
-          this.vulnerabilityCounts.vulnerable++;
-        } else if (pap.statutVulnerable === "Non") {
-          this.vulnerabilityCounts.nonVulnerable++;
+        if (pap.vulnerabilite == "Moyenne") {
+          this.vulnerabilityCounts.Moyenne++;
+        } else if (pap.vulnerabilite === "Faible") {
+          this.vulnerabilityCounts.Faible++;
         }
       });
     } else {
@@ -114,18 +117,18 @@ export class JobsComponent implements OnInit {
       );
     }
 
-    console.log("Vulnérable:", this.vulnerabilityCounts.vulnerable);
-    console.log("Non Vulnérable:", this.vulnerabilityCounts.nonVulnerable);
+    console.log("Vulnérable:", this.vulnerabilityCounts.Moyenne);
+    console.log("Non Vulnérable:", this.vulnerabilityCounts.Faible);
   }
 
   public vulnerabilityChart = {
     series: [],
     chart: {
       type: "pie",
-      height: 350,
+      height: 320,
     },
     labels: ["Vulnérable", "Non Vulnérable"],
-    colors: ["#dc3545", "#28a745"],
+    colors: ["#0C8439", "#D45B00"],
     legend: {
       position: "bottom",
     },
@@ -134,15 +137,20 @@ export class JobsComponent implements OnInit {
   getPip() {
     this.loadData = true;
     return this.parentService
-      .list("partie-interesse", this.pageSize, this.offset,this.currentProjectId)
+      .list(
+        "partie-interesse",
+        this.pageSize,
+        this.offset,
+        this.currentProjectId
+      )
       .subscribe(
         (data: any) => {
           this.loadData = false;
           if (data["responseCode"] == 200) {
-          //  console.log(data);
+            //  console.log(data);
             this.loadData = false;
             this.lengthPip = data.length;
-           // console.log(data);
+            // console.log(data);
           } else {
             this.loadData = false;
           }
@@ -157,7 +165,7 @@ export class JobsComponent implements OnInit {
 
   getPlainte() {
     return this.parentService
-      .list("plaintes", this.pageSize, this.offset,this.currentProjectId)
+      .list("plaintes", this.pageSize, this.offset, this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -183,7 +191,7 @@ export class JobsComponent implements OnInit {
 
   getDocument() {
     return this.parentService
-      .list("documents", this.pageSize, this.offset,this.currentProjectId)
+      .list("documents", this.pageSize, this.offset, this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -212,11 +220,11 @@ export class JobsComponent implements OnInit {
     console.log("pli", this.listPlainte);
     if (this.listPlainte && this.listPlainte.length > 0) {
       this.listPlainte.forEach((complaint) => {
-        if (complaint.etat === "Résolu") {
+        if (complaint.etat === "Résolue") {
           this.complaintCounts.resolu++;
-        } else if (complaint.etat === "EnAttente") {
+        } else if (complaint.etat === "En Attente") {
           this.complaintCounts.enAttente++;
-        } else if (complaint.etat === "Encours") {
+        } else if (complaint.etat === "En cours") {
           this.complaintCounts.enCours++;
         }
       });
@@ -229,10 +237,10 @@ export class JobsComponent implements OnInit {
     series: [],
     chart: {
       type: "pie",
-      height: 350,
+      height: 320,
     },
-    labels: ["Résolu", "En Attente", "En Cours"],
-    colors: ["#28a745", "#ffc107", "#007bff"],
+    labels: ["Résolue", "En Attente", "En Cours"],
+    colors: ["#D45C00", "#0C8439", "#000000"],
     legend: {
       position: "bottom",
     },
@@ -365,10 +373,8 @@ export class JobsComponent implements OnInit {
           this.loadData = false;
           if (data["responseCode"] == 200) {
             this.loadData = false;
-         //   console.log(data);
             this.lisRencontre = data["data"];
             this.lengthRencontre = this.lisRencontre.length;
-          //  console.log("rencontres",this.lisRencontre);
           } else {
             this.loadData = false;
           }
@@ -380,7 +386,7 @@ export class JobsComponent implements OnInit {
   }
   getPapByCategory(category: string) {
     return this.parentService
-      .list(category, this.pageSize, this.offset,this.currentProjectId)
+      .list(category, this.pageSize, this.offset, this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -403,18 +409,22 @@ export class JobsComponent implements OnInit {
 
   updateVulnerabilityCounts(list: any[]): void {
     list.forEach((pap) => {
-      if (pap.statutVulnerable === "Oui") {
-        this.vulnerabilityCounts.vulnerable++;
-      } else if (pap.statutVulnerable === "Non") {
-        this.vulnerabilityCounts.nonVulnerable++;
+      if (pap.vulnerabilite == "Faible") {
+        this.vulnerabilityCounts.Faible++;
+      } else if (pap.vulnerabilite == "Moyenne") {
+        this.vulnerabilityCounts.Moyenne++;
       }
+      this.vulnerabilityChart.series=[
+        this.vulnerabilityCounts.Faible,
+        this.vulnerabilityCounts.Moyenne
+      ]
     });
   }
 
   loadAllCategories() {
     this.listPap = [];
     this.lengthPap = 0;
-    this.vulnerabilityCounts = { vulnerable: 0, nonVulnerable: 0 };
+    this.vulnerabilityCounts = { Moyenne: 0, Faible: 0 };
     const categories = [
       "papAgricole",
       "databasePapPlaceAffaire",
@@ -423,5 +433,13 @@ export class JobsComponent implements OnInit {
     categories.forEach((category) => {
       this.getPapByCategory(category);
     });
+  }
+
+  openImageModal(imageUrl: string) {
+    if (imageUrl) {
+      this._matDialog.open(ImageModalComponent, {
+        data: { imageUrl: imageUrl },
+      });
+    }
   }
 }

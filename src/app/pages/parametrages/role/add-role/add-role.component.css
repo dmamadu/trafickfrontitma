@@ -1,6 +1,6 @@
 /* Styles généraux pour la toolbar */
 .mat-accent {
-  background-color: #3f51b5; /* Couleur d'accent pour le header */
+  background-color: #D45C00; /* Couleur d'accent pour le header */
   color: white;
 }
 
@@ -79,7 +79,7 @@ button {
 }
 
 .btn-submit {
-  background-color: #3f51b5;
+  background-color: #0C8439;
   color: white;
   border: none;
   box-shadow: none;
@@ -91,7 +91,7 @@ button {
 }
 
 .btn-submit:hover {
-  background-color: #303f9f;
+  background-color: #0C8439;
 }
 
 /* Ajout d'effets sur les erreurs */

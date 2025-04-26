@@ -285,6 +285,7 @@
 }
 
 .contact-form {
+  width: 500px;
   flex: 1;
   display: flex;
   flex-direction: column;

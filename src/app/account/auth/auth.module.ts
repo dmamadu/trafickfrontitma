@@ -15,6 +15,7 @@ import { Recoverpwd2Component } from './recoverpwd2/recoverpwd2.component';
 import { AuthRoutingModule } from './auth-routing';
 import { PasswordresetComponent } from './passwordreset/passwordreset.component';
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import { AngularMaterialModule } from 'src/app/shared/angular-materiel-module/angular-materiel-module';
 
 @NgModule({
   declarations: [LoginComponent, Login2Component, SignupComponent, PasswordresetComponent, Register2Component, Recoverpwd2Component],
@@ -26,7 +27,8 @@ import {MatProgressSpinner} from "@angular/material/progress-spinner";
         UIModule,
         AuthRoutingModule,
         SlickCarouselModule,
-        MatProgressSpinner
+        MatProgressSpinner,
+        AngularMaterialModule
     ]
 })
 export class AuthModule { }

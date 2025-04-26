@@ -33,6 +33,7 @@ import { ImageModalComponent } from "src/app/shared/image-modal.component";
  * Projects-create component
  */
 export class CreateComponent implements OnInit {
+  [x: string]: any;
   imageToff: any;
 
   suggestions$!: Observable<string[]>;
@@ -201,7 +202,6 @@ export class CreateComponent implements OnInit {
 
     if (this.projectForm.valid) {
       this.isloading = true;
-
       const colors = {
         primary: this.projectForm.value.primaryColor,
         secondary: this.projectForm.value.secondaryColor,
@@ -449,7 +449,6 @@ export class CreateComponent implements OnInit {
     "#FF5722", // Orange
   ];
 
-
   openImageModal() {
     if (this.imageProjet) {
       this.dialog.open(ImageModalComponent, {
@@ -458,5 +457,40 @@ export class CreateComponent implements OnInit {
     }
   }
 
+  getInitials(name: string): string {
+    if (!name) return "";
+    const parts = name.split(" ");
+    return parts
+      .map((p) => p[0])
+      .join("")
+      .toUpperCase()
+      .substring(0, 2);
+  }
 
+  // Dans votre classe component, assurez-vous d'avoir :
+  // presetColors = ['#245363', '#93C5AF', '#FF9800', '#000000', '#FFFFFF', '#0C8439', '#D55E00'];
+
+  deleteMember(index: number): void {
+    // Vérifier que le formulaire et le tableau des membres existent
+    if (!this.form || !this.members) {
+      console.error(
+        "Le formulaire ou le tableau des membres n'est pas initialisé"
+      );
+      return;
+    }
+
+    // Vérifier que l'index est valide
+    if (index < 0 || index >= this.members.length) {
+      console.error("Index invalide pour la suppression");
+      return;
+    }
+
+    // Supprimer le membre à l'index spécifié
+    this.members.removeAt(index);
+
+    // Optionnel : afficher un message de confirmation
+    this.snackbar.openSnackBar("Norme supprimée avec succès", "OK", [
+      "mycssSnackbarGreen",
+    ]);
+  }
 }

@@ -246,6 +246,7 @@ const materialModules = [
   MatDatepickerModule,
   MatDividerModule,
   MatCardModule,
+  MatListModule
  // MatListModule,
 
 ];

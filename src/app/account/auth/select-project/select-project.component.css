@@ -1,86 +1,124 @@
-.main {
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px 25px 25px;
+/* Structure principale */
+.project-modal-container {
+  width: 100%;
+  width: 600px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border-top: 5px solid #4CAF50;
+  /* Green */
 }
 
-.close {
+/* En-tête avec logo */
+.modal-header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: black;
+  border-bottom: 1px solid #eaeaea;
 }
 
+.logo {
+  height: 40px;
+  width: auto;
+}
 
-.project-selection-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+.close-btn {
+  color: #D45C00;
+}
+
+.close-btn:hover {
+  color: #D45C00;
+  /* Orange */
+  background-color: rgba(212, 92, 0, 0.1);
+}
+
+/* Contenu principal */
+.modal-content {
+  padding: 25px;
+}
+
+.app-title {
+  color: #000;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 5px;
   text-align: center;
 }
 
-.welcome-message {
-  margin-bottom: 30px;
-}
-
-.welcome-message h2 {
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.welcome-message p {
-  font-size: 16px;
-  color: #666;
-}
-
-.project-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
-
-.project-card {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
-  width: 500px;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.project-select select {
-  width: 100%;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-}
-
-.project-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.project-card.selected {
-  border-color: #007bff;
-  background-color: #f0f8ff;
-}
-
-.project-name {
-  font-size: 18px;
-  font-weight: bold;
-  color: #007bff;
-  margin-bottom: 10px;
-}
-
-.project-description {
+.app-subtitle {
+  color: #D45C00;
   font-size: 14px;
-  color: #666;
+  text-align: center;
+  margin-bottom: 25px;
 }
 
-.no-projects {
-  font-size: 16px;
-  color: #888;
+/* Sélection de projet */
+.project-selector {
+  width: 100%;
+}
+
+.project-selector .mat-form-field-outline {
+  color: #ddd;
+}
+
+.project-selector .mat-form-field-outline-thick {
+  color: #4CAF50;
+  /* Green */
+}
+
+.project-option {
+  display: flex;
+  align-items: center;
+}
+
+.project-icon {
+  color: #D45C00;
+  /* Orange */
+  margin-right: 10px;
+}
+
+/* État vide */
+.empty-state {
+  padding: 30px 0;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 50px;
+  width: 50px;
+  height: 50px;
+  color: #D45C00;
+  /* Orange */
+  margin-bottom: 15px;
+}
+
+.empty-state h3 {
+  color: #000;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.empty-state p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.create-btn {
+  background-color: #4CAF50 !important;
+  /* Green */
+  color: white !important;
+  font-weight: 500;
+}
+
+.create-btn mat-icon {
+  margin-right: 5px;
+}
+
+
+.orange-o {
+  color: #D45C00;
+  font-size: larger;
 }
