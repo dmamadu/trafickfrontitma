@@ -14,10 +14,10 @@
 
         <a routerLink="/" class="logo logo-light mt-5">
           <span class="logo-sm">
-            <img src="assets/images/logo/Logoinvodis.png" alt="" >
+            <img src="assets/images/logo/Logoinvodis.png" alt="">
           </span>
           <span class="logo-lg">
-            <img src="assets/images/logo/Logoinvodis.png" alt=""  >
+            <img src="assets/images/logo/Logoinvodis.png" alt="">
           </span>
         </a>
       </div>
@@ -59,7 +59,7 @@
         </button>
       </div>
 
-      <div class="dropdown d-inline-block" dropdown>
+      <!-- <div class="dropdown d-inline-block" dropdown>
         <button type="button" class="btn header-item noti-icon" id="page-header-notifications-dropdown" dropdownToggle>
           <i class="bx bx-bell bx-tada"></i>
           <span class="badge bg-danger rounded-pill">3</span>
@@ -145,21 +145,28 @@
             </a>
           </div>
         </div>
-      </div>
-
+      </div> -->
       <div class="dropdown d-inline-block" dropdown>
         <button type="button" class="btn header-item" dropdownToggle id="page-header-user-dropdown">
-          <img [src]="myImage" class="rounded-circle header-profile-user" alt="Header Avatar" />
-          <span class="d-none d-xl-inline-block ms-1">{{user.user.firstname}} </span>
-          <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+          <img [src]="myImage" class="rounded-circle header-profile-user me-2" alt="Header Avatar" />
+          <span class="d-inline-flex align-items-center">
+            {{user.user.firstname}}
+            <i class="mdi mdi-chevron-down ms-1"></i>
+          </span>
         </button>
+
         <div class="dropdown-menu dropdown-menu-end" *dropdownMenu>
-          <a class="dropdown-item" routerLink="/contacts/profile"><i
-              class="bx bx-user font-size-16 align-middle me-1"></i>
-            {{ 'HEADER.LOGIN.PROFILE' | translate}}</a>
-          <a class="dropdown-item text-danger" href="javascript: void(0);" (click)="logout()"><i
-              class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i>
-            {{ 'HEADER.LOGIN.LOGOUT' | translate}}</a>
+          <!-- Option Changer le mot de passe -->
+          <button class="dropdown-item"  (click)="changePassword()">
+            <i class="bx bx-lock-alt font-size-16 align-middle me-1"></i>
+            Changer le mot de passe
+          </button>
+
+          <!-- Option Déconnexion -->
+          <a class="dropdown-item text-danger" href="javascript:void(0);" (click)="logout()">
+            <i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i>
+            {{ 'HEADER.LOGIN.LOGOUT' | translate }}
+          </a>
         </div>
       </div>
 

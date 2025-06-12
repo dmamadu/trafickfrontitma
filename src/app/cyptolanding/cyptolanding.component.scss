@@ -1,5 +1,14 @@
+
+*{
+  font-family: 'Questrial', sans-serif;
+}
+
+.leMenu{
+   font-family: 'Questrial', sans-serif;
+}
 .barnav-item {
   height: 70px;
+   font-family: 'Questrial', sans-serif;
 }
 
 .barnav-item ul li{
@@ -14,29 +23,13 @@
 
 
 
-.banner {
-  height:700px;
-  width: 450px;
-  color: #fff;
-  padding: 30px;
-  text-align: center;
-  margin-bottom: 20px;
-
-  h1 {
-    font-size: 2rem;
-    text-transform:uppercase;
-    text-align: left;
-  font-weight: bold;
-  margin: 10px;
-    margin: 0;
-  }
-
-  p {
-    font-size: 1rem;
-    text-align: left;
-    margin-top: 10px;
-  }
+/* Par défaut, navbar transparente avec texte sombre */
+nav {
+  background-color: rgba(15, 15, 15, 0.541);
 }
+
+
+
 
 
 
@@ -266,102 +259,6 @@
 }
 
 
-/* Style de la section de contact */
-/* Style de la section de contact */
-// .contact {
-//   background-color: #fff;
-//   width: 100%;
-//   padding: 60px 10%;
-// }
-
-// .contact-container {
-//   display: flex;
-//   justify-content: center;
-//   flex-direction: column;
-//   align-items: center;
-//   max-width: 100%;
-//   margin: 0 auto;
-//   background-color: #fff;
-//   border-radius: 10px;
-//   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-//   padding: 40px;
-//   width: 100%;
-// }
-
-// .contact-info {
-//   //flex: 1;
-//   margin-top: 50px;
-//   margin-bottom: 50px;
-//   color: black;
-// }
-
-// .contact-info h1 {
-//   font-size: 46px;
-//   font-weight: 700;
-//   color: #000000;
-
-// }
-
-
-
-
-
-// .contact-form form {
-//   display: flex;
-//   flex-direction: column;
-//   gap: 20px;
-// }
-
-// .form-row {
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: space-between;
-//   gap: 20px;
-// }
-
-// .form-group {
-//   display: flex;
-//   flex-direction: column;
-//   flex: 1;
-// }
-
-// .form-group.full-width {
-//   flex: 2;
-// }
-
-// .form-group label {
-//   font-size: 16px;
-//   color: black;
-//   margin-bottom: 8px;
-// }
-// .form-group input{
-//   padding: 10px !important;
-// }
-
-// .form-group input,
-// .form-group textarea {
-//   padding: 14px;
-//   font-size: 16px;
-//   border: 1px solid #ccc;
-//   border-radius: 6px;
-//   background-color: white;
-//   transition: border 0.3s ease;
-// }
-
-// .form-group input:focus,
-// .form-group select:focus,
-// .form-group textarea:focus {
-//   border-color: #df6a11;
-//   outline: none;
-//   background-color: #fff;
-// }
-
-// .form-group textarea {
-//   resize: vertical;
-// }
-
-
-
 .error-message {
   color: red;
   font-size: 16px;
@@ -528,7 +425,8 @@
 
 
       .benefit-title {
-        font-size: 1.9rem;
+        font-size: 1.5rem;
+        text-align: left;
         font-weight: bold;
         color: #000000;
         margin-bottom: 1rem;
@@ -536,6 +434,7 @@
 
       .benefit-description {
         color: #000000;
+        text-align: left;
         font-size: 1.1rem;
         line-height: 1.7;
         margin-bottom: 0;
@@ -675,7 +574,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('../../assets/images/solutions.jpg');
+    background-image: url('../../assets/images/solutions.webp');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -822,7 +721,6 @@
     border: none;
     padding: 0.75rem 2rem;
     font-weight: 600;
-
     &:hover {
       background-color: #D45C00;
     }
@@ -858,11 +756,11 @@
 }
 
 .form-check-label strong {
-  font-size: larger;
+  font-size: 19px;
  color: #000000;
 }
 .form-check-label p {
-  font-size: smaller;
+  font-size: 16px;
  color: #000000;
 }
 .video-placeholder {
@@ -918,12 +816,12 @@ h4 {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   padding: 2rem;
   width: fit-content;
-  max-width: 85%;
+  //max-width: 85%;
   margin: 2rem auto;
   position: relative;
   margin-top: -60px;
   z-index: 10;
-  width: 65%;
+  //width: 75%;
 }
 
 .stats-row {
@@ -936,7 +834,7 @@ h4 {
 .stat-item {
   text-align: center;
   padding: 0 2rem;
-  min-width: 180px;
+  min-width: 100px;
 }
 
 .stat-number {
@@ -1015,7 +913,7 @@ h4 {
 .faq-container {
   max-width: 800px;
   margin: 1rem auto;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ // font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .faq-item {
@@ -1119,4 +1017,9 @@ h4 {
   .faq-question {
     font-size: 1.05rem;
   }
+}
+
+
+.textBenefit p{
+  padding: 25px;
 }

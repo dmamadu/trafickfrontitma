@@ -85,11 +85,11 @@ export class MiseEnOeuvreComponent implements OnInit {
   papDeplacement: number = 50;
   papVulnerables: number = 20;
 
-  dossiersIncomplets: number = 10;
-  dossiersComplets: number = 90;
-  ententesCompensation: number = 70;
-  dossiersTransmis: number = 80;
-  papPayees: number = 65;
+  dossiersIncomplets: number = 0;
+  dossiersComplets: number = 0;
+  ententesCompensation: number = 0;
+  dossiersTransmis: number = 0;
+  papPayees: number = 0;
 
   vulnerableChart = {
     series: [20, 40],

@@ -1,10 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { interval } from "rxjs";
-import { map } from "rxjs/operators";
+import { fromEvent, interval, Subscription } from "rxjs";
+import { map, throttleTime } from "rxjs/operators";
 import { ComplaintServiceService } from "../pages/home-page/complaint-service.service";
 import { ContactService } from "../pages/home-page/contact.service";
 import { SnackBarService } from "../shared/core/snackBar.service";
+import { APP_VERSION } from "src/environments/version";
 
 @Component({
   selector: "app-cyptolanding",
@@ -19,6 +20,8 @@ export class CyptolandingComponent implements OnInit {
   // set the currenr year
   year: number = new Date().getFullYear();
   currentSection: any = "home";
+  //version de l'app
+  appVersion = APP_VERSION;
 
   // Timeline config
   slideConfig = {
@@ -52,7 +55,11 @@ export class CyptolandingComponent implements OnInit {
   isMenuOpen: any;
 
   ngOnInit() {
-    this._trialEndsAt = "2023-12-31";
+
+
+
+
+  this._trialEndsAt = "2023-12-31";
 
     interval(3000)
       .pipe(
@@ -148,17 +155,12 @@ export class CyptolandingComponent implements OnInit {
   // Fonction d'initialisation du formulaire
   private initForm() {
     this.contactForm = this.fb.group({
-      name: ["", Validators.required],
+      nomComplet: ["", Validators.required],
       email: ["", [Validators.required, Validators.email]],
-      message: ["", Validators.required],
+      contenu: ["", Validators.required],
       dateCreation: [new Date()],
     });
   }
-
-
-
-
-
 
   onSubmit() {
     this.contactForm.markAllAsTouched();
@@ -192,11 +194,11 @@ export class CyptolandingComponent implements OnInit {
       description: "Suivi de l'implication, des rôles, et des responsabilités.",
       image: "assets/images/GPP.png",
     },
-    {
-      title: "Suivi des projets",
-      description: "Chronologie, jalons, et suivi de l'avancement.",
-      image: "assets/images/SP.png",
-    },
+    // {
+    //   title: "Suivi des projets",
+    //   description: "Chronologie, jalons, et suivi de l'avancement.",
+    //   image: "assets/images/SP.png",
+    // },
     {
       title: "Communication et collaboration",
       description:
@@ -213,10 +215,10 @@ export class CyptolandingComponent implements OnInit {
 
   bottomFeatures = [
     {
-      title: "Rapports et analyses",
+      title: "Suivi des projets,rapports et analyses",
       description:
-        "Tableau de bord pour évaluer l'impact, le progrès et les besoins.",
-      image: "assets/images/RA.png",
+        "Chronologie, jalons, et suivi de l'avancement. Tableau de bord pour évaluer l'impact, le progrès et les besoins",
+      image: "assets/images/SP.png",
     },
     {
       title: "Gestion des plaintes",
@@ -276,44 +278,47 @@ export class CyptolandingComponent implements OnInit {
 
   isOpen: boolean = false;
 
-toggle() {
-  this.isOpen = !this.isOpen;
-}
-
-
-faqItems = [
-  {
-    question: "Qui peut utiliser Invodis ?",
-    answer: "Everyone realizes why a new common language would be desirable...",
-    isOpen: false
-  },
-  {
-    question: "Comment Invodis garantit-elle la sécurité des données ?",
-    answer: "If several languages coalesce, the grammar of the resulting...",
-    isOpen: false
-  },
-  {
-    question: "Quelles sont les localités concernées dans Invodis ?",
-    answer: "It will be as simple as Occidental...",
-    isOpen: false
-  },
-  {
-    question: "Peut-on personnaliser Invodis pour des lois locales ?",
-    answer: "To an English person, it will seem like simplified English...",
-    isOpen: false
-  },
-  {
-    question: "Comment les communautés sans internet y accèdent-elles ?",
-    answer: "To an English person, it will seem like simplified English...",
-    isOpen: false
+  toggle() {
+    this.isOpen = !this.isOpen;
   }
-];
 
+  faqItems = [
+    {
+      question: "Qui peut utiliser Invodis ?",
+      answer:
+        "Everyone realizes why a new common language would be desirable...",
+      isOpen: false,
+    },
+    {
+      question: "Comment Invodis garantit-elle la sécurité des données ?",
+      answer: "If several languages coalesce, the grammar of the resulting...",
+      isOpen: false,
+    },
+    {
+      question: "Quelles sont les localités concernées dans Invodis ?",
+      answer: "It will be as simple as Occidental...",
+      isOpen: false,
+    },
+    {
+      question: "Peut-on personnaliser Invodis pour des lois locales ?",
+      answer: "To an English person, it will seem like simplified English...",
+      isOpen: false,
+    },
+    {
+      question: "Comment les communautés sans internet y accèdent-elles ?",
+      answer: "To an English person, it will seem like simplified English...",
+      isOpen: false,
+    },
+  ];
 
-activeIndex: number | null = null;
+  activeIndex: number | null = null;
 
   toggleItem(index: number): void {
     this.activeIndex = this.activeIndex === index ? null : index;
   }
+
+
+  isLightBackground = false;
+  private scrollSub!: Subscription;
 
 }

@@ -1,0 +1,29 @@
+<section class="section hero-section bg-ico-hero" id="home">
+  <video autoplay  loop playsinline  preload="auto" class="background-video">
+    <source src="assets/images/1570682_Highway_Land Transport_1920x1080.mp4" type="video/mp4" />
+    Votre navigateur ne supporte pas la vidéo HTML5.
+  </video>
+  <div class="container mx-auto flex flex-col lg:flex-row items-center lg:px-0">
+
+    <!-- Colonne gauche statique (ne change pas) -->
+    <div class="lg:w-1/2">
+      <img src="assets/images/Frame1WithPhone.svg" alt="Bienvenue sur notre plateforme" class="max-w-full h-auto mb-3">
+    </div>
+
+    <!-- Colonne droite avec contenu dynamique -->
+    <div class="banner text-white">
+      <div>
+        <h1 class="text-xl font-bold ">{{ currentSlide.title }}</h1>
+        <p class="text-gray-300">{{ currentSlide.description }}</p>
+      </div>
+
+      <div class="mt-4 d-flex">
+        <a href="javascript: void(0);" class="inline-block px-6 py-3 bg-[#D45C00] text-white hover:bg-[#E66900] hover:shadow-lg rounded-md
+                  transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2
+                  focus:ring-[#D45C00] focus:ring-opacity-50 font-bold">
+          Commencer maintenant
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

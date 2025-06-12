@@ -15,6 +15,7 @@ import { PapAddComponent } from '../../pap/pap-add/pap-add.component';
 import { PapService } from '../../pap/pap.service';
 import { AddUserComponent } from './add-user/add-user.component';
 import { environment } from 'src/environments/environment';
+import { DetailUserComponent } from '../../maitrouvrages/detail-user/detail-user.component';
 
 @Component({
   selector: 'app-utilisateur',
@@ -191,13 +192,29 @@ throw new Error('Method not implemented.');
         size: "icon-size-4",
         title: "détail",
         isDisabled: this.hasDelete,
-        action: (element?) => this.detailItems(element.id, element),
+        action: (element?) => this.detailItems(element),
       },
     ];
   }
-  detailItems(id: any, element: any) {
-    throw new Error('Method not implemented.');
-  }
+  // detailItems(id: any, element: any) {
+  //   throw new Error('Method not implemented.');
+  // }
+
+    detailItems(information): void {
+      console.log(information);
+      this.snackbar.openModal(
+        DetailUserComponent,
+        "57rem",
+        "edit",
+        "38",
+        information,
+        "",
+        () => {
+          this.getUsers();
+        }
+      );
+    }
+
   updateItems(information): void {
     console.log(information);
     this.snackbar.openModal(

@@ -116,6 +116,13 @@ export class AuthenticationService {
       );
   }
 
+  changementDuPassword(newPassword: any) {
+    return this.http.post(`${this.url}users/change-password`, newPassword).pipe(
+      map((response: any) => {
+        return response;
+      })
+    );
+  }
   /**
    * Logout the user
    */
@@ -149,24 +156,65 @@ export class AuthenticationService {
     }
   }
 
+  // isAuthenticated(): boolean {
+  //   const accessToken: any = localStorage.getItem("token");
+  //   return !!(accessToken && !this.jwtHelper.isTokenExpired(accessToken));
+  // }
+
+  // /**
+  //  * Fonction pour gérer l'expiration du token
+  //  */
+
+  // private handleTokenExpired() {
+  //   const sessionExpireTitre = "Session expirée";
+  //   const sessionExpireDescription =
+  //     "Votre session a expiré, veuillez vous reconnecter.";
+  //   this._snackbar
+  //     .showSimpleNotification(sessionExpireTitre, sessionExpireDescription)
+  //     .then(() => {
+  //       this.logout();
+  //       this.router.navigate(["/auth/login"]);
+  //     });
+  // }
   isAuthenticated(): boolean {
-    const accessToken: any = localStorage.getItem("token");
-    return !!(accessToken && !this.jwtHelper.isTokenExpired(accessToken));
+    try {
+      const accessToken = localStorage.getItem("token");
+
+      // Vérification basique du token
+      if (!accessToken || typeof accessToken !== "string") {
+        return false;
+      }
+
+      // Vérification de l'expiration
+      const isExpired = this.jwtHelper.isTokenExpired(accessToken);
+
+      // Si le token est expiré, on déclenche le handler
+      if (isExpired) {
+        this.handleTokenExpired();
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Erreur lors de la vérification du token:", error);
+      this.handleTokenExpired();
+      return false;
+    }
   }
 
-  /**
-   * Fonction pour gérer l'expiration du token
-   */
-
-  private handleTokenExpired() {
+  private async handleTokenExpired(): Promise<void> {
     const sessionExpireTitre = "Session expirée";
     const sessionExpireDescription =
       "Votre session a expiré, veuillez vous reconnecter.";
-    this._snackbar
-      .showSimpleNotification(sessionExpireTitre, sessionExpireDescription)
-      .then(() => {
-        this.logout();
-        this.router.navigate(["/auth/login"]);
-      });
+
+    try {
+      await this._snackbar.showSimpleNotification(
+        sessionExpireTitre,
+        sessionExpireDescription
+      );
+    } finally {
+      this.logout();
+      this.router.navigateByUrl("/auth/login", { replaceUrl: true });
+    }
   }
 }

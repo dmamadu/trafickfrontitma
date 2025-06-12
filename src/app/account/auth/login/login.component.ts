@@ -85,6 +85,7 @@ export class LoginComponent implements OnInit {
       );
   }*/
 
+  /*
   onSubmit() {
     this.submitted = true;
     this.loader = true;
@@ -128,6 +129,90 @@ export class LoginComponent implements OnInit {
           this.toastr.error(
             `Une erreur s'est produite ou veuillez vérifier vos identifiants`
           );
+        }
+      );
+  }
+      */
+  // onSubmit() {
+  //   this.submitted = true;
+  //   this.loader = true;
+
+  //   return this.authenticationService
+  //     .login(this.f.email.value, this.f.password.value)
+  //     .subscribe(
+  //       (user: Auth) => {
+  //         console.log(user);
+  //         localStorage.setItem("token", user.token);
+  //         this.toastr.success(`Bienvenue ${user.user.firstname}`);
+  //         if (user.user.projects?.length > 1) {
+  //           this.choicePeoject();
+  //         } else {
+  //           this.router.navigate(["/dashboards/jobs"]);
+  //         }
+  //         this.submitted = false;
+  //         this.loader = false;
+  //       },
+  //       (error) => {
+  //         console.log(error);
+  //         this.toastr.error(
+  //           `Une erreur s'est produite ou veuillez vérifier vos identifiants`
+  //         );
+  //         this.submitted = false;
+  //         this.loader = false;
+  //       }
+  //     );
+  // }
+
+  onSubmit() {
+    this.submitted = true;
+    this.loader = true;
+
+    return this.authenticationService
+      .login(this.f.email.value, this.f.password.value)
+      .subscribe(
+        (user: Auth) => {
+          console.log(user);
+          localStorage.setItem("token", user.token);
+          // Message d'accueil plus complet avec nom et rôle
+          // const welcomeMessage = `Bienvenue ${user.user.firstname} ${
+          //   user.user.lastname || ""
+          // }
+          // (${user.user.role[0].name || "utilisateur"})`;
+          const welcomeMessage = `Bienvenue ${user.user.firstname} ${
+            user.user.lastname || ""
+          }, vous êtes connecté(e) en tant que ${
+            user.user.role[0].name || "utilisateur"
+          }`;
+          this.toastr.success(welcomeMessage, null, {
+            timeOut: 15000,
+            progressBar: true,
+            closeButton: true,
+          });
+          if (user.user.projects?.length > 1) {
+            this.choicePeoject();
+          } else {
+            this.localService.saveData(
+              "ProjectId",
+              user.user.projects[0]?.id.toString()
+            );
+            this.router.navigate(["/dashboards/jobs"]);
+          }
+          this.submitted = false;
+          this.loader = false;
+        },
+        (error) => {
+          console.log(error);
+          this.toastr.error(
+            `Une erreur s'est produite ou veuillez vérifier vos identifiants`,
+            null,
+            {
+              timeOut: 5000, // 5 secondes pour les erreurs
+              progressBar: true,
+              closeButton: true,
+            }
+          );
+          this.submitted = false;
+          this.loader = false;
         }
       );
   }

@@ -21,6 +21,7 @@ import { AddEntenteComponent } from "../add-entente/add-entente.component";
 import { AjoutEntenteComponent } from "../ajout-entente/ajout-entente.component";
 import { CoreService } from "src/app/shared/core/core.service";
 import { CompensationDetailComponent } from "../compensation-detail/compensation-detail.component";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-list-entente",
@@ -113,6 +114,7 @@ export class ListEntenteComponent implements OnInit {
     private parentService: ServiceParent,
     private localService: LocalService,
     private snackbar: SnackBarService,
+    public toastr: ToastrService,
     private coreService: CoreService
   ) {
     this.currentProjectId = this.localService.getData("ProjectId");
@@ -165,6 +167,10 @@ export class ListEntenteComponent implements OnInit {
   }
 
   addItems(): void {
+    if (!this.currentProjectId) {
+      this.showProjectSelectionError();
+      return;
+    }
     this.snackbar.openModal(
       AjoutEntenteComponent,
       "73rem",
@@ -258,7 +264,6 @@ export class ListEntenteComponent implements OnInit {
       )
       .subscribe(
         (data: any) => {
-
           console.log(data);
 
           this.loadData = false;
@@ -281,19 +286,23 @@ export class ListEntenteComponent implements OnInit {
       );
   }
 
-
-
   filterTable(event: Event) {
     const searchTerm = (event.target as HTMLInputElement).value.trim();
     this.loadData = true;
     this.parentService
-      .searchGlobal(this.url, searchTerm, this.currentProjectId,this.pageSize, this.offset)
+      .searchGlobal(
+        this.url,
+        searchTerm,
+        this.currentProjectId,
+        this.pageSize,
+        this.offset
+      )
       .subscribe(
         (data: any) => {
           this.loadData = false;
-          console.log('====================================');
+          console.log("====================================");
           console.log(data);
-          console.log('====================================');
+          console.log("====================================");
           if (data["responseCode"] == 200) {
             this.dataSource = new MatTableDataSource(data["data"]);
             this.dataSource.paginator = this.paginator;
@@ -320,5 +329,18 @@ export class ListEntenteComponent implements OnInit {
     this.pageIndex = event.pageIndex;
     this.offset = this.pageIndex;
     this.getEntente();
+  }
+
+  private showProjectSelectionError(): void {
+    this.toastr.error(
+      "Vous devez vous connecter en tant que maître d'ouvrage responsable d'un projet.",
+      "Action non autorisée",
+      {
+        timeOut: 15000,
+        progressBar: true,
+        closeButton: true,
+        enableHtml: true,
+      }
+    );
   }
 }

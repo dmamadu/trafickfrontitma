@@ -14,6 +14,8 @@ import { getLayoutMode } from "src/app/store/layouts/layout.selector";
 import { RootReducerState } from "src/app/store";
 import { Auth, User } from "src/app/store/Authentication/auth.models";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
+import { ChangePasswordComponent } from "src/app/account/auth/change-password/change-password.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: "app-topbar",
@@ -46,6 +48,7 @@ export class TopbarComponent implements OnInit {
     private snackbar: SnackBarService,
     public translate: TranslateService,
     public _cookiesService: CookieService,
+    private _matDialog: MatDialog,
     public store: Store<RootReducerState>
   ) {}
 
@@ -70,15 +73,14 @@ export class TopbarComponent implements OnInit {
   ngOnInit() {
     if (this.authService.currentUser()) {
       this.user = this.authService.currentUser();
-      if(this.user.user.image){
+      if (this.user.user.image) {
         this.myImage = this.getImageFromBase64(
           this.user.user.image.type,
           this.user.user.image.image
         );
-      }else{
-        this.myImage = 'assets/images/user.png';
+      } else {
+        this.myImage = "assets/images/user.png";
       }
-
     }
 
     this.store.select("layout").subscribe((data) => {
@@ -125,7 +127,6 @@ export class TopbarComponent implements OnInit {
    * Logout the user
    */
 
-
   logout() {
     this.snackbar
       .showConfirmation("Voulez-vous vraiment vous déconnecter ?")
@@ -135,9 +136,27 @@ export class TopbarComponent implements OnInit {
           this.router.navigate(["/auth/login"]);
         }
       });
-    // }else if(!this.listeNoire){
-    //
-    // }
+  }
+
+  changePassword(): void {
+    this._matDialog.open(ChangePasswordComponent, {});
+    // console.log('Opening password change modal...'); // Debug log
+
+    // this.snackbar.openModal(
+    //   ChangePasswordComponent,  // Votre composant de changement de mot de passe
+    //   "Changer le mot de passe",  // Titre du modal
+    //   "",  // Sous-titre (optionnel)
+    //   "500px",  // Largeur recommandée (ajustable)
+    //   "",  // Paramètre supplémentaire (optionnel)
+    //   "",  // Paramètre supplémentaire (optionnel)
+    //   (result) => {
+    //     // Callback après fermeture du modal
+    //     if (result) {
+    //       console.log('Password changed successfully', result);
+    //       // Vous pouvez ajouter ici un traitement après succès
+    //     }
+    //   }
+    // );
   }
 
   /**

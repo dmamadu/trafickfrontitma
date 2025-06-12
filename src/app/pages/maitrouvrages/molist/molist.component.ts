@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -7,7 +8,7 @@ import {
   ViewChild,
 } from "@angular/core";
 import { Observable } from "rxjs";
-import {ModalDirective } from "ngx-bootstrap/modal";
+import { ModalDirective } from "ngx-bootstrap/modal";
 import {
   FormBuilder,
   FormGroup,
@@ -100,7 +101,9 @@ export class MolistComponent implements OnInit {
     private coreService: CoreService,
     public toastr: ToastrService,
     private localService: LocalService,
-    private snackbar: SnackBarService
+    private snackbar: SnackBarService,
+    private ct :ChangeDetectorRef,
+    private _changeDetectorRef: ChangeDetectorRef,
   ) {}
 
   myImage: string;
@@ -115,9 +118,6 @@ export class MolistComponent implements OnInit {
       { label: "Maitres d'ouvrages" },
       { label: "Listes", active: true },
     ];
-
-
-
 
     this.createMoForm = this.formBuilder.group({
       id: [""],
@@ -166,10 +166,7 @@ export class MolistComponent implements OnInit {
       ],
       project_ids: [[], this.formBuilder.array([])],
     });
-
   }
-
-
 
   deleteImage() {
     // Logique pour supprimer l'image sélectionnée
@@ -202,7 +199,6 @@ export class MolistComponent implements OnInit {
   uploadedImage!: File;
   imageURL: string | undefined;
 
-
   handleCreateMoForm(image?: Image) {
     const projectRequest = this.createMoForm.value;
     if (image) {
@@ -230,7 +226,6 @@ export class MolistComponent implements OnInit {
   }
 
   // fiter job
-
 
   filteredMo: Mo[] = [];
   filterTable(event: any) {
@@ -266,13 +261,11 @@ export class MolistComponent implements OnInit {
     this.updateSelectedProjects();
   }
 
-
-
   // pagechanged
   pageChanged(event: PageChangedEvent): void {
     const startItem = (event.page - 1) * event.itemsPerPage;
     this.endItem = event.page * event.itemsPerPage;
-   // this.contactsList = this.returnedArray.slice(startItem, this.endItem);
+    // this.contactsList = this.returnedArray.slice(startItem, this.endItem);
   }
 
   // Delete User
@@ -285,8 +278,6 @@ export class MolistComponent implements OnInit {
     this.store.dispatch(deleteuserlist({ id: this.deleteId }));
     this.removeItemModal?.hide();
   }
-
-
 
   fetchMo() {
     this.loadData = true;
@@ -302,6 +293,8 @@ export class MolistComponent implements OnInit {
             this.dataSource.sort = this.sort;
             this.datas = data["data"];
             this.length = data["length"];
+            this.ct.detectChanges();
+            this._changeDetectorRef.markForCheck();
             console.log("length", this.length);
           } else {
             this.loadData = false;
@@ -315,10 +308,7 @@ export class MolistComponent implements OnInit {
       );
   }
 
-
-
   projectlist: any;
-
 
   createHeader() {
     return [
@@ -370,8 +360,6 @@ export class MolistComponent implements OnInit {
     ];
   }
 
-
-
   detailItems(information): void {
     console.log(information);
     this.snackbar.openModal(
@@ -382,7 +370,7 @@ export class MolistComponent implements OnInit {
       information,
       "",
       () => {
-         this.fetchMo();
+        this.fetchMo();
       }
     );
   }
@@ -396,7 +384,7 @@ export class MolistComponent implements OnInit {
       information,
       "",
       () => {
-         this.fetchMo();
+        this.fetchMo();
       }
     );
   }
@@ -422,8 +410,6 @@ export class MolistComponent implements OnInit {
       });
   }
 
-
-
   addItems(): void {
     this.snackbar.openModal(
       AddMaitreOuvrageComponent,
@@ -437,6 +423,4 @@ export class MolistComponent implements OnInit {
       }
     );
   }
-
-
 }

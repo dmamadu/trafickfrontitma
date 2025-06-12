@@ -59,6 +59,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { AngularMaterialModule } from './shared/angular-materiel-module/angular-materiel-module';
 import { NgDropdownPanelComponent } from '@ng-select/ng-select/lib/ng-dropdown-panel.component';
+import { HeroCarouselComponent } from "./cyptolanding/hero-carousel/hero-carousel.component";
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -70,17 +71,17 @@ export function createTranslateLoader(http: HttpClient): any {
     DetailPlainteComponent,
   ],
   imports: [
-    CommonModule, ReactiveFormsModule, BrowserModule,MatProgressBarModule,MatProgressBar,MatProgressSpinnerModule,
+    CommonModule, ReactiveFormsModule, BrowserModule, MatProgressBarModule, MatProgressBar, MatProgressSpinnerModule,
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
     AngularFireAuthModule,
     TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: createTranslateLoader,
-        deps: [HttpClient]
-      }
+        loader: {
+            provide: TranslateLoader,
+            useFactory: createTranslateLoader,
+            deps: [HttpClient]
+        }
     }),
     LayoutsModule,
     AppRoutingModule,
@@ -94,30 +95,31 @@ export function createTranslateLoader(http: HttpClient): any {
     ToastrModule.forRoot(),
     StoreModule.forRoot(rootReducer),
     StoreDevtoolsModule.instrument({
-      maxAge: 25, // Retains last 25 states
-      logOnly: environment.production, // Restrict extension to log-only mode
+        maxAge: 25, // Retains last 25 states
+        logOnly: environment.production, // Restrict extension to log-only mode
     }),
     EffectsModule.forRoot([
-      FilemanagerEffects,
-      OrderEffects,
-      AuthenticationEffects,
-      CartEffects,
-      ProjectEffects,
-      usersEffects,
-      userslistEffects,
-      JoblistEffects,
-      CandidateEffects,
-      InvoiceDataEffects,
-      ChatEffects,
-      tasklistEffects,
-      OrdersEffects,
-      CustomerEffects,
-      MailEffects,
-      MatIconModule,AngularMaterialModule,
-      MatIconModule,
-      AccordionModule
+        FilemanagerEffects,
+        OrderEffects,
+        AuthenticationEffects,
+        CartEffects,
+        ProjectEffects,
+        usersEffects,
+        userslistEffects,
+        JoblistEffects,
+        CandidateEffects,
+        InvoiceDataEffects,
+        ChatEffects,
+        tasklistEffects,
+        OrdersEffects,
+        CustomerEffects,
+        MailEffects,
+        MatIconModule, AngularMaterialModule,
+        MatIconModule,
+        AccordionModule
     ]),
-  ],
+    HeroCarouselComponent
+],
   bootstrap: [AppComponent],
   providers: [
     //{ provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

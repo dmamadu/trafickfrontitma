@@ -119,6 +119,10 @@ export class GestionDossierComponent {
   }
 
   addItems(): void {
+    // if (!this.currentProjectId) {
+    //   this.showProjectSelectionError();
+    //   return;
+    // }
     this.snackbar.openModal(
       AddDossierComponent,
       "45rem",
@@ -259,5 +263,18 @@ export class GestionDossierComponent {
           console.log(err);
         }
       );
+  }
+
+  private showProjectSelectionError(): void {
+    this.toastr.error(
+      "Vous devez vous connecter en tant que maître d'ouvrage responsable d'un projet.",
+      "Action non autorisée",
+      {
+        timeOut: 15000,
+        progressBar: true,
+        closeButton: true,
+        enableHtml: true,
+      }
+    );
   }
 }

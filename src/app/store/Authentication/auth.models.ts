@@ -14,7 +14,7 @@ export interface User {
   place_of_birth?: string;
   enabled?: boolean;
   image?: Image;
-  roles?: Role[];
+  role?: Role[];
   projects?: any[];
 }
 

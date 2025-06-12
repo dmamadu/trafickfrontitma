@@ -101,9 +101,9 @@ export class JobsComponent implements OnInit {
 
   classifyVulnerability(): void {
     if (this.listPap && this.listPap.length > 0) {
-      console.log("====================================");
-      console.log("listPap: " + this.listPap);
-      console.log("====================================");
+      // console.log("====================================");
+      // console.log("listPap: " + this.listPap);
+      // console.log("====================================");
       this.listPap.forEach((pap) => {
         if (pap.vulnerabilite == "Moyenne") {
           this.vulnerabilityCounts.Moyenne++;
@@ -199,7 +199,7 @@ export class JobsComponent implements OnInit {
             this.loadData = false;
             this.listDocument = data["data"];
             this.lenghtDocument = data.length;
-            console.log(data);
+          //  console.log(data);
           } else {
             this.loadData = false;
           }
@@ -217,7 +217,7 @@ export class JobsComponent implements OnInit {
   };
 
   classifyComplaints(): void {
-    console.log("pli", this.listPlainte);
+   // console.log("pli", this.listPlainte);
     if (this.listPlainte && this.listPlainte.length > 0) {
       this.listPlainte.forEach((complaint) => {
         if (complaint.etat === "Résolue") {

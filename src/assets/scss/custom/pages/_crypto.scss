@@ -176,15 +176,32 @@
     background-color: $black;
 }
 
+
 .hero-section.bg-ico-hero {
-  opacity: 0.9;
+  position: relative;
   padding-top: 100px;
   padding-bottom: 100px;
-  background-image: url("../../../images/bgInvodis.jpg");
-  background-size: cover;
-  background-position: top;
-  position: relative;
+  overflow: hidden;
+  //opacity: 0.9;
 }
+
+.hero-section.bg-ico-hero video.background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.7;
+}
+
+.hero-section.bg-ico-hero .content {
+  position: relative;
+  z-index: 1;
+  color: white;
+}
+
 
 /* Assombrissement de l'image SEULEMENT */
 .hero-section.bg-ico-hero::after {

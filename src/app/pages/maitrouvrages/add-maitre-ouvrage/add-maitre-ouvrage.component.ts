@@ -281,7 +281,7 @@ export class AddMaitreOuvrageComponent {
             (resp) => {
               if (resp["status"] == 200) {
                 this.snackbar.openSnackBar(
-                  "Maitre d'ouvrage  ajouté avec succés",
+                  "Maitre d'ouvrage  ajouté avec succés,il recevra par mail ses identifiants de connexion par défaut.",
                   "OK",
                   ["mycssSnackbarGreen"]
                 );

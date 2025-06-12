@@ -101,12 +101,12 @@ export class LocalService {
   private decryptObject(encryptedData: string): any {
     try {
       // Log the encrypted data
-      console.log('Encrypted data:', encryptedData);
+      //console.log('Encrypted data:', encryptedData);
 
       const decryptedData = this.decrypt(encryptedData); // Assurez-vous que cette méthode fonctionne correctement
 
       // Log the decrypted data
-      console.log('Decrypted data:', decryptedData);
+     /// console.log('Decrypted data:', decryptedData);
 
       const parsedData = JSON.parse(decryptedData); // C'est ici que l'erreur se produit
       return parsedData;

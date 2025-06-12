@@ -88,21 +88,6 @@ export class ProjectlistComponent implements OnInit {
     this.router.navigate(["/projects/update"]);
   }
 
-  // updateItems(information): void {
-  //   console.log(information);
-  //   this.snackbar.openModal(
-  //     AddComponent,
-  //     "57rem",
-  //     "edit",
-  //     "38",
-  //     information,
-  //     "",
-  //     () => {
-  //       this.loadProject();
-  //     }
-  //   );
-  // }
-
   updateItems(information: any): void {
     this.snackbar.openModal(
       AddComponent,
@@ -168,6 +153,14 @@ export class ProjectlistComponent implements OnInit {
       {
         th: "Date début",
         td: "datedebut",
+      },
+       {
+        th: "Description",
+        td: "description",
+      },
+       {
+        th: "Status",
+        td: "status",
       },
     ];
   }

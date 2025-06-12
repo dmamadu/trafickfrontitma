@@ -14,14 +14,9 @@ import {
   FormGroup,
   FormArray,
 } from "@angular/forms";
-import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-  MatDialog,
-} from "@angular/material/dialog";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MatDrawer } from "@angular/material/sidenav";
 import { MatStepper } from "@angular/material/stepper";
-import * as moment from "moment";
 import { CoreService } from "src/app/shared/core/core.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
@@ -29,7 +24,6 @@ import { MatPaginatorIntl } from "@angular/material/paginator";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
-import { DatePipe } from "@angular/common";
 
 import {
   DateAdapter,
@@ -132,8 +126,17 @@ export class PipAddComponent implements OnInit {
       this.labelButton = "Ajouter ";
     } else if (_data?.action == "edit") {
       this.labelButton = "Modifier ";
+      console.log("===================dat=================");
+      console.log(_data.data);
+      console.log("====================================");
       this.id = _data.data.id;
       this.initForms(_data.data);
+      // Mise à jour des contacts avec les données reçues
+      if (_data.data.contacts && Array.isArray(_data.data.contacts)) {
+        this.contacts = new MatTableDataSource<any>(_data.data.contacts);
+      } else {
+        this.contacts = new MatTableDataSource<any>([]);
+      }
       if (_data && _data.data.pays) {
         this.initForm.get("pays").setValue(_data.data.pays);
       }
@@ -143,7 +146,7 @@ export class PipAddComponent implements OnInit {
     this.dialogTitle = this.labelButton + this.suffixe;
     this.ng2TelOptions = { initialCountry: "sn" };
   }
-
+  contacts = new MatTableDataSource<any>([]);
   checkValidOnWhatsApp(event: any): void {
     const value = event.value;
     this.initForm.get("statutVulnerable")?.setValue(value);
@@ -151,7 +154,7 @@ export class PipAddComponent implements OnInit {
 
   ngOnInit(): void {
     // this.getcategories();
-
+    this.displayedColumns = ['nom', 'prenom', 'email', 'telephone'];
     this.lienBrute = this.router.url;
     // Extraire une partie spécifique de l'URL
     this.lien = this.lienBrute.substring(1, this.lienBrute.length);
@@ -169,27 +172,27 @@ export class PipAddComponent implements OnInit {
     this.initForm = this.fb.group({
       //first step
       libelle: this.fb.control(donnees ? donnees?.libelle : null, [
-        Validators.required
+        Validators.required,
       ]),
       statut: this.fb.control(donnees ? donnees?.statut : null, [
-        Validators.required
+        Validators.required,
       ]),
-      courielPrincipal: this.fb.control(
-        donnees ? donnees?.courielPrincipal : null,
+      courrielPrincipal: this.fb.control(
+        donnees ? donnees?.courrielPrincipal : null,
         [Validators.required]
       ),
       adresse: this.fb.control(donnees ? donnees?.adresse : null, [
-        Validators.required
+        Validators.required,
       ]),
       localisation: this.fb.control(donnees ? donnees?.localisation : null, [
         Validators.required,
       ]),
       categorie: this.fb.control(donnees ? donnees?.categorie : null, [
-        Validators.required
+        Validators.required,
       ]),
       //step 3
       normes: this.fb.control(donnees ? donnees?.normes : null, [
-        Validators.required
+        Validators.required,
       ]),
       //projet
       project_id: this.fb.control(
@@ -210,7 +213,7 @@ export class PipAddComponent implements OnInit {
     if (
       this.initForm.get("libelle").invalid ||
       this.initForm.get("statut").invalid ||
-      this.initForm.get("courielPrincipal").invalid ||
+      this.initForm.get("courrielPrincipal").invalid ||
       this.initForm.get("adresse").invalid ||
       this.initForm.get("localisation").invalid
     ) {
@@ -344,15 +347,12 @@ export class PipAddComponent implements OnInit {
     { id: "F", name: "Féminin" },
   ];
   displayedColumns: string[] = ["nom", "prenom", "email", "telephone"];
-  contacts = new MatTableDataSource<any>();
 
   // Fonction pour créer le formulaire
   createContactForm() {
     this.contactForm = this.fb.group({
       nomContactPrincipal: ["", Validators.required],
       prenomContactPrincipal: ["", Validators.required],
-      // adresseContactPrincipal: ["", Validators.required],
-      // sexeContactPrincipal: ["", Validators.required],
       emailContactPrincipal: ["", [Validators.required, Validators.email]],
       telephoneContactPrincipal: ["", Validators.required],
     });
@@ -386,7 +386,6 @@ export class PipAddComponent implements OnInit {
     }
   }
 
-
   isStepValid(stepIndex: number): boolean {
     switch (stepIndex) {
       case 0:
@@ -394,7 +393,7 @@ export class PipAddComponent implements OnInit {
       case 1:
         return this.contactForm.valid;
       case 2:
-        return this.initForm.get('normes')?.valid;
+        return this.initForm.get("normes")?.valid;
       default:
         return false;
     }
@@ -406,5 +405,4 @@ export class PipAddComponent implements OnInit {
       this.myStepper.selectedIndex = selectedIndex - 1;
     }
   }
-
 }

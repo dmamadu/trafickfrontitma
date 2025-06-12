@@ -37,7 +37,13 @@
               "metismenujs/dist/metismenujs",
               "sweetalert2",
               "polylabel",
-              "@ckeditor/ckeditor5-build-classic"
+              "@ckeditor/ckeditor5-build-classic",
+              "moment",
+              "raf",
+              "rgbcolor",
+              "jspdf-autotable",
+              "xlsx-js-style",
+              "crypto-js"
             ],
             "outputPath": "dist/skote",
             "index": "src/index.html",
@@ -45,12 +51,9 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
-               "src/styles/tailwind.scss",
+              "src/styles/tailwind.scss",
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "node_modules/chartist/dist/index.css",
               "./node_modules/ngx-ui-switch/ui-switch.component.css",
@@ -64,13 +67,14 @@
               "node_modules/slick-carousel/slick/slick.scss",
               "node_modules/slick-carousel/slick/slick-theme.scss",
               "src/styles/vendors.scss",
-              "src/styles/styles.scss"
+              "src/styles/styles.scss",
+              "./node_modules/maplibre-gl/dist/maplibre-gl.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/slick-carousel/slick/slick.min.js"
             ],
-             "baseHref": "/"
+            "baseHref": "/"
           },
           "configurations": {
             "production": {
@@ -90,7 +94,7 @@
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "6kb",
-                  "maximumError": "10kb"
+                  "maximumError": "15kb"
                 }
               ]
             },
@@ -134,10 +138,7 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
@@ -194,9 +195,6 @@
     }
   },
   "cli": {
-    "schematicCollections": [
-      "@cypress/schematic",
-      "@schematics/angular"
-    ]
+    "schematicCollections": ["@cypress/schematic", "@schematics/angular"]
   }
 }

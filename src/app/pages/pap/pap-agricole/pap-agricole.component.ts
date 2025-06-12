@@ -26,7 +26,7 @@ import {
 } from "@angular/material/dialog";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import * as XLSX from "xlsx";
-import { Pap} from "../pap.model";
+import { Pap } from "../pap.model";
 import { PapService } from "../pap.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { DatatableComponent } from "src/app/shared/datatable/datatable.component";
@@ -74,8 +74,6 @@ import { ImageModalComponent } from "src/app/shared/image-modal.component";
   ],
 })
 export class PapAgricoleComponent {
-
-
   appName: string = AppConfig.appName;
   [x: string]: any;
 
@@ -145,11 +143,7 @@ export class PapAgricoleComponent {
     private coreService: CoreService,
     private exportService: ExportService
   ) {
-    //this.currentProjectId = this.localService.getDataJson("user");
-
     this.currentProjectId = this.localService.getData("ProjectId");
-
-    console.log("user connecter", this.currentProjectId);
     this.informations = {
       exportFile: ["excel", "pdf"],
       titleFile: "liste des pap",
@@ -285,7 +279,7 @@ export class PapAgricoleComponent {
     this.btnActions = this.createActions();
   }
 
-    getPapAgricole() {
+  getPapAgricole() {
     this.loadData = true;
     return this.parentService
       .list(this.url, this.pageSize, this.offset, this.currentProjectId)
@@ -368,8 +362,6 @@ export class PapAgricoleComponent {
     ];
   }
 
-
-
   pageChanged(event) {
     console.log(event);
     this.datas = [];
@@ -442,27 +434,21 @@ export class PapAgricoleComponent {
     this.isCollapsed = !this.isCollapsed;
   }
 
-
   filterTable(event: Event) {
     const searchTerm = (event.target as HTMLInputElement).value.trim();
-
-    console.log('====================================');
-    console.log(searchTerm);
-    console.log('====================================');
-
-    // Appeler l'API avec le terme de recherche
     this.loadData = true;
     this.parentService
-      .searchGlobal(this.url, searchTerm, this.currentProjectId,this.pageSize, this.offset)
+      .searchGlobal(
+        this.url,
+        searchTerm,
+        this.currentProjectId,
+        this.pageSize,
+        this.offset
+      )
       .subscribe(
         (data: any) => {
           this.loadData = false;
-          console.log('====================================');
-          console.log(data);
-          console.log('====================================');
           if (data["responseCode"] == 200) {
-
-
             this.dataSource = new MatTableDataSource(data["data"]);
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
@@ -695,9 +681,11 @@ export class PapAgricoleComponent {
     return { doc: doc, marginX: marginX, totalPagesExp: totalPagesExp };
   }
 
-  record(item) {}
-
   addItems(): void {
+    if (!this.currentProjectId) {
+      this.showProjectSelectionError();
+      return;
+    }
     this.snackbar.openModal(
       AddPapAgricoleComponent,
       "65rem",
@@ -754,6 +742,10 @@ export class PapAgricoleComponent {
   }
 
   triggerFileUpload() {
+    if (!this.currentProjectId) {
+      this.showProjectSelectionError();
+      return;
+    }
     const fileUploadElement = document.getElementById(
       "file-upload"
     ) as HTMLInputElement;
@@ -763,31 +755,35 @@ export class PapAgricoleComponent {
   }
 
   importData() {
-    this.loadData = true;
-    const dataToSend = this.dataExcel.map((item) => ({
-      ...item,
-      projectId: +this.currentProjectId,
-    }));
-
-    return this.papService.add("papAgricole", dataToSend).subscribe(
-      (data: any) => {
-        console.log(data);
-        this.toastr.success(data.message);
-        this.dataExcel = [];
-        this.getPapAgricole();
-        this.loadData = false;
-      },
-      (err) => {
-        this.loadData = false;
-        console.log(err);
-        this.toastr.error(err);
-      }
-    );
+    this.snackbar
+      .showConfirmation(`Voulez-vous vraiment importer ces données ?`)
+      .then((result) => {
+        if (result["value"] !== true) return;
+        this.loadData = true;
+        const dataToSend = this.dataExcel.map((item) => ({
+          ...item,
+          projectId: +this.currentProjectId,
+        }));
+        return this.papService.add("papAgricole", dataToSend).subscribe(
+          (data: any) => {
+            console.log(data);
+            this.toastr.success(data.message);
+            this.dataExcel = [];
+            this.getPapAgricole();
+            this.loadData = false;
+          },
+          (err) => {
+            this.loadData = false;
+            console.log(err);
+            this.toastr.error(err);
+          }
+        );
+      });
   }
 
-  onOptionSelected() {
-    console.log("Valeur sélectionnée :", this.selectedOption);
-  }
+  // onOptionSelected() {
+  //   console.log("Valeur sélectionnée :", this.selectedOption);
+  // }
 
   detailItems(id, information) {
     console.log(information);
@@ -796,7 +792,16 @@ export class PapAgricoleComponent {
     this._router.navigate(["pap/detail"]);
   }
 
-
-
-
+  private showProjectSelectionError(): void {
+    this.toastr.error(
+      "Vous devez vous connecter en tant que maître d'ouvrage responsable d'un projet.",
+      "Action non autorisée",
+      {
+        timeOut: 15000,
+        progressBar: true,
+        closeButton: true,
+        enableHtml: true,
+      }
+    );
+  }
 }

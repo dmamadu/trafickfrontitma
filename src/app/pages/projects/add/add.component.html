@@ -1,5 +1,5 @@
-<div class="">
-  <div class="bg-[#D45C00] py-2 px-6 flex items-center justify-between shadow-sm">
+<div style="z-index: 100;">
+  <!-- <div class="bg-[#D45C00] py-2 px-6 flex items-center justify-between shadow-sm">
     <h2 class="text-xl font-semibold text-white">
       <mat-icon class="align-middle mr-2">assignment</mat-icon>
       {{textHead}}
@@ -7,8 +7,15 @@
     <button mat-icon-button (click)="matDialogRef.close()" aria-label="Fermer" class="text-white hover:bg-green-600">
       <mat-icon>close</mat-icon>
     </button>
-  </div>
-
+  </div> -->
+  <mat-toolbar class="mat-accent m-0 backToolbar">
+    <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
+      <span class="c_title dialog-title">{{ textHead }}</span>
+      <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
   <form [formGroup]="projectForm" (ngSubmit)="save()">
     <div class="row">
       <div class="col-lg-8">
@@ -51,7 +58,7 @@
             </div>
 
             <!-- Section Libellé -->
-            <div class="relative mb-2">
+            <!-- <div class="relative mb-2">
               <label for="libelle-input" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
                 <mat-icon class="mr-2 text-[#D45C00]">title</mat-icon>
                 Libellé du projet
@@ -73,10 +80,35 @@
                 </mat-error>
                 }
               </mat-form-field>
+            </div> -->
+            <div class="relative mb-2">
+              <mat-form-field class="w-full mt-2" appearance="outline">
+                <mat-label class="enteteccColor flex items-center">
+                  <!-- <mat-icon class="mr-2 text-[#D45C00]">title</mat-icon> -->
+                  Libellé du projet
+                </mat-label>
+                <input class="typeTitle" matInput id="libelle-input" formControlName="libelle"
+                  placeholder="Nom du projet...">
+                <mat-icon matSuffix class="secondary-text">edit</mat-icon>
+
+                @if(f.libelle.invalid && (f.libelle.dirty || f.libelle.touched)){
+                <mat-error>
+                  @if(f.libelle.errors.required){
+                  <span>Le nom est obligatoire</span>
+                  }
+                  @if(f.libelle.errors.minlength){
+                  <span>Minimum 3 caractères</span>
+                  }
+                  @if(f.libelle.errors.maxlength){
+                  <span>Maximum 150 caractères</span>
+                  }
+                </mat-error>
+                }
+              </mat-form-field>
             </div>
 
             <!-- Section Description -->
-            <div class="relative mb-2">
+            <!-- <div class="relative mb-2">
               <label for="projectdesc-input" class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
                 <mat-icon class="mr-2 text-[#D45C00]">description</mat-icon>
                 Description
@@ -95,58 +127,42 @@
                 </mat-error>
                 }
               </mat-form-field>
+            </div> -->
+            <div class="relative mb-2">
+              <mat-form-field class="w-full mt-2" appearance="outline">
+                <mat-label class="enteteccColor flex items-center">
+                  <!-- <mat-icon class="mr-2 text-[#D45C00]">description</mat-icon> -->
+                  Description
+                </mat-label>
+                <textarea class="typeTitle" matInput formControlName="description" id="projectdesc-input" rows="3"
+                  placeholder="Description du projet..."></textarea>
+
+                @if (f.description.invalid && (f.description.touched || f.description.dirty)) {
+                <mat-error>
+                  @if (f.description.errors.required) {
+                  <span>Description obligatoire</span>
+                  }
+                  @if (f.description.errors.minlength) {
+                  <span>Minimum 5 caractères</span>
+                  }
+                </mat-error>
+                }
+              </mat-form-field>
             </div>
 
             <!-- Section Maitre d'ouvrage -->
-            <div class="my-4" *ngIf="lengthMo==0">
+            <div class="my-2" *ngIf="lengthMo==0">
               <button type="button" mat-raised-button color="primary" class="bg-[#D45C00] text-white"
                 (click)="addItems()">
                 <mat-icon class="mr-2">person_add</mat-icon>
                 Créer un Maitre d'ouvrage
               </button>
             </div>
-
-            <!-- Section Assignation -->
-            <!-- <div class="mb-2" *ngIf="lengthMo>0">
-              <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                <mat-icon class="mr-2 text-[#D45C00]">group</mat-icon>
-                Assigné à
-              </label>
-
-              <div *ngIf="assignList && assignList.length > 0" class="flex flex-wrap gap-2 mb-3">
-                @for(data of assignList; track $index){
-                <mat-chip class="!bg-[#D45C00] !text-white">
-                  @if (data.image) {
-                  <img [src]="data.imageUrl" alt="" class="rounded-full h-6 w-6 mr-2">
-                  }
-                  {{ data.lastname }}
-                </mat-chip>
-                }
-              </div>
-
-              <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Selectionnez les membres</mat-label>
-                <mat-select multiple formControlName="assignees">
-                  @for(data of listMo; track $index){
-                  <mat-option [value]="data.id" (click)="slectMember(i)">
-                    <div class="flex items-center">
-                      @if (data.image) {
-                      <img [src]="data.imageUrl" alt="" class="rounded-full h-6 w-6 mr-2">
-                      }
-                      <span>{{ data.lastname }}</span>
-                    </div>
-                  </mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-            </div> -->
-
-            <div class="mb-3 position-relative">
+            <div class="mb-1 position-relative">
               <label class="form-label">Assigné à</label>
-
               <!-- Utilisateurs sélectionnés - Version compacte -->
               <div *ngIf="assignList.length > 0" class="selected-users-box mb-2 p-2 bg-light rounded"
-                style="max-height: 80px; overflow-y: auto;">
+                style="max-height: 50px; overflow-y: auto;">
                 <div class="d-flex flex-wrap gap-1">
                   <div *ngFor="let user of assignList" class="selected-user-item">
                     <div class="d-flex align-items-center bg-white p-1 pe-2 rounded border">
@@ -166,7 +182,7 @@
               </div>
 
               <!-- Liste scrollable des MO -->
-              <div class="mo-list-container border rounded" style="height: 100px; overflow-y: auto;">
+              <div class="mo-list-container border rounded" style="height: 80px; overflow-y: auto;">
                 <div *ngFor="let mo of listMo"
                   class="mo-list-item p-2 d-flex align-items-center cursor-pointer border-bottom"
                   [class.bg-light]="isSelected(mo)" (click)="toggleUserSelection(mo)">
@@ -191,9 +207,9 @@
             </div>
 
             <!-- Section Normes -->
-            <div class="inner-repeater mb-2">
+            <div class="inner-repeater mb-1">
               <form [formGroup]="form">
-                <label class="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+                <label class="text-sm font-medium text-gray-700 mb-1 flex items-center">
                   <mat-icon class="mr-2 text-[#D45C00]">rule</mat-icon>
                   Normes du projet
                 </label>
@@ -223,7 +239,7 @@
               </form>
 
               <div class="flex justify-end mt-2">
-                <button type="button" mat-stroked-button color="primary" (click)="addMember()"
+                <button type="button" mat-stroked-button  (click)="addMember()"
                   [disabled]="form.invalid">
                   <mat-icon class="mr-2">add</mat-icon>
                   Ajouter une norme
@@ -237,7 +253,7 @@
       <!-- Colonne de droite -->
       <div class="col-lg-4">
         <!-- Card Statut -->
-        <div class="card shadow-sm border-0 mb-2">
+        <!-- <div class="card shadow-sm border-0 mb-2">
           <div class="card-body">
             <h5 class="card-title mb-1 text-[#D45C00] flex items-center">
               <mat-icon class="mr-2">flag</mat-icon>
@@ -256,10 +272,27 @@
               }
             </mat-form-field>
           </div>
+        </div> -->
+        <div class="shadow-sm border-0 mx-1">
+          <div class="">
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor flex items-center">
+                Statut du projet
+              </mat-label>
+              <mat-select class="typeTitle" formControlName="status">
+                <mat-option value="Completed">Terminé</mat-option>
+                <mat-option value="Inprogress">En cours</mat-option>
+                <mat-option value="Delay">En retard</mat-option>
+              </mat-select>
+              @if(f.status.invalid && f.status.touched){
+              <mat-error>Veuillez sélectionner un statut</mat-error>
+              }
+            </mat-form-field>
+          </div>
         </div>
 
         <!-- Card Dates -->
-        <div class="card shadow-sm border-0 mb-2">
+        <!-- <div class="card shadow-sm border-0 mb-2">
           <div class="card-body">
             <h5 class="card-title mb-1 text-[#D45C00] flex items-center">
               <mat-icon class="mr-2">date_range</mat-icon>
@@ -305,8 +338,53 @@
             </div>
             }
           </div>
-        </div>
+        </div> -->
 
+        <div class="shadow-sm border-0 mx-1 ">
+          <div class="">
+            <!-- Date de début -->
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor flex items-center">
+                Date de début
+              </mat-label>
+              <input class="typeTitle" matInput [matDatepicker]="picker1" formControlName="datedebut">
+              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
+              @if(f.datedebut.invalid && (f.datedebut.dirty || f.datedebut.touched)){
+              <mat-error>
+                @if(f.datedebut.errors.required){
+                <span>Date requise</span>
+                }
+              </mat-error>
+              }
+            </mat-form-field>
+
+            <!-- Date de fin -->
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor flex items-center">
+                Date de fin
+              </mat-label>
+              <input class="typeTitle" matInput [matDatepicker]="picker2" formControlName="datefin">
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+              @if(f.datefin.invalid && (f.datefin.dirty || f.datefin.touched)){
+              <mat-error>
+                @if(f.datefin.errors.required){
+                <span>Date requise</span>
+                }
+              </mat-error>
+              }
+            </mat-form-field>
+
+            <!-- Validation croisée -->
+            @if(projectForm.errors?.dateInvalid && (f.datedebut.touched || f.datefin.touched)){
+            <div class="text-red-600 text-sm mt-1 flex items-center">
+              <mat-icon class="align-middle mr-1">error</mat-icon>
+              La date de fin doit être après la date de début
+            </div>
+            }
+          </div>
+        </div>
         <!-- Card Couleurs -->
         <div class="card shadow-sm border-0">
           <div class="card-body">
@@ -378,7 +456,7 @@
 
     <app-loader-data *ngIf="isloading"></app-loader-data>
 
-    <div class="col-lg-8 mt-4 my-2">
+    <!-- <div class="col-lg-8 ">
       <div class="text-end">
         <button type="submit" class="
         bg-[#D45C00] text-white hover:bg-[#c05300]
@@ -392,6 +470,16 @@
           </h2>
         </button>
       </div>
+    </div> -->
+    <div class="flex justify-center gap-4">
+      <button mat-raised-button class="submit-buttonRed" type="button">
+        <span class="textForm">Retour</span>
+      </button>&nbsp;
+      <button  mat-raised-button class="submit-button" >
+       <h2 class="textForm">
+            {{ buttonText }}
+          </h2>
+      </button>
     </div>
   </form>
 </div>

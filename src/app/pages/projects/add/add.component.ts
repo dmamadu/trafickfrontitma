@@ -50,16 +50,17 @@ import {
 } from "@angular/material/core";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MomentDateAdapter } from "@angular/material-moment-adapter";
+import { LoaderComponent } from "../../../shared/loader/loader.component";
 
 export const MY_DATE_FORMATS = {
   parse: {
-    dateInput: "YYYY",
+    dateInput: "DD/MM/YYYY",
   },
   display: {
-    dateInput: "YYYY",
-    monthYearLabel: "YYYY",
-   // dateA11yLabel: "LL",
-    monthYearA11yLabel: "YYYY",
+    dateInput: "DD/MM/YYYY",
+    monthYearLabel: "MMMM YYYY",
+    dateA11yLabel: "LL",
+    monthYearA11yLabel: "MMMM YYYY",
   },
 };
 
@@ -85,7 +86,8 @@ export const MY_DATE_FORMATS = {
     MatNativeDateModule,
     MatDatepickerModule,
     MatNativeDateModule,
-  ],
+    LoaderComponent
+],
   providers: [
     {
       provide: DateAdapter,
@@ -117,15 +119,12 @@ export class AddComponent {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.initializeForm();
-    console.log('====================================');
-    console.log(data);
-    console.log('====================================');
     if (data && data.action == "edit") {
-      this.buttonText = "Modifier le projet";
+      this.buttonText = "Modifier";
       this.textHead = "Modification du projet";
       this.populateForm(data.data);
     } else {
-      this.buttonText = "Créer le projet";
+      this.buttonText = "Créer";
       this.textHead = "Création du projet";
     }
   }
@@ -364,13 +363,15 @@ export class AddComponent {
                 (data: ResponseData<Project>) => {
                   console.log("Project created successfully:", data);
                   this.toastr.success(`${data.message}`);
-                  this.router.navigate(["/projects/list"]);
+                  this.matDialogRef.close(true);
+                  //    this.router.navigate(["/projects/list"]);
                   this.toastr.success(`Projet créé avec succès`);
                   this.isloading = false;
                 },
                 (error) => {
                   console.error("Error creating project:", error);
                   this.toastr.error(`Une erreur s'est produite`);
+                  this.matDialogRef.close(true);
                   this.isloading = false;
                 }
               );
@@ -477,6 +478,7 @@ export class AddComponent {
                 console.error("Error updating project:", error);
                 this.toastr.error("Erreur lors de la mise à jour");
                 this.isloading = false;
+                this.matDialogRef.close(true);
               }
             );
         }

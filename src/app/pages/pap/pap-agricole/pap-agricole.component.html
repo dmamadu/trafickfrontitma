@@ -1,5 +1,6 @@
 <div>
-  <app-page-title title="Liste des Pap Agricoles affectées par le projet" [breadcrumbItems]="breadCrumbItems" ></app-page-title>
+  <app-page-title title="Liste des Pap Agricoles affectées par le projet"
+    [breadcrumbItems]="breadCrumbItems"></app-page-title>
 </div>
 <div class=" row mb-2">
   <div class="col-sm">
@@ -14,11 +15,11 @@
   <div class="col-sm-auto">
     <div class="d-flex flex-wrap gap-2">
 
-      <button (click)="exportAs('pdf')"> <img src="assets/images/pdf-icon.png" alt="default image"
+      <!-- <button (click)="exportAs('pdf')"> <img src="assets/images/pdf-icon.png" alt="default image"
           class="c_icon"></button>
           <button (click)="exportAs('excel')">
             <img src="assets/images/xlsx-icon.png" alt="default image" class="c_icon">
-          </button>
+          </button> -->
       <button type="submit" class="btn bgPrimaire" (click)="addItems()"> <i class="mdi mdi-plus me-1"></i> Ajouter un
         pap agricole</button>
 
@@ -30,25 +31,33 @@
       style="display: none;">
   </div>
 </div>
-@if (dataExcel.length>0) {
-<app-datatable [headings]="headings" [dataExcel]="dataExcel"></app-datatable>
+@if (dataExcel.length > 0) {
+<app-datatable [headings]="headings" [dataExcel]="dataExcel" #dataTable></app-datatable>
 
-<div class="row">
+<div class="row mt-4">
   <div class="col-lg-12">
-    <div class="text-end">
-      <button type="button" class="btn btn-danger me-1 w-36" (click)="resetDataFromExcel()">Annuler</button>
-      <button type="submit" class="btn btn-success  w-36" (click)="importData()">Ajouter</button>
+    <!-- Affichage des erreurs si besoin -->
+    @if (dataTable.hasErrors()) {
+    <div class="mb-3 text-sm text-red-600 text-end">
+      Veuillez corriger les erreurs pour pouvoir importer
+    </div>
+    }
+    <div class="flex justify-end gap-3">
+      <button type="button" class="btn btn-danger w-36" (click)="resetDataFromExcel()">
+        Annuler
+      </button>
+      <button type="submit" class="btn btn-success w-36" [disabled]="dataTable.hasErrors()"
+        [class.opacity-50]="dataTable.hasErrors()" [class.cursor-not-allowed]="dataTable.hasErrors()"
+        (click)="importData()">
+        Importer
+      </button>
     </div>
   </div>
 </div>
 }
-
-<!-- <app-loader-custom *ngIf="loadData"></app-loader-custom> -->
-
 <app-loader-data *ngIf="loadData"></app-loader-data>
-
 <div style="z-index: 0" class="pt-3">
   <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" [total]="length"
-    [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
-    (changePage)="pageChanged($event)" *ngIf="!loadData"></tableau>
+    [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions" (changePage)="pageChanged($event)"
+    *ngIf="!loadData"></tableau>
 </div>

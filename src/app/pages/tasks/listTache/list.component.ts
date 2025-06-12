@@ -140,7 +140,6 @@ export class ListTacheComponent implements OnInit {
   btnActions: any = [];
   currentProjectId: any;
   constructor(
-    private changeDetectorRefs: ChangeDetectorRef,
     private snackbar: SnackBarService,
     private papService: PapService,
     private parentService: ServiceParent,
@@ -287,6 +286,11 @@ export class ListTacheComponent implements OnInit {
   record(item) {}
 
   addItems(): void {
+    if (!this.currentProjectId) {
+      this.showProjectSelectionError();
+      return;
+    }
+
     this.snackbar.openModal(
       CreatetaskComponent,
       "55rem",
@@ -301,6 +305,10 @@ export class ListTacheComponent implements OnInit {
   }
 
   updateItems(information): void {
+    if (!this.currentProjectId) {
+      this.showProjectSelectionError();
+      return;
+    }
     console.log(information);
     this.snackbar.openModal(
       CreatetaskComponent,
@@ -394,6 +402,19 @@ export class ListTacheComponent implements OnInit {
       },
       (err) => {
         console.log(err);
+      }
+    );
+  }
+
+  private showProjectSelectionError(): void {
+    this.toastr.error(
+      "Vous devez vous connecter en tant que maître d'ouvrage responsable d'un projet.",
+      "Action non autorisée",
+      {
+        timeOut: 15000,
+        progressBar: true,
+        closeButton: true,
+        enableHtml: true,
       }
     );
   }

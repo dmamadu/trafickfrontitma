@@ -78,7 +78,7 @@ export class PapPlaceAffaireComponent {
   [x: string]: any;
 
   listPap: Pap[];
- // filterTable($event: any) {}
+  // filterTable($event: any) {}
   breadCrumbItems: Array<{}>;
 
   @ViewChild(MatSort) sort: MatSort;
@@ -133,7 +133,6 @@ export class PapPlaceAffaireComponent {
     private _router: Router,
     private datePipe: DatePipe,
     private snackbar: SnackBarService,
-    private _matDialog: MatDialog,
     private papService: PapService,
     private parentService: ServiceParent,
     public matDialogRef: MatDialogRef<PapAgricoleComponent>,
@@ -147,8 +146,6 @@ export class PapPlaceAffaireComponent {
     // this.currentProjectId = this.localService.getDataJson("user");
 
     this.currentProjectId = this.localService.getData("ProjectId");
-
-
 
     console.log("user connecter", this.currentProjectId);
     this.informations = {
@@ -390,28 +387,25 @@ export class PapPlaceAffaireComponent {
     this.isCollapsed = !this.isCollapsed;
   }
 
-
-
   filterTable(event: Event) {
     const searchTerm = (event.target as HTMLInputElement).value.trim();
-
-    console.log('====================================');
-    console.log(searchTerm);
-    console.log('====================================');
-
     // Appeler l'API avec le terme de recherche
     this.loadData = true;
     this.parentService
-      .searchGlobal(this.url, searchTerm, this.currentProjectId,this.pageSize, this.offset, )
+      .searchGlobal(
+        this.url,
+        searchTerm,
+        this.currentProjectId,
+        this.pageSize,
+        this.offset
+      )
       .subscribe(
         (data: any) => {
           this.loadData = false;
-          console.log('====================================');
+          console.log("====================================");
           console.log(data);
-          console.log('====================================');
+          console.log("====================================");
           if (data["responseCode"] == 200) {
-
-
             this.dataSource = new MatTableDataSource(data["data"]);
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
@@ -647,6 +641,11 @@ export class PapPlaceAffaireComponent {
   record(item) {}
 
   addItems(): void {
+    if (!this.currentProjectId) {
+      this.showProjectSelectionError();
+      return;
+    }
+
     this.snackbar.openModal(
       AddPapPlaceAffaireComponent,
       "68rem",
@@ -703,6 +702,10 @@ export class PapPlaceAffaireComponent {
   }
 
   triggerFileUpload() {
+    if (!this.currentProjectId) {
+      this.showProjectSelectionError();
+      return;
+    }
     const fileUploadElement = document.getElementById(
       "file-upload"
     ) as HTMLInputElement;
@@ -711,30 +714,46 @@ export class PapPlaceAffaireComponent {
     }
   }
 
-  importData() {
-    this.loadData = true;
-    const dataToSend = this.dataExcel.map((item) => ({
-      ...item,
-      projectId: +this.currentProjectId,
-    }));
-
-    console.log("data", dataToSend);
-
-    return this.papService.add("databasePapPlaceAffaire", dataToSend).subscribe(
-      (data: any) => {
-        console.log(data);
-        this.toastr.success(data.message);
-        this.dataExcel = [];
-        this.getPapPlaceAffaire();
-        this.loadData = false;
-      },
-      (err) => {
-        this.loadData = false;
-        console.log(err);
-
-        this.toastr.error(err);
+  private showProjectSelectionError(): void {
+    this.toastr.error(
+      "Vous devez vous connecter en tant que maître d'ouvrage responsable d'un projet .",
+      "Action non autorisée",
+      {
+        timeOut: 15000,
+        progressBar: true,
+        closeButton: true,
+        enableHtml: true,
       }
     );
+  }
+
+  importData() {
+    this.snackbar
+      .showConfirmation(`Voulez-vous vraiment importer ces données ?`)
+      .then((result) => {
+        if (result["value"] !== true) return;
+        this.loadData = true;
+        const dataToSend = this.dataExcel.map((item) => ({
+          ...item,
+          projectId: +this.currentProjectId,
+        }));
+        return this.papService
+          .add("databasePapPlaceAffaire", dataToSend)
+          .subscribe(
+            (data: any) => {
+              console.log(data);
+              this.toastr.success(data.message);
+              this.dataExcel = [];
+              this.getPapPlaceAffaire();
+              this.loadData = false;
+            },
+            (err) => {
+              this.loadData = false;
+              console.log(err);
+              this.toastr.error(err);
+            }
+          );
+      });
   }
 
   // importDatas(params: string) {

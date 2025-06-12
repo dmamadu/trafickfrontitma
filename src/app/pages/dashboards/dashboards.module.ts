@@ -30,6 +30,9 @@ import { MatPaginatorIntl } from "@angular/material/paginator";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { MiseEnOeuvreComponent } from './mise-en-oeuvre/mise-en-oeuvre.component';
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
+import { CarteComponent } from "./carte/carte.component";
+import { GoogleComponent } from "../maps/google/google.component";
+import { MapsModule } from "../maps/maps.module";
 @NgModule({
   declarations: [
     DefaultComponent,
@@ -59,8 +62,10 @@ import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/an
     NgxPaginationModule,
     PdfViewerModule,
     ModalModule.forRoot(),
-    AngularMaterialModule
-  ],
+    AngularMaterialModule,
+    CarteComponent,
+    MapsModule
+],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
     BsDropdownConfig,

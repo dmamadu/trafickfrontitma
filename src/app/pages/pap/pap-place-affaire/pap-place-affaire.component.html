@@ -14,11 +14,11 @@
   <div class="col-sm-auto">
     <div class="d-flex flex-wrap gap-2">
 
-      <button (click)="exportAs('pdf')"> <img src="assets/images/pdf-icon.png" alt="default image"
+      <!-- <button (click)="exportAs('pdf')"> <img src="assets/images/pdf-icon.png" alt="default image"
           class="c_icon"></button>
           <button (click)="exportAs('excel')">
             <img src="assets/images/xlsx-icon.png" alt="default image" class="c_icon">
-          </button>
+          </button> -->
       <button type="submit" class="btn bgPrimaire" (click)="addItems()"> <i class="mdi mdi-plus me-1"></i> Ajouter un
         pap place affaire</button>
 
@@ -37,7 +37,7 @@
   <div class="col-lg-12">
     <div class="text-end">
       <button type="button" class="btn btn-danger me-1 w-36" (click)="resetDataFromExcel()">Annuler</button>
-      <button type="submit" class="btn btn-success  w-36" (click)="importData()">Ajouter</button>
+      <button type="submit" class="btn btn-success  w-36" (click)="importData()">Importer</button>
     </div>
   </div>
 </div>

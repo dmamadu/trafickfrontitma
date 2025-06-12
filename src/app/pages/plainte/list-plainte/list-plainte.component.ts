@@ -326,6 +326,11 @@ export class ListPlainteComponent implements OnInit {
   record(item) {}
 
   addItems(): void {
+
+      if (!this.currentProjectId) {
+      this.showProjectSelectionError();
+      return;
+    }
     this.snackbar.openModal(
       AddPlainteComponent,
       "65rem",
@@ -500,4 +505,25 @@ export class ListPlainteComponent implements OnInit {
       ]);
     }
   }
+
+
+
+
+  private showProjectSelectionError(): void {
+    this.toastr.error(
+      "Vous devez vous connecter en tant que maître d'ouvrage responsable d'un projet.",
+      "Action non autorisée",
+      {
+        timeOut: 15000,
+        progressBar: true,
+        closeButton: true,
+        enableHtml: true,
+      }
+    );
+  }
 }
+
+
+
+
+

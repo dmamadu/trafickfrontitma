@@ -163,7 +163,7 @@ export class PipListComponent implements OnInit {
       },
       {
         th: "Couriel Principal",
-        td: "courielPrincipal",
+        td: "courrielPrincipal",
       },
       {
         th: "Catégorie",

@@ -123,6 +123,10 @@ export class RencontreComponent {
   }
 
   addItems(): void {
+    if (!this.currentProjectId) {
+      this.showProjectSelectionError();
+      return;
+    }
     this.snackbar.openModal(
       AddRencontreComponent,
       "45rem",
@@ -257,13 +261,24 @@ export class RencontreComponent {
             this.loadData = false;
             this.dataSource = new MatTableDataSource();
           }
-
         },
         (err) => {
           this.loadData = false;
           console.log(err);
         }
       );
+  }
 
+  private showProjectSelectionError(): void {
+    this.toastr.error(
+      "Vous devez vous connecter en tant que maître d'ouvrage responsable d'un projet.",
+      "Action non autorisée",
+      {
+        timeOut: 15000,
+        progressBar: true,
+        closeButton: true,
+        enableHtml: true,
+      }
+    );
   }
 }

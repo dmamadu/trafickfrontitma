@@ -1,0 +1,21 @@
+<div class="map-container">
+  <div #mapContainer class="map"></div>
+
+  <!-- Popup détaillée -->
+  <div *ngIf="selectedPap" class="custom-popup">
+    <div class="popup-header">
+      <h3>{{ selectedPap.nom }} {{ selectedPap.prenom }}</h3>
+      <button (click)="closePopup()">×</button>
+    </div>
+    <div class="popup-content">
+      <p><strong>Code:</strong> {{ selectedPap.codePap }}</p>
+      <p><strong>Adresse:</strong> {{ selectedPap.commune }}</p>
+      <p><strong>Activité:</strong> {{ selectedPap.activitePrincipale }}</p>
+      <!-- Ajoutez d'autres champs ici -->
+    </div>
+  </div>
+
+  <div *ngIf="loadData" class="loading-overlay">
+    Chargement des données...
+  </div>
+</div>

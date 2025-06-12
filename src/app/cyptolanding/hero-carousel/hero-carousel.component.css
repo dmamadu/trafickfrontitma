@@ -1,0 +1,83 @@
+.hero-section {
+  padding-top: 100px;
+  padding-bottom: 100px;
+  background-size: cover;
+  background-position: top;
+  position: relative;
+  transition: background-image 1s ease-in-out;
+}
+
+.banner {
+  height:700px;
+  width: 450px;
+  color: #fff;
+  padding: 30px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 20px;
+
+  h1{
+    font-size: 2rem;
+    text-transform:uppercase;
+    text-align: left;
+    line-height: 1.3;
+  font-weight: bold;
+  margin: 10px;
+    margin: 0;
+  }
+
+  p {
+    font-size: 1rem;
+    text-align: left;
+    margin-top: 10px;
+  }
+}
+
+/* Assombrissement de l'image SEULEMENT */
+.hero-section.bg-ico-hero::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  mix-blend-mode: multiply;
+  z-index: 0;
+}
+
+/* Contenu par-dessus le calque */
+.hero-section > * {
+  position: relative;
+  z-index: 1;
+
+
+    @media (max-width: 575.98px) {
+        padding-top: 140px;
+        padding-bottom: 80px;
+    }
+
+    .hero-title {
+        font-size: 42px;
+
+        @media (max-width: 575.98px) {
+            font-size: 26px;
+        }
+    }
+
+    .ico-countdown {
+        font-size: 22px;
+        margin-right: -12px;
+        margin-left: -12px;
+
+        @media (max-width: 575.98px) {
+            display: block;
+        }
+
+
+    }
+
+}
+

@@ -1,5 +1,6 @@
 <div>
-  <app-page-title title="Liste des personnes affectées par le projet" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+  <app-page-title title="Liste des personnes affectées par le projet"
+    [breadcrumbItems]="breadCrumbItems"></app-page-title>
 </div>
 <div class=" row mb-2">
   <div class="col-sm">
@@ -13,27 +14,27 @@
   </div>
   <div class="col-sm-auto">
     <div class="d-flex flex-wrap gap-2">
-
+      <!--
       <button (click)="exportAs('pdf')"> <img src="assets/images/pdf-icon.png" alt="default image"
           class="c_icon"></button>
           <button (click)="exportAs('excel')">
             <img src="assets/images/xlsx-icon.png" alt="default image" class="c_icon">
-          </button>
+          </button> -->
       <button type="submit" class="btn bgPrimaire" (click)="addItems()"> <i class="mdi mdi-plus me-1"></i> Ajouter un
         pap</button>
-        <div class="flex items-center justify-center">
-          <select class="h-10 btn bgPrimaire rounded-sm p-2 text-white"
-                  [(ngModel)]="selectedOption" (change)="onOptionSelected()">
-            <option value="">Que souhaitez-vous importer?</option>
-            <option value="batiments">Bâtiment</option>
-            <!-- <option value="betails">Bétails</option> -->
-            <option value="personneAffectes">Personnes affectées</option>
-            <option value="cultures">Culture</option>
-            <option value="coproprietaires">Copropriétaire</option>
-            <option value="employePap">Employé Pap</option>
-            <option value="geopolys">Géo Polygone</option>
-          </select>
-        </div>
+      <div class="flex items-center justify-center">
+        <select class="h-10 btn bgPrimaire rounded-sm p-2 text-white" [(ngModel)]="selectedOption"
+          (change)="onOptionSelected()">
+          <option value="">Que souhaitez-vous importer?</option>
+          <option value="batiments">Bâtiment</option>
+          <!-- <option value="betails">Bétails</option> -->
+          <option value="personneAffectes">Personnes affectées</option>
+          <option value="cultures">Culture</option>
+          <option value="coproprietaires">Copropriétaire</option>
+          <option value="employePap">Employé Pap</option>
+          <option value="geopolys">Géo Polygone</option>
+        </select>
+      </div>
 
       <button type="submit" class="btn bgPrimaire" (click)="triggerFileUpload()" [disabled]="!selectedOption"> <i
           class="mdi mdi-file-excel me-1">Importer un fichier excel</i>
@@ -62,4 +63,3 @@
     [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
     (changePage)="pageChanged($event)"></tableau>
 </div>
-
