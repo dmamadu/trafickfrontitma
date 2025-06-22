@@ -1,4 +1,4 @@
-import { Component,OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ChartType } from "./jobs.model";
 
 import { ChartComponent } from "ng-apexcharts";
@@ -93,6 +93,11 @@ export class JobsComponent implements OnInit {
     this.getPlainte();
     this.getDocument();
     this.getRencontres();
+    this.getPerteTotaleByCategory("papAgricole", this.evaluationPerteAgricole);
+    this.getPerteTotaleByCategory(
+      "databasePapPlaceAffaire",
+      this.evaluationPertePlaceAffaire
+    );
   }
 
   getUserConnected() {
@@ -199,7 +204,7 @@ export class JobsComponent implements OnInit {
             this.loadData = false;
             this.listDocument = data["data"];
             this.lenghtDocument = data.length;
-          //  console.log(data);
+            //  console.log(data);
           } else {
             this.loadData = false;
           }
@@ -217,7 +222,7 @@ export class JobsComponent implements OnInit {
   };
 
   classifyComplaints(): void {
-   // console.log("pli", this.listPlainte);
+    // console.log("pli", this.listPlainte);
     if (this.listPlainte && this.listPlainte.length > 0) {
       this.listPlainte.forEach((complaint) => {
         if (complaint.etat === "Résolue") {
@@ -407,6 +412,40 @@ export class JobsComponent implements OnInit {
       );
   }
 
+  evaluationPertePlaceAffaire: number = 0;
+  evaluationPerteAgricole: number = 0;
+
+  getPerteTotaleByCategory(category: string, evalutationPerte: number) {
+    return this.parentService
+      .list(category, this.pageSize, this.offset, this.currentProjectId)
+      .subscribe(
+        (data: any) => {
+          this.loadData = false;
+          if (data["responseCode"] === 200) {
+            // Calculer la somme totale des pertes
+            const totalPertes = this.listPap.reduce((sum, pap) => {
+              // Convertir en nombre au cas où perteTotale serait une chaîne
+              const perte = Number(pap.perteTotale) || 0;
+              return sum + perte;
+            }, 0);
+
+            console.log("Total des pertes pour tous les PAP:", totalPertes);
+            // Vous pouvez stocker ce total où vous en avez besoin, par exemple:
+            evalutationPerte = totalPertes;
+
+            //this.updateVulnerabilityCounts(currentList);
+          } else {
+            console.error(
+              `Erreur lors de la récupération des PAP pour ${category}`
+            );
+          }
+        },
+        (err) => {
+          console.error(`Erreur réseau pour la catégorie ${category}:`, err);
+        }
+      );
+  }
+
   updateVulnerabilityCounts(list: any[]): void {
     list.forEach((pap) => {
       if (pap.vulnerabilite == "Faible") {
@@ -414,10 +453,10 @@ export class JobsComponent implements OnInit {
       } else if (pap.vulnerabilite == "Moyenne") {
         this.vulnerabilityCounts.Moyenne++;
       }
-      this.vulnerabilityChart.series=[
+      this.vulnerabilityChart.series = [
         this.vulnerabilityCounts.Faible,
-        this.vulnerabilityCounts.Moyenne
-      ]
+        this.vulnerabilityCounts.Moyenne,
+      ];
     });
   }
 
@@ -428,7 +467,7 @@ export class JobsComponent implements OnInit {
     const categories = [
       "papAgricole",
       "databasePapPlaceAffaire",
-      "papEconomique",
+      // "papEconomique",
     ];
     categories.forEach((category) => {
       this.getPapByCategory(category);

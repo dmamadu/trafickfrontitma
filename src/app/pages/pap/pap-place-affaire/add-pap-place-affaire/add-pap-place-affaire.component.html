@@ -257,9 +257,22 @@
           </div>
 
           <div class=" flex gap-2">
-            <mat-form-field class="w-full mt-2" appearance="outline">
+            <!-- <mat-form-field class="w-full mt-2" appearance="outline">
               <mat-label class="enteteccColor">Statut PAP</mat-label>
               <input class="typeTitle" matInput type="text" name="statutPap" formControlName="statutPap" />
+              <mat-error *ngIf="initForm.get('statutPap')?.hasError('required')">
+                Le champ est obligatoire
+              </mat-error>
+            </mat-form-field> -->
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Statut PAP</mat-label>
+              <mat-select class="typeTitle" formControlName="statutPap" name="statutPap">
+                <mat-option value="recense" selected>Recensé (en attente d'instruction)</mat-option>
+                <mat-option value="en_etude">En étude</mat-option>
+                <mat-option value="indemnisation_engagee">Indemnisation engagée</mat-option>
+                <mat-option value="indemnisation_terminee">Indemnisation terminée</mat-option>
+                <mat-option value="en_contentieux">En contentieux</mat-option>
+              </mat-select>
               <mat-error *ngIf="initForm.get('statutPap')?.hasError('required')">
                 Le champ est obligatoire
               </mat-error>
@@ -435,7 +448,7 @@
             <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
               <span class="textForm">Retour</span>
             </button>
-            <button mat-raised-button class="submit-button" aria-label="VALIDER"  type="button"
+            <button mat-raised-button class="submit-button" aria-label="VALIDER" type="button"
               (click)="nextStep(stepper)">
               <span class="textForm">Suivant</span>
             </button>
@@ -470,7 +483,7 @@
         <div class="flex gap-2">
           <mat-form-field class="w-full mt-2" appearance="outline">
             <mat-label class="enteteccColor">Perte totale</mat-label>
-            <textarea matInput name="perteTotale" formControlName="perteTotale" class="typeTitle"></textarea>
+            <input matInput   type="number" name="perteTotale" formControlName="perteTotale" class="typeTitle">
             <mat-error *ngIf="initForm.get('perteTotale')?.hasError('required')">
               Le champ est obligatoire
             </mat-error>

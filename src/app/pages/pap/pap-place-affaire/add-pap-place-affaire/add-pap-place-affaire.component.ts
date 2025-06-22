@@ -173,6 +173,7 @@ export class AddPapPlaceAffaireComponent implements OnInit {
       sexe: [donnees?.sexe || "", Validators.required],
       codePap: [donnees?.codePap || "", Validators.required],
       nationalite: [donnees?.nationalite || "", Validators.required],
+      langueParlee: [donnees?.langueParlee || "", Validators.required],
       situationMatrimoniale: [donnees?.situationMatrimoniale || "", Validators.required],
       commune: [donnees?.commune || "", Validators.required],
       departement: [donnees?.departement || "", Validators.required],
@@ -457,9 +458,9 @@ export class AddPapPlaceAffaireComponent implements OnInit {
       case 2:
         this.validateStep3();
         break;
-      case 3:
-        this.validateStep4();
-        break;
+      // case 3:
+      //   this.validateStep4();
+      //   break;
       case 4:
         this.validateStep5();
         break;

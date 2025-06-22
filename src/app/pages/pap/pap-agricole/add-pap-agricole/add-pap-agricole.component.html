@@ -13,7 +13,7 @@
 <div class="flex flex-col flex-auto min-w-10-0 p-2 md:p-4">
   <form [formGroup]="initForm" class="event-form w-100-p">
     <mat-stepper #stepper linear>
-      <mat-step label="Informations personnelles"  [completed]="isStepValid(0)" >
+      <mat-step label="Informations personnelles" [completed]="isStepValid(0)">
         <!-- Code PAP -->
 
 
@@ -144,7 +144,7 @@
         </div>
       </mat-step>
 
-      <mat-step label="Informations sur la parcelle"  [completed]="isStepValid(1)" >
+      <mat-step label="Informations sur la parcelle" [completed]="isStepValid(1)">
         <!-- Code parcelle -->
         <div class="flex gap-2">
           <!-- Nombre de parcelles -->
@@ -270,9 +270,23 @@
           </div>
 
           <div class=" flex gap-2">
-            <mat-form-field class="w-full mt-2" appearance="outline">
+            <!-- <mat-form-field class="w-full mt-2" appearance="outline">
               <mat-label class="enteteccColor">Statut PAP</mat-label>
               <input class="typeTitle" matInput type="text" name="statutPap" formControlName="statutPap" />
+              <mat-error *ngIf="initForm.get('statutPap')?.hasError('required')">
+                Le champ est obligatoire
+              </mat-error>
+            </mat-form-field> -->
+
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Statut PAP</mat-label>
+              <mat-select class="typeTitle" formControlName="statutPap" name="statutPap">
+                <mat-option value="recense" selected>Recensé (en attente d'instruction)</mat-option>
+                <mat-option value="en_etude">En étude</mat-option>
+                <mat-option value="indemnisation_engagee">Indemnisation engagée</mat-option>
+                <mat-option value="indemnisation_terminee">Indemnisation terminée</mat-option>
+                <mat-option value="en_contentieux">En contentieux</mat-option>
+              </mat-select>
               <mat-error *ngIf="initForm.get('statutPap')?.hasError('required')">
                 Le champ est obligatoire
               </mat-error>
@@ -397,7 +411,7 @@
           <!-- Informations supplémentaires -->
           <mat-form-field class="w-full mt-2" appearance="outline">
             <mat-label class="enteteccColor">Perte loyer</mat-label>
-            <textarea class="typeTitle" matInput name="perteLoyer" formControlName="perteLoyer"></textarea>
+            <input type="number" class="typeTitle" matInput name="perteLoyer" formControlName="perteLoyer">
           </mat-form-field>
         </div>
         <div class="flex gap-2">
@@ -455,7 +469,7 @@
         <div class="flex gap-2">
           <mat-form-field class="w-full mt-2" appearance="outline">
             <mat-label class="enteteccColor">Frais de déplacement</mat-label>
-            <textarea matInput name="fraisDeplacement" formControlName="fraisDeplacement" class="typeTitle"></textarea>
+            <input type="number" matInput name="fraisDeplacement" formControlName="fraisDeplacement" class="typeTitle">
             <mat-error *ngIf="initForm.get('fraisDeplacement')?.hasError('required')">
               Le champ est obligatoire
             </mat-error>
@@ -469,8 +483,8 @@
           <!-- Informations supplémentaires -->
           <mat-form-field class="w-full mt-2" appearance="outline">
             <mat-label class="enteteccColor">Appuie à la récolalisation</mat-label>
-            <textarea class="typeTitle" matInput name="appuieRelocalisation"
-              formControlName="appuieRelocalisation"></textarea>
+            <input type="number" class="typeTitle" matInput name="appuieRelocalisation"
+              formControlName="appuieRelocalisation">
           </mat-form-field>
         </div>
         <div class="flex gap-2">
@@ -484,7 +498,7 @@
         <div class="flex gap-2">
           <mat-form-field class="w-full mt-2" appearance="outline">
             <mat-label class="enteteccColor">Perte totale</mat-label>
-            <textarea matInput name="perteTotale" formControlName="perteTotale" class="typeTitle"></textarea>
+            <input type="number" matInput name="perteTotale" formControlName="perteTotale" class="typeTitle">
             <mat-error *ngIf="initForm.get('perteTotale')?.hasError('required')">
               Le champ est obligatoire
             </mat-error>
@@ -639,5 +653,3 @@
     </mat-stepper>
   </form>
 </div>
-
-

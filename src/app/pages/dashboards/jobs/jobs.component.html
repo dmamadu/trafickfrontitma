@@ -60,7 +60,8 @@
           <mat-icon>bar_chart</mat-icon> Statistiques des PAP
         </h2>
         <apx-chart [series]="vulnerabilityChart.series" [chart]="vulnerabilityChart.chart"
-          [labels]="vulnerabilityChart.labels" [colors]="vulnerabilityChart.colors" [legend]="vulnerabilityChart.legend">
+          [labels]="vulnerabilityChart.labels" [colors]="vulnerabilityChart.colors"
+          [legend]="vulnerabilityChart.legend">
         </apx-chart>
       </div>
     </div>
@@ -97,8 +98,8 @@
         <mat-icon>map</mat-icon> Délimitation de la zone impactée par le projet
       </h2>
       <!-- <img src="assets/images/villageImpacte.png" alt="Carte de la zone impactée" class="map-image"> -->
-       <app-carte></app-carte>
-       <!-- <app-google></app-google> -->
+      <app-carte></app-carte>
+      <!-- <app-google></app-google> -->
     </div>
   </div>
 
@@ -120,7 +121,8 @@
         </div>
 
         <div class="table-body">
-          <div class="table-row" *ngFor="let rencontre of lisRencontre | paginate: { itemsPerPage: 5, currentPage: page }; let i = index">
+          <div class="table-row"
+            *ngFor="let rencontre of lisRencontre | paginate: { itemsPerPage: 5, currentPage: page }; let i = index">
             <div class="table-cell">{{ rencontre.id }}</div>
             <div class="table-cell">{{ rencontre.libelle }}</div>
             <div class="table-cell">{{ rencontre.date }}</div>
@@ -145,19 +147,24 @@
 
       <div class="custom-table">
         <div class="table-header">
-          <div class="header-cell">Type de pertes</div>
+          <div class="header-cell">Catégories</div>
           <div class="header-cell">Compensation</div>
         </div>
 
         <div class="table-body">
           <div class="table-row">
-            <div class="table-cell">Arbres</div>
-            <div class="table-cell">5 199 399 900</div>
+            <div class="table-cell">Pap place affaires/économiques</div>
+            <div class="table-cell">{{evaluationPertePlaceAffaire | currency:'CFA ':'symbol':'1.0-0'}}</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell">Pap Agricoles/exploitants</div>
+            <div class="table-cell">{{evaluationPerteAgricole | currency:'CFA ':'symbol':'1.0-0'}}</div>
           </div>
           <!-- Répéter pour les autres lignes -->
           <div class="table-row total-row">
             <div class="table-cell">Total général</div>
-            <div class="table-cell">46 616 198 636</div>
+            <div class="table-cell">{{ (evaluationPertePlaceAffaire + evaluationPerteAgricole) |
+              currency:'CFA ':'symbol':'1.0-0' }}</div>
           </div>
         </div>
       </div>

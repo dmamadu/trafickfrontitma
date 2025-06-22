@@ -28,9 +28,7 @@ interface Pap {
   styleUrl: "./carte.component.css",
 })
 export class CarteComponent implements OnInit {
-
-
-   @ViewChild('mapContainer') mapContainer!: ElementRef;
+  @ViewChild("mapContainer") mapContainer!: ElementRef;
   map!: maplibregl.Map;
   paps: Pap[] = [];
   selectedPap: any = null;
@@ -42,6 +40,10 @@ export class CarteComponent implements OnInit {
     private _changeDetectorRef: ChangeDetectorRef
   ) {
     this.currentProjectId = this.localService.getData("ProjectId");
+
+    console.log("====================================");
+    console.log("Current Project ID:", this.currentProjectId);
+    console.log("====================================");
   }
   ngOnInit(): void {
     throw new Error("Method not implemented.");
@@ -55,29 +57,37 @@ export class CarteComponent implements OnInit {
   private initMap(): void {
     this.map = new maplibregl.Map({
       container: this.mapContainer.nativeElement,
-      style: 'https://demotiles.maplibre.org/style.json',
+      style: "https://demotiles.maplibre.org/style.json",
       center: [-17.406666, 14.738872], // Dakar par défaut
-      zoom: 12
+      zoom: 12,
     });
 
     this.map.addControl(new maplibregl.NavigationControl());
   }
 
-    currentProjectId: any;
+  markers: maplibregl.Marker[] = [];
+
+  currentProjectId: any;
   private loadPaps(): void {
     this.loadData = true;
-    const currentProjectId = this.localService.getData("ProjectId");
 
-    this.parentService.list("databasePapPlaceAffaire", 1000, 0, this.currentProjectId)
+    if (this.markers) {
+    this.markers.forEach(marker => marker.remove());
+    this.markers = [];
+  }
+    this.parentService
+      .list("databasePapPlaceAffaire", 1000, 0, this.currentProjectId)
       .subscribe({
         next: (data: any) => {
-          if (data.responseCode === 200) {
+          if (data.responseCode == 200) {
             this.paps = data.data.map((pap: any) => ({
               ...pap,
               position: this.parsePoint(pap.pointGeometriques),
-              informations: this.generatePapInfoWindow(pap)
+              informations: this.generatePapInfoWindow(pap),
             }));
-
+            console.log("====================================");
+            console.log("Loaded Paps:", this.paps);
+            console.log("====================================");
             this.addMarkers();
             this.centerOnPaps();
           }
@@ -87,49 +97,124 @@ export class CarteComponent implements OnInit {
         error: (err) => {
           console.error(err);
           this.loadData = false;
-        }
+        },
       });
   }
 
   private parsePoint(pointStr: string): [number, number] {
-    const coords = pointStr.replace(/[Point()]/g, "").trim().split(" ");
+    const coords = pointStr
+      .replace(/[Point()]/g, "")
+      .trim()
+      .split(" ");
     return [parseFloat(coords[0]), parseFloat(coords[1])];
   }
 
+  // private generatePapInfoWindow(pap: any): string {
+  //   return `
+  //     <div class="map-popup">
+  //       <h4>${pap.nom} ${pap.prenom}</h4>
+  //       <p><strong>Code:</strong> ${pap.codePap}</p>
+  //       <p><strong>Commune:</strong> ${pap.commune}</p>
+  //       <p><strong>Activité:</strong> ${pap.activitePrincipale}</p>
+  //     </div>
+  //   `;
+  // }
+
   private generatePapInfoWindow(pap: any): string {
+    // Traduction des statuts pour l'affichage
+    const statutLabels = {
+      recense: "Recensé (en attente d'instruction)",
+      en_etude: "En étude",
+      indemnisation_engagee: "Indemnisation engagée",
+      indemnisation_terminee: "Indemnisation terminée",
+      en_contentieux: "En contentieux",
+    };
+
     return `
-      <div class="map-popup">
-        <h4>${pap.nom} ${pap.prenom}</h4>
-        <p><strong>Code:</strong> ${pap.codePap}</p>
-        <p><strong>Commune:</strong> ${pap.commune}</p>
-        <p><strong>Activité:</strong> ${pap.activitePrincipale}</p>
-      </div>
-    `;
+    <div class="map-popup">
+      <h4>${pap.nom} ${pap.prenom}</h4>
+      <p><strong>Code:</strong> ${pap.codePap}</p>
+      <p><strong>Statut:</strong> ${
+        statutLabels[pap.statutPap] || pap.statutPap
+      }</p>
+      <p><strong>Commune:</strong> ${pap.commune}</p>
+      <p><strong>Activité:</strong> ${pap.activitePrincipale}</p>
+    </div>
+  `;
   }
 
+  // private addMarkers(): void {
+  //   this.paps.forEach((pap: any) => {
+  //     let markerColor: string;
+
+  //     switch (pap.statutPap) {
+  //       case "indemnisation_terminee":
+  //         markerColor = "#00FF00"; // Vert pour terminé
+  //         break;
+  //       case "recense":
+  //         markerColor = "#FFA500"; // Orange pour recensé
+  //         break;
+  //       case "en_etude":
+  //         markerColor = "#FFFF00"; // Jaune pour en étude
+  //         break;
+  //       case "indemnisation_engagee":
+  //         markerColor = "#0000FF"; // Bleu pour indemnisation engagée
+  //         break;
+  //       case "en_contentieux":
+  //         markerColor = "#FF00FF"; // Magenta pour contentieux
+  //         break;
+  //       default:
+  //         markerColor = "#FF0000"; // Rouge par défaut
+  //     }
+
+  //     const marker = new maplibregl.Marker({ color: markerColor })
+  //       .setLngLat(pap.position)
+  //       .setPopup(new maplibregl.Popup().setHTML(pap.informations))
+  //       .addTo(this.map);
+
+  //     marker.getElement().addEventListener("click", () => {
+  //       this.selectedPap = pap;
+  //       this._changeDetectorRef.detectChanges();
+  //     });
+  //   });
+  // }
   private addMarkers(): void {
-    this.paps.forEach(pap => {
-      const marker = new maplibregl.Marker({ color: '#FF0000' })
-        .setLngLat(pap.position)
-        .setPopup(new maplibregl.Popup().setHTML(pap.informations))
-        .addTo(this.map);
+  this.paps.forEach((pap:any) => {
+    let markerColor = this.getColorByStatus(pap.statutPap);
 
-      marker.getElement().addEventListener('click', () => {
-        this.selectedPap = pap;
-        this._changeDetectorRef.detectChanges();
-      });
+    const marker = new maplibregl.Marker({ color: markerColor })
+      .setLngLat(pap.position)
+      .setPopup(new maplibregl.Popup().setHTML(pap.informations))
+      .addTo(this.map);
+
+    this.markers.push(marker); // Stocker le marqueur
+
+    marker.getElement().addEventListener('click', () => {
+      this.selectedPap = pap;
+      this._changeDetectorRef.detectChanges();
     });
-  }
+  });
+}
 
+private getColorByStatus(status: string): string {
+  switch(status) {
+    case 'indemnisation_terminee': return '#00FF00';
+    case 'recense': return '#FFA500';
+    case 'en_etude': return '#FFFF00';
+    case 'indemnisation_engagee': return '#0000FF';
+    case 'en_contentieux': return '#FF00FF';
+    default: return '#FF0000';
+  }
+}
   private centerOnPaps(): void {
     if (this.paps.length === 0) return;
 
     const bounds = new maplibregl.LngLatBounds();
-    this.paps.forEach(pap => bounds.extend(pap.position));
+    this.paps.forEach((pap) => bounds.extend(pap.position));
 
     this.map.fitBounds(bounds, {
       padding: 100,
-      maxZoom: 14
+      maxZoom: 14,
     });
   }
 
