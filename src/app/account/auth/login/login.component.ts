@@ -12,6 +12,9 @@ import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { SelectProjectComponent } from "../select-project/select-project.component";
 import { MatDialog } from "@angular/material/dialog";
 import { TokenStorageService } from "src/app/core/services/token-storage.service";
+import { SelectProjectAdminComponent } from "../select-project-admin/select-project-admin.component";
+import { ResponseData } from "src/app/pages/projects/project.model";
+import { Project } from "src/app/store/ProjectsData/project.model";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
@@ -163,62 +166,148 @@ export class LoginComponent implements OnInit {
   //     );
   // }
 
-  onSubmit() {
-    this.submitted = true;
-    this.loader = true;
 
-    return this.authenticationService
+
+
+  // onSubmit() {
+  //   this.submitted = true;
+  //   this.loader = true;
+  //   return this.authenticationService
+  //     .login(this.f.email.value, this.f.password.value)
+  //     .subscribe(
+  //       (user: Auth) => {
+  //         console.log(user);
+
+  //         localStorage.setItem("token", user.token);
+
+  //         if(user.user?.role[0]?.name == "Super Admin"  || user.user?.role[0]?.name == "Admin") {
+  //            this.choicePeojectADmin();
+  //         }
+  //         if (user.user.projects?.length > 1) {
+  //           this.choicePeoject();
+  //         } else {
+  //           this.localService.saveData(
+  //             "ProjectId",
+  //             user.user.projects[0]?.id.toString()
+  //           );
+  //           this.router.navigate(["/dashboards/jobs"]);
+  //         }
+  //         const welcomeMessage = `Bienvenue ${user.user.firstname} ${
+  //           user.user.lastname || ""
+  //         }, vous êtes connecté(e) en tant que ${
+  //           user.user.role[0].name || "utilisateur"
+  //         }`;
+  //         this.toastr.success(welcomeMessage, null, {
+  //           timeOut: 15000,
+  //           progressBar: true,
+  //           closeButton: true,
+  //         });
+
+
+  //         this.submitted = false;
+  //         this.loader = false;
+  //       },
+  //       (error) => {
+  //         console.log(error);
+  //         this.toastr.error(
+  //           `Une erreur s'est produite ou veuillez vérifier vos identifiants`,
+  //           null,
+  //           {
+  //             timeOut: 5000,
+  //             progressBar: true,
+  //             closeButton: true,
+  //           }
+  //         );
+  //         this.submitted = false;
+  //         this.loader = false;
+  //       }
+  //     );
+  // }
+
+
+  async onSubmit() {
+  this.submitted = true;
+  this.loader = true;
+
+  try {
+    const user: Auth = await this.authenticationService
       .login(this.f.email.value, this.f.password.value)
-      .subscribe(
-        (user: Auth) => {
-          console.log(user);
-          localStorage.setItem("token", user.token);
-          // Message d'accueil plus complet avec nom et rôle
-          // const welcomeMessage = `Bienvenue ${user.user.firstname} ${
-          //   user.user.lastname || ""
-          // }
-          // (${user.user.role[0].name || "utilisateur"})`;
-          const welcomeMessage = `Bienvenue ${user.user.firstname} ${
-            user.user.lastname || ""
-          }, vous êtes connecté(e) en tant que ${
-            user.user.role[0].name || "utilisateur"
-          }`;
-          this.toastr.success(welcomeMessage, null, {
-            timeOut: 15000,
-            progressBar: true,
-            closeButton: true,
-          });
-          if (user.user.projects?.length > 1) {
-            this.choicePeoject();
-          } else {
-            this.localService.saveData(
-              "ProjectId",
-              user.user.projects[0]?.id.toString()
-            );
-            this.router.navigate(["/dashboards/jobs"]);
-          }
-          this.submitted = false;
-          this.loader = false;
-        },
-        (error) => {
-          console.log(error);
-          this.toastr.error(
-            `Une erreur s'est produite ou veuillez vérifier vos identifiants`,
-            null,
-            {
-              timeOut: 5000, // 5 secondes pour les erreurs
-              progressBar: true,
-              closeButton: true,
-            }
-          );
-          this.submitted = false;
-          this.loader = false;
-        }
-      );
+      .toPromise();
+
+    console.log(user);
+    this.handleSuccessfulLogin(user);
+
+  } catch (error) {
+    this.handleLoginError(error);
+  } finally {
+    this.submitted = false;
+    this.loader = false;
+  }
+}
+
+private handleSuccessfulLogin(user: Auth) {
+  // Stockage du token
+  localStorage.setItem("token", user.token);
+
+  // Gestion de la redirection selon le rôle et les projets
+  if (this.isAdmin(user)) {
+    this.choicePeojectADmin();
+  } else if (this.hasMultipleProjects(user)) {
+    this.choicePeoject();
+  } else {
+    this.navigateToDefaultProject(user);
   }
 
+  // Affichage du message de bienvenue
+  this.showWelcomeToast(user);
+}
+
+private isAdmin(user: Auth): boolean {
+  const roleName = user.user?.role[0]?.name;
+  return roleName === "Super Admin" || roleName === "Admin";
+}
+
+private hasMultipleProjects(user: Auth): boolean {
+  return user.user.projects?.length > 1;
+}
+
+private navigateToDefaultProject(user: Auth) {
+  const projectId = user.user.projects[0]?.id.toString();
+  this.localService.saveData("ProjectId", projectId);
+  this.router.navigate(["/dashboards/jobs"]);
+}
+
+private showWelcomeToast(user: Auth) {
+  const welcomeMessage = `Bienvenue ${user.user.firstname} ${
+    user.user.lastname || ""
+  }, vous êtes connecté(e) en tant que ${
+    user.user.role[0].name || "utilisateur"
+  }`;
+
+  this.toastr.success(welcomeMessage, null, {
+    timeOut: 15000,
+    progressBar: true,
+    closeButton: true,
+  });
+}
+
+private handleLoginError(error: any) {
+  console.error('Login error:', error);
+  this.toastr.error(
+    `Une erreur s'est produite ou veuillez vérifier vos identifiants`,
+    null, {
+      timeOut: 5000,
+      progressBar: true,
+      closeButton: true,
+    }
+  );
+}
   choicePeoject(): void {
     this._matDialog.open(SelectProjectComponent);
+  }
+
+   choicePeojectADmin(): void {
+    this._matDialog.open(SelectProjectAdminComponent);
   }
 
   /**

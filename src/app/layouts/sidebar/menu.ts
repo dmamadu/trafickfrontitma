@@ -48,20 +48,6 @@ export const MENU: MenuItem[] = [
     ],
   },
   {
-    id: 45,
-    label: "TACHES",
-    icon: "bx-task",
-    subItems: [
-      {
-        id: 46,
-        label: "Liste des taches",
-        icon: "bx-list-ul",
-        link: "/tasks/liste",
-        parentId: 45,
-      },
-    ],
-  },
-  {
     id: 91,
     label: "MAITRES D'OUVRAGES",
     icon: "bxs-user-detail",
@@ -75,6 +61,7 @@ export const MENU: MenuItem[] = [
       },
     ],
   },
+
   {
     id: 93,
     label: "Parties Prenantes",
@@ -163,7 +150,27 @@ export const MENU: MenuItem[] = [
       },
     ],
   },
-  {
+
+    {
+    id: 121,
+    label: "MISE EN ŒUVRE DU PAR",
+    icon: "bx-task",
+    subItems: [
+      {
+        id: 45,
+        label: "Liste des taches",
+        icon: "bx-list-ul",
+        link: "/tasks/liste",
+        parentId: 121,
+      },
+      {
+        id: 118,
+        label: "Entente de compensation",
+        icon: "bx-list-ul",
+        link: "/ententeCompensation/list",
+        parentId: 117,
+      },
+      {
     id: 105,
     label: "Plaintes",
     icon: "bxs-comment-detail",
@@ -184,48 +191,25 @@ export const MENU: MenuItem[] = [
       },
     ],
   },
-  {
-    id: 108,
-    label: "Gestion des priviléges",
-    icon: "bxs-comment-detail",
-    subItems: [
-      {
-        id: 109,
-        label: "Roles",
-        icon: "bx-list-ul",
-        link: "/roles",
-        parentId: 108,
-      },
-      {
-        id: 110,
-        label: "Fonctions",
-        icon: "bx-list-ul",
-        link: "/fonctions",
-        parentId: 108,
-      },
-      {
-        id: 111,
-        label: "Niveau de priviléges",
-        icon: "bx-list-ul",
-        link: "/categories",
-        parentId: 108,
-      },
+
     ],
   },
-  {
-    id: 112,
-    label: "Gestion des utilisateurs",
-    icon: "bxs-user-detail",
-    subItems: [
-      {
-        id: 113,
-        label: "Utilisateurs",
-        icon: "bx-list-ul",
-        link: "/utilisateurs",
-        parentId: 112,
-      },
-    ],
-  },
+  // {
+  //   id: 45,
+  //   label: "TACHES",
+  //   icon: "bx-task",
+  //   subItems: [
+  //     {
+  //       id: 46,
+  //       label: "Liste des taches",
+  //       icon: "bx-list-ul",
+  //       link: "/tasks/liste",
+  //       parentId: 45,
+  //     },
+  //   ],
+  // },
+
+
   {
     id: 114,
     label: "Gestion des documents",
@@ -247,20 +231,20 @@ export const MENU: MenuItem[] = [
       },
     ],
   },
-  {
-    id: 117,
-    label: "Entente Compensation",
-    icon: "bxs-detail",
-    subItems: [
-      {
-        id: 118,
-        label: "Liste",
-        icon: "bx-list-ul",
-        link: "/ententeCompensation/list",
-        parentId: 117,
-      },
-    ],
-  },
+  // {
+  //   id: 117,
+  //   label: "Entente Compensation",
+  //   icon: "bxs-detail",
+  //   subItems: [
+  //     {
+  //       id: 118,
+  //       label: "Liste",
+  //       icon: "bx-list-ul",
+  //       link: "/ententeCompensation/list",
+  //       parentId: 117,
+  //     },
+  //   ],
+  // },
   {
     id: 119,
     label: "Élaboration du PAR",
@@ -310,4 +294,54 @@ export const MENU: MenuItem[] = [
   //     },
   //   ],
   // },
+
+  {
+    id: 120,
+    label: "Parametres",
+    icon: "bx-cog",
+    subItems: [
+      {
+        id: 108,
+        label: "Gestion des priviléges",
+        icon: "bxs-comment-detail",
+        subItems: [
+          {
+            id: 109,
+            label: "Roles",
+            icon: "bx-list-ul",
+            link: "/roles",
+            parentId: 108,
+          },
+          {
+            id: 110,
+            label: "Fonctions",
+            icon: "bx-list-ul",
+            link: "/fonctions",
+            parentId: 108,
+          },
+          {
+            id: 111,
+            label: "Niveau de priviléges",
+            icon: "bx-list-ul",
+            link: "/categories",
+            parentId: 108,
+          },
+        ],
+      },
+      {
+        id: 112,
+        label: "Gestion des utilisateurs",
+        icon: "bxs-user-detail",
+        subItems: [
+          {
+            id: 113,
+            label: "Utilisateurs",
+            icon: "bx-list-ul",
+            link: "/utilisateurs",
+            parentId: 112,
+          },
+        ],
+      },
+    ],
+  },
 ];

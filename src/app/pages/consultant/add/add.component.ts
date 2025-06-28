@@ -23,6 +23,7 @@ import { environment } from "src/environments/environment";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
 import { ImageModalComponent } from "src/app/shared/image-modal.component";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-add",
@@ -89,6 +90,7 @@ export class AddComponent {
     private clientService: ClientVueService,
     private parentService: ServiceParent,
     private dialog: MatDialog,
+    public toastr: ToastrService,
     private moservice: MoService,
     private localService: LocalService,
     private clientServive: ClientVueService,
@@ -141,6 +143,7 @@ export class AddComponent {
       firstname: this.fb.control(donnees ? donnees?.firstname : null, [
         Validators.required,
       ]),
+
       email: this.fb.control(donnees ? donnees?.email : null, [
         Validators.required,
         Validators.email,
@@ -160,7 +163,7 @@ export class AddComponent {
         Validators.required,
       ]),
       imageUrl: this.fb.control(donnees ? donnees?.imageUrl : null, [
-        Validators.required,
+       // Validators.required,
       ]),
       contact: this.fb.control(donnees ? donnees?.contact : null, [
         Validators.required,
@@ -320,6 +323,22 @@ export class AddComponent {
       );
   }
 
+
+
+
+  private showProjectSelectionError(): void {
+    this.toastr.error(
+      "Vous devez vous connecter en tant que maître d'ouvrage responsable d'un projet .",
+      "Action non autorisée",
+      {
+        timeOut: 15000,
+        progressBar: true,
+        closeButton: true,
+        enableHtml: true,
+      }
+    );
+  }
+
   saveConsultant() {
     if (this.uploadedImage) {
       return this.moservice
@@ -335,6 +354,12 @@ export class AddComponent {
   addItems(image?: Image) {
     //this.initForm.get("project_id").setValue(1);
    // console.log(this.initForm.value);
+
+
+    if (!this.currentProjectId) {
+      this.showProjectSelectionError();
+      return;
+    }
 
    if(this.initForm.valid){
     const consultantRequest = this.initForm.value;

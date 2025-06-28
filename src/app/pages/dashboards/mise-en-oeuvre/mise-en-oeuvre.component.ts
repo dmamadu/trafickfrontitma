@@ -236,23 +236,106 @@ export class MiseEnOeuvreComponent implements OnInit {
       );
   }
 
-  updateSexCounts(category: string, list: any[]): void {
-    const maleCount = list.filter((pap) => pap.sexe === "Masculin").length;
-    const femaleCount = list.filter(
-      (pap) => pap.sexe === "Féminin" || "Feminim"
-    ).length;
+  // updateSexCounts(category: string, list: any[]): void {
+  //   const maleCount = list.filter((pap) => pap.sexe === "Masculin").length;
+  //   const femaleCount = list.filter(
+  //     (pap) => pap.sexe === "Féminin" || "Feminim"
+  //   ).length;
 
-    if (!this.sexCounts) {
-      this.sexCounts = {
-        papAgricole: { male: 0, female: 0 },
-        databasePapPlaceAffaire: { male: 0, female: 0 },
-        papEconomique: { male: 0, female: 0 },
-      };
-    }
+  //   if (!this.sexCounts) {
+  //     this.sexCounts = {
+  //       papAgricole: { male: 0, female: 0 },
+  //       databasePapPlaceAffaire: { male: 0, female: 0 },
+  //       papEconomique: { male: 0, female: 0 },
+  //     };
+  //   }
 
-    this.sexCounts[category].male += maleCount;
-    this.sexCounts[category].female += femaleCount;
-  }
+  //   this.sexCounts[category].male += maleCount;
+  //   this.sexCounts[category].female += femaleCount;
+  // }
+
+
+
+
+
+
+
+sexCounts = {
+  papAgricole: { male: 0, female: 0 },
+  databasePapPlaceAffaire: { male: 0, female: 0 },
+  papEconomique: { male: 0, female: 0 }
+};
+
+// Votre fonction mise à jour
+updateSexCounts(category: string, list: any[]): void {
+  const maleCount = list.filter((pap) =>
+    pap.sexe === "G" || pap.sexe === "Garcon" || pap.sexe === "Masculin"
+  ).length;
+
+  const femaleCount = list.filter((pap) =>
+    pap.sexe === "F" || pap.sexe === "Feminim" || pap.sexe === "Féminin"
+  ).length;
+
+  // Mise à jour des comptes
+  this.sexCounts[category].male = maleCount;
+  this.sexCounts[category].female = femaleCount;
+
+  // Mise à jour du graphique
+  this.updateBarChart();
+}
+
+// Fonction pour mettre à jour le graphique
+updateBarChart(): void {
+  this.barChart = {
+    series: [
+      {
+        name: 'Masculin',
+        data: [
+          this.sexCounts.papAgricole.male,
+          this.sexCounts.databasePapPlaceAffaire.male,
+          this.sexCounts.papEconomique.male
+        ]
+      },
+      {
+        name: 'Féminin',
+        data: [
+          this.sexCounts.papAgricole.female,
+          this.sexCounts.databasePapPlaceAffaire.female,
+          this.sexCounts.papEconomique.female
+        ]
+      }
+    ],
+    chart: {
+      type: 'bar',
+      height: 350,
+      stacked: true
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+      },
+    },
+    xaxis: {
+      categories: ['PAP Agricole', 'PAP Place Affaire'],
+    },
+    colors: ['#008FFB', '#FF4560'],
+    legend: {
+      position: 'top',
+    },
+  };
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
   updateVulnerabilityCounts(list: any[]): void {
     list.forEach((pap) => {
@@ -271,26 +354,26 @@ export class MiseEnOeuvreComponent implements OnInit {
     ];
   }
 
-  updateBarChart() {
-    this.barChart.series = [
-      {
-        name: "Effectif féminin",
-        data: [
-          this.sexCounts.papAgricole.female,
-          this.sexCounts.databasePapPlaceAffaire.female,
-          this.sexCounts.papEconomique.female,
-        ],
-      },
-      {
-        name: "Effectif masculin",
-        data: [
-          this.sexCounts.papAgricole.male,
-          this.sexCounts.databasePapPlaceAffaire.male,
-          this.sexCounts.papEconomique.male,
-        ],
-      },
-    ];
-  }
+  // updateBarChart() {
+  //   this.barChart.series = [
+  //     {
+  //       name: "Effectif féminin",
+  //       data: [
+  //         this.sexCounts.papAgricole.female,
+  //         this.sexCounts.databasePapPlaceAffaire.female,
+  //         this.sexCounts.papEconomique.female,
+  //       ],
+  //     },
+  //     {
+  //       name: "Effectif masculin",
+  //       data: [
+  //         this.sexCounts.papAgricole.male,
+  //         this.sexCounts.databasePapPlaceAffaire.male,
+  //         this.sexCounts.papEconomique.male,
+  //       ],
+  //     },
+  //   ];
+  // }
 
   loadAllCategories() {
     this.listPap = [];

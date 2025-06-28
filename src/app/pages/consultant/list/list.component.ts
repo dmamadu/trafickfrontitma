@@ -10,7 +10,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
-import {  Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import {
@@ -85,6 +85,7 @@ export class ListComponent implements OnInit {
   image;
   headers: any = [];
   btnActions: any = [];
+  currentProjectId: any;
 
   constructor(
     private _router: Router,
@@ -96,13 +97,15 @@ export class ListComponent implements OnInit {
     private sharedService: SharedService,
     private localService: LocalService,
     private coreService: CoreService,
-  ) {}
+    private parentService: ServiceParent
+  ) {
+    this.currentProjectId = this.localService.getData("ProjectId");
+  }
   lienBrute: string;
   lien: string;
-  pathUrl: string="consultant";
+  pathUrl: string = "consultant";
 
   ngOnInit(): void {
-
     this.getConsultants();
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
@@ -163,8 +166,6 @@ export class ListComponent implements OnInit {
     ];
   }
 
-
-
   pageChanged(event) {
     console.log(event);
     this.datas = [];
@@ -217,8 +218,7 @@ export class ListComponent implements OnInit {
       });
   }
 
-  filterList() {
-  }
+  filterList() {}
 
   //cette fonction permet d'exporter la liste sous format excel ou pdf
   exportAs(format) {
@@ -230,7 +230,25 @@ export class ListComponent implements OnInit {
 
   record(item) {}
 
+  private showProjectSelectionError(): void {
+    this.toastr.error(
+      "Vous devez vous connecter en tant que maître d'ouvrage responsable d'un projet .",
+      "Action non autorisée",
+      {
+        timeOut: 15000,
+        progressBar: true,
+        closeButton: true,
+        enableHtml: true,
+      }
+    );
+  }
+
   addItems(): void {
+    if (!this.currentProjectId) {
+      this.showProjectSelectionError();
+      return;
+    }
+
     this.snackbar.openModal(
       AddComponent,
       "55rem",
@@ -287,15 +305,17 @@ export class ListComponent implements OnInit {
     this._router.navigate(["consultant/detail"]);
   }
 
-
-
   getConsultants() {
     this.loadData = true;
-    return this.papService
-      .all(`users/by_role?roleName=${this.pathUrl}`)
+    return this.parentService
+      .list(
+        `users/by_role/projects?roleName=${this.pathUrl}&projectId=${this.currentProjectId}`,
+        this.pageSize,
+        this.offset
+      )
       .subscribe(
         (data: any) => {
-          if (data["status"] == 200) {
+          if (data["responseCode"] == 200) {
             this.loadData = false;
             console.log(data);
             this.dataSource = new MatTableDataSource(data["data"]);

@@ -36,6 +36,7 @@ import { AddUserComponent } from "../../parametrages/utilisateur/add-user/add-us
 import { CoreService } from "src/app/shared/core/core.service";
 import { AddMaitreOuvrageComponent } from "../add-maitre-ouvrage/add-maitre-ouvrage.component";
 import { DetailUserComponent } from "../detail-user/detail-user.component";
+import { ServiceParent } from "src/app/core/services/serviceParent";
 
 @Component({
   selector: "app-molist",
@@ -103,8 +104,12 @@ export class MolistComponent implements OnInit {
     private localService: LocalService,
     private snackbar: SnackBarService,
     private ct :ChangeDetectorRef,
+        private parentService: ServiceParent,
     private _changeDetectorRef: ChangeDetectorRef,
-  ) {}
+  ) {
+        this.currentProjectId = +this.localService.getData("ProjectId");
+  }
+  currentProjectId: any;
 
   myImage: string;
 
@@ -279,13 +284,14 @@ export class MolistComponent implements OnInit {
     this.removeItemModal?.hide();
   }
 
+  // this.parentService.list(`users/projects?projectId=${this.currentProjectId}`,this.pageSize, this.offset)
   fetchMo() {
     this.loadData = true;
-    return this.moservice
-      .all(`users/by_role?roleName=Maitre d'ouvrage`)
+    return this.parentService
+      .list(`users/by_role/projects?roleName=Maitre d'ouvrage&projectId=${this.currentProjectId}`, this.pageSize, this.offset)
       .subscribe(
         (data: any) => {
-          if (data["status"] == 200) {
+          if (data["responseCode"] == 200) {
             this.loadData = false;
             console.log(data);
             this.dataSource = new MatTableDataSource(data["data"]);

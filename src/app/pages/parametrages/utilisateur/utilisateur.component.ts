@@ -16,6 +16,8 @@ import { PapService } from '../../pap/pap.service';
 import { AddUserComponent } from './add-user/add-user.component';
 import { environment } from 'src/environments/environment';
 import { DetailUserComponent } from '../../maitrouvrages/detail-user/detail-user.component';
+import { LocalService } from 'src/app/core/services/local.service';
+import { ServiceParent } from 'src/app/core/services/serviceParent';
 
 @Component({
   selector: 'app-utilisateur',
@@ -67,6 +69,7 @@ throw new Error('Method not implemented.');
   image;
   headers: any = [];
   btnActions: any = [];
+  currentProjectId: any;
 
   urlImage = environment.apiUrl + "fileAws/download/";
 
@@ -81,9 +84,15 @@ throw new Error('Method not implemented.');
     private papService: PapService,
     public matDialogRef: MatDialogRef<PapAddComponent>,
     private _changeDetectorRef: ChangeDetectorRef,
-    public toastr: ToastrService,
-    private coreService: CoreService
-  ) {}
+        private parentService: ServiceParent,
+
+    private coreService: CoreService,
+        public toastr: ToastrService,
+        private localService: LocalService,
+  ) {
+        this.currentProjectId = this.localService.getData("ProjectId");
+
+  }
   ngOnInit(): void {
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
@@ -96,18 +105,32 @@ throw new Error('Method not implemented.');
   }
 
 
+  private showProjectSelectionError(): void {
+    this.toastr.error(
+      "Vous devez vous connecter en tant que maître d'ouvrage responsable d'un projet .",
+      "Action non autorisée",
+      {
+        timeOut: 15000,
+        progressBar: true,
+        closeButton: true,
+        enableHtml: true,
+      }
+    );
+  }
+ //.list(this.url, this.pageSize, this.offset, this.currentProjectId)
   getUsers() {
     this.loadData = true;
-    return this.papService.all("users/all").subscribe(
+    return this.parentService.list(`users/projects?projectId=${this.currentProjectId}`,this.pageSize, this.offset).subscribe(
       (data: any) => {
-        if (data["status"] == 200) {
+        if (data["responseCode"] == 200) {
           this.loadData = false;
           console.log(data);
           this.dataSource = new MatTableDataSource(data["data"]);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
           this.datas = data["data"];
-          this.length = data["length"];
+            this.length = data["total"] || data.length;
+         // this.length = data["length"];
           console.log("length", this.length);
           this._changeDetectorRef.markForCheck();
         } else {
@@ -122,6 +145,10 @@ throw new Error('Method not implemented.');
   }
 
   addItems(): void {
+  if (!this.currentProjectId) {
+      this.showProjectSelectionError();
+      return;
+    }
     this.snackbar.openModal(
       AddUserComponent,
       "55rem",

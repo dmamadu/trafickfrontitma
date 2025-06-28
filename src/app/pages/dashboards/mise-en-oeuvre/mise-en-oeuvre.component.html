@@ -1,6 +1,6 @@
 <div class="container" *ngIf="loadData">
   <h1 class="couleurPrimary py-3">Statistiques dynamiques relatives à la mise en œuvre du PAR</h1>
-  <app-loader-custom ></app-loader-custom>
+  <app-loader-custom></app-loader-custom>
 </div>
 
 <!-- <div class="container" *ngIf="!loadData ">
@@ -65,7 +65,7 @@
       <mat-icon>folder</mat-icon> Statut des dossiers
     </h2>
     <div class="cards">
-      <div class="card">
+      <!-- <div class="card">
         <mat-icon class="card-icon">folder_open</mat-icon>
         <div class="card-content">
           <div class="card-title">Dossiers incomplets</div>
@@ -78,7 +78,7 @@
           <div class="card-title">Dossiers complets</div>
           <div class="card-value">{{ dossiersComplets }}</div>
         </div>
-      </div>
+      </div> -->
       <div class="card">
         <mat-icon class="card-icon">description</mat-icon>
         <div class="card-content">
@@ -128,6 +128,14 @@
   <!-- Graphique genre avec icône -->
   <div class="last-charts-row">
     <!-- Graphique genre avec icône -->
+    <!-- <div class="chart-container">
+      <h2 class="couleurPrimary">
+        <mat-icon>stacked_bar_chart</mat-icon> Effectif féminin et masculin par catégorie
+      </h2>
+      <apx-chart [series]="barChart.series" [chart]="barChart.chart" [xaxis]="barChart.xaxis" [colors]="barChart.colors"
+        [legend]="barChart.legend" [plotOptions]="barChart.plotOptions">
+      </apx-chart>
+    </div> -->
     <div class="chart-container">
       <h2 class="couleurPrimary">
         <mat-icon>stacked_bar_chart</mat-icon> Effectif féminin et masculin par catégorie

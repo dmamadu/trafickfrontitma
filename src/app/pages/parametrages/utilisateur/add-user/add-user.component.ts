@@ -16,6 +16,7 @@ import { environment } from "src/environments/environment";
 import { ClientVueService } from "src/app/pages/admin/client-vue/client-vue.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { LoaderComponent } from "../../../../shared/loader/loader.component";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-add-user",
@@ -54,6 +55,7 @@ export class AddUserComponent {
   roles: any[] = [];
   categories: any[] = [];
   profils: any[] = [];
+  currentProjectId: any;
 
   constructor(
     public matDialogRef: MatDialogRef<AddUserComponent>,
@@ -63,10 +65,12 @@ export class AddUserComponent {
     private snackbar: SnackBarService,
     private changeDetectorRefs: ChangeDetectorRef,
     private localService: LocalService,
+     public toastr: ToastrService,
     private clientServive: ClientVueService,
     private parentService: ServiceParent
   ) {
     this.currentUser = this.localService.getDataJson("user");
+    this.currentProjectId = +this.localService.getData("ProjectId");
 
     if (_data?.action == "new") {
       this.initForms();
@@ -74,7 +78,7 @@ export class AddUserComponent {
     } else if (_data?.action == "edit") {
       this.labelButton = "Modifier ";
       this.imageToff = _data.data.imageUrl;
-      // this.id = _data.data.id;
+       this.id = _data.data.id;
       this.initForms(_data.data);
     }
 
@@ -104,8 +108,7 @@ export class AddUserComponent {
       locality: this.fb.control(donnees?.locality ?? null, [
         Validators.required,
       ]),
-
-      project_id: this.fb.control(this.currentUser.projects?.[0]?.id ?? null, [
+      project_id: this.fb.control(this.currentProjectId ?? null, [
         Validators.required,
       ]),
       role_id: this.fb.control(donnees?.roles?.[0]?.id ?? null, [
@@ -113,7 +116,7 @@ export class AddUserComponent {
       ]),
       imageUrl: this.fb.control(
         donnees?.imageUrl ? this.urlImage + donnees.imageUrl : null,
-        [Validators.required]
+        []
       ),
       contact: this.fb.control(donnees?.contact ?? null, [Validators.required]),
       categorie_id: this.fb.control(donnees?.categorie?.id ?? null, [
@@ -207,7 +210,30 @@ export class AddUserComponent {
     this.addItems();
   }
 
+
+    private showProjectSelectionError(): void {
+    this.toastr.error(
+      "Vous devez vous connecter en tant que maître d'ouvrage responsable d'un projet .",
+      "Action non autorisée",
+      {
+        timeOut: 15000,
+        progressBar: true,
+        closeButton: true,
+        enableHtml: true,
+      }
+    );
+  }
+
   addItems() {
+
+
+      if (!this.currentProjectId) {
+      this.showProjectSelectionError();
+      return;
+    }
+
+
+
     console.log(this.initForm.value);
     if (this.initForm.valid) {
       this.snackbar
