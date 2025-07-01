@@ -84,7 +84,10 @@
         <mat-icon matSuffix class="secondary-text">home</mat-icon>
         <mat-error>Le champs est oligatoire</mat-error>
       </mat-form-field>
-      <mat-form-field  class=" w-1/2 mt-2 telephone" appearance="outline">
+
+    </div>
+    <div  class="flex gap-2">
+       <mat-form-field  class=" w-full mt-2 telephone" appearance="outline">
         <ngx-mat-intl-tel-input [preferredCountries]="['sn', 'fr']" [enablePlaceholder]="true" [enableSearch]="true"
           name="contact" describedBy="Téléphone WhatsApp"
           formControlName="contact"></ngx-mat-intl-tel-input>

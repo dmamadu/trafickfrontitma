@@ -175,6 +175,9 @@ export class JobsComponent implements OnInit {
         (data: any) => {
           this.loadData = false;
           if (data["responseCode"] == 200) {
+            console.log('==============plaintes======================');
+            console.log(data);
+            console.log('====================================');
             this.loadData = false;
             this.lengthPlainte = data.length;
             this.listPlainte = data.data;
@@ -215,29 +218,61 @@ export class JobsComponent implements OnInit {
       );
   }
 
-  public complaintCounts = {
-    resolu: 0,
-    enAttente: 0,
-    enCours: 0,
-  };
 
-  classifyComplaints(): void {
-    // console.log("pli", this.listPlainte);
+
+  public complaintCounts = {
+  resolu: 0,
+  enAttente: 0,
+  enCours: 0
+};
+  // classifyComplaints(): void {
+  //   if (this.listPlainte && this.listPlainte.length > 0) {
+  //     this.listPlainte.forEach((complaint) => {
+  //       if (complaint.etat == "Résolue") {
+  //         this.complaintCounts.resolu++;
+  //       } else if (complaint.etat == "En Attente") {
+  //         this.complaintCounts.enAttente++;
+  //       } else if (complaint.etat == "En cours") {
+  //         this.complaintCounts.enCours++;
+  //       }
+  //     });
+  //   } else {
+  //     console.error("Aucune donnée disponible pour classifier les plaintes.");
+  //   }
+  // }
+classifyComplaints(): void {
+    // Reset counts
+    this.complaintCounts = {
+      resolu: 0,
+      enAttente: 0,
+      enCours: 0
+    };
+
     if (this.listPlainte && this.listPlainte.length > 0) {
-      this.listPlainte.forEach((complaint) => {
-        if (complaint.etat === "Résolue") {
+      this.listPlainte.forEach((complaint : any) => {
+        console.log('===================complein=================');
+        console.log(complaint.etat);
+        console.log('====================================');
+        if (complaint.etat == "Résolue") {
           this.complaintCounts.resolu++;
-        } else if (complaint.etat === "En Attente") {
+        } else if (complaint.etat == "En Attente") {
           this.complaintCounts.enAttente++;
-        } else if (complaint.etat === "En cours") {
+        } else if (complaint.etat == "En cours") {
           this.complaintCounts.enCours++;
         }
       });
+
+      // Update chart series with the counts
+      this.complaintChart.series = [
+        this.complaintCounts.resolu,
+        this.complaintCounts.enAttente,
+        this.complaintCounts.enCours
+      ];
     } else {
       console.error("Aucune donnée disponible pour classifier les plaintes.");
+      this.complaintChart.series = [0, 0, 0]; // Set empty data
     }
   }
-
   public complaintChart = {
     series: [],
     chart: {
@@ -421,7 +456,7 @@ export class JobsComponent implements OnInit {
       .subscribe(
         (data: any) => {
           this.loadData = false;
-          if (data["responseCode"] === 200) {
+          if (data["responseCode"] == 200) {
             // Calculer la somme totale des pertes
             const totalPertes = this.listPap.reduce((sum, pap) => {
               // Convertir en nombre au cas où perteTotale serait une chaîne

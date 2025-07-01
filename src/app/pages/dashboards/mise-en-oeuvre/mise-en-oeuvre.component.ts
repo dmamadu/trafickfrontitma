@@ -6,6 +6,7 @@ import { Pap } from "../../pap/pap.model";
 import { MatTableDataSource } from "@angular/material/table";
 import { UntypedFormGroup } from "@angular/forms";
 import { ServiceParent } from "src/app/core/services/serviceParent";
+import { LocalService } from "src/app/core/services/local.service";
 
 @Component({
   selector: "app-mise-en-oeuvre",
@@ -55,6 +56,10 @@ export class MiseEnOeuvreComponent implements OnInit {
   offset: number = 0;
   title: string = "Gestion des partis affectés";
   url: string = "personneAffectes";
+  urlEntente: string = "ententes";
+
+  currentProjectId: any;
+
   panelOpenState = false;
   img;
 
@@ -71,12 +76,15 @@ export class MiseEnOeuvreComponent implements OnInit {
   countBySex = {};
 
   constructor(
-    private papService: PapService,
+    private localService: LocalService,
     private parentService: ServiceParent
-  ) {}
+  ) {
+    this.currentProjectId = this.localService.getData("ProjectId");
+  }
 
   ngOnInit(): void {
     this.loadAllCategories();
+    this.getEntente();
   }
 
   getPartiAffecte() {}
@@ -254,88 +262,72 @@ export class MiseEnOeuvreComponent implements OnInit {
   //   this.sexCounts[category].female += femaleCount;
   // }
 
-
-
-
-
-
-
-sexCounts = {
-  papAgricole: { male: 0, female: 0 },
-  databasePapPlaceAffaire: { male: 0, female: 0 },
-  papEconomique: { male: 0, female: 0 }
-};
-
-// Votre fonction mise à jour
-updateSexCounts(category: string, list: any[]): void {
-  const maleCount = list.filter((pap) =>
-    pap.sexe === "G" || pap.sexe === "Garcon" || pap.sexe === "Masculin"
-  ).length;
-
-  const femaleCount = list.filter((pap) =>
-    pap.sexe === "F" || pap.sexe === "Feminim" || pap.sexe === "Féminin"
-  ).length;
-
-  // Mise à jour des comptes
-  this.sexCounts[category].male = maleCount;
-  this.sexCounts[category].female = femaleCount;
-
-  // Mise à jour du graphique
-  this.updateBarChart();
-}
-
-// Fonction pour mettre à jour le graphique
-updateBarChart(): void {
-  this.barChart = {
-    series: [
-      {
-        name: 'Masculin',
-        data: [
-          this.sexCounts.papAgricole.male,
-          this.sexCounts.databasePapPlaceAffaire.male,
-          this.sexCounts.papEconomique.male
-        ]
-      },
-      {
-        name: 'Féminin',
-        data: [
-          this.sexCounts.papAgricole.female,
-          this.sexCounts.databasePapPlaceAffaire.female,
-          this.sexCounts.papEconomique.female
-        ]
-      }
-    ],
-    chart: {
-      type: 'bar',
-      height: 350,
-      stacked: true
-    },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-      },
-    },
-    xaxis: {
-      categories: ['PAP Agricole', 'PAP Place Affaire'],
-    },
-    colors: ['#008FFB', '#FF4560'],
-    legend: {
-      position: 'top',
-    },
+  sexCounts = {
+    papAgricole: { male: 0, female: 0 },
+    databasePapPlaceAffaire: { male: 0, female: 0 },
+    papEconomique: { male: 0, female: 0 },
   };
-}
 
+  // Votre fonction mise à jour
+  updateSexCounts(category: string, list: any[]): void {
+    const maleCount = list.filter(
+      (pap) =>
+        pap.sexe === "G" || pap.sexe === "Garcon" || pap.sexe === "Masculin"
+    ).length;
 
+    const femaleCount = list.filter(
+      (pap) =>
+        pap.sexe === "F" || pap.sexe === "Feminim" || pap.sexe === "Féminin"
+    ).length;
 
+    // Mise à jour des comptes
+    this.sexCounts[category].male = maleCount;
+    this.sexCounts[category].female = femaleCount;
 
+    // Mise à jour du graphique
+    this.updateBarChart();
+  }
 
-
-
-
-
-
-
-
+  // Fonction pour mettre à jour le graphique
+  updateBarChart(): void {
+    this.barChart = {
+      series: [
+        {
+          name: "Masculin",
+          data: [
+            this.sexCounts.papAgricole.male,
+            this.sexCounts.databasePapPlaceAffaire.male,
+            this.sexCounts.papEconomique.male,
+          ],
+        },
+        {
+          name: "Féminin",
+          data: [
+            this.sexCounts.papAgricole.female,
+            this.sexCounts.databasePapPlaceAffaire.female,
+            this.sexCounts.papEconomique.female,
+          ],
+        },
+      ],
+      chart: {
+        type: "bar",
+        height: 350,
+        stacked: true,
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+        },
+      },
+      xaxis: {
+        categories: ["PAP Agricole", "PAP Place Affaire"],
+      },
+      colors: ["#008FFB", "#FF4560"],
+      legend: {
+        position: "top",
+      },
+    };
+  }
 
   updateVulnerabilityCounts(list: any[]): void {
     list.forEach((pap) => {
@@ -391,5 +383,37 @@ updateBarChart(): void {
     categories.forEach((category) => {
       this.getPapByCategory(category);
     });
+  }
+
+  getEntente() {
+    return this.parentService
+      .listeByProject(
+        this.urlEntente,
+        this.pageSize,
+        this.offset,
+        this.currentProjectId
+      )
+      .subscribe(
+        (data: any) => {
+          console.log(data);
+
+          this.loadData = false;
+          if (data["responseCode"] == 200) {
+            this.loadData = false;
+            // this.dataSource = new MatTableDataSource(data["data"]);
+            // this.dataSource.paginator = this.paginator;
+            // this.dataSource.sort = this.sort;
+            // this.datas = data["data"];
+            this.ententesCompensation = data["length"];
+            this._changeDetectorRef.markForCheck();
+          } else {
+            this.loadData = false;
+            this.dataSource = new MatTableDataSource();
+          }
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
   }
 }

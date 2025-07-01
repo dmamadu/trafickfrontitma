@@ -16,7 +16,8 @@ import { ApplyComponent } from './apply/apply.component';
 import { DetailsComponent } from './details/details.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { CandidateListComponent } from './candidate-list/candidate-list.component';
-import { CandidateOverviewComponent } from './candidate-overview/candidate-overview.component'; 
+import { CandidateOverviewComponent } from './candidate-overview/candidate-overview.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { CandidateOverviewComponent } from './candidate-overview/candidate-overv
     DetailsComponent,
     CategoriesComponent,
     CandidateListComponent,
-    CandidateOverviewComponent
+    CandidateOverviewComponent,
+
   ],
   imports: [
     CommonModule,
@@ -38,6 +40,7 @@ import { CandidateOverviewComponent } from './candidate-overview/candidate-overv
     CollapseModule.forRoot(),
     UIModule,
     JobsRoutingModule,
+    NgApexchartsModule
   ]
 })
 

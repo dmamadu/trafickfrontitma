@@ -46,7 +46,7 @@ export class CarteComponent implements OnInit {
     console.log("====================================");
   }
   ngOnInit(): void {
-    throw new Error("Method not implemented.");
+    //throw new Error("Method not implemented.");
   }
 
   ngAfterViewInit(): void {

@@ -52,6 +52,7 @@ import { DndModule } from "ngx-drag-drop";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { UIModule } from "src/app/shared/ui/ui.module";
 import { BsDropdownModule } from "ngx-bootstrap/dropdown";
+import { ServiceParent } from "src/app/core/services/serviceParent";
 
 @Component({
   selector: "app-createtask",
@@ -106,7 +107,9 @@ export class CreatetaskComponent implements OnInit {
   @Output() dateRangeSelected: EventEmitter<{}> = new EventEmitter();
   memberLists: any;
   tacheToUpdate: any = null;
-
+  pageSize: number = 100;
+  pageIndex: number = 0;
+    offset: number = 0;
   @ViewChild("dp", { static: true }) datePicker: any;
 
   /**
@@ -148,7 +151,8 @@ export class CreatetaskComponent implements OnInit {
     private coreService: CoreService,
     private localService: LocalService,
     private snackbar: SnackBarService,
-    private changeDetectorRefs: ChangeDetectorRef
+    private changeDetectorRefs: ChangeDetectorRef,
+    private parentService: ServiceParent
   ) {
     this.currentProjectId = this.localService.getData("ProjectId");
 
@@ -263,9 +267,11 @@ export class CreatetaskComponent implements OnInit {
   //     });
   // }
   fetchMo(): void {
-    this.projectService
-      .all<ResponseData<any[]>>("users/all")
-      .subscribe((response: ResponseData<any[]>) => {
+    this.parentService
+      .list(`users/by_role/projects?roleName=Maitre d'ouvrage&projectId=${this.currentProjectId}`,
+     this.pageSize,
+      this.offset)
+      .subscribe((response:any) => {
         this.listMo = response.data.map((user) => {
           this.changeDetectorRefs.detectChanges();
           const isAssigned =
@@ -288,6 +294,8 @@ export class CreatetaskComponent implements OnInit {
         }
       });
   }
+
+
 
   myImage: string;
   getImageFromBase64(imageType: string, imageName: number[]): string {
