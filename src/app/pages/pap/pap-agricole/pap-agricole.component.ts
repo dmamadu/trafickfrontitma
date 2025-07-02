@@ -377,7 +377,7 @@ export class PapAgricoleComponent {
     console.log(information);
     this.snackbar.openModal(
       AddPapAgricoleComponent,
-      "65rem",
+      "60rem",
       "edit",
       "",
       information,
@@ -688,7 +688,7 @@ export class PapAgricoleComponent {
     }
     this.snackbar.openModal(
       AddPapAgricoleComponent,
-      "65rem",
+      "60rem",
       "new",
       "auto",
       this.datas,

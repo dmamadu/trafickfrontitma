@@ -173,7 +173,7 @@ export class ListEntenteComponent implements OnInit {
     }
     this.snackbar.openModal(
       AjoutEntenteComponent,
-      "73rem",
+      "60rem",
       "new",
       "",
       this.datas,

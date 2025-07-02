@@ -333,7 +333,7 @@ export class ListPlainteComponent implements OnInit {
     }
     this.snackbar.openModal(
       AddPlainteComponent,
-      "65rem",
+      "55rem",
       "new",
       "",
       this.datas,

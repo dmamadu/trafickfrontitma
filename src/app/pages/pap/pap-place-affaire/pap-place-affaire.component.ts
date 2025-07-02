@@ -332,7 +332,7 @@ export class PapPlaceAffaireComponent {
     console.log(information);
     this.snackbar.openModal(
       AddPapPlaceAffaireComponent,
-      "65rem",
+      "60rem",
       "edit",
       "",
       information,
@@ -648,7 +648,7 @@ export class PapPlaceAffaireComponent {
 
     this.snackbar.openModal(
       AddPapPlaceAffaireComponent,
-      "68rem",
+      "6Orem",
       "new",
       "",
       this.datas,
