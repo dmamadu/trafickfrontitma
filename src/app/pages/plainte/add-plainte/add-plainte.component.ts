@@ -117,6 +117,7 @@ export class AddPlainteComponent implements OnInit {
     private clientServive: ClientVueService
   ) {
     this.currentProjectId = this.localService.getData("ProjectId");
+    this.libelleProject = this.localService.getData("libelleProject");
     this.signature = "assets/images/noImage.png";
     // console.log("user connecter",this.currentProjectId)
     if (_data?.action == "new") {
@@ -145,11 +146,14 @@ export class AddPlainteComponent implements OnInit {
   // }
 
   currentProjectId: any;
+  libelleProject: any;
+
 
   initForms(donnees?) {
     //firstep
     this.initForm = this.fb.group({
-      libelleProjet: this.fb.control(donnees ? donnees?.libelleProjet : null, [
+      libelleProjet: this.fb.control(donnees ? donnees?.libelleProjet :
+        this.libelleProject, [
         Validators.required,
       ]),
       numeroDossier: this.fb.control(donnees ? donnees?.numeroDossier : null, [

@@ -81,6 +81,7 @@ export class SelectProjectComponent {
         this.colorService.setColors(colors);
       }
       this.localService.saveData("ProjectId", projectId.toString());
+      this.localService.saveData("libelleProject", selectedProject.libelle);
       this.router.navigate(["/dashboards/jobs"]);
       this.toastr.success("Projet sélectionné avec succès");
       this.closeModal();
