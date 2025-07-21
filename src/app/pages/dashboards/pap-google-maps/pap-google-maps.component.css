@@ -1,0 +1,129 @@
+.map-container {
+      position: relative;
+      margin: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .info-window {
+      padding: 10px;
+      min-width: 250px;
+    }
+    
+    .info-window h3 {
+      margin-top: 0;
+      color: #1976d2;
+      font-size: 16px;
+    }
+    
+    .info-window p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      color: white;
+      margin-top: 5px;
+    }
+    
+    .legend {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: white;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 1000;
+    }
+    
+    .legend h4 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    
+    .legend-color {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    
+    .recense {
+      background-color: #4285F4;
+    }
+    
+    .en_etude {
+      background-color: #FBBC05;
+    }
+    
+    .indemnisation_terminee {
+      background-color: #34A853;
+    }
+    
+    .unknown {
+      background-color: #9E9E9E;
+    }
+    
+    /* Classes pour les badges de statut */
+    .badge-recense {
+      background-color: #4285F4;
+    }
+    
+    .badge-en_etude {
+      background-color: #FBBC05;
+    }
+    
+    .badge-indemnisation_terminee {
+      background-color: #34A853;
+    }
+    
+    .badge-unknown {
+      background-color: #9E9E9E;
+    }
+
+
+    /* Styles pour le loader */
+.loader-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loaderData {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #D45C00;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.map-container {
+  position: relative; 
+}

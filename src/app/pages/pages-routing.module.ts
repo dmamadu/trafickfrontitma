@@ -84,6 +84,11 @@ const routes: Routes = [
     loadChildren: () =>
       import("./pap/pap-routing.module").then((m) => m.PapRoutingModule),
   },
+    {
+    path: "ficheIdentification",
+    loadChildren: () =>
+      import("./ficheIdentificationPap/ficheIdentification-routing.module").then((m) => m.FicheIdentificationRoutingModule),
+  },
 
   {
     path: "pip",

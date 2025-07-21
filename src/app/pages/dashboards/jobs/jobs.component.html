@@ -5,7 +5,7 @@
   </h1>
 
   <!-- Cartes statistiques -->
-  <div class="stats-cards">
+  <!-- <div class="stats-cards">
     <div class="stats-card">
       <div class="card-icon">
         <mat-icon>people</mat-icon>
@@ -37,8 +37,45 @@
       <div class="card-value">{{lengthRencontre}}</div>
       <div class="card-label">Nombre de consultations</div>
     </div>
-  </div>
+  </div> -->
+<div class="stats-cards">
+    <div class="stats-card">
+      <div class="card-icon">
+        <mat-icon>people</mat-icon>
+      </div>
+      <div class="card-value">{{lengthPap}}</div>
+      <div class="card-label">Personnes affectées</div>
+    </div>
 
+    <div class="stats-card">
+      <div class="card-icon">
+        <mat-icon>wc</mat-icon> 
+      </div>
+      <div class="gender-stats">
+        <div class="gender-value male"> ({{getPercentage(placeAffaireStats.Sexes_globaux.Hommes, placeAffaireStats.Sexes_globaux.Total)}}%</div>
+        <div class="gender-value female">({{getPercentage(placeAffaireStats.Sexes_globaux.Femmes, placeAffaireStats.Sexes_globaux.Total)}}%)</div>
+      </div>
+      <div class="card-label">Répartition H/F</div>
+    </div>
+
+    <div class="stats-card">
+      <div class="card-icon">
+        <mat-icon>feedback</mat-icon>
+      </div>
+      <div class="card-value">{{ getVulnerablePeopleCount() }}</div>
+      <div class="card-label">Effectif global des pap vulnérables</div>
+    </div>
+
+    <div class="stats-card">
+      <div class="card-icon">
+        <mat-icon>meeting_room</mat-icon>
+      </div>
+      <div class="card-value">{{lengthRencontre}}</div>
+      <div class="card-label">Nombre de consultations</div>
+    </div>
+</div>
+ 
+ 
   <!-- Section Graphiques -->
   <div class="graphs-section">
     <h1 class="section-title couleurPrimary">
@@ -69,7 +106,7 @@
 
   <!-- Section Documents et Carte -->
   <div class="documents-map-section">
-    <div class="documents-container">
+    <!-- <div class="documents-container">
       <h2 class="section-title couleurPrimary">
         <mat-icon>description</mat-icon> Liste des documents enregistrés
       </h2>
@@ -91,14 +128,22 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <div class="map-container">
       <h2 class="section-title couleurPrimary">
         <mat-icon>map</mat-icon> Délimitation de la zone impactée par le projet
       </h2>
       <!-- <img src="assets/images/villageImpacte.png" alt="Carte de la zone impactée" class="map-image"> -->
-      <app-carte></app-carte>
+      <!-- <app-carte></app-carte> -->
+      <!-- <app-map 
+  [width]="'100%'" 
+  [height]="'600px'"
+  [center]=""
+  [zoom]="14"
+></app-map> -->
+<app-pap-google-maps ></app-pap-google-maps>
+
       <!-- <app-google></app-google> -->
     </div>
   </div>

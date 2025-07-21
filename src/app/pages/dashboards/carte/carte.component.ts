@@ -58,7 +58,7 @@ export class CarteComponent implements OnInit {
     this.map = new maplibregl.Map({
       container: this.mapContainer.nativeElement,
       style: "https://demotiles.maplibre.org/style.json",
-      center: [-17.406666, 14.738872], // Dakar par défaut
+      center: [-17.406666, 14.738872],
       zoom: 12,
     });
 
@@ -142,42 +142,6 @@ export class CarteComponent implements OnInit {
     </div>
   `;
   }
-
-  // private addMarkers(): void {
-  //   this.paps.forEach((pap: any) => {
-  //     let markerColor: string;
-
-  //     switch (pap.statutPap) {
-  //       case "indemnisation_terminee":
-  //         markerColor = "#00FF00"; // Vert pour terminé
-  //         break;
-  //       case "recense":
-  //         markerColor = "#FFA500"; // Orange pour recensé
-  //         break;
-  //       case "en_etude":
-  //         markerColor = "#FFFF00"; // Jaune pour en étude
-  //         break;
-  //       case "indemnisation_engagee":
-  //         markerColor = "#0000FF"; // Bleu pour indemnisation engagée
-  //         break;
-  //       case "en_contentieux":
-  //         markerColor = "#FF00FF"; // Magenta pour contentieux
-  //         break;
-  //       default:
-  //         markerColor = "#FF0000"; // Rouge par défaut
-  //     }
-
-  //     const marker = new maplibregl.Marker({ color: markerColor })
-  //       .setLngLat(pap.position)
-  //       .setPopup(new maplibregl.Popup().setHTML(pap.informations))
-  //       .addTo(this.map);
-
-  //     marker.getElement().addEventListener("click", () => {
-  //       this.selectedPap = pap;
-  //       this._changeDetectorRef.detectChanges();
-  //     });
-  //   });
-  // }
   private addMarkers(): void {
   this.paps.forEach((pap:any) => {
     let markerColor = this.getColorByStatus(pap.statutPap);

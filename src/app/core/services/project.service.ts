@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { RootService } from "./root.service";
 import { Observable } from "rxjs";
 import { Image } from "src/app/shared/models/image.model";
+import { HttpParams } from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",
@@ -56,4 +57,19 @@ export class ProjectService extends RootService {
     const url = `${this.url}rencontres/project/${projectId}`;
     return this.http.get<any>(url);
   }
+
+  // getStatsByProjectId(uri: string, projectId: number): Observable<any> {
+  //   const url = `${this.url}${uri}/${projectId}`;
+  //   return this.http.get<any>(url);
+  // }
+getStatsByProjectId(uri: string, projectId: number): Observable<any> {
+    const url = `${this.url}${uri}/vulnerability-stats`;
+    const params = new HttpParams().set('projectId', projectId.toString());
+    return this.http.get<any>(url, { params });
+}
+getStatsCombineByProjectId(projectId: number): Observable<any> {
+    const url = `${this.url}stats/combine`;
+    const params = new HttpParams().set('projectId', projectId.toString());
+    return this.http.get<any>(url, { params });
+}
 }

@@ -438,6 +438,22 @@ export const MENU: MenuItem[] = [
         icon: "bx-list-ul",
        // link: "/tasks/liste",
         parentId: 21,
+         subItems: [
+          {
+            id: 39,
+            label: "Exploitants/Agricole",
+            icon: "bxs-tree",
+            link: "/ficheIdentification/papAgricole",
+            parentId: 23,
+          },
+          {
+            id: 40,
+            label: "Place Affaires/Economiques",
+            icon: "bxs-chart",
+            link: "/ficheIdentification/papPlaceAffaire",
+            parentId: 23,
+          },
+        ],
       },
       {
         id: 24,

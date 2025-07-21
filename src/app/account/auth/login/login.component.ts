@@ -273,7 +273,13 @@ private hasMultipleProjects(user: Auth): boolean {
 
 private navigateToDefaultProject(user: Auth) {
   const projectId = user.user.projects[0]?.id.toString();
+  const projectLogo = user.user.projects[0]?.imageUrl || "default-logo.png";
+
+  console.log('project',projectId);
+  
+  
   this.localService.saveData("ProjectId", projectId);
+  this.localService.saveData("ProjectLogo", projectLogo.toString());
   this.router.navigate(["/dashboards/jobs"]);
 }
 

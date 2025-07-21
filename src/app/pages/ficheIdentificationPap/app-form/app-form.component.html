@@ -1,0 +1,260 @@
+<div class="pap-form-container">
+  <!-- En-tête -->
+  <div class="pap-header">
+
+
+
+    <div class="logo">
+      <img src="assets/images/logo/Logoinvodis.png" alt="Logo maître d'ouvrage">
+    </div>
+    <div class="project-title">
+      <h2>PROJET DE</h2>
+      <h1>{{ libelleProject }}</h1>
+    </div>
+<button class="close-modal-btn" (click)="closeModal()" aria-label="Fermer la fenêtre">
+  <mat-icon>close</mat-icon>
+</button>
+  </div>
+
+  <!-- Formulaire principal -->
+  <form [formGroup]="papForm" (ngSubmit)="onSubmit()">
+    <!-- Section Informations de base -->
+    <table class="form-section">
+      <tr>
+        <td width="25%">
+          <label>Version</label>
+          <input type="text" formControlName="version">
+        </td>
+        <td width="25%">
+          <label>Catégorie</label>
+          <input type="text" formControlName="category">
+        </td>
+        <td width="25%">
+          <label>Localisation</label>
+          <input type="text" formControlName="localisation">
+        </td>
+        <td width="25%">
+          <label>Code PAG</label>
+          <input type="text" formControlName="codePAG">
+        </td>
+      </tr>
+    </table>
+
+    <!-- Section Identification -->
+    <table class="form-section">
+      <tr class="section-title">
+        <td colspan="4">IDENTIFICATION</td>
+      </tr>
+      <tr>
+        <td width="25%">
+          <label>Prénom et Nom</label>
+          <input type="text" formControlName="prenomNom">
+        </td>
+        <td width="25%">
+          <label>Sexe</label>
+          <select formControlName="sexe">
+            <option value="">Sélectionner</option>
+            <option value="M">Masculin</option>
+            <option value="F">Féminin</option>
+          </select>
+        </td>
+        <td colspan="2" rowspan="5" class="photo-cell">
+          <div class="photo-upload">
+            <label>Photo de la PAP</label>
+            <input type="file" accept="image/*" (change)="onFileChange($event)">
+            <div class="photo-preview"></div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <label>Date et Lieu de Naissance</label>
+          <div class="inline-fields">
+            <input type="date" formControlName="dateNaissance" placeholder="Date">
+            <span>à</span>
+            <input type="text" formControlName="lieuNaissance" placeholder="Lieu">
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label>Âge</label>
+          <input type="number" formControlName="age">
+        </td>
+        <td>
+          <label>Nationalité</label>
+          <input type="text" formControlName="nationalite">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label>Département</label>
+          <input type="text" formControlName="departement">
+        </td>
+        <td>
+          <label>Commune/Village</label>
+          <input type="text" formControlName="communeVillage">
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <label>Description et localisation des biens affectés</label>
+          <textarea formControlName="descriptionBiens" rows="2"></textarea>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label>N° Identification PAP</label>
+          <input type="text" formControlName="idPAP">
+        </td>
+        <td>
+          <label>N° Téléphone</label>
+          <input type="tel" formControlName="telephone">
+        </td>
+      </tr>
+    </table>
+
+    <!-- Section Situation Matrimoniale -->
+    <table class="form-section">
+      <tr class="section-title">
+        <td colspan="4">SITUATION MATRIMONIALE</td>
+      </tr>
+      <tr>
+        <td width="50%">
+          <label>Statut Matrimonial</label>
+          <select formControlName="statutMatrimonial">
+            <option value="">Sélectionner</option>
+            <option value="Celibataire">Célibataire</option>
+            <option value="Marie">Marié(e)</option>
+            <option value="Divorce">Divorcé(e)</option>
+            <option value="Veuf">Veuf/Veuve</option>
+          </select>
+        </td>
+        <td width="50%">
+          <label>Nombre membres du ménage</label>
+          <input type="number" formControlName="membresMenage" min="1">
+        </td>
+      </tr>
+    </table>
+
+    <!-- Section Vulnérabilité -->
+    <table class="form-section">
+      <tr class="section-title">
+        <td>VULNÉRABILITÉ</td>
+      </tr>
+      <tr>
+        <td>
+          <textarea formControlName="vulnerabilite" rows="2"></textarea>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Section Handicap -->
+    <table class="form-section">
+      <tr class="section-title">
+        <td>TYPE DE HANDICAP</td>
+      </tr>
+      <tr>
+        <td>
+          <textarea formControlName="typeHandicap" rows="2"></textarea>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Section Localisation Pertes -->
+    <table class="form-section">
+      <tr class="section-title">
+        <td>LOCALISATION DES PERTES</td>
+      </tr>
+      <tr>
+        <td>
+          <textarea formControlName="localisationPertes" rows="2"></textarea>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Section Compensation -->
+    <table class="form-section highlight-section">
+      <tr class="section-title highlight">
+        <td colspan="3">ÉVALUATION DES COMPENSATIONS POUR LES PERTES SUBIES</td>
+      </tr>
+      <tr>
+        <td width="33%">
+          <label>Pertes Surfaceque en FCFA</label>
+          <input type="text" formControlName="pertesSurfacique">
+        </td>
+        <td width="33%">
+          <label>Pertes de récoltes</label>
+          <input type="text" formControlName="pertesRecoltes">
+        </td>
+        <td width="33%">
+          <label>Total Compensation pour la perte d'arbres</label>
+          <input type="text" formControlName="compensationArbres">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label>Compensation pour pertes d'équipements</label>
+          <input type="text" formControlName="compensationEquipements">
+        </td>
+        <td>
+          <label>Pertes de Clôtures Agricoles</label>
+          <input type="text" formControlName="pertesClotures">
+        </td>
+        <td>
+          <label>Indemnité Totale</label>
+          <input type="text" formControlName="indemniteTotale">
+        </td>
+      </tr>
+    </table>
+
+    <!-- Section Paiement -->
+    <table class="form-section">
+      <tr class="section-title">
+        <td colspan="3">OPTIONS DE PAIEMENT</td>
+      </tr>
+      <tr>
+        <td width="33%">
+          <label class="radio-option">
+            <input type="radio" formControlName="paiementOption" value="cheque">
+            Chèque ou Fiche de retrait
+          </label>
+        </td>
+        <td width="33%">
+          <label class="radio-option">
+            <input type="radio" formControlName="paiementOption" value="disponibilite">
+            Mise à disposition
+          </label>
+        </td>
+        <td width="33%">
+          <label class="radio-option">
+            <input type="radio" formControlName="paiementOption" value="virement">
+            Virement bancaire
+          </label>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Section Observations -->
+    <table class="form-section">
+      <tr>
+        <td>
+          <label>Observations</label>
+          <textarea formControlName="observations" rows="4"></textarea>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Boutons -->
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">Enregistrer</button>
+      <button type="button" class="btn-secondary" (click)="onReset()">Réinitialiser</button>
+    </div>
+  </form>
+</div>
+
+
+
+
+<!-- 
+ -->

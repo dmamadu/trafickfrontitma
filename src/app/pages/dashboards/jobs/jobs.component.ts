@@ -11,6 +11,40 @@ import { ProjectService } from "src/app/core/services/project.service";
 import { ImageModalComponent } from "src/app/shared/image-modal.component";
 import { MatDialog } from "@angular/material/dialog";
 
+interface SexStats {
+  Total: number;
+  Hommes: number;
+  Femmes: number;
+  Autre: number;
+}
+
+interface VulnerabilityStats {
+  [key: string]: number;
+}
+
+interface VulnerabilityBySex {
+  Hommes: number;
+  Femmes: number;
+  Autre: number;
+}
+
+interface VulnerabilityDetails {
+  [key: string]: VulnerabilityBySex;
+}
+
+interface StatsCategory {
+  Vulnerabilites_globales: VulnerabilityStats;
+  Sexes_globaux: SexStats;
+  Vulnerabilites_par_sexe: VulnerabilityDetails;
+}
+
+interface CombinedStats {
+  placeAffaireStats: StatsCategory;
+  agricoleStats: StatsCategory;
+  totalStats: StatsCategory;
+}
+
+
 @Component({
   selector: "app-jobs",
   templateUrl: "./jobs.component.html",
@@ -21,6 +55,35 @@ import { MatDialog } from "@angular/material/dialog";
  * Jobs Component
  */
 export class JobsComponent implements OnInit {
+
+
+
+  loadStats: boolean = true;
+  
+  // Variables typées avec nos interfaces
+  statsData: CombinedStats;
+  placeAffaireStats: StatsCategory;
+  agricoleStats: StatsCategory;
+  totalStats: StatsCategory;
+
+  // Liste des vulnérabilités pour le template
+  vulnerabilitesList = [
+    'Situation matrimoniale précaire',
+    'Ménage avec personne handicapée',
+    'Mineur chef de ménage',
+    'Personne âgée sans soutien',
+    'Ménage nombreux',
+    'Analphabétisme',
+    'Non vulnérable'
+  ];
+
+
+
+
+
+
+
+
   userConnected: User;
   imageUserConnected: any;
   isDropup: boolean = true;
@@ -28,12 +91,15 @@ export class JobsComponent implements OnInit {
   pageIndex: number = 0;
   offset: number = 0;
   loadData: boolean = false;
+  //loadStats: boolean = false;
+
 
   lengthPap: number;
   lengthPip: number;
   lenghtDocument: number;
   lengthPlainte: number;
   lengthRencontre: number;
+  lengthPapVulnerable: number= 0;
 
   listPlainte: any[] = [];
   listDocument: any[] = [];
@@ -87,6 +153,8 @@ export class JobsComponent implements OnInit {
   @ViewChild("chart", { static: false }) chart: ChartComponent;
 
   ngOnInit(): void {
+    this.getStat();
+    this.getStatCombine();
     this.getUserConnected();
     this.loadAllCategories();
     this.getPip();
@@ -99,7 +167,8 @@ export class JobsComponent implements OnInit {
       this.evaluationPertePlaceAffaire
     );
   }
-
+percentHommes: number = 0;
+percentFemmes: number = 0;
   getUserConnected() {
     this.userConnected = this.localService.getDataJson("user");
   }
@@ -424,6 +493,62 @@ classifyComplaints(): void {
         }
       );
   }
+
+  getStat() {
+    console.log('test ');
+    return this.projectService
+      .getStatsByProjectId('papAgricole', this.currentProjectId)
+      .subscribe(
+        (data: any) => {
+          this.loadStats = false;
+          console.log("Statistiques du projet:", data);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+  }
+
+
+  //   getStatCombine() {
+  //   console.log('test ');
+  //   return this.projectService
+  //     .getStatsCombineByProjectId(this.currentProjectId)
+  //     .subscribe(
+  //       (data: any) => {
+  //         this.loadStats = false;
+  //         console.log("Statistiques combine du projet:", data);
+  //       },
+  //       (err) => {
+  //         console.log(err);
+  //       }
+  //     );
+  // }
+  getStatCombine() {
+    this.projectService
+      .getStatsCombineByProjectId(this.currentProjectId)
+      .subscribe(
+        (data: CombinedStats) => {
+               console.log("Statistiques combine du projet:", data);
+          this.loadStats = false;
+          this.statsData = data;
+          this.placeAffaireStats = data.placeAffaireStats;
+          this.agricoleStats = data.agricoleStats;
+          this.totalStats = data.totalStats;
+        },
+        (err) => {
+          console.error('Erreur lors du chargement des stats:', err);
+          this.loadStats = false;
+        }
+      );
+  }
+getVulnerablePeopleCount(): number {
+  if (!this.totalStats) return 0;
+  
+  const totalNonVulnerable = this.totalStats.Vulnerabilites_globales['Non vulnérable'] || 0;
+  return this.totalStats.Sexes_globaux.Total - totalNonVulnerable;
+}
+
   getPapByCategory(category: string) {
     return this.parentService
       .list(category, this.pageSize, this.offset, this.currentProjectId)
@@ -464,7 +589,7 @@ classifyComplaints(): void {
               return sum + perte;
             }, 0);
 
-            console.log("Total des pertes pour tous les PAP:", totalPertes);
+         //   console.log("Total des pertes pour tous les PAP:", totalPertes);
             // Vous pouvez stocker ce total où vous en avez besoin, par exemple:
             evalutationPerte = totalPertes;
 
@@ -516,4 +641,15 @@ classifyComplaints(): void {
       });
     }
   }
+
+
+// Calcul de pourcentage
+getPercentage(value: number, total: number): string {
+  return total > 0 ? ((value / total) * 100).toFixed(1) : '0';
+}
+
+// Récupère les noms des vulnérabilités
+getVulnerabilityNames(): string[] {
+  return this.vulnerabilitesList;
+}
 }

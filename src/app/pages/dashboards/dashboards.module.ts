@@ -33,6 +33,8 @@ import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/an
 import { CarteComponent } from "./carte/carte.component";
 import { GoogleComponent } from "../maps/google/google.component";
 import { MapsModule } from "../maps/maps.module";
+import { MapComponent } from "./map/map.component";
+import { PapGoogleMapsComponent } from "./pap-google-maps/pap-google-maps.component";
 @NgModule({
   declarations: [
     DefaultComponent,
@@ -64,7 +66,9 @@ import { MapsModule } from "../maps/maps.module";
     ModalModule.forRoot(),
     AngularMaterialModule,
     CarteComponent,
-    MapsModule
+    MapComponent,
+    MapsModule,
+    PapGoogleMapsComponent
 ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [

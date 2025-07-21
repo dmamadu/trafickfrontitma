@@ -1,0 +1,28 @@
+<div>
+  <app-page-title title="Fiche d'identification des Pap Agricoles affectées par le projet"
+    [breadcrumbItems]="breadCrumbItems"></app-page-title>
+</div>
+<div class=" row mb-2">
+  <div class="col-sm">
+    <div class="search-box me-2 d-inline-block">
+      <div class="position-relative">
+        <input type="text" class="form-control" autocomplete="off" id="searchTableList" placeholder="Search..."
+          (change)="filterTable($event)">
+        <i class="bx bx-search-alt search-icon"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-auto">
+    <div class="d-flex flex-wrap gap-2">
+      <button type="submit" class="btn bgPrimaire" (click)="addItems()"> <i class="mdi mdi-plus me-1"></i> Ajouter un
+        pap agricole</button>
+  </div>
+</div>
+
+<app-loader-data *ngIf="loadData"></app-loader-data>
+<div style="z-index: 0" class="pt-3">
+  <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" [total]="length"
+    [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions" (changePage)="pageChanged($event)"
+    *ngIf="!loadData"></tableau>
+</div>
+

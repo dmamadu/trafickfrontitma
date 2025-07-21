@@ -69,6 +69,7 @@ export class SelectProjectComponent {
   ngOnInit(): void {
     const user = this.localService.getDataJson("user");
     this.projects = user.projects || [];
+     console.log('user',this.projects);
   }
 
   onProjectSelect(projectId: number) {
@@ -82,6 +83,10 @@ export class SelectProjectComponent {
       }
       this.localService.saveData("ProjectId", projectId.toString());
       this.localService.saveData("libelleProject", selectedProject.libelle);
+      const projectLogo = selectedProject.imageUrl || "default-logo.png";
+      this.localService.saveData("ProjectLogo", projectLogo.toString());
+      console.log('logo',projectLogo);
+      
       this.router.navigate(["/dashboards/jobs"]);
       this.toastr.success("Projet sélectionné avec succès");
       this.closeModal();

@@ -90,6 +90,8 @@ export class SelectProjectAdminComponent {
     ngOnInit(): void {
       const user = this.localService.getDataJson("user");
       this.projects = user.projects || [];
+      console.log('user',this.projects);
+      
       this.loadProject();
     }
 
@@ -104,6 +106,9 @@ export class SelectProjectAdminComponent {
         }
         this.localService.saveData("ProjectId", projectId.toString());
         this.localService.saveData("libelleProject", selectedProject.libelle);
+        const projectLogo = selectedProject.image || "default-logo.png";
+       this.localService.saveData("ProjectLogo", projectLogo.toString());
+        console.log('logo',projectLogo);
         this.router.navigate(["/dashboards/jobs"]);
         this.toastr.success("Projet sélectionné avec succès");
         this.closeModal();

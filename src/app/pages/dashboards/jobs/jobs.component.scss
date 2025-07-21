@@ -102,7 +102,7 @@
 /* Section Documents et Carte */
 .documents-map-section {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 30px;
   margin-bottom: 40px;
 }
@@ -261,3 +261,29 @@
     font-size: 24px;
   }
 }
+
+/* Styles spécifiques pour la section genre */
+.gender-stats {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 10px 0;
+}
+
+.gender-value {
+  font-size: 24px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.male {
+  color: #1976d2; /* Bleu pour hommes */
+  background-color: rgba(25, 118, 210, 0.1);
+}
+
+.female {
+  color: #c2185b; /* Rose pour femmes */
+  background-color: rgba(194, 24, 91, 0.1);
+}
+
