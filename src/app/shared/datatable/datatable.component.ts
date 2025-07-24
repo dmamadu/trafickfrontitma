@@ -36,29 +36,110 @@ export class DatatableComponent {
     // Vérifier les doublons
     this.validateDuplicates();
   }
+validateRequiredColumns() {
+  // Colonnes absolument obligatoires (toujours requises)
+  const mandatoryColumns = [
+    'codePap', 
+    'nom', 
+    'prenom',
+    'situationMatrimoniale',
+    'membreFoyerHandicape', // Correction: 'membreFoyerHandicape' avec un 'c' ?
+    'roleDansFoyer',
+    'membreFoyer',
+    'niveauEtude',
+    'pointGeometriques',
+    'sexe'
+  ];
 
-  validateRequiredColumns() {
-    this.requiredColumns.forEach(column => {
-      if (!this.headings.includes(column)) {
-        this.validationErrors.push({
-          type: 'COLUMN_MISSING',
-          message: `La colonne "${column}" est obligatoire mais absente`
-        });
-      } else {
-        const emptyRows = this.dataExcel
-          .map((row, index) => (!row[column] ? index + 1 : null))
-          .filter(index => index !== null);
+  // Vérification des colonnes obligatoires standard
+  mandatoryColumns.forEach(column => {
+    if (!this.headings.includes(column)) {
+      this.validationErrors.push({
+        type: 'COLUMN_MISSING',
+        message: `La colonne "${column}" est obligatoire mais absente`
+      });
+    } else {
+      this.checkEmptyValues(column);
+    }
+  });
 
-        if (emptyRows.length > 0) {
-          this.validationErrors.push({
-            type: 'EMPTY_VALUES',
-            message: `La colonne "${column}" contient des valeurs manquantes`,
-            rows: emptyRows
-          });
+  // Validation spécifique pour pointGeometriques (en dehors de la boucle)
+  if (this.headings.includes('pointGeometriques')) {
+    const invalidGeometryRows = this.dataExcel
+      .map((row, index) => {
+        if (!row.pointGeometriques) return index + 1;
+        
+        // Vérification du format strict
+        const regex = /^Point\s\(-?\d+\.\d+\s-?\d+\.\d+\)$/;
+        if (!regex.test(row.pointGeometriques)) {
+          return index + 1;
         }
-      }
+        return null;
+      })
+      .filter(index => index !== null);
+
+    if (invalidGeometryRows.length > 0) {
+      this.validationErrors.push({
+        type: 'INVALID_GEOMETRY',
+        message: 'La colonne "pointGeometriques" doit avoir le format "Point (longitude latitude)" sans virgule',
+        rows: invalidGeometryRows
+      });
+    }
+  }
+
+  // Vérification conditionnelle pour age/dateNaissance
+  const hasAge = this.headings.includes('age');
+  const hasDateNaissance = this.headings.includes('dateNaissance');
+
+  if (!hasAge && !hasDateNaissance) {
+    this.validationErrors.push({
+      type: 'CONDITIONAL_COLUMN_MISSING',
+      message: 'Au moins une des colonnes "age" ou "dateNaissance" doit être présente'
+    });
+  } else {
+    // Vérifier les valeurs vides seulement pour la colonne présente
+    if (hasAge) this.checkEmptyValues('age');
+    if (hasDateNaissance) this.checkEmptyValues('dateNaissance');
+  }
+}
+
+// Méthode helper pour vérifier les valeurs vides
+checkEmptyValues(column) {
+  const emptyRows = this.dataExcel
+    .map((row, index) => (!row[column] ? index + 1 : null))
+    .filter(index => index !== null);
+
+  if (emptyRows.length > 0) {
+    this.validationErrors.push({
+      type: 'EMPTY_VALUES',
+      message: `La colonne "${column}" contient des valeurs manquantes`,
+      rows: emptyRows
     });
   }
+}
+
+  // validateRequiredColumns() {
+  //   this.requiredColumns.forEach(column => {
+  //     if (!this.headings.includes(column)) {
+  //       this.validationErrors.push({
+  //         type: 'COLUMN_MISSING',
+  //         message: `La colonne "${column}" est obligatoire mais absente`
+  //       });
+  //     } else {
+  //       const emptyRows = this.dataExcel
+  //         .map((row, index) => (!row[column] ? index + 1 : null))
+  //         .filter(index => index !== null);
+
+  //       if (emptyRows.length > 0) {
+  //         this.validationErrors.push({
+  //           type: 'EMPTY_VALUES',
+  //           message: `La colonne "${column}" contient des valeurs manquantes`,
+  //           rows: emptyRows
+  //         });
+  //       }
+  //     }
+  //   });
+  // }
 
   validateDuplicates() {
     if (!this.headings.includes('codePap')) return;

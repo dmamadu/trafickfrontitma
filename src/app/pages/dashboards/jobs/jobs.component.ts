@@ -549,6 +549,52 @@ getVulnerablePeopleCount(): number {
   return this.totalStats.Sexes_globaux.Total - totalNonVulnerable;
 }
 
+
+getVulnerablePlaceAffaireBySex() {
+  if (!this.placeAffaireStats) return { hommes: 0, femmes: 0, autre: 0 };
+
+  const nonVulnerableHommes = this.placeAffaireStats.Vulnerabilites_par_sexe['Non vulnérable']?.Hommes || 0;
+  const nonVulnerableFemmes = this.placeAffaireStats.Vulnerabilites_par_sexe['Non vulnérable']?.Femmes || 0;
+  const nonVulnerableAutre = this.placeAffaireStats.Vulnerabilites_par_sexe['Non vulnérable']?.Autre || 0;
+
+  return {
+    hommes: this.placeAffaireStats.Sexes_globaux.Hommes - nonVulnerableHommes,
+    femmes: this.placeAffaireStats.Sexes_globaux.Femmes - nonVulnerableFemmes,
+    autre: this.placeAffaireStats.Sexes_globaux.Autre - nonVulnerableAutre
+  };
+}
+
+getVulnerableAgricoleBySex() {
+  if (!this.agricoleStats) return { hommes: 0, femmes: 0, autre: 0 };
+
+  const nonVulnerableHommes = this.agricoleStats.Vulnerabilites_par_sexe['Non vulnérable']?.Hommes || 0;
+  const nonVulnerableFemmes = this.agricoleStats.Vulnerabilites_par_sexe['Non vulnérable']?.Femmes || 0;
+  const nonVulnerableAutre = this.agricoleStats.Vulnerabilites_par_sexe['Non vulnérable']?.Autre || 0;
+
+  return {
+    hommes: this.agricoleStats.Sexes_globaux.Hommes - nonVulnerableHommes,
+    femmes: this.agricoleStats.Sexes_globaux.Femmes - nonVulnerableFemmes,
+    autre: this.agricoleStats.Sexes_globaux.Autre - nonVulnerableAutre
+  };
+}
+
+
+readonly VULNERABILITY_CRITERIA = [
+  { key: 'Situation matrimoniale précaire', label: 'Situation matrimoniale' },
+  { key: 'Ménage avec personne handicapée', label: 'Personne handicapée' },
+  { key: 'Mineur chef de ménage', label: 'Mineur(e) en charge' },
+  { key: 'Analphabétisme', label: 'Éducation' },
+  { key: 'Ménage nombreux', label: 'Personne en charge' },
+  { key: 'Personne âgée sans soutien', label: 'Personne âgée' }
+];
+
+getCriterionCount(category: string, criterionKey: string): number {
+  const stats = this[category as keyof this] as any;
+  return stats?.Vulnerabilites_globales?.[criterionKey] || 0;
+}
+
+
+
   getPapByCategory(category: string) {
     return this.parentService
       .list(category, this.pageSize, this.offset, this.currentProjectId)

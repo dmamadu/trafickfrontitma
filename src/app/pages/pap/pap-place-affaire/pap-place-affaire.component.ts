@@ -119,7 +119,6 @@ export class PapPlaceAffaireComponent {
   url: string = "databasePapPlaceAffaire";
   panelOpenState = false;
   img;
-
   image;
   privilegeByRole: any;
   privilegeForPage: number = 2520;
@@ -141,13 +140,8 @@ export class PapPlaceAffaireComponent {
     private sharedService: SharedService,
     private localService: LocalService,
     private coreService: CoreService,
-    private exportService: ExportService
   ) {
-    // this.currentProjectId = this.localService.getDataJson("user");
-
     this.currentProjectId = this.localService.getData("ProjectId");
-
-    console.log("user connecter", this.currentProjectId);
     this.informations = {
       exportFile: ["excel", "pdf"],
       titleFile: "liste des pap",
@@ -223,7 +217,6 @@ export class PapPlaceAffaireComponent {
 
   selectedOption: string = "";
   ngOnInit(): void {
-    console.log("Valeur sélectionnée :", this.selectedOption);
     this.breadCrumbItems = [
       { label: "Pap" },
       { label: "Pap List", active: true },
@@ -301,9 +294,7 @@ export class PapPlaceAffaireComponent {
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
             this.datas = data["data"];
-
             this.length = data["length"];
-            console.log("length", this.length);
             this._changeDetectorRef.markForCheck();
           } else {
             this.loadData = false;
@@ -321,7 +312,6 @@ export class PapPlaceAffaireComponent {
     console.log(event);
     this.datas = [];
     this._changeDetectorRef.markForCheck();
-    console.log(event.pageIndex);
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
     this.offset = this.pageIndex;
@@ -402,9 +392,6 @@ export class PapPlaceAffaireComponent {
       .subscribe(
         (data: any) => {
           this.loadData = false;
-          console.log("====================================");
-          console.log(data);
-          console.log("====================================");
           if (data["responseCode"] == 200) {
             this.dataSource = new MatTableDataSource(data["data"]);
             this.dataSource.paginator = this.paginator;
@@ -423,222 +410,10 @@ export class PapPlaceAffaireComponent {
       );
   }
 
-  //cette fonction permet d'exporter la liste sous format excel ou pdf
-  exportAs(format) {
-    let nom = this.informations.titleFile;
-    let value = [];
-    this.parentService.list("databasePapPlaceAffaire", 1000000000, 0).subscribe(
-      (resp) => {
-        if (resp["responseCode"] == 200) {
-          value = resp["data"];
-          if (value.length != 0) {
-            let user = { prenom: "admin", nom: "admin" };
-            if (format == "pdf") {
-              let donne = this.exempleGenPdfHeaderFooter(
-                user.prenom + " " + user.nom,
-                nom
-              );
-              var doc = donne.doc;
-              var col = this.informations.tabFileHead;
-              var rows = [];
-              for (const item of value) {
-                const itemCurrent = item;
-                const tabField = [];
-                const elementKeys = Object.keys(item);
-                let i = 0;
 
-                for (const field of this.informations.tabFileBody) {
-                  for (const element of elementKeys) {
-                    if (field === element) {
-                      if (
-                        [
-                          "createdAt",
-                          "dateNaiss",
-                          "dateCirculation",
-                          "dateDepart",
-                          "dateDarriver",
-                        ].includes(field)
-                      ) {
-                        // Si le champ est une date, formater et ajouter à tabField
-                        tabField.push(
-                          moment(itemCurrent[field]).format("DD/MM/YYYY") || ""
-                        );
-                      } else {
-                        if (
-                          typeof itemCurrent[field] === "object" &&
-                          itemCurrent[field] !== null
-                        ) {
-                          // Si c'est un objet non null, ajouter 'libelle' ou 'nom'
-                          tabField.push(
-                            itemCurrent[field]["libelle"] ||
-                              itemCurrent[field]["nom"] ||
-                              itemCurrent[field]["description"] ||
-                              itemCurrent[field]["libellePays"]
-                          );
-                        } else {
-                          // Sinon, ajouter la valeur ou une chaîne vide
-                          tabField.push(itemCurrent[field] || "");
-                        }
-                      }
-                    }
-                  }
-                  i++;
-                }
-                // Ajouter tabField au tableau des lignes
-                rows.push(tabField);
-              }
 
-              autoTable(doc, { head: [col], body: rows });
-              doc.save(nom + ".pdf");
-              this.snackbar.openSnackBar("Téléchargement réussi", "OK", [
-                "mycssSnackbarGreen",
-              ]);
-              this.exporter = false;
-            } else if (format == "excel") {
-              var col = this.informations.tabFileHead;
-              var rows = [];
-              var itemCurrent;
-              for (var item of value) {
-                itemCurrent = item;
-                let tabField = [];
-                let elementKeys = Object.keys(item);
-                let i = 0;
-                for (let field of this.informations.tabFileBody) {
-                  for (let element of elementKeys) {
-                    if (element.toString() == field.toString()) {
-                      if (
-                        field == "createdAt" ||
-                        field == "dateNaiss" ||
-                        field == "dateCirculation" ||
-                        field == "dateDepart" ||
-                        field == "dateDarriver"
-                      )
-                        tabField.push({
-                          [this.informations.tabFileHead[i]]:
-                            moment(itemCurrent[field]).format("DD/MM/YYYY") ||
-                            "",
-                        });
-                      else {
-                        if (
-                          typeof itemCurrent[field] === "object" &&
-                          itemCurrent[field] !== null
-                        ) {
-                          let fieldValue =
-                            itemCurrent[field]["libelle"] ||
-                            itemCurrent[field]["nom"] ||
-                            itemCurrent[field]["libellePays"] ||
-                            "";
-                          let fieldName = this.informations.tabFileHead[i];
 
-                          tabField.push({
-                            [fieldName]: fieldValue,
-                          });
-                        } else {
-                          tabField.push({
-                            [this.informations.tabFileHead[i]]:
-                              itemCurrent[field] || "",
-                          });
-                        }
-                      }
-                    }
-                  }
-                  i++;
-                }
-                rows.push(Object.assign({}, ...tabField));
-              }
-              this.exportService.exportAsExcelFile(
-                this.exportService.preFormatLoanInfo(rows),
-                nom
-              );
-              this.snackbar.openSnackBar("Téléchargement réussi", "OK", [
-                "mycssSnackbarGreen",
-              ]);
-              this.exporter = false;
-            }
-          } else {
-            this.snackbar.openSnackBar("La liste est vide!!!", "OK", [
-              "mycssSnackbarRed",
-            ]);
-          }
-        } else {
-          this.loadData = false;
-        }
-      },
-      (error) => {
-        this.snackbar.showErrors(error);
-      }
-    );
-  }
 
-  exempleGenPdfHeaderFooter(userName, fileName) {
-    const toDay = new Date();
-    let marginX = 0;
-    const doc = new jsPDF();
-    const totalPagesExp = "{total_pages_count_string}";
-    doc.setFillColor(0, 0, 255);
-    const columns = [
-      "                     ",
-      fileName,
-      " Date du :" + this.datePipe.transform(toDay, "dd/MM/yyyy"),
-    ];
-    const rows = [];
-    autoTable(doc, {
-      head: [columns],
-      body: rows,
-      theme: "grid",
-      margin: {
-        top: 10,
-      },
-      didDrawCell: function (data) {
-        if (data.row.section === "head" && data.column.index === 1) {
-          data.cell.styles.textColor = [51, 22, 183];
-          data.cell.styles.fontSize = 10;
-          data.cell.styles.valign = "middle";
-          data.cell.styles.fillColor = [216, 78, 75];
-        }
-        if (data.row.section === "head" && data.column.index === 0) {
-          doc.addImage(
-            logoItma,
-            "JPEG",
-            data.cell.x + 2,
-            data.cell.y + 2,
-            30,
-            15
-          );
-        }
-      },
-      didDrawPage: function (data) {
-        marginX = data.settings.margin.left;
-        // Header
-        doc.setFontSize(10);
-        doc.setTextColor(255);
-      },
-      styles: {
-        lineColor: [0, 0, 0],
-        lineWidth: 0.3,
-        textColor: [51, 122, 183],
-      },
-      headStyles: {
-        fillColor: [255, 255, 255],
-        fontSize: 10,
-        fontStyle: "normal",
-        valign: "middle",
-        textColor: 0,
-        minCellHeight: 20,
-      },
-      willDrawCell: function (data) {
-        if (data.row.section === "head") {
-          doc.setTextColor(51, 122, 183);
-        }
-        if (data.row.section === "head" && data.column.index === 1) {
-          doc.setFontSize(10);
-        }
-      },
-    });
-    return { doc: doc, marginX: marginX, totalPagesExp: totalPagesExp };
-  }
-
-  record(item) {}
 
   addItems(): void {
     if (!this.currentProjectId) {
@@ -685,7 +460,7 @@ export class PapPlaceAffaireComponent {
           return obj;
         });
         this.dataExcel = jsonData;
-        console.log("dataExcel", this.dataExcel);
+       // console.log("dataExcel", this.dataExcel);
 
         //this.convertedJson = JSON.stringify(jsonData, undefined, 4);
       });
@@ -776,12 +551,9 @@ export class PapPlaceAffaireComponent {
   //   );
   // }
 
-  onOptionSelected() {
-    console.log("Valeur sélectionnée :", this.selectedOption);
-  }
+
 
   detailItems(id, information) {
-    console.log(information);
     this.localService.saveDataJson("pap", information);
     this.sharedService.setSelectedItem(information);
     this._router.navigate(["pap/detail"]);

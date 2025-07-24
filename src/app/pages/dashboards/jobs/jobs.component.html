@@ -82,7 +82,78 @@
       <mat-icon>show_chart</mat-icon> Statistiques
     </h1>
 
-    <div class="graphs-row">
+    <div class="stats-table">
+  <h2>Répartition des PAP selon les critères de vulnérabilité</h2>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Regroupement</th>
+        <th>Effectif féminin</th>
+        <th>Effectif masculin</th>
+        <th>Effectif total</th>
+        <th>Total compensations</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="placeAffaireStats">
+        <td> Place Affaire/Economique</td>
+        <td>{{ getVulnerablePlaceAffaireBySex().hommes }}</td>
+        <td>{{ getVulnerablePlaceAffaireBySex().femmes }}</td>
+        <td>{{ getVulnerablePlaceAffaireBySex().hommes + getVulnerablePlaceAffaireBySex().femmes }}</td>
+        <td>{{ placeAffaireStats.Sexes_globaux.TotalCompensation || 0 }}</td>
+      </tr>
+      <tr *ngIf="agricoleStats">
+        <td>Agricole/Exploitant</td>
+        <td>{{ getVulnerableAgricoleBySex().hommes }}</td>
+        <td>{{ getVulnerableAgricoleBySex().femmes  }}</td>
+        <td>{{getVulnerableAgricoleBySex().hommes +  getVulnerableAgricoleBySex().femmes }}</td>
+        <td>{{ agricoleStats.totalCompensation || 0 }}</td>
+      </tr>
+      <tr *ngIf="totalStats" class="total-row">
+        <td><strong>Total</strong></td>
+        <td><strong>{{ totalStats.feminin || 0 }}</strong></td>
+        <td><strong>{{ totalStats.masculin || 0 }}</strong></td>
+        <td><strong>{{ totalStats.total || 0 }}</strong></td>
+        <td><strong>{{ totalStats.totalCompensation || 0 }}</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="combined-vulnerability-table">
+  <!-- <h2>Répartition des vulnérabilités par critère</h2> -->
+  
+<div class="vulnerability-container">
+  <h2>Répartition des vulnérabilités par critère</h2>
+  
+
+  
+  <table class="vulnerability-table">
+    <thead>
+      <tr>
+        <th>Catégories</th>
+        <th *ngFor="let criterion of VULNERABILITY_CRITERIA">{{ criterion.label }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Place Affaire/Economiaue</td>
+        <td *ngFor="let criterion of VULNERABILITY_CRITERIA">
+          {{ getCriterionCount('placeAffaireStats', criterion.key) }}
+        </td>
+      </tr>
+      <tr>
+        <td>Agricole/Exploitant</td>
+        <td *ngFor="let criterion of VULNERABILITY_CRITERIA">
+          {{ getCriterionCount('agricoleStats', criterion.key) }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+    <!-- <div class="graphs-row">
       <div class="graph-container">
         <h2 class="graph-title couleurPrimary">
           <mat-icon>pie_chart</mat-icon> Statistiques des Plaintes
@@ -101,8 +172,10 @@
           [legend]="vulnerabilityChart.legend">
         </apx-chart>
       </div>
-    </div>
+    </div> -->
   </div>
+
+  
 
   <!-- Section Documents et Carte -->
   <div class="documents-map-section">
