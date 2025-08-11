@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { Subject, takeUntil } from 'rxjs';
 import { LocalService } from 'src/app/core/services/local.service';
 import { ServiceParent } from 'src/app/core/services/serviceParent';
 
@@ -24,75 +25,42 @@ interface Pap {
   templateUrl: './pap-google-maps.component.html',
   styleUrl: './pap-google-maps.component.css'
 })
-export class PapGoogleMapsComponent implements OnInit {
-
+// Component TypeScript
+export class PapGoogleMapsComponent implements OnInit, OnDestroy {
   @ViewChild(MapInfoWindow, { static: false }) infoWindow?: MapInfoWindow;
-
-  infoContent: string = '';
-
-
-   paps: Pap[] = [];
-    currentProjectId: any;
-
-  // Position par défaut (Dakar)
+  
+  // Propriété pour stocker le PAP sélectionné
+  selectedPap: any = null;
+  
+  @Input() paps: any[];
+  currentProjectId: any;
+  @Input() isLoading: boolean = false;
   center: google.maps.LatLngLiteral = { lat: 14.716677, lng: -17.467686 };
   zoom = 13;
 
-    constructor(
-      private parentService: ServiceParent,
-      private localService: LocalService,
-    ) {
-      this.currentProjectId = this.localService.getData("ProjectId");
-    }
+  constructor(
+    private localService: LocalService,
+  ) {
+    this.currentProjectId = this.localService.getData("ProjectId");
+  }
 
   ngOnInit() {
-    this.loadPaps();
-    // Ajuster le centrage si on a des positions valides
     const validPaps = this.paps.filter(pap => this.getPosition(pap) !== null);
     if (validPaps.length > 0) {
       const positions = validPaps.map(pap => this.getPosition(pap));
       this.center = this.calculateCenter(positions);
     }
     this.addPolyline();
-
   }
 
-
-//  loadPaps(): void {
-//   this.parentService.list("databasePapPlaceAffaire", 1000, 0, this.currentProjectId)
-//     .subscribe({
-//       next: (data: any) => {
-//         if (data.responseCode === 200) {
-//           this.paps = data.data
-//         }
-//       },
-//       error: (err) => {
-//         console.error(err);
-//       }
-//     });
-// }
-
-isLoading: boolean = false;
-
-loadPaps(): void {
-  this.isLoading = true; // Active le loader avant la requête
+  private destroy$ = new Subject<void>();
   
-  this.parentService.list("databasePapPlaceAffaire", 1000, 0, this.currentProjectId)
-    .subscribe({
-      next: (data: any) => {
-        if (data.responseCode === 200) {
-          this.paps = data.data;
-        }
-        this.isLoading = false; // Désactive le loader après réception des données
-      },
-      error: (err) => {
-        console.error(err);
-        this.isLoading = false; // Désactive le loader en cas d'erreur
-      }
-    });
-}
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
-  getPosition(pap: Pap): google.maps.LatLngLiteral | null {
+  getPosition(pap: any): google.maps.LatLngLiteral | null {
     if (!pap.pointGeometriques) return null;
     const match = pap.pointGeometriques.match(/Point \(([-\d.]+) ([-\d.]+)\)/);
     if (match && match.length === 3) {
@@ -106,25 +74,22 @@ loadPaps(): void {
 
   calculateCenter(positions: google.maps.LatLngLiteral[]): google.maps.LatLngLiteral {
     if (positions.length === 0) return this.center;
-    
     if (positions.length === 1) return positions[0];
     
-    // Calculer une position moyenne pour plusieurs points
     const lats = positions.map(p => p.lat);
     const lngs = positions.map(p => p.lng);
-    
     const avgLat = lats.reduce((a, b) => a + b, 0) / lats.length;
     const avgLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
     
     return { lat: avgLat, lng: avgLng };
   }
 
-  getMarkerOptions(pap: Pap): google.maps.MarkerOptions {
+  getMarkerOptions(pap: any): google.maps.MarkerOptions {
     const icon = {
       url: this.getMarkerIcon(pap.statutPap),
       scaledSize: new google.maps.Size(32, 32)
     };
-    
+
     return {
       draggable: false,
       icon: icon
@@ -146,35 +111,31 @@ loadPaps(): void {
 
   getStatutLabel(statut: string | null): string {
     if (!statut) return 'Statut inconnu';
-    
+
     const labels: {[key: string]: string} = {
       'recense': 'Recensé',
       'en_etude': 'En étude',
       'indemnisation_terminee': 'Indemnisation terminée',
       'null': 'Indéfini',
     };
-    
+
     return labels[statut] || statut;
   }
 
   getStatusClass(statut: string | null): string {
     if (!statut) return 'badge-unknown';
-    
     return `badge-${statut}`;
   }
 
-
-
-
-    openMapInfo(content: string, marker: MapMarker): void {
-    this.infoContent = content;
+  // Méthode modifiée pour gérer correctement l'affichage des infos
+  openMapInfo(pap: any, marker: MapMarker): void {
+    this.selectedPap = pap; // Stocker le PAP sélectionné
     this.infoWindow?.open(marker);
   }
 
-    markers: Set<google.maps.Marker> = new Set();
+  markers: Set<google.maps.Marker> = new Set();
 
-
-     polylineOptions: google.maps.PolylineOptions = {
+  polylineOptions: google.maps.PolylineOptions = {
     path: [],
     strokeColor: '#F78F08',
     strokeOpacity: 1.0,
@@ -185,11 +146,12 @@ loadPaps(): void {
   addPolyline(): void {
     const markers = Array.from(this.markers).slice(-2);
     const path: google.maps.LatLng[] = [];
+    
     markers.forEach((marker, index) => {
       path.push(new google.maps.LatLng(marker.getPosition()!));
     });
+    
     this.polylineOptions = { ...this.polylineOptions, path };
     this.markers = new Set(markers);
   }
-
 }

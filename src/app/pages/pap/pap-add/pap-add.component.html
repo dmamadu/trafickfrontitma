@@ -389,7 +389,7 @@
                   <div class="flex items-center mt-2 grid grid-cols-2 recapCss">
                     <span class="">Pays de naissance: </span>
                     <span class="leading-none font-bold">
-                      {{ getpays(initForm?.get('pays')?.value) }}
+                      {{ (initForm?.get('pays')?.value) }}
                     </span>
                   </div>
                   <div class="flex items-center mt-2 grid grid-cols-2 recapCss">
@@ -404,13 +404,13 @@
                   <div class="flex items-center grid grid-cols-2 recapCss">
                     <span class="">Nationalité: </span>
                     <span class="leading-none font-bold">
-                      {{ getNationalite(initForm?.get('nationalite')?.value) }}
+                      {{ (initForm?.get('nationalite')?.value) }}
                     </span>
                   </div>
                   <div class="flex items-center mt-2 grid grid-cols-2 recapCss">
                     <span class="">Situation matrimoniale: </span>
                     <span class="leading-none font-bold">
-                      {{ getsituationMatrimoniale(initForm?.get('situationMatrimoniale')?.value)
+                      {{ (initForm?.get('situationMatrimoniale')?.value)
                       }}
                     </span>
                   </div>
@@ -445,7 +445,7 @@
                   <div class="flex items-center grid grid-cols-2 recapCss">
                     <span class="">Nature de la piéce: </span>
                     <span class="leading-none font-bold">
-                      {{ gettypeIdentification(initForm?.get('typeIdentification')?.value) }}
+                      {{ (initForm?.get('typeIdentification')?.value) }}
                     </span>
                   </div>
                   <div class="flex items-center mt-2 grid grid-cols-2 recapCss">
@@ -486,7 +486,7 @@
                   <div class="flex items-center grid grid-cols-2 recapCss">
                     <span class="">Nom: </span>
                     <span class="leading-none font-bold">
-                      {{ gettypeIdentification(initForm?.get('nomExploitant')?.value) }}
+                      {{ (initForm?.get('nomExploitant')?.value) }}
                     </span>
                   </div>
                   <div class="flex items-center mt-2 grid grid-cols-2 recapCss">
@@ -526,7 +526,7 @@
                   <div class="flex items-center grid grid-cols-2 recapCss">
                     <span class="">Pays de résidence: </span>
                     <span class="leading-none font-bold">
-                      {{ getpays(initForm?.get('localiteResidence')?.value) }}
+                      {{ (initForm?.get('localiteResidence')?.value) }}
                     </span>
                   </div>
                   <div class="flex items-center grid grid-cols-2 mt-2 recapCss">

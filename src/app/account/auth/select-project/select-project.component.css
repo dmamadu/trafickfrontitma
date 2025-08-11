@@ -122,3 +122,8 @@
   color: #D45C00;
   font-size: larger;
 }
+
+
+.projects-list, .empty-state {
+  transition: opacity 0.3s ease;
+}

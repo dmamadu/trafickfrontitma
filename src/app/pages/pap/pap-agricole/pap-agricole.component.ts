@@ -2,6 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   inject,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -43,6 +44,7 @@ import { AddPapAgricoleComponent } from "./add-pap-agricole/add-pap-agricole.com
 import { LoaderComponent } from "../../../shared/loader/loader.component";
 import { AppConfig } from "src/app/app.config";
 import { ImageModalComponent } from "src/app/shared/image-modal.component";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "app-pap-agricole",
@@ -73,7 +75,7 @@ import { ImageModalComponent } from "src/app/shared/image-modal.component";
     LoaderComponent,
   ],
 })
-export class PapAgricoleComponent {
+export class PapAgricoleComponent implements OnInit,OnDestroy {
   appName: string = AppConfig.appName;
   [x: string]: any;
 
@@ -279,10 +281,24 @@ export class PapAgricoleComponent {
     this.btnActions = this.createActions();
   }
 
+  ngOnDestroy() {
+   this.destroy$.next();
+   this.destroy$.complete();
+}
+
+
+private destroy$ = new Subject<void>();
+
+
+
+
+
+
   getPapAgricole() {
     this.loadData = true;
     return this.parentService
       .list(this.url, this.pageSize, this.offset, this.currentProjectId)
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (data: any) => {
           this.loadData = false;

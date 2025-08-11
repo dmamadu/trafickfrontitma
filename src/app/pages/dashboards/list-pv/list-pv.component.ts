@@ -1,8 +1,11 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 
 @Component({
   selector: "app-list-pv",
+  standalone:true,
+  imports:[AngularMaterialModule],
   templateUrl: "./list-pv.component.html",
   styleUrl: "./list-pv.component.css",
 })

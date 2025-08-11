@@ -1,9 +1,7 @@
 import { DatePipe } from "@angular/common";
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
-import { UntypedFormGroup } from "@angular/forms";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import {
   MAT_DIALOG_DATA,
-  MatDialog,
   MatDialogRef,
 } from "@angular/material/dialog";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
@@ -27,6 +25,7 @@ import { LocalService } from "src/app/core/services/local.service";
 import { AddComponent } from "../add/add.component";
 import { CoreService } from "src/app/shared/core/core.service";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "app-list",
@@ -48,7 +47,7 @@ import { LoaderComponent } from "../../../shared/loader/loader.component";
   ],
   imports: [TableauComponent, UIModule, AngularMaterialModule, LoaderComponent],
 })
-export class ListComponent implements OnInit {
+export class ListComponent implements OnInit ,OnDestroy{
   role: string;
 
   breadCrumbItems: (
@@ -115,6 +114,15 @@ export class ListComponent implements OnInit {
       { label: "List des consulants", active: true },
     ];
   }
+
+  private destroy$ = new Subject<void>();
+
+
+ngOnDestroy() {
+   this.destroy$.next();
+   this.destroy$.complete();
+}
+
 
   createHeader() {
     return [
@@ -203,7 +211,9 @@ export class ListComponent implements OnInit {
         if (result["value"] == true) {
           this.deleteUser = true;
           const message = "Consultant  supprimé";
-          this.coreService.deleteItem(id, "users/deleteMo").subscribe(
+          this.coreService.deleteItem(id, "users/deleteMo")
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(
             (resp) => {
               if (resp["200"]) {
                 this.getConsultants();
@@ -313,6 +323,7 @@ export class ListComponent implements OnInit {
         this.pageSize,
         this.offset
       )
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (data: any) => {
           if (data["responseCode"] == 200) {

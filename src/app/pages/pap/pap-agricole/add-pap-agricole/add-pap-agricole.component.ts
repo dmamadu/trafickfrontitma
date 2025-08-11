@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -37,6 +38,7 @@ import { ClientVueService } from "src/app/pages/admin/client-vue/client-vue.serv
 import { environment } from "src/environments/environment";
 import { ImageModalComponent } from "src/app/shared/image-modal.component";
 import { LoaderComponent } from "src/app/shared/loader/loader.component";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "app-add-pap-agricole",
@@ -61,7 +63,7 @@ import { LoaderComponent } from "src/app/shared/loader/loader.component";
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AddPapAgricoleComponent {
+export class AddPapAgricoleComponent implements OnInit,OnDestroy {
   panelOpenState = false;
   @ViewChild("drawer") drawer: MatDrawer;
   @ViewChild("stepper") private myStepper: MatStepper;
@@ -134,12 +136,13 @@ export class AddPapAgricoleComponent {
       this.initForms(_data.data);
       console.log(_data.data);
       this.initForm.get("sexe").setValue(_data.data.sexe);
-      const selectedCountry = _data.data.pays;
     }
     this.action = _data?.action;
     this.canAdd = _data.canAdd;
     this.dialogTitle = this.labelButton + this.suffixe;
     this.ng2TelOptions = { initialCountry: "sn" };
+  }
+  ngOnInit(): void {
   }
 
   checkValidOnWhatsApp(event: any): void {
@@ -150,6 +153,14 @@ export class AddPapAgricoleComponent {
   goToStep(index) {
     this.myStepper.selectedIndex = index;
   }
+
+  private destroy$ = new Subject<void>();
+
+  ngOnDestroy() {
+   this.destroy$.next();
+   this.destroy$.complete();
+}
+
 
   initForms(donnees?: any) {
     this.initForm = this.fb.group({
@@ -170,9 +181,12 @@ export class AddPapAgricoleComponent {
       // Étape 2 : Informations sur la parcelle
       codeParcelle: [donnees?.codeParcelle || "", Validators.required],
       superficie: [donnees?.superficie || ""],
-      evaluationPerte: [donnees?.evaluationPerte || "", Validators.required],
-      perteArbreJeune: [donnees?.perteArbreJeune || "", Validators.required],
-      perteArbreAdulte: [donnees?.perteArbreAdulte || "", Validators.required],
+      evaluationPerte: [donnees?.evaluationPerte || 0, Validators.required],
+      perteArbreJeune: [donnees?.perteArbreJeune || 0, Validators.required],
+      perteArbreAdulte: [donnees?.perteArbreAdulte || 0, Validators.required],
+      perteTotaleArbre: [donnees?.perteTotaleArbre || 0, Validators.required],
+       optionPaiement: [donnees?.optionPaiement || 0, Validators.required],
+      // description: [donnees?.description || ""],
       caracteristiqueParcelle: [donnees?.caracteristiqueParcelle || "", Validators.required],
 
       // Étape 3 : Documents et détails supplémentaires
@@ -186,17 +200,17 @@ export class AddPapAgricoleComponent {
       membreFoyerHandicape: [donnees?.membreFoyerHandicape || "", Validators.required],
 
       // Étape 4 : Bâtiments / Équipements
-      perteEquipement: [donnees?.perteEquipement || "", Validators.required],
-      perteBatiment: [donnees?.perteBatiment || "", Validators.required],
-      perteLoyer: [donnees?.perteLoyer || ""],
-      perteCloture: [donnees?.perteCloture || ""],
+      perteEquipement: [donnees?.perteEquipement || 0 ],
+      perteBatiment: [donnees?.perteBatiment || 0 ],
+      // perteLoyer: [donnees?.perteLoyer || ""],
+      perteCloture: [donnees?.perteCloture || 0],
       informationsEtendues: [donnees?.informationsEtendues || ""],
 
       // Étape 5 : Revenus
-      perteRevenue: [donnees?.perteRevenue || "", Validators.required],
-      fraisDeplacement: [donnees?.fraisDeplacement || "", Validators.required],
-      appuieRelocalisation: [donnees?.appuieRelocalisation || ""],
-      perteTotale: [donnees?.perteTotale || "", Validators.required],
+      perteRevenue: [donnees?.perteRevenue || 0],
+      fraisDeplacement: [donnees?.fraisDeplacement || 0, Validators.required],
+      appuieRelocalisation: [donnees?.appuieRelocalisation || 0,Validators.required],
+      perteTotale: [donnees?.perteTotale || 0],
 
       // Champs optionnels
       existePni: [donnees?.existePni || null],
@@ -215,6 +229,7 @@ export class AddPapAgricoleComponent {
         donnees?.projectId || (this.currentProjectId ? this.currentProjectId : null),
         [Validators.required]
       ],
+      typeHandicape: [donnees?.typeHandicape || ""],
     });
   }
 
@@ -237,7 +252,9 @@ export class AddPapAgricoleComponent {
         if (result["value"] == true) {
           this.loader = true;
           const value = this.initForm.value;
-          this.coreService.addItem([value], this.url).subscribe(
+          this.coreService.addItem([value], this.url)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(
             (resp) => {
               if (resp["responseCode"] == 201) {
                 this.snackbar.openSnackBar("Pap  ajoutée avec succés", "OK", [
@@ -275,7 +292,9 @@ export class AddPapAgricoleComponent {
         if (result["value"] == true) {
           this.loader = true;
           const value = this.initForm.value;
-          this.coreService.updateItem(value, this.id, this.url).subscribe(
+          this.coreService.updateItem(value, this.id, this.url)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(
             (resp) => {
               if (resp) {
                 this.loader = false;
@@ -434,8 +453,9 @@ export class AddPapAgricoleComponent {
     const step2Controls = [
       "codeParcelle",
       "evaluationPerte",
-      "perteArbreJeune",
-      "perteArbreAdulte",
+      "perteTotaleArbre",
+      // "perteArbreJeune",
+      // "perteArbreAdulte",
       "caracteristiqueParcelle",
     ];
     this.markControlsAsTouched(step2Controls);
@@ -504,8 +524,9 @@ export class AddPapAgricoleComponent {
         return (
           this.initForm.get("codeParcelle")?.valid &&
           this.initForm.get("evaluationPerte")?.valid &&
-          this.initForm.get("perteArbreJeune")?.valid &&
-          this.initForm.get("perteArbreAdulte")?.valid &&
+          this.initForm.get("perteTotaleArbre")?.valid &&
+          // this.initForm.get("perteArbreJeune")?.valid &&
+          // this.initForm.get("perteArbreAdulte")?.valid &&
           this.initForm.get("caracteristiqueParcelle")?.valid
         );
       case 2:

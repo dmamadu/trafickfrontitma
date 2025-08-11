@@ -1,0 +1,45 @@
+/* Import des styles FullCalendar */
+
+/* Styles personnalisés */
+.fc-event {
+  cursor: pointer;
+}
+
+.fc-daygrid-event {
+  padding: 2px 4px;
+}
+
+
+
+.fc-event {
+  cursor: pointer;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+
+.fc-event-en-attente {
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+
+.fc-event-en-cours {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.fc-event-termine {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+
+.custom-modal {
+  border-radius: 12px !important;
+  
+  .mat-dialog-container {
+    padding: 0 !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+  }
+}

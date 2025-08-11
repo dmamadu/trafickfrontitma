@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -17,13 +17,13 @@ import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { ClientVueService } from "../../admin/client-vue/client-vue.service";
 import { Image } from "src/app/shared/models/image.model";
 import { MoService } from "src/app/core/services/mo.service";
-import { ResponseData } from "../../projects/project.model";
 import { LocalService } from "src/app/core/services/local.service";
 import { environment } from "src/environments/environment";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
 import { ImageModalComponent } from "src/app/shared/image-modal.component";
 import { ToastrService } from "ngx-toastr";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "app-add",
@@ -32,7 +32,7 @@ import { ToastrService } from "ngx-toastr";
   standalone: true,
   imports: [AngularMaterialModule, LoaderComponent],
 })
-export class AddComponent {
+export class AddComponent implements OnInit,OnDestroy {
   panelOpenState = false;
   @ViewChild("drawer") drawer: MatDrawer;
   @ViewChild("stepper") private myStepper: MatStepper;
@@ -135,6 +135,15 @@ export class AddComponent {
     this.getFonctions();
   }
 
+  private destroy$ = new Subject<void>();
+
+
+ngOnDestroy() {
+   this.destroy$.next();
+   this.destroy$.complete();
+}
+
+
   initForms(donnees?) {
     this.initForm = this.fb.group({
       lastname: this.fb.control(donnees ? donnees?.lastname : null, [
@@ -198,6 +207,7 @@ export class AddComponent {
           const value = this.initForm.value;
           this.coreService
             .updateItem(value, this.id, "users/updateConsultant")
+            .pipe(takeUntil(this.destroy$))
             .subscribe(
               (resp) => {
                 if (resp) {
@@ -257,7 +267,9 @@ export class AddComponent {
     this.loaderImg = true;
     this.changeDetectorRefs.detectChanges();
     const dataFile = { file: file };
-    this.clientService.saveStoreFile(formData).subscribe(
+    this.clientService.saveStoreFile(formData)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(
       (resp) => {
         if (resp) {
           console.log("====================================");
@@ -308,7 +320,9 @@ export class AddComponent {
 
   organes:any[]=[]
   getPip() {
-    this.parentService.list("partie-interesse", 10000, 0).subscribe(
+    this.parentService.list("partie-interesse", 10000, 0)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(
         (data: any) => {
           if (data["responseCode"] == 200) {
             console.log(data);
@@ -343,6 +357,7 @@ export class AddComponent {
     if (this.uploadedImage) {
       return this.moservice
         .uploadImage(this.uploadedImage, this.uploadedImage.name)
+        .pipe(takeUntil(this.destroy$))
         .subscribe((ima: Image) => {
           this.addItems(ima);
         });
@@ -372,7 +387,9 @@ export class AddComponent {
         if (result["value"] == true) {
           this.loader = true;
           const value = consultantRequest;
-          this.coreService.addItem(value, "users/createConsultant").subscribe(
+          this.coreService.addItem(value, "users/createConsultant")
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(
             (resp) => {
               if (resp["status"] == 200) {
                 this.snackbar.openSnackBar(
@@ -446,6 +463,7 @@ export class AddComponent {
     this.loader=true;
     this.clientServive
       .saveStoreFile(formData)
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (resp) => {
           if (resp) {
@@ -476,6 +494,7 @@ export class AddComponent {
     getFonctions() {
       return this.parentService
         .list('fonctions', 1000, 0)
+        .pipe(takeUntil(this.destroy$))
         .subscribe(
           (data: any) => {
             if (data["responseCode"] == 200) {

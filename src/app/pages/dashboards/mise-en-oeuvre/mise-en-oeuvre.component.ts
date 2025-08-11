@@ -7,6 +7,41 @@ import { MatTableDataSource } from "@angular/material/table";
 import { UntypedFormGroup } from "@angular/forms";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { LocalService } from "src/app/core/services/local.service";
+import { takeUntil } from "rxjs";
+
+interface SexStats {
+  Total: number;
+  Hommes: number;
+  Femmes: number;
+  Autre: number;
+}
+
+interface VulnerabilityStats {
+  [key: string]: number;
+}
+
+interface VulnerabilityBySex {
+  Hommes: number;
+  Femmes: number;
+  Autre: number;
+}
+
+interface VulnerabilityDetails {
+  [key: string]: VulnerabilityBySex;
+}
+
+interface StatsCategory {
+  Vulnerabilites_globales: VulnerabilityStats;
+  Sexes_globaux: SexStats;
+  Vulnerabilites_par_sexe: VulnerabilityDetails;
+}
+
+interface CombinedStats {
+  placeAffaireStats: StatsCategory;
+  agricoleStats: StatsCategory;
+  totalStats: StatsCategory;
+}
+
 
 @Component({
   selector: "app-mise-en-oeuvre",
@@ -19,58 +54,15 @@ export class MiseEnOeuvreComponent implements OnInit {
   listPap: Pap[];
   filterTable($event: any) {}
   breadCrumbItems: Array<{}>;
-
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  informations: any;
-  displayedColumns: any;
-  searchList: any;
-  codeEnvoye: number; //code envoye par notre menu
-  hasList: boolean;
-  hasAdd: boolean;
-  hasUpdate: boolean;
-  hasDelete: boolean;
-  hasDetail: boolean;
-  length = 100;
-  searchForm: UntypedFormGroup;
-  dialogRef: any;
-  dataSource: MatTableDataSource<any>;
-  datas = [];
-  lengthPap: number;
-  deleteUser: boolean = false;
-  currentIndex;
-  loadData: boolean = false;
-  exporter: boolean = false;
-  isCollapsed: boolean = false;
-  isSearch2: boolean = false;
-  isSearch: boolean = false;
-  rechercher = "";
-  showLoader = "isNotShow";
-  message = "";
-  config: any;
   isLoading: boolean = false;
   pageSizeOptions = [5, 10, 25, 100, 500, 1000];
   pageSize: number = 10000000;
   pageIndex: number = 0;
   userConnecter;
   offset: number = 0;
-  title: string = "Gestion des partis affectés";
-  url: string = "personneAffectes";
-  urlEntente: string = "ententes";
+
 
   currentProjectId: any;
-
-  panelOpenState = false;
-  img;
-
-  image;
-  privilegeByRole: any;
-  privilegeForPage: number = 2520;
-  privilegePage;
-  headers: any = [];
-  btnActions: any = [];
-  currentUser: any;
-
   countByCategory = {};
   countByVulnerabilityStatus = {};
   countBySex = {};
@@ -85,6 +77,7 @@ export class MiseEnOeuvreComponent implements OnInit {
   ngOnInit(): void {
     this.loadAllCategories();
     this.getEntente();
+    this.getStatCombine();
   }
 
   getPartiAffecte() {}
@@ -244,24 +237,6 @@ export class MiseEnOeuvreComponent implements OnInit {
       );
   }
 
-  // updateSexCounts(category: string, list: any[]): void {
-  //   const maleCount = list.filter((pap) => pap.sexe === "Masculin").length;
-  //   const femaleCount = list.filter(
-  //     (pap) => pap.sexe === "Féminin" || "Feminim"
-  //   ).length;
-
-  //   if (!this.sexCounts) {
-  //     this.sexCounts = {
-  //       papAgricole: { male: 0, female: 0 },
-  //       databasePapPlaceAffaire: { male: 0, female: 0 },
-  //       papEconomique: { male: 0, female: 0 },
-  //     };
-  //   }
-
-  //   this.sexCounts[category].male += maleCount;
-  //   this.sexCounts[category].female += femaleCount;
-  // }
-
   sexCounts = {
     papAgricole: { male: 0, female: 0 },
     databasePapPlaceAffaire: { male: 0, female: 0 },
@@ -346,26 +321,31 @@ export class MiseEnOeuvreComponent implements OnInit {
     ];
   }
 
-  // updateBarChart() {
-  //   this.barChart.series = [
-  //     {
-  //       name: "Effectif féminin",
-  //       data: [
-  //         this.sexCounts.papAgricole.female,
-  //         this.sexCounts.databasePapPlaceAffaire.female,
-  //         this.sexCounts.papEconomique.female,
-  //       ],
-  //     },
-  //     {
-  //       name: "Effectif masculin",
-  //       data: [
-  //         this.sexCounts.papAgricole.male,
-  //         this.sexCounts.databasePapPlaceAffaire.male,
-  //         this.sexCounts.papEconomique.male,
-  //       ],
-  //     },
-  //   ];
-  // }
+
+
+  getStatCombine() {
+    this.projectService
+      .getStatsCombineByProjectId(this.currentProjectId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        (data: CombinedStats) => {
+          console.log("Statistiques combine du projet:", data);
+          this.loadStats = false;
+          this.statsData = data;
+          this.placeAffaireStats = data.placeAffaireStats;
+          this.agricoleStats = data.agricoleStats;
+          this.totalStats = data.totalStats;
+        },
+        (err) => {
+          console.error('Erreur lors du chargement des stats:', err);
+          this.loadStats = false;
+        }
+      );
+  }
+
+
+
+
 
   loadAllCategories() {
     this.listPap = [];

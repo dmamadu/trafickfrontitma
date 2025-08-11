@@ -1,0 +1,88 @@
+/* Styles repris de votre composant existant */
+.map-container {
+  position: relative;
+  width: 100%;
+  height: 600px;
+}
+
+.info-window {
+  padding: 10px;
+  min-width: 200px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  color: white;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Couleurs des statuts */
+.badge-recense { background-color: #4285F4; }
+.badge-en_etude { background-color: #FBBC05; }
+.badge-indemnisation_terminee { background-color: #34A853; }
+.badge-unknown { background-color: #EA4335; }
+
+    .legend {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: white;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 1000;
+    }
+    
+    .legend h4 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    
+    .legend-color {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    
+    .recense {
+      background-color: #4285F4;
+    }
+    
+    .en_etude {
+      background-color: #FBBC05;
+    }
+    
+    .indemnisation_terminee {
+      background-color: #34A853;
+    }
+    
+    .unknown {
+      background-color: #9E9E9E;
+    }
+    
+    /* Classes pour les badges de statut */
+    .badge-recense {
+      background-color: #4285F4;
+    }
+    
+    .badge-en_etude {
+      background-color: #FBBC05;
+    }
+    
+    .badge-indemnisation_terminee {
+      background-color: #34A853;
+    }
+    
+    .badge-unknown {
+      background-color: #9E9E9E;
+    }

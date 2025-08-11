@@ -1,0 +1,80 @@
+<div class="map-container">
+  <!-- Loader -->
+  <div *ngIf="isLoading" class="loader-overlay">
+    <div class="loaderData"></div>
+  </div>
+
+  <!-- Google Map -->
+  <google-map 
+    #googleMap
+    [center]="center" 
+    [zoom]="zoom"
+    width="100%"
+    height="600px">
+    
+    <!-- Polygones -->
+    <map-polygon
+      *ngFor="let polygon of polygons; let i = index; trackBy: trackByPapId"
+      [paths]="polygon.paths"
+      [options]="{
+        strokeColor: polygon.strokeColor,
+        fillColor: polygon.fillColor,
+        fillOpacity: polygon.fillOpacity,
+        strokeWeight: polygon.strokeWeight,
+        clickable: true
+      }"
+      (mapClick)="openInfoWindow(polygon.papData, $event)">
+    </map-polygon>
+
+    <!-- Markers de debug (pour voir s'il y a des coordonnées valides) -->
+    <map-marker
+      *ngFor="let polygon of polygons"
+      [position]="polygon.paths?.[0]?.[0]"
+      [options]="{ 
+        icon: { 
+          url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+          scaledSize: { width: 20, height: 20 }
+        }
+      }"
+     >
+    </map-marker>
+
+    <!-- Info Window unique -->
+    <map-info-window>
+      <div class="info-window" *ngIf="selectedPap" style="min-width: 250px; padding: 10px;">
+        <h3 style="margin: 0 0 10px 0; color: #333;">{{ selectedPap.prenom }} {{ selectedPap.nom }}</h3>
+        <p style="margin: 5px 0;"><strong>Code PAP:</strong> {{ selectedPap.codePap }}</p>
+        <p style="margin: 5px 0;"><strong>Commune:</strong> {{ selectedPap.commune }}</p>
+        <p style="margin: 5px 0;"><strong>Statut:</strong> {{ getStatutLabel(selectedPap.statutPap) }}</p>
+        <p style="margin: 5px 0;"><strong>Perte totale:</strong> {{ selectedPap.perteTotale | number }} FCFA</p>
+        <div class="status-badge" 
+             [ngClass]="getStatusClass(selectedPap.statutPap)"
+             [style.background-color]="getColorByStatus(selectedPap.statutPap)"
+             style="color: white; padding: 5px 10px; border-radius: 15px; font-size: 12px; margin-top: 10px;">
+          {{ getStatutLabel(selectedPap.statutPap) }}
+        </div>
+      </div>
+    </map-info-window>
+  </google-map>
+
+  <!-- Légende -->
+  <div class="legend">
+    <h4>Légende</h4>
+    <div class="legend-item">
+      <div class="legend-color recense" style="background-color: #4285F4;"></div>
+      <span>Recensé</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color en_etude" style="background-color: #FBBC05;"></div>
+      <span>En étude</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color indemnisation_terminee" style="background-color: #34A853;"></div>
+      <span>Indemnisation terminée</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color unknown" style="background-color: #EA4335;"></div>
+      <span>Statut inconnu</span>
+    </div>
+  </div>
+</div>

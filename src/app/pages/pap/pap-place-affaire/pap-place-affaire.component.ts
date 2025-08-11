@@ -2,6 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   inject,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -45,6 +46,7 @@ import { BatimentComponent } from "../batiment/batiment.component";
 import { PapAgricoleComponent } from "../pap-agricole/pap-agricole.component";
 import { AddPapPlaceAffaireComponent } from "./add-pap-place-affaire/add-pap-place-affaire.component";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "app-pap-place-affaire",
@@ -74,7 +76,7 @@ import { LoaderComponent } from "../../../shared/loader/loader.component";
     LoaderComponent,
   ],
 })
-export class PapPlaceAffaireComponent {
+export class PapPlaceAffaireComponent  implements OnInit ,OnDestroy{
   [x: string]: any;
 
   listPap: Pap[];
@@ -112,7 +114,6 @@ export class PapPlaceAffaireComponent {
   pageSizeOptions = [5, 10, 25, 100, 500, 1000];
   pageSize: number = 10;
   pageIndex: number = 0;
-  //constantes = CONSTANTES;
   userConnecter;
   offset: number = 0;
   title: string = "Gestion des partis affectés";
@@ -130,7 +131,6 @@ export class PapPlaceAffaireComponent {
   constructor(
     private changeDetectorRefs: ChangeDetectorRef,
     private _router: Router,
-    private datePipe: DatePipe,
     private snackbar: SnackBarService,
     private papService: PapService,
     private parentService: ServiceParent,
@@ -215,6 +215,16 @@ export class PapPlaceAffaireComponent {
     this.displayedColumns = this.informations.tabBody;
   }
 
+
+private destroy$ = new Subject<void>();
+
+ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+}
+
+
+
   selectedOption: string = "";
   ngOnInit(): void {
     this.breadCrumbItems = [
@@ -284,12 +294,12 @@ export class PapPlaceAffaireComponent {
     this.loadData = true;
     return this.parentService
       .list(this.url, this.pageSize, this.offset, this.currentProjectId)
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (data: any) => {
           this.loadData = false;
           if (data["responseCode"] == 200) {
             this.loadData = false;
-            console.log(data);
             this.dataSource = new MatTableDataSource(data["data"]);
             this.dataSource.paginator = this.paginator;
             this.dataSource.sort = this.sort;
@@ -379,7 +389,6 @@ export class PapPlaceAffaireComponent {
 
   filterTable(event: Event) {
     const searchTerm = (event.target as HTMLInputElement).value.trim();
-    // Appeler l'API avec le terme de recherche
     this.loadData = true;
     this.parentService
       .searchGlobal(

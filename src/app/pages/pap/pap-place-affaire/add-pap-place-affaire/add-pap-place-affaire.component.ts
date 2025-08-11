@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -21,7 +22,6 @@ import {
 } from "@angular/material/dialog";
 import { MatDrawer } from "@angular/material/sidenav";
 import { MatStepper, MatStepperModule } from "@angular/material/stepper";
-import * as moment from "moment";
 import { CoreService } from "src/app/shared/core/core.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
@@ -29,10 +29,8 @@ import { MatPaginatorIntl } from "@angular/material/paginator";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
-import { DatePipe } from "@angular/common";
 
 import {
-  DateAdapter,
   MAT_DATE_LOCALE,
   MatNativeDateModule,
 } from "@angular/material/core";
@@ -43,6 +41,7 @@ import { environment } from "src/environments/environment";
 import { MatTableDataSource } from "@angular/material/table";
 import { ImageModalComponent } from "src/app/shared/image-modal.component";
 import { LoaderComponent } from "src/app/shared/loader/loader.component";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "app-add-pap-place-affaire",
@@ -68,7 +67,7 @@ import { LoaderComponent } from "src/app/shared/loader/loader.component";
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AddPapPlaceAffaireComponent implements OnInit {
+export class AddPapPlaceAffaireComponent implements OnInit,OnDestroy {
   panelOpenState = false;
   @ViewChild("drawer") drawer: MatDrawer;
   @ViewChild("stepper") private stepper: MatStepper;
@@ -122,12 +121,7 @@ export class AddPapPlaceAffaireComponent implements OnInit {
     private localService: LocalService,
     private clientServive: ClientVueService
   ) {
-    //this.currentProjectId = this.localService.getDataJson("user");
-
     this.currentProjectId = this.localService.getData("ProjectId");
-
-    console.log("user connecter", this.currentProjectId);
-
     if (_data?.action == "new") {
       this.initForms();
       this.labelButton = "Ajouter ";
@@ -156,6 +150,15 @@ export class AddPapPlaceAffaireComponent implements OnInit {
     this.createCoProprietaire();
   }
 
+  private destroy$ = new Subject<void>();
+
+
+ngOnDestroy() {
+   this.destroy$.next();
+   this.destroy$.complete();
+}
+
+
   checkValidOnWhatsApp(event: any): void {
     const value = event.value;
     this.initForm.get("statutVulnerable")?.setValue(value);
@@ -163,7 +166,6 @@ export class AddPapPlaceAffaireComponent implements OnInit {
 
   goToStep(index) {
     this.stepper.selectedIndex = index;
-    console.log(index);
   }
 
   initForms(donnees?: any) {
@@ -181,26 +183,29 @@ export class AddPapPlaceAffaireComponent implements OnInit {
       codePlaceAffaire: [donnees?.codePlaceAffaire || "", Validators.required],
       evaluationPerte: [donnees?.evaluationPerte || "", Validators.required],
       caracteristiquePlaceAffaire: [donnees?.caracteristiquePlaceAffaire || "", Validators.required],
-      perteArbreJeune: [donnees?.perteArbreJeune || "", Validators.required],
-      perteArbreAdulte: [donnees?.perteArbreAdulte || "", Validators.required],
+      perteArbreJeune: [donnees?.perteArbreJeune || 0],
+      perteArbreAdulte: [donnees?.perteArbreAdulte || 0],
+      perteTotaleArbre: [donnees?.perteTotaleArbre || 0 ],
       statutPap: [donnees?.statutPap || "", Validators.required],
       vulnerabilite: [donnees?.vulnerabilite || "", Validators.required],
-      typePni: [donnees?.typePni || "", Validators.required],
-      numeroPni: [donnees?.numeroPni || "", Validators.required],
-      surnom: [donnees?.surnom || "", Validators.required],
-      numeroTelephone: [donnees?.numeroTelephone || "", Validators.required],
-      membreFoyer: [donnees?.membreFoyer || "", Validators.required],
-      membreFoyerHandicape: [donnees?.membreFoyerHandicape || "", Validators.required],
-      perteEquipement: [donnees?.perteEquipement || "", Validators.required],
-      perteBatiment: [donnees?.perteBatiment || "", Validators.required],
-      perteTotale: [donnees?.perteTotale || "", Validators.required],
+      typePni: [donnees?.typePni || "", ],
+      numeroPni: [donnees?.numeroPni || "" ],
+      surnom: [donnees?.surnom || ""],
+      numeroTelephone: [donnees?.numeroTelephone || "" ],
+      membreFoyer: [donnees?.membreFoyer || ""],
+      membreFoyerHandicape: [donnees?.membreFoyerHandicape || ""],
+      perteEquipement: [donnees?.perteEquipement || 0],
+      perteBatiment: [donnees?.perteBatiment || 0],
+      perteTotale: [donnees?.perteTotale || 0],
       informationsEtendues: [donnees?.informationsEtendues || ""],
       existePni: [donnees?.existePni || null],
       photoPap: [donnees?.photoPap || null],
       pointGeometriques: [donnees?.pointGeometriques || null],
+      description: [donnees?.description || null],
       superficie: [donnees?.superficie || null],
       niveauEtude: [donnees?.niveauEtude || null],
       religion: [donnees?.religion || null],
+      optionPaiement: [donnees?.optionPaiement || "", Validators.required],
       pj1: [donnees?.pj1 || null],
       pj2: [donnees?.pj2 || null],
       pj3: [donnees?.pj3 || null],
@@ -212,6 +217,7 @@ export class AddPapPlaceAffaireComponent implements OnInit {
         [Validators.required]
       ],
       coProprietaire: [donnees?.coProprietaire || null],
+      typeHandicape: [donnees?.typeHandicape || ""],
     });
   }
 
@@ -229,23 +235,18 @@ export class AddPapPlaceAffaireComponent implements OnInit {
 
   contactForm: FormGroup;
   addItems() {
-    // if(this.listeNoire){
-
-    //this.initForm.get('coProprietaire').setValue(this.contactForm.value)
-
     this.initForm
       .get("coProprietaire")
       .setValue(JSON.stringify(this.contactForm.value));
-    console.log("====================================");
-    console.log(this.initForm.value);
-    console.log("====================================");
     this.snackbar
       .showConfirmation("Voulez-vous vraiment ajouter ce pap ?")
       .then((result) => {
         if (result["value"] == true) {
           this.loader = true;
           const value = this.initForm.value;
-          this.coreService.addItem([value], this.url).subscribe(
+          this.coreService.addItem([value], this.url)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(
             (resp) => {
               if (resp["responseCode"] == 201) {
                 this.snackbar.openSnackBar("Pap  ajoutée avec succés", "OK", [
@@ -269,9 +270,6 @@ export class AddPapPlaceAffaireComponent implements OnInit {
           );
         }
       });
-    // }else if(!this.listeNoire){
-    //
-    // }
   }
 
   updateItems() {
@@ -283,7 +281,9 @@ export class AddPapPlaceAffaireComponent implements OnInit {
         if (result["value"] == true) {
           this.loader = true;
           const value = this.initForm.value;
-          this.coreService.updateItem(value, this.id, this.url).subscribe(
+          this.coreService.updateItem(value, this.id, this.url)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(
             (resp) => {
               if (resp) {
                 this.loader = false;
@@ -301,9 +301,6 @@ export class AddPapPlaceAffaireComponent implements OnInit {
               }
             },
             (error) => {
-              console.log("====================================");
-              console.log(error);
-              console.log("====================================");
               this.loader = false;
               this.loader = false;
               this.snackbar.showErrors(error);
@@ -361,7 +358,9 @@ export class AddPapPlaceAffaireComponent implements OnInit {
     this.changeDetectorRefs.detectChanges();
     const dataFile = { file: file };
     this.loader = true;
-    this.clientServive.saveStoreFile(formData).subscribe(
+    this.clientServive.saveStoreFile(formData)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(
       (resp) => {
         if (resp) {
           console.log(resp);
@@ -402,7 +401,6 @@ export class AddPapPlaceAffaireComponent implements OnInit {
       nomComplet: ["", Validators.required],
       infoComplementaire: ["", Validators.required],
       sexeCoProprietaire: ["", Validators.required],
-      // emailCoProprietaire: ["", [Validators.required, Validators.email]],
       contactTelephonique: ["", Validators.required],
     });
   }
@@ -411,25 +409,17 @@ export class AddPapPlaceAffaireComponent implements OnInit {
 
   addContact(): void {
     this.contactForm.markAllAsTouched();
-
     if (this.contactForm.valid) {
       const newContact = this.contactForm.value;
-
-      // Ajoutez le nouveau contact à la source de données
       this.contacts.data = [...this.contacts.data, newContact]; // Mettez à jour l'objet "data"
-
-      // Réinitialiser le formulaire
       this.contactForm.reset();
       this.contactForm.setValue({
         codeCoProprietaire: "",
         nomComplet: "",
         age: "",
         sexeCoProprietaire: "",
-        //  emailCoProprietaire: "",
         contactTelephonique: "",
       });
-
-      console.log(this.contacts.data); // Affiche le tableau mis à jour
     } else {
       console.log("Le formulaire est invalide");
     }
@@ -491,8 +481,9 @@ export class AddPapPlaceAffaireComponent implements OnInit {
       "codePlaceAffaire",
       "evaluationPerte",
       "caracteristiquePlaceAffaire",
-      "perteArbreJeune",
-      "perteArbreAdulte",
+      "perteTotaleArbre",
+      // "perteArbreJeune",
+      // "perteArbreAdulte",
     ];
     this.markControlsAsTouched(step2Controls);
   }
@@ -512,7 +503,9 @@ export class AddPapPlaceAffaireComponent implements OnInit {
   }
 
   validateStep4(): boolean {
-    return this.contacts.data.length > 0;
+    // return this.contacts.data.length > 0;
+        return true;
+
   }
 
   validateStep5() {
@@ -550,8 +543,9 @@ export class AddPapPlaceAffaireComponent implements OnInit {
           this.initForm.get("codePlaceAffaire")?.valid &&
           this.initForm.get("evaluationPerte")?.valid &&
           this.initForm.get("caracteristiquePlaceAffaire")?.valid &&
-          this.initForm.get("perteArbreJeune")?.valid &&
-          this.initForm.get("perteArbreAdulte")?.valid
+          this.initForm.get("perteTotaleArbre")?.valid 
+          // this.initForm.get("perteArbreJeune")?.valid &&
+          // this.initForm.get("perteArbreAdulte")?.valid
         );
       case 2:
         return (
@@ -565,7 +559,7 @@ export class AddPapPlaceAffaireComponent implements OnInit {
           this.initForm.get("membreFoyerHandicape")?.valid
         );
       case 3:
-        return this.contacts.data.length > 0;
+        return this.contacts.data.length >= 0;
       case 4:
         return (
           this.initForm.get("perteEquipement")?.valid &&

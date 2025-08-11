@@ -199,6 +199,9 @@
       "@cypress/schematic",
       "@schematics/angular"
     ],
-    "analytics": false
+    "analytics": false,
+    "cache": {
+      "enabled": true
+    }
   }
 }

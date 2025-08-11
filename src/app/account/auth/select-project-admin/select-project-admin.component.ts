@@ -1,9 +1,10 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
+import { Subject, takeUntil } from "rxjs";
 import { ColorService } from "src/app/core/services/color.service";
 import { LocalService } from "src/app/core/services/local.service";
 import { ProjectService } from "src/app/core/services/project.service";
@@ -21,7 +22,7 @@ import { Project } from "src/app/store/ProjectsData/project.model";
   templateUrl: './select-project-admin.component.html',
   styleUrl: './select-project-admin.component.css'
 })
-export class SelectProjectAdminComponent {
+export class SelectProjectAdminComponent implements OnInit,OnDestroy {
 
 
     closeModal() {
@@ -80,6 +81,7 @@ export class SelectProjectAdminComponent {
         this.isLoading = true;
         return this.projectService
           .all<ResponseData<Project[]>>("projects/all")
+           .pipe(takeUntil(this.destroy$))
           .subscribe((data: ResponseData<Project[]>) => {
             this.projects = data.data;
             //this.filteredProjects = this.projectlist;
@@ -94,6 +96,15 @@ export class SelectProjectAdminComponent {
       
       this.loadProject();
     }
+
+    private destroy$ = new Subject<void>();
+
+
+ngOnDestroy() {
+   this.destroy$.next();
+   this.destroy$.complete();
+}
+
 
     onProjectSelect(projectId: number) {
       const selectedProject = this.projects.find(

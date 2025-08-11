@@ -3,11 +3,12 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild,
 } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, Subject, takeUntil } from "rxjs";
 import { ModalDirective } from "ngx-bootstrap/modal";
 import {
   FormBuilder,
@@ -23,8 +24,6 @@ import { MoService } from "src/app/core/services/mo.service";
 import { Image } from "src/app/shared/models/image.model";
 import { Mo, ResponseData } from "src/app/shared/models/Projet.model";
 import { ToastrService } from "ngx-toastr";
-import { Project } from "../../projects/project.model";
-import { IDropdownSettings } from "ng-multiselect-dropdown";
 import { User } from "src/app/store/Authentication/auth.models";
 import { LocalService } from "src/app/core/services/local.service";
 import { MatSort } from "@angular/material/sort";
@@ -43,7 +42,7 @@ import { ServiceParent } from "src/app/core/services/serviceParent";
   templateUrl: "./molist.component.html",
   styleUrl: "./molist.component.css",
 })
-export class MolistComponent implements OnInit {
+export class MolistComponent implements OnInit,OnDestroy {
   breadCrumbItems: Array<{}>;
   total: Observable<number>;
   createMoForm!: UntypedFormGroup;
@@ -113,7 +112,7 @@ export class MolistComponent implements OnInit {
 
   myImage: string;
 
-  ngOnInit() {
+ngOnInit() {
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
     this.user = this.localService.getDataJson("user");
@@ -124,6 +123,10 @@ export class MolistComponent implements OnInit {
       { label: "Listes", active: true },
     ];
 
+    this.initForm();
+}
+
+initForm() {
     this.createMoForm = this.formBuilder.group({
       id: [""],
       lastname: [
@@ -171,15 +174,21 @@ export class MolistComponent implements OnInit {
       ],
       project_ids: [[], this.formBuilder.array([])],
     });
-  }
+}
+
+private destroy$ = new Subject<void>();
+
+  ngOnDestroy() {
+   this.destroy$.next();
+   this.destroy$.complete();
+}
+
+
 
   deleteImage() {
-    // Logique pour supprimer l'image sélectionnée
-    // Par exemple, réinitialisation de l'image à une image par défaut
     document
       .getElementById("member-img")
       .setAttribute("src", "assets/images/users/user-dummy-img.jpg");
-    // Réinitialisation de l'input de type fichier pour effacer la sélection
     const inputElement = document.getElementById(
       "member-image-input"
     ) as HTMLInputElement;
@@ -191,8 +200,8 @@ export class MolistComponent implements OnInit {
 
   private updateSelectedProjects() {
     const selectedProjectsDetails = this.selectedProjects.map((project) => ({
-      id: +project.id, // Convertit l'ID en nombre si nécessaire
-      libelle: project.libelle, // Assure que le libellé est inclus
+      id: +project.id, 
+      libelle: project.libelle, 
     }));
     this.createMoForm.patchValue({ project_ids: selectedProjectsDetails });
   }
@@ -289,6 +298,7 @@ export class MolistComponent implements OnInit {
     this.loadData = true;
     return this.parentService
       .list(`users/by_role/projects?roleName=Maitre d'ouvrage&projectId=${this.currentProjectId}`, this.pageSize, this.offset)
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (data: any) => {
           if (data["responseCode"] == 200) {

@@ -1,3 +1,3 @@
 export const AppConfig = {
-  appName: 'ITMA'
+  appName: 'Invodis'
 };

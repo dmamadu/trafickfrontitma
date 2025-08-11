@@ -590,53 +590,53 @@ export const MENU: MenuItem[] = [
       },
     ],
   },
-  {
-    id: 32,
-    label: "Parametres",
-    icon: "bx-cog",
-    subItems: [
-      {
-        id: 33,
-        label: "Gestion des priviléges",
-        icon: "bxs-comment-detail",
-        subItems: [
-          {
-            id: 34,
-            label: "Roles",
-            icon: "bx-list-ul",
-            link: "/roles",
-            parentId: 33,
-          },
-          {
-            id: 35,
-            label: "Fonctions",
-            icon: "bx-list-ul",
-            link: "/fonctions",
-            parentId: 33,
-          },
-          {
-            id: 36,
-            label: "Niveau de priviléges",
-            icon: "bx-list-ul",
-            link: "/categories",
-            parentId: 33,
-          },
-        ],
-      },
-      {
-        id: 37,
-        label: "Gestion des utilisateurs",
-        icon: "bxs-user-detail",
-        subItems: [
-          {
-            id: 38,
-            label: "Utilisateurs",
-            icon: "bx-list-ul",
-            link: "/utilisateurs",
-            parentId: 37,
-          },
-        ],
-      },
-    ],
-  },
+  // {
+  //   id: 32,
+  //   label: "Parametres",
+  //   icon: "bx-cog",
+  //   subItems: [
+  //     {
+  //       id: 33,
+  //       label: "Gestion des priviléges",
+  //       icon: "bxs-comment-detail",
+  //       subItems: [
+  //         {
+  //           id: 34,
+  //           label: "Roles",
+  //           icon: "bx-list-ul",
+  //           link: "/roles",
+  //           parentId: 33,
+  //         },
+  //         {
+  //           id: 35,
+  //           label: "Fonctions",
+  //           icon: "bx-list-ul",
+  //           link: "/fonctions",
+  //           parentId: 33,
+  //         },
+  //         {
+  //           id: 36,
+  //           label: "Niveau de priviléges",
+  //           icon: "bx-list-ul",
+  //           link: "/categories",
+  //           parentId: 33,
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       id: 37,
+  //       label: "Gestion des utilisateurs",
+  //       icon: "bxs-user-detail",
+  //       subItems: [
+  //         {
+  //           id: 38,
+  //           label: "Utilisateurs",
+  //           icon: "bx-list-ul",
+  //           link: "/utilisateurs",
+  //           parentId: 37,
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
 ];

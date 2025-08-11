@@ -1,52 +1,61 @@
 <div class="map-container">
-
-    <div *ngIf="isLoading" class="loader-overlay">
+  <!-- Loader overlay -->
+  <div *ngIf="isLoading" class="loader-overlay">
     <div class="loaderData"></div>
   </div>
 
-      <google-map 
-        [center]="center" 
-        [zoom]="zoom"
-        width="100%"
-        height="600px">
-        <map-marker
-         #mapMarker="mapMarker"
-          *ngFor="let pap of paps"
-          [position]="getPosition(pap)"
-          [options]="getMarkerOptions(pap)"
-          (mapClick)="openMapInfo(pap, mapMarker)">
-          <map-info-window>
-            <div class="info-window">
-              <h3>{{ pap.prenom }} {{ pap.nom }}</h3>
-              <p><strong>Code PAP:</strong> {{ pap.codePap }}</p>
-              <p><strong>Commune:</strong> {{ pap.commune }}</p>
-              <p><strong>Statut:</strong> {{ getStatutLabel(pap.statutPap) }}</p>
-              <p><strong>Perte totale:</strong> {{ pap.perteTotale | number }} FCFA</p>
-              <div class="status-badge" [ngClass]="getStatusClass(pap.statutPap)">
-                {{ getStatutLabel(pap.statutPap) }}
-              </div>
-            </div>
-          </map-info-window>
-        </map-marker>
-              <map-polyline [options]="polylineOptions" ></map-polyline>
-      </google-map>
-      <div class="legend">
-        <h4>Légende</h4>
-        <div class="legend-item">
-          <div class="legend-color recense"></div>
-          <span>Recensé</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color en_etude"></div>
-          <span>En étude</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color indemnisation_terminee"></div>
-          <span>Indemnisation terminée</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color unknown"></div>
-          <span>Statut inconnu</span>
+  <!-- Google Map -->
+  <google-map 
+    [center]="center" 
+    [zoom]="zoom"
+    width="100%"
+    height="600px">
+    
+    <!-- Markers pour chaque PAP -->
+    <map-marker
+      #mapMarker="mapMarker"
+      *ngFor="let pap of paps"
+      [position]="getPosition(pap)"
+      [options]="getMarkerOptions(pap)"
+      (mapClick)="openMapInfo(pap, mapMarker)">
+    </map-marker>
+    
+    <!-- Info Window unique (en dehors de la boucle) -->
+    <map-info-window>
+      <div class="info-window" *ngIf="selectedPap">
+        <h3>{{ selectedPap.prenom }} {{ selectedPap.nom }}</h3>
+        <p><strong>Code PAP:</strong> {{ selectedPap.codePap }}</p>
+        <p><strong>Commune:</strong> {{ selectedPap.commune }}</p>
+        <p><strong>Statut:</strong> {{ getStatutLabel(selectedPap.statutPap) }}</p>
+        <p><strong>Perte totale:</strong> {{ selectedPap.perteTotale | number }} FCFA</p>
+        <div class="status-badge" [ngClass]="getStatusClass(selectedPap.statutPap)">
+          {{ getStatutLabel(selectedPap.statutPap) }}
         </div>
       </div>
+    </map-info-window>
+    
+    <!-- Polyline -->
+    <map-polyline [options]="polylineOptions"></map-polyline>
+  </google-map>
+  
+  <!-- Légende -->
+  <div class="legend">
+    <h4>Légende</h4>
+    <div class="legend-item">
+      <div class="legend-color recense"></div>
+      <span>Recensé</span>
     </div>
+    <div class="legend-item">
+      <div class="legend-color en_etude"></div>
+      <span>En étude</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color indemnisation_terminee"></div>
+      <span>Indemnisation terminée</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color unknown"></div>
+      <span>Statut inconnu</span>
+    </div>
+  </div>
+</div>

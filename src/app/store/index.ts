@@ -8,9 +8,6 @@ import { UserReducer, UserState } from "./UserGrid/user.reducer";
 import { UserListReducer, UserlistState } from "./UserList/userlist.reducer";
 import { JoblistReducer, joblistState } from "./Job/job.reducer";
 import { CandidateReducer, CandidateState } from "./Candidate/candidate.reducer";
-import { InvoiceDataReducer, InvoiceDataState } from "./Invoices/invoices.reducer";
-import { ChatReducer, ChatState } from "./Chat/chat.reducer";
-import { tasklistReducer, tasklistState } from "./Tasks/tasks.reducer";
 import { OrderdataState, OrdersReducer } from "./Crypto/crypto.reducer";
 import { LayoutState, layoutReducer } from "./layouts/layouts.reducer";
 import { CustomerReducer, CustomerState } from "./customer/customer.reducer";
@@ -28,9 +25,8 @@ export interface RootReducerState {
     userList: UserlistState;
     Joblist: joblistState;
     CandidateList: CandidateState;
-    InvoiceList: InvoiceDataState;
-    chatList: ChatState;
-    Tasklist: tasklistState;
+    // InvoiceList: InvoiceDataState;
+    // Tasklist: tasklistState;
     Order: OrderdataState;
     Customer: CustomerState;
     Maillist: MailState
@@ -47,9 +43,6 @@ export const rootReducer: ActionReducerMap<RootReducerState> = {
     userList: UserListReducer,
     Joblist: JoblistReducer,
     CandidateList: CandidateReducer,
-    InvoiceList: InvoiceDataReducer,
-    chatList: ChatReducer,
-    Tasklist: tasklistReducer,
     Order: OrdersReducer,
     Customer: CustomerReducer,
     Maillist: MailReducer

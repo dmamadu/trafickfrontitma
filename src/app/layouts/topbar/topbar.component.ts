@@ -2,13 +2,11 @@ import { Component, OnInit, Output, EventEmitter, Inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { DOCUMENT } from "@angular/common";
 import { AuthenticationService } from "../../core/services/auth.service";
-import { AuthfakeauthenticationService } from "../../core/services/authfake.service";
-import { environment } from "../../../environments/environment";
 import { CookieService } from "ngx-cookie-service";
 import { LanguageService } from "../../core/services/language.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
-import { Observable, map } from "rxjs";
+import { Observable } from "rxjs";
 import { changesLayout } from "src/app/store/layouts/layout.actions";
 import { getLayoutMode } from "src/app/store/layouts/layout.selector";
 import { RootReducerState } from "src/app/store";
@@ -140,23 +138,6 @@ export class TopbarComponent implements OnInit {
 
   changePassword(): void {
     this._matDialog.open(ChangePasswordComponent, {});
-    // console.log('Opening password change modal...'); // Debug log
-
-    // this.snackbar.openModal(
-    //   ChangePasswordComponent,  // Votre composant de changement de mot de passe
-    //   "Changer le mot de passe",  // Titre du modal
-    //   "",  // Sous-titre (optionnel)
-    //   "500px",  // Largeur recommandée (ajustable)
-    //   "",  // Paramètre supplémentaire (optionnel)
-    //   "",  // Paramètre supplémentaire (optionnel)
-    //   (result) => {
-    //     // Callback après fermeture du modal
-    //     if (result) {
-    //       console.log('Password changed successfully', result);
-    //       // Vous pouvez ajouter ici un traitement après succès
-    //     }
-    //   }
-    // );
   }
 
   /**

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ChartType } from "./jobs.model";
 
 import { ChartComponent } from "ng-apexcharts";
@@ -10,6 +10,15 @@ import { ListPvComponent } from "../list-pv/list-pv.component";
 import { ProjectService } from "src/app/core/services/project.service";
 import { ImageModalComponent } from "src/app/shared/image-modal.component";
 import { MatDialog } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
+import { GoogleMapsModule } from "@angular/google-maps";
+import { PaginationControlsComponent } from "ngx-pagination";
+import { PapGoogleMapsComponent } from "../pap-google-maps/pap-google-maps.component";
+import { CalendarComponent } from "../calendar-component/calendar-component";
+import { Subject, takeUntil } from "rxjs";
+import { Pap } from "../../pap/pap.model";
+import { PapMultiPolygonMapsComponent } from "../pap-multi-polygon-maps/pap-multi-polygon-maps.component";
 
 interface SexStats {
   Total: number;
@@ -47,6 +56,8 @@ interface CombinedStats {
 
 @Component({
   selector: "app-jobs",
+  standalone:true,
+  imports: [MatIconModule, AngularMaterialModule, GoogleMapsModule, PapGoogleMapsComponent, CalendarComponent, PapMultiPolygonMapsComponent],
   templateUrl: "./jobs.component.html",
   styleUrls: ["./jobs.component.scss"],
 })
@@ -54,17 +65,20 @@ interface CombinedStats {
 /**
  * Jobs Component
  */
-export class JobsComponent implements OnInit {
-
-
+export class JobsComponent implements OnInit,OnDestroy {
 
   loadStats: boolean = true;
   
   // Variables typées avec nos interfaces
-  statsData: CombinedStats;
-  placeAffaireStats: StatsCategory;
-  agricoleStats: StatsCategory;
-  totalStats: StatsCategory;
+  // statsData: CombinedStats;
+  // placeAffaireStats: StatsCategory;
+  // agricoleStats: StatsCategory;
+  // totalStats: StatsCategory;
+
+    statsData: any;
+  placeAffaireStats: any;
+  agricoleStats: any;
+  totalStats: any;
 
   // Liste des vulnérabilités pour le template
   vulnerabilitesList = [
@@ -81,6 +95,7 @@ export class JobsComponent implements OnInit {
 
 
 
+  urlTaches: string = "taches";
 
 
 
@@ -104,6 +119,8 @@ export class JobsComponent implements OnInit {
   listPlainte: any[] = [];
   listDocument: any[] = [];
   lisRencontre: any[] = [];
+
+  tasksData: any[] = [];
 
   public listPap: any[] = [];
   public vulnerabilityCounts = {
@@ -153,13 +170,16 @@ export class JobsComponent implements OnInit {
   @ViewChild("chart", { static: false }) chart: ChartComponent;
 
   ngOnInit(): void {
-    this.getStat();
-    this.getStatCombine();
+    // this.getStat();
     this.getUserConnected();
-    this.loadAllCategories();
-    this.getPip();
-    this.getPlainte();
-    this.getDocument();
+    this.getStatCombine();
+    // this.loadAllCategories();
+   // this.getPip();
+    // this.getPlainte();
+     this.getTaches();
+     this.loadPaps();
+     this.loadPapsAgricole();
+    //this.getDocument();
     this.getRencontres();
     this.getPerteTotaleByCategory("papAgricole", this.evaluationPerteAgricole);
     this.getPerteTotaleByCategory(
@@ -175,9 +195,6 @@ percentFemmes: number = 0;
 
   classifyVulnerability(): void {
     if (this.listPap && this.listPap.length > 0) {
-      // console.log("====================================");
-      // console.log("listPap: " + this.listPap);
-      // console.log("====================================");
       this.listPap.forEach((pap) => {
         if (pap.vulnerabilite == "Moyenne") {
           this.vulnerabilityCounts.Moyenne++;
@@ -216,7 +233,7 @@ percentFemmes: number = 0;
         this.pageSize,
         this.offset,
         this.currentProjectId
-      )
+      ).pipe(takeUntil(this.destroy$))
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -236,56 +253,108 @@ percentFemmes: number = 0;
   }
 
   //
+  // Dans votre composant
+private destroy$ = new Subject<void>();
 
-  getPlainte() {
+getPlainte() {
+    this.loadData = true;
     return this.parentService
-      .list("plaintes", this.pageSize, this.offset, this.currentProjectId)
-      .subscribe(
-        (data: any) => {
-          this.loadData = false;
-          if (data["responseCode"] == 200) {
-            console.log('==============plaintes======================');
-            console.log(data);
-            console.log('====================================');
-            this.loadData = false;
-            this.lengthPlainte = data.length;
-            this.listPlainte = data.data;
-            this.classifyComplaints();
-            this.complaintChart.series = [
-              this.complaintCounts.resolu,
-              this.complaintCounts.enAttente,
-              this.complaintCounts.enCours,
-            ];
-          } else {
-            this.loadData = false;
-          }
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-  }
+        .list("plaintes", this.pageSize, this.offset, this.currentProjectId)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+            next: (data: any) => {
+                this.loadData = false;
+                if (data["responseCode"] === 200) {
+                    this.lengthPlainte = data.length;
+                    this.listPlainte = data.data;
+                    this.classifyComplaints();
+                    this.complaintChart.series = [
+                        this.complaintCounts.resolu,
+                        this.complaintCounts.enAttente,
+                        this.complaintCounts.enCours,
+                    ];
+                }
+            },
+            error: (err) => {
+                this.loadData = false;
+                console.error('Erreur lors de la récupération des plaintes:', err);
+            }
+        });
+}
 
-  getDocument() {
+getTaches() {
+    this.loadData = true;
     return this.parentService
-      .list("documents", this.pageSize, this.offset, this.currentProjectId)
-      .subscribe(
-        (data: any) => {
-          this.loadData = false;
-          if (data["responseCode"] == 200) {
-            this.loadData = false;
-            this.listDocument = data["data"];
-            this.lenghtDocument = data.length;
-            //  console.log(data);
-          } else {
-            this.loadData = false;
-          }
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-  }
+        .list(this.urlTaches, this.pageSize, this.offset, this.currentProjectId)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+            next: (data: any) => {
+                this.loadData = false;
+                if (data["responseCode"] === 200) {
+                    this.tasksData = data["data"];
+                    console.log('Taches récupérées:', data);
+                }
+            },
+            error: (err) => {
+                this.loadData = false;
+                console.error('Erreur lors de la récupération des tâches:', err);
+            }
+        });
+}
+
+
+
+ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+}
+
+  // getPlainte() {
+  //   return this.parentService
+  //     .list("plaintes", this.pageSize, this.offset, this.currentProjectId)
+  //     .subscribe(
+  //       (data: any) => {
+  //         this.loadData = false;
+  //         if (data["responseCode"] == 200) {
+  //           this.loadData = false;
+  //           this.lengthPlainte = data.length;
+  //           this.listPlainte = data.data;
+  //           this.classifyComplaints();
+  //           this.complaintChart.series = [
+  //             this.complaintCounts.resolu,
+  //             this.complaintCounts.enAttente,
+  //             this.complaintCounts.enCours,
+  //           ];
+  //         } else {
+  //           this.loadData = false;
+  //         }
+  //       },
+  //       (err) => {
+  //         console.log(err);
+  //       }
+  //     );
+  // }
+
+  // getDocument() {
+  //   return this.parentService
+  //     .list("documents", this.pageSize, this.offset, this.currentProjectId)
+  //     .subscribe(
+  //       (data: any) => {
+  //         this.loadData = false;
+  //         if (data["responseCode"] == 200) {
+  //           this.loadData = false;
+  //           this.listDocument = data["data"];
+  //           this.lenghtDocument = data.length;
+  //           //  console.log(data);
+  //         } else {
+  //           this.loadData = false;
+  //         }
+  //       },
+  //       (err) => {
+  //         console.log(err);
+  //       }
+  //     );
+  // }
 
 
 
@@ -309,6 +378,29 @@ percentFemmes: number = 0;
   //     console.error("Aucune donnée disponible pour classifier les plaintes.");
   //   }
   // }
+
+    // getTaches() {
+    //   this.loadData = true;
+    //   return this.parentService
+    //     .list(this.urlTaches, this.pageSize, this.offset, this.currentProjectId)
+    //     .subscribe(
+    //       (data: any) => {
+    //         this.loadData = false;
+    //         if (data["responseCode"] == 200) {
+    //           this.loadData = false;
+    //           this.tasksData = data["data"];
+
+    //           console.log('taches',data);
+    //         } else {
+    //           this.loadData = false;
+    //         }
+    //       },
+    //       (err) => {
+    //         this.loadData = false;
+    //         console.log(err);
+    //       }
+    //     );
+    // }
 classifyComplaints(): void {
     // Reset counts
     this.complaintCounts = {
@@ -357,105 +449,6 @@ classifyComplaints(): void {
 
   //engagements
 
-  engagements = [
-    {
-      type: "Réunion d'information Konia",
-      date: "28/12/2022",
-      reference: "PV 1 PAR3 Réunion comm. Konia",
-    },
-    {
-      type: "PAR3 signature ordre de mission",
-      date: "29/12/2022",
-      reference: "PV 2 PAR3 signature ordre de mission",
-    },
-    {
-      type: "Réunion d'information Balla Kayati",
-      date: "29/12/2022",
-      reference: "PV 3 PAR3 Réunion Balla Kayati",
-    },
-    {
-      type: "Réunion d'information Malapoouya",
-      date: "29/12/2022",
-      reference: "PV 4 PAR3 réunion Malapoouya",
-    },
-    {
-      type: "Profil Socio-économique Horè Gouba",
-      date: "30/12/2022",
-      reference: "PV 5 Profil Socio-économique Horè Gouba rev_Ro",
-    },
-    {
-      type: "Profil Socio-économique Kissaka PAR3",
-      date: "30/12/2022",
-      reference: "PV 6 Profil Socio-économique Kissaka PAR3 rev_Ro",
-    },
-    {
-      type: "Profil Socio-économique Djolol PAR3",
-      date: "30/12/2022",
-      reference: "PV 7 Profil Socio-économique Djolol PAR3 rev_Ro",
-    },
-    {
-      type: "Focus group Horè Bhoundou PAR3",
-      date: "03/01/2023",
-      reference: "PV 8 Focus group Horè Bhoundou PAR3 rev_Ro",
-    },
-    {
-      type: "Profil Socio-économique Horè Kintaou PAR3",
-      date: "04/01/2023",
-      reference: "PV 9 Profil Socio-économique Horè Kintaou PAR3 rev_Ro",
-    },
-    {
-      type: "Focus group N'dantari Ley API DM PAR3",
-      date: "04/01/2023",
-      reference: "PV 10 Focus group N'dantari Ley API DM PAR3 rev_Ro",
-    },
-    {
-      type: "Réunion d'information N'dantari Dow",
-      date: "04/01/2023",
-      reference: "PV 11 N'dantari Dow rev_Ro",
-    },
-    {
-      type: "Focus group Marga",
-      date: "04/01/2023",
-      reference: "PV 12 Focus group Marga rev_Ro",
-    },
-    {
-      type: "Focus group Telirè",
-      date: "05/01/2023",
-      reference: "PV 13 Focus group Telirè rev_Ro",
-    },
-    {
-      type: "Focus group Fakerè",
-      date: "06/01/2023",
-      reference: "PV 14 Focus group Fakerè rev_Ro",
-    },
-    {
-      type: "Focus group Hakkoudhè Tchandhi",
-      date: "06/01/2023",
-      reference: "PV 15 Focus group Hakkoudhè Tchandhi rev_Ro",
-    },
-    {
-      type: "Focus group Djohèrè",
-      date: "16/01/2023",
-      reference: "PV 16 Focus group Djohèrè",
-    },
-    {
-      type: "Focus group Balla Dabi",
-      date: "06/01/2023",
-      reference: "PV 17 Focus group Balla Dabi",
-    },
-    {
-      type: "Focus group Balla Kayati",
-      date: "16/01/2023",
-      reference: "PV 18 Focus group Balla Kayati",
-    },
-    {
-      type: "Identification des sites de relocalisation de Horè Gouba",
-      date: "23/01/2023",
-      reference:
-        "PV 19 Identification des sites de relocalisation de Horè Gouba rev_Ro (1)",
-    },
-  ];
-
   page = 1;
 
   viewPV(reference: string): void {
@@ -477,6 +470,7 @@ classifyComplaints(): void {
   getRencontres() {
     return this.projectService
       .getRencontreByProjectId(this.currentProjectId)
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -510,23 +504,10 @@ classifyComplaints(): void {
   }
 
 
-  //   getStatCombine() {
-  //   console.log('test ');
-  //   return this.projectService
-  //     .getStatsCombineByProjectId(this.currentProjectId)
-  //     .subscribe(
-  //       (data: any) => {
-  //         this.loadStats = false;
-  //         console.log("Statistiques combine du projet:", data);
-  //       },
-  //       (err) => {
-  //         console.log(err);
-  //       }
-  //     );
-  // }
   getStatCombine() {
     this.projectService
       .getStatsCombineByProjectId(this.currentProjectId)
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (data: CombinedStats) => {
                console.log("Statistiques combine du projet:", data);
@@ -542,6 +523,9 @@ classifyComplaints(): void {
         }
       );
   }
+
+
+  
 getVulnerablePeopleCount(): number {
   if (!this.totalStats) return 0;
   
@@ -593,11 +577,91 @@ getCriterionCount(category: string, criterionKey: string): number {
   return stats?.Vulnerabilites_globales?.[criterionKey] || 0;
 }
 
+paps: Pap[]=[];
+papsAgricole: any[]=[];
+isLoadingPap:boolean=false;
+loadPaps(): void {
+  this.isLoadingPap = true; 
+  this.parentService.list("databasePapPlaceAffaire", 1000, 0, this.currentProjectId)
+   .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (data: any) => {
+        console.log('res',data);
+        if (data.responseCode == 200) {
+          this.paps = data.data;
+        }
+        this.isLoadingPap = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.isLoadingPap = false;
+      }
+    });
+}
+
+
+// loadPapsAgricole(): void {
+//   console.log('loadPapsAgricole');
+//   this.isLoadingPap = true; 
+//   this.parentService.list("papAgricole", 1000, 0, this.currentProjectId)
+//    .pipe(takeUntil(this.destroy$))
+//     .subscribe({
+//       next: (data: any) => {
+//         console.log('resAgricole', data);
+//         if (data.responseCode == 200) {
+//           // Renommer la clé pointGeometriques -> multiPolygonGeometrique
+//           this.papsAgricole = data.data.map((pap: any) => ({
+//             ...pap,
+//             multiPolygonGeometrique: pap.pointGeometriques, // Copie directe
+//             pointGeometriques: undefined // Optionnel : supprime l'ancienne clé
+//           }));
+//           console.log('papsAgricolAftere', this.papsAgricole);
+//         }
+//         this.isLoadingPap = false;
+//       },
+//       error: (err) => {
+//         console.error(err);
+//         this.isLoadingPap = false;
+//       }
+//     });
+// }
+loadPapsAgricole(): void {
+  console.log('loadPapsAgricole');
+  this.isLoadingPap = true; 
+  this.parentService.list("papAgricole", 1000, 0, this.currentProjectId)
+   .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (data: any) => {
+        console.log('resAgricole', data);
+        if (data.responseCode == 200) {
+          // Debug: vérifier ce que contient pointGeometriques
+          console.log('Premier PAP brut:', data.data[0]);
+          console.log('pointGeometriques du premier PAP:', data.data[0]?.pointGeometriques);
+          
+          // Copie correcte sans supprimer pointGeometriques
+          this.papsAgricole = data.data.map((pap: any) => ({
+            ...pap,
+            multiPolygonGeometrique: pap.pointGeometriques // Garde les deux propriétés
+          }));
+          
+          console.log('papsAgricole après transformation:', this.papsAgricole);
+          console.log('Premier PAP transformé:', this.papsAgricole[0]);
+          console.log('multiPolygonGeometrique du premier:', this.papsAgricole[0]?.multiPolygonGeometrique);
+        }
+        this.isLoadingPap = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.isLoadingPap = false;
+      }
+    });
+}
 
 
   getPapByCategory(category: string) {
     return this.parentService
       .list(category, this.pageSize, this.offset, this.currentProjectId)
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -624,6 +688,7 @@ getCriterionCount(category: string, criterionKey: string): number {
   getPerteTotaleByCategory(category: string, evalutationPerte: number) {
     return this.parentService
       .list(category, this.pageSize, this.offset, this.currentProjectId)
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -689,11 +754,14 @@ getCriterionCount(category: string, criterionKey: string): number {
   }
 
 
-// Calcul de pourcentage
-getPercentage(value: number, total: number): string {
-  return total > 0 ? ((value / total) * 100).toFixed(1) : '0';
+getPercentage(value: number, total: number): number {
+  return total > 0 ? (value / total) * 100 : 0;
 }
-
+getGlobalPercentage(value1: number, total1: number, value2: number, total2: number): number {
+  const total = (total1 || 0) + (total2 || 0);
+  const value = (value1 || 0) + (value2 || 0);
+  return total > 0 ? (value / total) * 100 : 0;
+}
 // Récupère les noms des vulnérabilités
 getVulnerabilityNames(): string[] {
   return this.vulnerabilitesList;

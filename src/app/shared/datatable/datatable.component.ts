@@ -64,28 +64,66 @@ validateRequiredColumns() {
   });
 
   // Validation spécifique pour pointGeometriques (en dehors de la boucle)
-  if (this.headings.includes('pointGeometriques')) {
-    const invalidGeometryRows = this.dataExcel
-      .map((row, index) => {
-        if (!row.pointGeometriques) return index + 1;
+  // if (this.headings.includes('pointGeometriques')) {
+  //   const invalidGeometryRows = this.dataExcel
+  //     .map((row, index) => {
+  //       if (!row.pointGeometriques) return index + 1;
         
-        // Vérification du format strict
-        const regex = /^Point\s\(-?\d+\.\d+\s-?\d+\.\d+\)$/;
-        if (!regex.test(row.pointGeometriques)) {
-          return index + 1;
-        }
-        return null;
-      })
-      .filter(index => index !== null);
+  //       // Vérification du format strict
+  //       const regex = /^Point\s\(-?\d+\.\d+\s-?\d+\.\d+\)$/;
+  //       if (!regex.test(row.pointGeometriques)) {
+  //         return index + 1;
+  //       }
+  //       return null;
+  //     })
+  //     .filter(index => index !== null);
 
-    if (invalidGeometryRows.length > 0) {
-      this.validationErrors.push({
-        type: 'INVALID_GEOMETRY',
-        message: 'La colonne "pointGeometriques" doit avoir le format "Point (longitude latitude)" sans virgule',
-        rows: invalidGeometryRows
-      });
-    }
+  //   if (invalidGeometryRows.length > 0) {
+  //     this.validationErrors.push({
+  //       type: 'INVALID_GEOMETRY',
+  //       message: 'La colonne "pointGeometriques" doit avoir le format "Point (longitude latitude)" sans virgule',
+  //       rows: invalidGeometryRows
+  //     });
+  //   }
+  // }
+if (this.headings.includes('pointGeometriques')) {
+  const invalidGeometryRows = this.dataExcel
+    .map((row, index) => {
+      if (!row.pointGeometriques) return index + 1;
+      
+      // Vérification des formats
+      const pointRegex = /^Point\s\(-?\d+\.\d+\s-?\d+\.\d+\)$/;
+      const multiPolygonRegex = /^MultiPolygon\s*\(\s*\(\s*\(\s*(-?\d+\.\d+\s-?\d+\.\d+(?:\s*,\s*-?\d+\.\d+\s-?\d+\.\d+)*)\s*\)\s*\)\s*\)$/;
+      
+      if (!pointRegex.test(row.pointGeometriques) && !multiPolygonRegex.test(row.pointGeometriques)) {
+        return index + 1;
+      }
+      
+      // Validation supplémentaire pour MultiPolygon
+      if (row.pointGeometriques.startsWith('MultiPolygon')) {
+        const coordsMatch = row.pointGeometriques.match(multiPolygonRegex);
+        if (!coordsMatch) return index + 1;
+        
+        const coords = coordsMatch[1].split(/\s*,\s*/);
+        if (coords.length < 4 || coords[0] !== coords[coords.length - 1]) {
+          return index + 1; // Polygone non fermé ou pas assez de points
+        }
+      }
+      
+      return null;
+    })
+    .filter(index => index !== null);
+
+  if (invalidGeometryRows.length > 0) {
+    this.validationErrors.push({
+      type: 'INVALID_GEOMETRY',
+      message: 'Format géométrie invalide. Doit être :\n' +
+               '- Point (lng lat)\n' +
+               '- OU MultiPolygon(((lng lat, lng lat, ...))) avec au moins 4 points et fermé',
+      rows: invalidGeometryRows
+    });
   }
+}
 
   // Vérification conditionnelle pour age/dateNaissance
   const hasAge = this.headings.includes('age');
@@ -104,9 +142,22 @@ validateRequiredColumns() {
 }
 
 // Méthode helper pour vérifier les valeurs vides
+// checkEmptyValues(column) {
+//   const emptyRows = this.dataExcel
+//     .map((row, index) => (!row[column] ? index + 1 : null))
+//     .filter(index => index !== null);
+
+//   if (emptyRows.length > 0) {
+//     this.validationErrors.push({
+//       type: 'EMPTY_VALUES',
+//       message: `La colonne "${column}" contient des valeurs manquantes`,
+//       rows: emptyRows
+//     });
+//   }
+// }
 checkEmptyValues(column) {
   const emptyRows = this.dataExcel
-    .map((row, index) => (!row[column] ? index + 1 : null))
+    .map((row, index) => (row[column] === undefined || row[column] === null || row[column] === '' ? index + 1 : null))
     .filter(index => index !== null);
 
   if (emptyRows.length > 0) {

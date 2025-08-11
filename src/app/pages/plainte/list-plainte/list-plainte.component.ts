@@ -1,5 +1,5 @@
 import { DatePipe } from "@angular/common";
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { UntypedFormGroup } from "@angular/forms";
 import * as moment from "moment";
 import {
@@ -10,7 +10,6 @@ import {
 import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
-import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { LocalService } from "src/app/core/services/local.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
@@ -22,8 +21,6 @@ import {
 } from "src/app/shared/tableau/tableau.component";
 import { PapAddComponent } from "../../pap/pap-add/pap-add.component";
 import { PapService } from "../../pap/pap.service";
-import { SharedService } from "../../projects/shared.service";
-import { AddComponent } from "../../tasks/add/add.component";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { UIModule } from "src/app/shared/ui/ui.module";
@@ -31,9 +28,9 @@ import { AddPlainteComponent } from "../add-plainte/add-plainte.component";
 import * as XLSX from "xlsx";
 import { DatatableComponent } from "src/app/shared/datatable/datatable.component";
 import { ExportService } from "src/app/shared/core/export.service";
-import { DetailPlainteComponent } from "src/app/detail-plainte/detail-plainte.component";
 import { PlainteDetailComponent } from "../palainte-detail/plainte-detail.component";
 import { FlatpickrModule } from "angularx-flatpickr";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "app-list-plainte",
@@ -62,7 +59,7 @@ import { FlatpickrModule } from "angularx-flatpickr";
   ],
   styleUrl: "./list-plainte.component.css",
 })
-export class ListPlainteComponent implements OnInit {
+export class ListPlainteComponent implements OnInit,OnDestroy {
   breadCrumbItems: (
     | { label: string; active?: undefined }
     | { label: string; active: boolean }
@@ -104,8 +101,8 @@ export class ListPlainteComponent implements OnInit {
   panelOpenState = false;
   img;
   image;
-  privilegeByRole: any; //liste des codes recu de l'api lors de la connexion
-  privilegeForPage: number = 2520; //code privilege envoye pour afficher la page
+  privilegeByRole: any; 
+  privilegeForPage: number = 2520; 
   privilegePage;
   headers: any = [];
   btnActions: any = [];
@@ -133,6 +130,13 @@ export class ListPlainteComponent implements OnInit {
       { label: "List des plaintes", active: true },
     ];
   }
+private destroy$ = new Subject<void>();
+
+  ngOnDestroy() {
+   this.destroy$.next();
+   this.destroy$.complete();
+}
+
 
   createHeader() {
     return [
@@ -219,6 +223,7 @@ export class ListPlainteComponent implements OnInit {
     this.loadData = true;
     return this.parentService
       .list(this.url, this.pageSize, this.offset,this.currentProjectId)
+      .pipe(takeUntil(this.destroy$))
       .subscribe(
         (data: any) => {
           this.loadData = false;

@@ -23,7 +23,6 @@ import { ExtrapagesModule } from './extrapages/extrapages.module';
 import { LayoutsModule } from './layouts/layouts.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { initFirebaseBackend } from './authUtils';
 import { CyptolandingComponent } from './cyptolanding/cyptolanding.component';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -31,12 +30,10 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { ErrorInterceptor } from './core/helpers/error.interceptor';
 import { JwtInterceptor } from './core/helpers/jwt.interceptor';
-import { FakeBackendInterceptor } from './core/helpers/fake-backend';
 import { FilemanagerEffects } from './store/filemanager/filemanager.effects';
 import { rootReducer } from './store';
 import { OrderEffects } from './store/orders/order.effects';
 import { AuthenticationEffects } from './store/Authentication/authentication.effects';
-import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { CartEffects } from './store/Cart/cart.effects';
 import { ProjectEffects } from './store/ProjectsData/project.effects';
@@ -45,11 +42,9 @@ import { userslistEffects } from './store/UserList/userlist.effect';
 import { JoblistEffects } from './store/Job/job.effects';
 import { CandidateEffects } from './store/Candidate/candidate.effects';
 import { InvoiceDataEffects } from './store/Invoices/invoice.effects';
-import { ChatEffects } from './store/Chat/chat.effect';
 import { tasklistEffects } from './store/Tasks/tasks.effect';
 import { OrdersEffects } from './store/Crypto/crypto.effects';
 import { CustomerEffects } from './store/customer/customer.effects';
-import { MailEffects } from './store/Email/email.effects';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { DetailPlainteComponent } from './detail-plainte/detail-plainte.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -58,7 +53,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { AngularMaterialModule } from './shared/angular-materiel-module/angular-materiel-module';
-import { NgDropdownPanelComponent } from '@ng-select/ng-select/lib/ng-dropdown-panel.component';
 import { HeroCarouselComponent } from "./cyptolanding/hero-carousel/hero-carousel.component";
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -109,11 +103,9 @@ export function createTranslateLoader(http: HttpClient): any {
         JoblistEffects,
         CandidateEffects,
         InvoiceDataEffects,
-        ChatEffects,
         tasklistEffects,
         OrdersEffects,
         CustomerEffects,
-        MailEffects,
         MatIconModule, AngularMaterialModule,
         MatIconModule,
         AccordionModule

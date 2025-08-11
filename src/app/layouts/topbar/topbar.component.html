@@ -1,18 +1,8 @@
 <header id="page-topbar">
   <div class="navbar-header">
     <div class="d-flex">
-      <!-- LOGO -->
       <div class="navbar-brand-box">
-        <!-- <a routerLink="/" class="logo logo-dark mt-5">
-          <span class="logo-sm">
-            <img src="assets/images/logo/Logoinvodis.svg" alt="" height="">
-          </span>
-          <span class="logo-lg">
-            <img src="assets/images/logo/Logoinvodis.svg" alt="" height="">
-          </span>
-        </a> -->
-
-        <a routerLink="/" class="logo logo-light mt-5">
+        <a  class="logo logo-light mt-5">
           <span class="logo-sm">
             <img src="assets/images/logo/Logoinvodis.png" alt="">
           </span>
@@ -21,16 +11,11 @@
           </span>
         </a>
       </div>
-
       <button type="button" class="btn btn-sm px-3 font-size-16 header-item"
         [ngClass]="{ 'd-none': theme === 'horizontal' }" id="vertical-menu-btn" (click)="toggleMobileMenu($event)">
         <i class="fa fa-fw fa-bars"></i>
       </button>
-
-      <!-- App Search-->
-
     </div>
-
     <div class="d-flex">
       <div class="dropdown d-inline-block d-lg-none ms-2" dropdown>
         <button type="button" class="btn header-item noti-icon" id="page-header-search-dropdown" data-toggle="dropdown"
@@ -52,130 +37,56 @@
         </div>
       </div>
 
+
       <div class="dropdown d-none d-lg-inline-block ms-1">
-        <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="fullscreen"
+        <!-- <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="fullscreen"
           (click)="fullscreen()">
           <i class="bx bx-fullscreen"></i>
-        </button>
+        </button> -->
       </div>
-
-      <!-- <div class="dropdown d-inline-block" dropdown>
-        <button type="button" class="btn header-item noti-icon" id="page-header-notifications-dropdown" dropdownToggle>
-          <i class="bx bx-bell bx-tada"></i>
-          <span class="badge bg-danger rounded-pill">3</span>
-        </button>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-          aria-labelledby="page-header-notifications-dropdown" *dropdownMenu>
-          <div class="p-3">
-            <div class="row align-items-center">
-              <div class="col">
-                <h6 class="m-0">{{ 'HEADER.NOTIFICATIONS.TITLE' | translate}} </h6>
-              </div>
-              <div class="col-auto">
-                <a href="javascript: void(0);" class="small">{{ 'HEADER.NOTIFICATIONS.VIEW_ALL' | translate}}</a>
-              </div>
-            </div>
-          </div>
-          <ngx-simplebar style="position: relative; height: 230px;">
-            <a href="javascript: void(0);" class="text-reset notification-item">
-              <div class="d-flex">
-                <div class="avatar-xs me-3">
-                  <span class="avatar-title bg-primary rounded-circle font-size-16">
-                    <i class="bx bx-cart"></i>
-                  </span>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="mb-1">{{ 'HEADER.NOTIFICATIONS.FIRST.TITLE' | translate}}</h6>
-                  <div class="font-size-12 text-muted">
-                    <p class="mb-1">{{ 'HEADER.NOTIFICATIONS.FIRST.TEXT' | translate}}</p>
-                    <p class="mb-0"><i class="mdi mdi-clock-outline"></i>
-                      {{ 'HEADER.NOTIFICATIONS.FIRST.TIME' | translate}}</p>
-                  </div>
-                </div>
-              </div>
-            </a>
-            <a href="javascript: void(0);" class="text-reset notification-item">
-              <div class="d-flex">
-                <img src="assets/images/users/avatar-3.jpg" class="me-3 rounded-circle avatar-xs" alt="user-pic">
-                <div class="flex-grow-1">
-                  <h6 class="mb-1">{{ 'HEADER.NOTIFICATIONS.SECOND.TITLE' | translate}}</h6>
-                  <div class="font-size-12 text-muted">
-                    <p class="mb-1">{{ 'HEADER.NOTIFICATIONS.SECOND.TEXT' | translate}}</p>
-                    <p class="mb-0"><i class="mdi mdi-clock-outline"></i>{{ 'HEADER.NOTIFICATIONS.SECOND.TIME' |
-                      translate}}</p>
-                  </div>
-                </div>
-              </div>
-            </a>
-            <a href="javascript: void(0);" class="text-reset notification-item">
-              <div class="d-flex">
-                <div class="avatar-xs me-3">
-                  <span class="avatar-title bg-success rounded-circle font-size-16">
-                    <i class="bx bx-badge-check"></i>
-                  </span>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="mb-1">{{ 'HEADER.NOTIFICATIONS.THIRD.TITLE' | translate}}</h6>
-                  <div class="font-size-12 text-muted">
-                    <p class="mb-1">{{ 'HEADER.NOTIFICATIONS.THIRD.TEXT' | translate}}</p>
-                    <p class="mb-0"><i class="mdi mdi-clock-outline"></i>{{ 'HEADER.NOTIFICATIONS.THIRD.TIME' |
-                      translate}}</p>
-                  </div>
-                </div>
-              </div>
-            </a>
-            <a href="javascript: void(0);" class="text-reset notification-item">
-              <div class="d-flex">
-                <img src="assets/images/users/avatar-4.jpg" class="me-3 rounded-circle avatar-xs" alt="user-pic">
-                <div class="flex-grow-1">
-                  <h6 class="mb-1">{{ 'HEADER.NOTIFICATIONS.FOUR.TITLE' | translate}}</h6>
-                  <div class="font-size-12 text-muted">
-                    <p class="mb-1">{{ 'HEADER.NOTIFICATIONS.FOUR.TEXT' | translate}}</p>
-                    <p class="mb-0"><i class="mdi mdi-clock-outline"></i>{{ 'HEADER.NOTIFICATIONS.FOUR.TIME' |
-                      translate}}</p>
-                  </div>
-                </div>
-              </div>
-            </a>
-          </ngx-simplebar>
-          <div class="p-2 border-top d-grid">
-            <a class="btn btn-sm btn-link font-size-14 text-center" href="javascript:void(0)">
-              <i class="mdi mdi-arrow-right-circle me-1"></i> <span key="t-view-more">{{
-                'HEADER.NOTIFICATIONS.LOAD_MORE' | translate}}</span>
-            </a>
-          </div>
-        </div>
-      </div> -->
       <div class="dropdown d-inline-block" dropdown>
-        <button type="button" class="btn header-item" dropdownToggle id="page-header-user-dropdown">
-          <img [src]="myImage" class="rounded-circle header-profile-user me-2" alt="Header Avatar" />
-          <span class="d-inline-flex align-items-center">
+        <button type="button" class="btn header-item " dropdownToggle id="page-header-user-dropdown" style="cursor: pointer;">
+          <img [src]="myImage" class="rounded-circle header-profile-user me-2 " alt="Header Avatar" />
+          <!-- <span class="d-inline-flex align-items-center">
             {{user.user.firstname}}
             <i class="mdi mdi-chevron-down ms-1"></i>
-          </span>
+          </span> -->
         </button>
-
         <div class="dropdown-menu dropdown-menu-end" *dropdownMenu>
-          <!-- Option Changer le mot de passe -->
           <button class="dropdown-item"  (click)="changePassword()">
             <i class="bx bx-lock-alt font-size-16 align-middle me-1"></i>
             Changer le mot de passe
           </button>
-
-          <!-- Option Déconnexion -->
           <a class="dropdown-item text-danger" href="javascript:void(0);" (click)="logout()">
             <i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i>
             Se déconnecter
           </a>
         </div>
       </div>
-
-      <!-- <div class="dropdown d-inline-block">
-        <button type="button" class="btn header-item noti-icon right-bar-toggle" (click)="toggleRightSidebar()">
-          <i class="bx bx-cog bx-spin"></i>
-        </button>
-      </div> -->
-
+      <div class="dropdown d-inline-block me-2" dropdown>
+    <button type="button" class="btn header-item noti-icon" dropdownToggle style="cursor: pointer;">
+      <i class="bx bx-cog"></i> <!-- Icône de paramètres -->
+    </button>
+    <div class="dropdown-menu dropdown-menu-end" *dropdownMenu>
+      <h6 class="dropdown-header">Paramètres</h6>
+      <a class="dropdown-item" routerLink="/roles">
+        <i class="bx bx-list-ul me-1"></i>
+        Rôles
+      </a>
+      <a class="dropdown-item" routerLink="/fonctions">
+        <i class="bx bx-list-ul me-1"></i>
+        Fonctions
+      </a>
+      <a class="dropdown-item" routerLink="/categories">
+        <i class="bx bx-list-ul me-1"></i>
+        Niveaux de privilèges
+      </a>
+      <a class="dropdown-item" routerLink="/utilisateurs">
+        <i class="bx bx-user me-1"></i>
+        Utilisateurs
+      </a>
+    </div>
+  </div>
     </div>
   </div>
 </header>

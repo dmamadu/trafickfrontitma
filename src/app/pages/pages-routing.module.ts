@@ -1,7 +1,6 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
-import { DefaultComponent } from "./dashboards/default/default.component";
 import { PersonnePhysiqueComponent } from "./personne-physique/personne-physique.component";
 import { AjoutPersonnePhysiqueComponent } from "./personne-physique/ajout/ajout.component";
 import { TesterComponent } from "./tester/tester.component";
@@ -17,11 +16,7 @@ import { RencontreComponent } from "./elaboration/rencontre/rencontre.component"
 
 const routes: Routes = [
   // { path: '', redirectTo: 'dashboard' },
-  {
-    path: "",
-    component: DefaultComponent,
-  },
-  { path: "dashboard", component: DefaultComponent },
+  
   {
     path: "dashboards",
     loadChildren: () =>

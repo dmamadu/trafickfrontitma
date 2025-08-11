@@ -1,0 +1,116 @@
+<!-- <div class="modal-cont">
+  <div class="modal-header">
+    <h2>Détails de la tâche</h2>
+    <button class="close-btn" (click)="closeModal()">&times;</button>
+  </div>
+  <div class="modal-body">
+    <div class="tacheToDisplay-details">
+      <div class="detail-row">
+        <span class="icon">⏰</span>
+        <div class="detail-content">
+          <span class="detail-label">Début:</span>
+          <span class="detail-value">{{ tacheToDisplay.start  }}</span>
+        </div>
+      </div>
+      
+      <div class="detail-row" *ngIf="tacheToDisplay.end">
+        <span class="icon">⏱️</span>
+        <div class="detail-content">
+          <span class="detail-label">Fin:</span>
+          <span class="detail-value">{{ tacheToDisplay.end  }}</span>
+        </div>
+      </div>
+      
+      <div class="detail-row">
+        <span class="icon">📝</span>
+        <div class="detail-content">
+          <span class="detail-label">Description:</span>
+          <span class="detail-value">{{ tacheToDisplay.description || 'Aucune description' }}</span>
+        </div>
+      </div>
+      
+      <div class="detail-row">
+        <span class="icon">🏷️</span>
+        <div class="detail-content">
+          <span class="detail-label">Statut:</span>
+          <span class="status-badge" [style.background]="getStatusColor(tacheToDisplay.status)">
+            {{ getStatusLabel(tacheToDisplay.status) }}
+          </span>
+        </div>
+      </div>
+      
+      <div class="divider"></div>
+      
+      <div class="assignees" *ngIf="tacheToDisplay.users?.length">
+        <h3>Assigné à:</h3>
+        <div class="user-list">
+          <div class="user-chip" *ngFor="let user of tacheToDisplay.users">
+            <span class="user-icon">👤</span>
+            <span class="user-name">{{ user.firstname }} {{ user.lastname }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="display: flex ; justify-content: end;">
+    <button  style="background-color: red; padding: 10px; border-radius: 5px; color: white;" (click)="closeModal()">Fermer</button>
+  </div>
+</div> -->
+<div class="modal-cont">
+  <div class="modal-header">
+    <h2>Détails de la tâche: {{tacheToDisplay?.title || 'Sans titre'}}</h2>
+    <button class="close-btn" (click)="closeModal()">&times;</button>
+  </div>
+  <div class="modal-body">
+    <div class="detail-row">
+      <span class="icon">⏰</span>
+      <div class="detail-content">
+        <span class="detail-label">Début:</span>
+        <span class="detail-value">{{ tacheToDisplay?.start ? (tacheToDisplay.start | date:'medium') : 'Non spécifié' }}</span>
+      </div>
+    </div>
+    
+    <div class="detail-row" *ngIf="tacheToDisplay?.end">
+      <span class="icon">⏱️</span>
+      <div class="detail-content">
+        <span class="detail-label">Fin:</span>
+        <span class="detail-value">{{ tacheToDisplay.end | date:'medium' }}</span>
+      </div>
+    </div>
+    
+    <div class="detail-row">
+      <span class="icon">📝</span>
+      <div class="detail-content">
+        <span class="detail-label">Description:</span>
+        <span class="detail-value">{{ tacheToDisplay?.description || 'Aucune description' }}</span>
+      </div>
+    </div>
+    
+    <div class="detail-row">
+      <span class="icon">🏷️</span>
+      <div class="detail-content">
+        <span class="detail-label">Statut:</span>
+        <span class="status-badge" [style.background]="getStatusColor(tacheToDisplay?.status)">
+          {{ getStatusLabel(tacheToDisplay?.status) }}
+        </span>
+      </div>
+    </div>
+    <div class="divider"></div>
+    
+    <div class="assignees" *ngIf="tacheToDisplay?.users?.length">
+      <h3>Assigné à:</h3>
+      <div class="user-list">
+        <div class="user-chip" *ngFor="let user of tacheToDisplay.users">
+          <span class="user-icon">👤</span>
+          <span class="user-name">{{ user?.firstname }} {{ user?.lastname }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="display: flex; justify-content: end;">
+    <button style="background-color: red; padding: 10px; border-radius: 5px; color: white;" 
+            (click)="closeModal()">Fermer</button>
+  </div>
+</div>

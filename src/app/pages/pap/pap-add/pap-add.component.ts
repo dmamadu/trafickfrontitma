@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -35,6 +36,7 @@ import {
 } from "@angular/material/core";
 import { LocalService } from "src/app/core/services/local.service";
 import { MatDatepickerModule } from "@angular/material/datepicker";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "app-pap-add",
@@ -58,7 +60,7 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class PapAddComponent  {
+export class PapAddComponent implements OnInit,OnDestroy  {
   panelOpenState = false;
   @ViewChild("drawer") drawer: MatDrawer;
   @ViewChild("stepper") private myStepper: MatStepper;
@@ -117,10 +119,6 @@ export class PapAddComponent  {
   ) {
     this.currentUser=this.localService.getDataJson("user");
 
-    console.log("user connecter",this.currentUser)
-    console.log("==data fomrmr==================================");
-    console.log(_data.data.pays);
-    console.log("====================================");
     if (_data?.action == "new") {
       this.initForms();
       this.labelButton = "Ajouter ";
@@ -140,12 +138,17 @@ export class PapAddComponent  {
 
 
   }
-
-
-  checkValidOnWhatsApp(event: any): void {
-    const value = event.value;
-    this.initForm.get("statutVulnerable")?.setValue(value);
+  ngOnInit(): void {
   }
+
+
+  private destroy$ = new Subject<void>();
+
+
+ngOnDestroy() {
+   this.destroy$.next();
+   this.destroy$.complete();
+}
 
 
 
@@ -263,6 +266,7 @@ export class PapAddComponent  {
       project_id: this.fb.control(this.currentUser.projects ? this.currentUser.projects[0]?.id   : null, [
         Validators.required,
       ]),
+       typeHandicape: [donnees?.typeHandicape || null],
     });
   }
 
@@ -297,42 +301,9 @@ export class PapAddComponent  {
     return this.initForm.controls["numeroTelephonePersonneContact"];
   }
 
-  getNationalite(value: any) {
-    if (this.countries) {
-      const liste = this.countries.filter((type) => type.id == value);
-      return liste.length != 0 ? liste[0]?.nationalite : value;
-    }
-  }
 
-  getsituationMatrimoniale(value: any) {
-    if (this.situationsMatrimoniales) {
-      const liste = this.situationsMatrimoniales.filter(
-        (type) => type.id == value
-      );
-      return liste.length != 0 ? liste[0]?.libelle : value;
-    }
-  }
 
-  getcapaciteJuridique(value: any) {
-    if (this.capaciteJuridiques) {
-      const liste = this.capaciteJuridiques.filter((type) => type.id == value);
-      return liste.length != 0 ? liste[0]?.libelle : value;
-    }
-  }
 
-  getpays(value: any) {
-    if (this.countries) {
-      const liste = this.countries.filter((type) => type.id == value);
-      return liste.length != 0 ? liste[0]?.nom : value;
-    }
-  }
-
-  gettypeIdentification(value: any) {
-    if (this.typeIdentifications) {
-      const liste = this.typeIdentifications.filter((type) => type.id == value);
-      return liste.length != 0 ? liste[0]?.libelle : value;
-    }
-  }
 
   firstStep() {
     if (
@@ -377,73 +348,8 @@ export class PapAddComponent  {
     }
   }
 
-  getListPays() {
-    this.coreService.list("pays", 0, 10000).subscribe((response) => {
-      if (response["responseCode"] === 200) {
-        this.countries = response["data"];
-        console.log("countries", this.countries);
 
-        this.nrSelect = response["data"]
-          .filter((el) => el.codeAlpha2 == "SN" || el.codeAlpha2 == "SEN")
-          .map((e) => e.id)[0];
-        this.initForm.get("pays").setValue(this.nrSelect);
-       // this.initForm.get("nationalite").setValue(this.nrSelect);
-        // this.initForm.get("paysDelivrancePiece").setValue(this.nrSelect);
-        //this.initForm.get("localiteResidence").setValue(this.nrSelect);
 
-        this.changeDetectorRefs.markForCheck();
-      }
-    });
-  }
-
-  getListSituationsMatrimoniales() {
-    this.coreService
-      .list("situation-matrimoniale", 0, 10000)
-      .subscribe((response) => {
-        console.log(response);
-        // alert("Please select")
-
-        if (response["responseCode"] === 200) {
-          this.situationsMatrimoniales = response["data"];
-          this.changeDetectorRefs.markForCheck();
-        }
-      });
-  }
-
-  getRegimeBySituation(situation) {
-    if (situation) {
-      this.regimeMatrimoniaux = situation.regimesMatrimonials;
-    }
-  }
-
-  getListtypeIdentifications() {
-    this.coreService.list("nature-piece", 0, 10000).subscribe((response) => {
-      if (response["responseCode"] === 200) {
-        this.typeIdentifications = response["data"];
-        this.changeDetectorRefs.markForCheck();
-      }
-    });
-  }
-
-  getListCapaciteJuridiques() {
-    this.coreService
-      .list("capacite-juridique", 0, 10000)
-      .subscribe((response) => {
-        if (response["responseCode"] === 200) {
-          this.capaciteJuridiques = response["data"];
-          this.changeDetectorRefs.markForCheck();
-        }
-      });
-  }
-
-  getListProfession() {
-    this.coreService.list("profession", 0, 10000).subscribe((response) => {
-      if (response) {
-        this.professions = response["data"];
-        this.changeDetectorRefs.markForCheck();
-      }
-    });
-  }
 
   checkValidity(g: UntypedFormGroup) {
     Object.keys(g.controls).forEach((key) => {
@@ -457,38 +363,8 @@ export class PapAddComponent  {
     });
   }
 
-  listNoire(event?) {
-    this.listeNoire = true;
-    const montant = 0;
-    const compte = 0;
-    this.changeDetectorRefs.markForCheck();
-    const data = {
-      compte: compte,
-      montant: montant,
-    };
-    if (montant && compte) {
-      this.coreService.addItem(data, "verifier-liste-noire").subscribe(
-        (response) => {
-          if (response["responseCode"] === 200) {
-            this.listeNoire = true;
-          } else if (response["responseCode"] === 400) {
-            this.listeNoire = false;
-          }
-        },
-        (error) => {
-          if (error.status == 400) {
-            this.listeNoire = false;
-            this.changeDetectorRefs.markForCheck();
-          } else if (error.status == 200) {
-            this.listeNoire = true;
-          }
-        }
-      );
-    }
-  }
 
   addItems() {
-    // if(this.listeNoire){
     console.log("====================================");
     console.log(this.initForm.value);
     console.log("====================================");
@@ -498,7 +374,9 @@ export class PapAddComponent  {
         if (result["value"] == true) {
           this.loader = true;
           const value = this.initForm.value;
-          this.coreService.addItem(value, this.url).subscribe(
+          this.coreService.addItem(value, this.url)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(
             (resp) => {
               if (resp["responseCode"] == 200) {
                 this.snackbar.openSnackBar("Pap  ajoutée avec succés", "OK", [
@@ -536,7 +414,9 @@ export class PapAddComponent  {
         if (result["value"] == true) {
           this.loader = true;
           const value = this.initForm.value;
-          this.coreService.updateItem(value, this.id, this.url).subscribe(
+          this.coreService.updateItem(value, this.id, this.url)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(
             (resp) => {
               if (resp) {
                 this.loader = false;

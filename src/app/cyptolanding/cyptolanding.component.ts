@@ -1,7 +1,7 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { fromEvent, interval, Subscription } from "rxjs";
-import { map, throttleTime } from "rxjs/operators";
+import { fromEvent, interval, Subject, Subscription } from "rxjs";
+import { map, takeUntil, throttleTime } from "rxjs/operators";
 import { ComplaintServiceService } from "../pages/home-page/complaint-service.service";
 import { ContactService } from "../pages/home-page/contact.service";
 import { SnackBarService } from "../shared/core/snackBar.service";
@@ -16,7 +16,7 @@ import { APP_VERSION } from "src/environments/version";
 /**
  * Crypto landing page
  */
-export class CyptolandingComponent implements OnInit {
+export class CyptolandingComponent implements OnInit,OnDestroy {
   // set the currenr year
   year: number = new Date().getFullYear();
   currentSection: any = "home";
@@ -68,6 +68,7 @@ export class CyptolandingComponent implements OnInit {
             Date.parse(this._trialEndsAt) - Date.parse(new Date().toString());
         })
       )
+       .pipe(takeUntil(this.destroy$))
       .subscribe((x) => {
         this._days = this.getDays(this._diff);
         this._hours = this.getHours(this._diff);
@@ -77,6 +78,15 @@ export class CyptolandingComponent implements OnInit {
 
     this.initForm();
   }
+
+  private destroy$ = new Subject<void>();
+
+
+ngOnDestroy() {
+   this.destroy$.next();
+   this.destroy$.complete();
+}
+
 
   getDays(t) {
     return Math.floor(t / (1000 * 60 * 60 * 24));
@@ -94,9 +104,7 @@ export class CyptolandingComponent implements OnInit {
     return Math.floor((t / 1000) % 60);
   }
 
-  ngOnDestroy(): void {
-    // this.subscription.unsubscribe();
-  }
+
   /**
    * Window scroll method
    */
@@ -168,7 +176,9 @@ export class CyptolandingComponent implements OnInit {
       this.loader = true;
       const formData = this.contactForm.value;
       console.log("Form Data:", formData);
-      this.contactService.sendContactForm(formData).subscribe(
+      this.contactService.sendContactForm(formData)
+     .pipe(takeUntil(this.destroy$))
+      .subscribe(
         (response) => {
           console.log("Réponse du serveur:", response);
           this.snackbar.openSnackBar(

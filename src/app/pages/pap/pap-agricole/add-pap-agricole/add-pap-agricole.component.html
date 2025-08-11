@@ -175,10 +175,10 @@
 
 
 
-        <div class="flex gap-2">
+        <!-- <div class="flex gap-2">
           <mat-form-field class="w-full mt-2" appearance="outline">
             <mat-label class="enteteccColor">Perte arbres jeunes</mat-label>
-            <textarea matInput name="perteArbreJeune" formControlName="perteArbreJeune" class="typeTitle"></textarea>
+            <input type="number" matInput name="perteArbreJeune" formControlName="perteArbreJeune" class="typeTitle">
             <mat-error *ngIf="initForm.get('perteArbreJeune')?.hasError('required')">
               Le champ est obligatoire
             </mat-error>
@@ -187,8 +187,27 @@
         <div class="flex gap-2">
           <mat-form-field class="w-full mt-2" appearance="outline">
             <mat-label class="enteteccColor">Perte arbres adultes</mat-label>
-            <textarea matInput name="perteArbreAdulte" formControlName="perteArbreAdulte" class="typeTitle"></textarea>
+            <input type="number" matInput name="perteArbreAdulte" formControlName="perteArbreAdulte" class="typeTitle">
             <mat-error *ngIf="initForm.get('perteArbreAdulte')?.hasError('required')">
+              Le champ est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div> -->
+
+          <div class="flex gap-2">
+          <!-- Informations supplémentaires -->
+          <!-- <mat-form-field class="w-full mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Description</mat-label>
+            <textarea class="typeTitle" matInput name="description"
+              formControlName="description"></textarea>
+          </mat-form-field> -->
+        </div>
+
+         <div class="flex gap-2">
+          <mat-form-field class="w-full mt-2" appearance="outline">
+            <mat-label class="enteteccColor">Perte Totale perteTotaleArbres</mat-label>
+            <input type="number" matInput name="perteTotaleArbre" formControlName="perteTotaleArbre" class="typeTitle">
+            <mat-error *ngIf="initForm.get('perteTotaleArbres')?.hasError('required')">
               Le champ est obligatoire
             </mat-error>
           </mat-form-field>
@@ -380,7 +399,7 @@
         <div class="flex gap-2">
           <mat-form-field class="w-full mt-2" appearance="outline">
             <mat-label class="enteteccColor">Perte equipements</mat-label>
-            <textarea matInput name="perteEquipement" formControlName="perteEquipement" class="typeTitle"></textarea>
+            <input matInput type="number" name="perteEquipement" formControlName="perteEquipement" class="typeTitle">
             <mat-error *ngIf="initForm.get('perteEquipement')?.hasError('required')">
               Le champ est obligatoire
             </mat-error>
@@ -389,7 +408,7 @@
         <div class="flex gap-2">
           <mat-form-field class="w-full mt-2" appearance="outline">
             <mat-label class="enteteccColor">Perte batiments</mat-label>
-            <textarea matInput name="perteBatiment" formControlName="perteBatiment" class="typeTitle"></textarea>
+            <input matInput name="perteBatiment" formControlName="perteBatiment" class="typeTitle">
             <mat-error *ngIf="initForm.get('perteBatiment')?.hasError('required')">
               Le champ est obligatoire
             </mat-error>
@@ -409,16 +428,16 @@
 
         <div class="flex gap-2">
           <!-- Informations supplémentaires -->
-          <mat-form-field class="w-full mt-2" appearance="outline">
+          <!-- <mat-form-field class="w-full mt-2" appearance="outline">
             <mat-label class="enteteccColor">Perte loyer</mat-label>
             <input type="number" class="typeTitle" matInput name="perteLoyer" formControlName="perteLoyer">
-          </mat-form-field>
+          </mat-form-field> -->
         </div>
         <div class="flex gap-2">
           <!-- Informations supplémentaires -->
           <mat-form-field class="w-full mt-2" appearance="outline">
             <mat-label class="enteteccColor">Perte cloture</mat-label>
-            <textarea class="typeTitle" matInput name="perteCloture" formControlName="perteCloture"></textarea>
+            <input type="number" class="typeTitle" matInput name="perteCloture" formControlName="perteCloture">
           </mat-form-field>
         </div>
 
@@ -491,7 +510,7 @@
           <!-- Informations supplémentaires -->
           <mat-form-field class="w-full mt-2" appearance="outline">
             <mat-label class="enteteccColor">Perte cloture</mat-label>
-            <textarea class="typeTitle" matInput name="perteCloture" formControlName="perteCloture"></textarea>
+            <input class="typeTitle" type="number" matInput name="perteCloture" formControlName="perteCloture">
           </mat-form-field>
         </div>
 
@@ -504,8 +523,20 @@
             </mat-error>
           </mat-form-field>
         </div>
-
-
+<div class="flex flex-col  gap-2">
+  <mat-label class="enteteccColor w-full mt-2">Option de paiement</mat-label>
+  <mat-radio-group formControlName="optionPaiement" class="flex flex-col gap-2">
+    <mat-radio-button value="Chèque ou Fiche de retrait" class="typeTitle">
+      Chèque ou Fiche de retrait
+    </mat-radio-button>
+    <mat-radio-button value="Mise à disposition" class="typeTitle">
+      Mise à disposition
+    </mat-radio-button>
+    <mat-radio-button value="Virement bancaire" class="typeTitle">
+      Virement bancaire
+    </mat-radio-button>
+  </mat-radio-group>
+</div>
         <!-- Boutons de navigation -->
         <div class="flex justify-center gap-4 mt-4">
           <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
@@ -516,8 +547,6 @@
           </button>
         </div>
       </mat-step>
-
-
 
       <mat-step label="Récapitulatif" [completed]="isStepValid(5)">
         <mat-accordion>
@@ -633,7 +662,9 @@
                 <div><strong>Frais de déplacement :</strong> {{ initForm.get('fraisDeplacement')?.value }}</div>
                 <div><strong>Appui à la relocalisation :</strong> {{ initForm.get('appuieRelocalisation')?.value }}
                 </div>
+                 <div><strong>Perte totale arbres :</strong> {{ initForm.get('perteTotaleArbre')?.value }}</div>
                 <div><strong>Perte totale :</strong> {{ initForm.get('perteTotale')?.value }}</div>
+                 <div><strong>Option de paiement :</strong> {{ initForm.get('optionPaiement')?.value }}</div>
               </div>
             </div>
           </mat-expansion-panel>

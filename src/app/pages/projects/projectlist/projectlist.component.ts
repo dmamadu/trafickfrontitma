@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 
 import { PageChangedEvent } from "ngx-bootstrap/pagination";
 import { Store } from "@ngrx/store";
@@ -12,6 +12,7 @@ import { ModalDirective } from "ngx-bootstrap/modal";
 import { ButtonAction } from "src/app/shared/tableau/tableau.component";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { AddComponent } from "../add/add.component";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "app-projectlist",
@@ -22,7 +23,7 @@ import { AddComponent } from "../add/add.component";
 /**
  * Projects-list component
  */
-export class ProjectlistComponent implements OnInit {
+export class ProjectlistComponent implements OnInit,OnDestroy {
   totalItems = 12;
   // bread crumb items
   breadCrumbItems: Array<{}>;
@@ -63,6 +64,14 @@ export class ProjectlistComponent implements OnInit {
     ];
   }
 
+  private destroy$ = new Subject<void>();
+
+ngOnDestroy() {
+   this.destroy$.next();
+   this.destroy$.complete();
+}
+
+
   pageChanged(event: PageChangedEvent): void {
     const startItem = (event.page - 1) * event.itemsPerPage;
     this.endItem = event.page * event.itemsPerPage;
@@ -74,6 +83,7 @@ export class ProjectlistComponent implements OnInit {
     this.isLoading = true;
     return this.projectService
       .all<ResponseData<Project[]>>("projects/all")
+      .pipe(takeUntil(this.destroy$))
       .subscribe((data: ResponseData<Project[]>) => {
         this.projectlist = data.data;
         this.filteredProjects = this.projectlist;

@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from "@angular/common";
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -42,6 +42,7 @@ import { NgApexchartsModule } from "ng-apexcharts";
 import { DndModule } from "ngx-drag-drop";
 import { DetailComponent } from "../detail/detail.component";
 import { LocalService } from "src/app/core/services/local.service";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "app-list",
@@ -84,7 +85,7 @@ import { LocalService } from "src/app/core/services/local.service";
     MatButtonModule,
   ],
 })
-export class ListTacheComponent implements OnInit {
+export class ListTacheComponent implements OnInit ,OnDestroy{
   filterTable($event: any) {
     throw new Error("Method not implemented.");
   }
@@ -162,6 +163,14 @@ export class ListTacheComponent implements OnInit {
     ];
   }
 
+private destroy$ = new Subject<void>();
+
+  ngOnDestroy() {
+   this.destroy$.next();
+   this.destroy$.complete();
+}
+
+
   createHeader() {
     return [
       {
@@ -212,6 +221,7 @@ export class ListTacheComponent implements OnInit {
     this.loadData = true;
     return this.parentService
       .list(this.url, this.pageSize, this.offset, this.currentProjectId)
+        .pipe(takeUntil(this.destroy$))
       .subscribe(
         (data: any) => {
           this.loadData = false;

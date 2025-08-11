@@ -11,7 +11,7 @@
     <p class="app-subtitle">Sélectionnez un projet à consulter</p>
     <div class="project-selection-area">
       <!-- Cas avec projets -->
-      <div *ngIf="projects.length > 0" class="projects-list">
+      <div *ngIf="projects !== null && projects.length > 0" class="projects-list">
         <mat-form-field appearance="outline" class="project-selector">
           <mat-label>Projets disponibles</mat-label>
           <mat-select (selectionChange)="onProjectSelect($event.value)" [value]="selectedProjectId">
@@ -25,8 +25,13 @@
         </mat-form-field>
       </div>
 
+        <div *ngIf="projects === null" class="loading-state">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Chargement des projets...</p>
+      </div>
+
       <!-- Cas sans projets -->
-      <div *ngIf="projects.length === 0" class="empty-state">
+      <div *ngIf="projects !== null && projects.length === 0" class="empty-state">
         <div class="empty-content">
           <mat-icon class="empty-icon">folder_off</mat-icon>
           <h3>Aucun projet disponible</h3>
