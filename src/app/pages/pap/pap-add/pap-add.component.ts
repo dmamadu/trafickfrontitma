@@ -266,7 +266,7 @@ ngOnDestroy() {
       project_id: this.fb.control(this.currentUser.projects ? this.currentUser.projects[0]?.id   : null, [
         Validators.required,
       ]),
-       typeHandicape: [donnees?.typeHandicape || null],
+       typeHandicape: [donnees?.typeHandicape || ""],
     });
   }
 

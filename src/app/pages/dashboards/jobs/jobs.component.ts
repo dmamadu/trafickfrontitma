@@ -13,7 +13,6 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { GoogleMapsModule } from "@angular/google-maps";
-import { PaginationControlsComponent } from "ngx-pagination";
 import { PapGoogleMapsComponent } from "../pap-google-maps/pap-google-maps.component";
 import { CalendarComponent } from "../calendar-component/calendar-component";
 import { Subject, takeUntil } from "rxjs";
@@ -68,14 +67,8 @@ interface CombinedStats {
 export class JobsComponent implements OnInit,OnDestroy {
 
   loadStats: boolean = true;
-  
-  // Variables typées avec nos interfaces
-  // statsData: CombinedStats;
-  // placeAffaireStats: StatsCategory;
-  // agricoleStats: StatsCategory;
-  // totalStats: StatsCategory;
 
-    statsData: any;
+  statsData: any;
   placeAffaireStats: any;
   agricoleStats: any;
   totalStats: any;
@@ -96,9 +89,6 @@ export class JobsComponent implements OnInit,OnDestroy {
 
 
   urlTaches: string = "taches";
-
-
-
   userConnected: User;
   imageUserConnected: any;
   isDropup: boolean = true;
@@ -106,8 +96,6 @@ export class JobsComponent implements OnInit,OnDestroy {
   pageIndex: number = 0;
   offset: number = 0;
   loadData: boolean = false;
-  //loadStats: boolean = false;
-
 
   lengthPap: number;
   lengthPip: number;
@@ -207,9 +195,6 @@ percentFemmes: number = 0;
         "Aucune donnée disponible pour classifier la vulnérabilité des PAP."
       );
     }
-
-    console.log("Vulnérable:", this.vulnerabilityCounts.Moyenne);
-    console.log("Non Vulnérable:", this.vulnerabilityCounts.Faible);
   }
 
   public vulnerabilityChart = {
@@ -238,10 +223,8 @@ percentFemmes: number = 0;
         (data: any) => {
           this.loadData = false;
           if (data["responseCode"] == 200) {
-            //  console.log(data);
             this.loadData = false;
             this.lengthPip = data.length;
-            // console.log(data);
           } else {
             this.loadData = false;
           }
@@ -251,9 +234,6 @@ percentFemmes: number = 0;
         }
       );
   }
-
-  //
-  // Dans votre composant
 private destroy$ = new Subject<void>();
 
 getPlainte() {
@@ -309,106 +289,18 @@ ngOnDestroy() {
     this.destroy$.complete();
 }
 
-  // getPlainte() {
-  //   return this.parentService
-  //     .list("plaintes", this.pageSize, this.offset, this.currentProjectId)
-  //     .subscribe(
-  //       (data: any) => {
-  //         this.loadData = false;
-  //         if (data["responseCode"] == 200) {
-  //           this.loadData = false;
-  //           this.lengthPlainte = data.length;
-  //           this.listPlainte = data.data;
-  //           this.classifyComplaints();
-  //           this.complaintChart.series = [
-  //             this.complaintCounts.resolu,
-  //             this.complaintCounts.enAttente,
-  //             this.complaintCounts.enCours,
-  //           ];
-  //         } else {
-  //           this.loadData = false;
-  //         }
-  //       },
-  //       (err) => {
-  //         console.log(err);
-  //       }
-  //     );
-  // }
-
-  // getDocument() {
-  //   return this.parentService
-  //     .list("documents", this.pageSize, this.offset, this.currentProjectId)
-  //     .subscribe(
-  //       (data: any) => {
-  //         this.loadData = false;
-  //         if (data["responseCode"] == 200) {
-  //           this.loadData = false;
-  //           this.listDocument = data["data"];
-  //           this.lenghtDocument = data.length;
-  //           //  console.log(data);
-  //         } else {
-  //           this.loadData = false;
-  //         }
-  //       },
-  //       (err) => {
-  //         console.log(err);
-  //       }
-  //     );
-  // }
-
-
-
   public complaintCounts = {
   resolu: 0,
   enAttente: 0,
   enCours: 0
 };
-  // classifyComplaints(): void {
-  //   if (this.listPlainte && this.listPlainte.length > 0) {
-  //     this.listPlainte.forEach((complaint) => {
-  //       if (complaint.etat == "Résolue") {
-  //         this.complaintCounts.resolu++;
-  //       } else if (complaint.etat == "En Attente") {
-  //         this.complaintCounts.enAttente++;
-  //       } else if (complaint.etat == "En cours") {
-  //         this.complaintCounts.enCours++;
-  //       }
-  //     });
-  //   } else {
-  //     console.error("Aucune donnée disponible pour classifier les plaintes.");
-  //   }
-  // }
 
-    // getTaches() {
-    //   this.loadData = true;
-    //   return this.parentService
-    //     .list(this.urlTaches, this.pageSize, this.offset, this.currentProjectId)
-    //     .subscribe(
-    //       (data: any) => {
-    //         this.loadData = false;
-    //         if (data["responseCode"] == 200) {
-    //           this.loadData = false;
-    //           this.tasksData = data["data"];
-
-    //           console.log('taches',data);
-    //         } else {
-    //           this.loadData = false;
-    //         }
-    //       },
-    //       (err) => {
-    //         this.loadData = false;
-    //         console.log(err);
-    //       }
-    //     );
-    // }
 classifyComplaints(): void {
-    // Reset counts
     this.complaintCounts = {
       resolu: 0,
       enAttente: 0,
       enCours: 0
     };
-
     if (this.listPlainte && this.listPlainte.length > 0) {
       this.listPlainte.forEach((complaint : any) => {
         console.log('===================complein=================');
@@ -422,7 +314,6 @@ classifyComplaints(): void {
           this.complaintCounts.enCours++;
         }
       });
-
       // Update chart series with the counts
       this.complaintChart.series = [
         this.complaintCounts.resolu,
@@ -447,8 +338,6 @@ classifyComplaints(): void {
     },
   };
 
-  //engagements
-
   page = 1;
 
   viewPV(reference: string): void {
@@ -466,7 +355,6 @@ classifyComplaints(): void {
   getFileName(url: string): string {
     return url.substring(url.lastIndexOf("/") + 1);
   }
-
   getRencontres() {
     return this.projectService
       .getRencontreByProjectId(this.currentProjectId)
@@ -510,7 +398,7 @@ classifyComplaints(): void {
       .pipe(takeUntil(this.destroy$))
       .subscribe(
         (data: CombinedStats) => {
-               console.log("Statistiques combine du projet:", data);
+          console.log("Statistiques combine du projet:", data);
           this.loadStats = false;
           this.statsData = data;
           this.placeAffaireStats = data.placeAffaireStats;
@@ -599,32 +487,6 @@ loadPaps(): void {
     });
 }
 
-
-// loadPapsAgricole(): void {
-//   console.log('loadPapsAgricole');
-//   this.isLoadingPap = true; 
-//   this.parentService.list("papAgricole", 1000, 0, this.currentProjectId)
-//    .pipe(takeUntil(this.destroy$))
-//     .subscribe({
-//       next: (data: any) => {
-//         console.log('resAgricole', data);
-//         if (data.responseCode == 200) {
-//           // Renommer la clé pointGeometriques -> multiPolygonGeometrique
-//           this.papsAgricole = data.data.map((pap: any) => ({
-//             ...pap,
-//             multiPolygonGeometrique: pap.pointGeometriques, // Copie directe
-//             pointGeometriques: undefined // Optionnel : supprime l'ancienne clé
-//           }));
-//           console.log('papsAgricolAftere', this.papsAgricole);
-//         }
-//         this.isLoadingPap = false;
-//       },
-//       error: (err) => {
-//         console.error(err);
-//         this.isLoadingPap = false;
-//       }
-//     });
-// }
 loadPapsAgricole(): void {
   console.log('loadPapsAgricole');
   this.isLoadingPap = true; 

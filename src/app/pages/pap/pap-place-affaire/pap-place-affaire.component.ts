@@ -332,9 +332,9 @@ ngOnDestroy() {
     console.log(information);
     this.snackbar.openModal(
       AddPapPlaceAffaireComponent,
-      "60rem",
+      "50rem",
       "edit",
-      "",
+      "auto",
       information,
       "",
       () => {
@@ -432,9 +432,9 @@ ngOnDestroy() {
 
     this.snackbar.openModal(
       AddPapPlaceAffaireComponent,
-      "6Orem",
+      "50rem",
       "new",
-      "",
+      "auto",
       this.datas,
       "",
       () => {

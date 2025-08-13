@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { PapService } from "../../pap/pap.service";
 import { MatSort } from "@angular/material/sort";
 import { MatPaginator } from "@angular/material/paginator";
@@ -7,7 +7,8 @@ import { MatTableDataSource } from "@angular/material/table";
 import { UntypedFormGroup } from "@angular/forms";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { LocalService } from "src/app/core/services/local.service";
-import { takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
+import { ProjectService } from "src/app/core/services/project.service";
 
 interface SexStats {
   Total: number;
@@ -48,52 +49,52 @@ interface CombinedStats {
   templateUrl: "./mise-en-oeuvre.component.html",
   styleUrl: "./mise-en-oeuvre.component.css",
 })
-export class MiseEnOeuvreComponent implements OnInit {
+export class MiseEnOeuvreComponent implements OnInit, OnDestroy {
   [x: string]: any;
 
   listPap: Pap[];
   filterTable($event: any) {}
   breadCrumbItems: Array<{}>;
   isLoading: boolean = false;
+  loadData: boolean = true; // Pour le loader
+  loadStats: boolean = true;
   pageSizeOptions = [5, 10, 25, 100, 500, 1000];
   pageSize: number = 10000000;
   pageIndex: number = 0;
   userConnecter;
   offset: number = 0;
 
-
   currentProjectId: any;
-  countByCategory = {};
-  countByVulnerabilityStatus = {};
-  countBySex = {};
+  
+  // Données des statistiques combinées
+  statsData: any;
+  placeAffaireStats: any;
+  agricoleStats: any;
+  totalStats: any;
 
-  constructor(
-    private localService: LocalService,
-    private parentService: ServiceParent
-  ) {
-    this.currentProjectId = this.localService.getData("ProjectId");
-  }
-
-  ngOnInit(): void {
-    this.loadAllCategories();
-    this.getEntente();
-    this.getStatCombine();
-  }
-
-  getPartiAffecte() {}
-
-  papCategories: number = 100;
-  papDeplacement: number = 50;
-  papVulnerables: number = 20;
-
+  // Données pour l'affichage
   dossiersIncomplets: number = 0;
   dossiersComplets: number = 0;
   ententesCompensation: number = 0;
   dossiersTransmis: number = 0;
   papPayees: number = 0;
 
+  // Configuration des graphiques
+  pieChart = {
+    series: [0, 0],
+    chart: {
+      type: "pie",
+      width: 330,
+    },
+    labels: ["PAP Agricoles", "PAP Places d'affaires"],
+    colors: ["#D45C00", "#0C8439"],
+    legend: {
+      position: "bottom",
+    },
+  };
+
   vulnerableChart = {
-    series: [20, 40],
+    series: [0, 0],
     chart: {
       type: "pie",
       width: 330,
@@ -105,17 +106,15 @@ export class MiseEnOeuvreComponent implements OnInit {
     },
   };
 
-  categories = ["Agricoles", "Places affaires"];
-
   barChart = {
     series: [
       {
-        name: "Effectif féminin",
-        data: [],
+        name: "Effectif masculin",
+        data: [0, 0],
       },
       {
-        name: "Effectif masculin",
-        data: [],
+        name: "Effectif féminin",
+        data: [0, 0],
       },
     ],
     chart: {
@@ -124,9 +123,9 @@ export class MiseEnOeuvreComponent implements OnInit {
       stacked: true,
     },
     xaxis: {
-      categories: ["Agricole", "Place d'affaire"],
+      categories: ["PAP Agricoles", "PAP Places d'affaires"],
     },
-    colors: ["#0C8439", "#D45C00"],
+    colors: ["#008FFB", "#FF4560"],
     legend: {
       position: "top",
     },
@@ -141,7 +140,7 @@ export class MiseEnOeuvreComponent implements OnInit {
     series: [
       {
         name: "Total des compensations",
-        data: [100000, 60000],
+        data: [0, 0],
       },
     ],
     chart: {
@@ -149,220 +148,140 @@ export class MiseEnOeuvreComponent implements OnInit {
       height: 320,
     },
     xaxis: {
-      categories: this.categories,
+      categories: ["PAP Agricoles", "PAP Places d'affaires"],
     },
     colors: ["#0C8439"],
     dataLabels: {
       enabled: true,
       formatter: function (val) {
-        return val + " CFA";
+        return val.toLocaleString() + " CFA";
       },
     },
   };
 
-  countElementsByCategory(): void {
-    this.countByCategory = this.datas.reduce((acc, item) => {
-      acc[item.categorie] = (acc[item.categorie] || 0) + 1;
-      return acc;
-    }, {});
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private localService: LocalService,
+    private parentService: ServiceParent,
+    private projectService: ProjectService,
+  ) {
+    this.currentProjectId = this.localService.getData("ProjectId");
+    console.log("Current Project ID:", this.currentProjectId);
   }
 
-  countElementsByVulnerabilityStatus(): void {
-    this.countByVulnerabilityStatus = this.datas.reduce((acc, item) => {
-      acc[item.statutVulnerable] = (acc[item.statutVulnerable] || 0) + 1;
-      return acc;
-    }, {});
+  ngOnInit(): void {
+    this.getStatCombine();
+    this.getEntente();
   }
-
-  countElementsBySex(): void {
-    this.countBySex = this.datas.reduce((acc, item) => {
-      acc[item.sexe] = (acc[item.sexe] || 0) + 1;
-      return acc;
-    }, {});
-  }
-
-  papAgricoleCount: number = 0;
-  databasePapPlaceAffaireCount: number = 0;
-  papEconomiqueCount: number = 0;
-
-  pieChart = {
-    series: [0, 0],
-    chart: {
-      type: "pie",
-      width: 330,
-    },
-    labels: ["Agricoles", "Places affaires"],
-    colors: ["#D45C00", "#0C8439"],
-    legend: {
-      position: "bottom",
-    },
-  };
-
-  getPapByCategory(category: string) {
-    this.loadData = true;
-    return this.parentService
-      .list(category, this.pageSize, this.offset)
-      .subscribe(
-        (data: any) => {
-          if (data["responseCode"] === 200) {
-            const currentList = data.data;
-            console.log(
-              `Liste récupérée pour la catégorie ${category}:`,
-              currentList
-            );
-            this.listPap = [...this.listPap, ...currentList];
-            this.lengthPap += currentList.length;
-            if (category === "papAgricole") {
-              this.papAgricoleCount += currentList.length;
-            } else if (category === "databasePapPlaceAffaire") {
-              this.databasePapPlaceAffaireCount += currentList.length;
-            } else if (category === "papEconomique") {
-              this.papEconomiqueCount += currentList.length;
-            }
-            this.updateSexCounts(category, currentList);
-            this.updateVulnerabilityCounts(currentList);
-            this.updatePieChart();
-            this.updateBarChart();
-          } else {
-            console.error(
-              `Erreur lors de la récupération des PAP pour ${category}`
-            );
-          }
-          this.loadData = false;
-        },
-        (err) => {
-          console.error(`Erreur réseau pour la catégorie ${category}:`, err);
-          this.loadData = false;
-        }
-      );
-  }
-
-  sexCounts = {
-    papAgricole: { male: 0, female: 0 },
-    databasePapPlaceAffaire: { male: 0, female: 0 },
-    papEconomique: { male: 0, female: 0 },
-  };
-
-  // Votre fonction mise à jour
-  updateSexCounts(category: string, list: any[]): void {
-    const maleCount = list.filter(
-      (pap) =>
-        pap.sexe === "G" || pap.sexe === "Garcon" || pap.sexe === "Masculin"
-    ).length;
-
-    const femaleCount = list.filter(
-      (pap) =>
-        pap.sexe === "F" || pap.sexe === "Feminim" || pap.sexe === "Féminin"
-    ).length;
-
-    // Mise à jour des comptes
-    this.sexCounts[category].male = maleCount;
-    this.sexCounts[category].female = femaleCount;
-
-    // Mise à jour du graphique
-    this.updateBarChart();
-  }
-
-  // Fonction pour mettre à jour le graphique
-  updateBarChart(): void {
-    this.barChart = {
-      series: [
-        {
-          name: "Masculin",
-          data: [
-            this.sexCounts.papAgricole.male,
-            this.sexCounts.databasePapPlaceAffaire.male,
-            this.sexCounts.papEconomique.male,
-          ],
-        },
-        {
-          name: "Féminin",
-          data: [
-            this.sexCounts.papAgricole.female,
-            this.sexCounts.databasePapPlaceAffaire.female,
-            this.sexCounts.papEconomique.female,
-          ],
-        },
-      ],
-      chart: {
-        type: "bar",
-        height: 350,
-        stacked: true,
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
-        },
-      },
-      xaxis: {
-        categories: ["PAP Agricole", "PAP Place Affaire"],
-      },
-      colors: ["#008FFB", "#FF4560"],
-      legend: {
-        position: "top",
-      },
-    };
-  }
-
-  updateVulnerabilityCounts(list: any[]): void {
-    list.forEach((pap) => {
-      if (pap.statutVulnerable === "Oui") {
-        this.vulnerabilityCounts.vulnerable++;
-      } else if (pap.statutVulnerable === "Non") {
-        this.vulnerabilityCounts.nonVulnerable++;
-      }
-    });
-  }
-
-  updatePieChart() {
-    this.pieChart.series = [
-      this.papAgricoleCount,
-      this.databasePapPlaceAffaireCount,
-    ];
-  }
-
-
 
   getStatCombine() {
+    this.loadData = true;
+    this.loadStats = true;
+    
     this.projectService
       .getStatsCombineByProjectId(this.currentProjectId)
       .pipe(takeUntil(this.destroy$))
       .subscribe(
-        (data: CombinedStats) => {
+        (data: any) => {
           console.log("Statistiques combine du projet:", data);
           this.loadStats = false;
+          this.loadData = false;
+          
           this.statsData = data;
           this.placeAffaireStats = data.placeAffaireStats;
           this.agricoleStats = data.agricoleStats;
           this.totalStats = data.totalStats;
+          
+          // Mise à jour des graphiques avec les nouvelles données
+          this.updateAllCharts();
         },
         (err) => {
           console.error('Erreur lors du chargement des stats:', err);
           this.loadStats = false;
+          this.loadData = false;
         }
       );
   }
 
+  updateAllCharts() {
+    this.updatePieChart();
+    this.updateVulnerableChart();
+    this.updateBarChart();
+    this.updateCompensationChart();
+  }
 
+  updatePieChart() {
+    if (this.agricoleStats && this.placeAffaireStats) {
+      const agricoleTotal = this.agricoleStats.Sexes_globaux?.Total || 0;
+      const placeAffaireTotal = this.placeAffaireStats.Sexes_globaux?.Total || 0;
+      
+      this.pieChart = {
+        ...this.pieChart,
+        series: [agricoleTotal, placeAffaireTotal]
+      };
+    }
+  }
 
+  updateVulnerableChart() {
+    if (this.totalStats && this.totalStats.Vulnerabilites_globales) {
+      const vulnerabilities = this.totalStats.Vulnerabilites_globales;
+      
+      // Calculer les vulnérables (tous sauf "Non vulnérable")
+      let vulnerableCount = 0;
+      let nonVulnerableCount = vulnerabilities["Non vulnérable"] || 0;
+      
+      Object.keys(vulnerabilities).forEach(key => {
+        if (key !== "Non vulnérable") {
+          vulnerableCount += vulnerabilities[key] || 0;
+        }
+      });
+      
+      this.vulnerableChart = {
+        ...this.vulnerableChart,
+        series: [vulnerableCount, nonVulnerableCount]
+      };
+    }
+  }
 
+  updateBarChart() {
+    if (this.agricoleStats && this.placeAffaireStats) {
+      const agricoleHommes = this.agricoleStats.Sexes_globaux?.Hommes || 0;
+      const agricoleFemmes = this.agricoleStats.Sexes_globaux?.Femmes || 0;
+      const placeAffaireHommes = this.placeAffaireStats.Sexes_globaux?.Hommes || 0;
+      const placeAffaireFemmes = this.placeAffaireStats.Sexes_globaux?.Femmes || 0;
 
-  loadAllCategories() {
-    this.listPap = [];
-    this.lengthPap = 0;
-    this.vulnerabilityCounts = { vulnerable: 0, nonVulnerable: 0 };
-    this.papAgricoleCount = 0;
-    this.databasePapPlaceAffaireCount = 0;
-    this.papEconomiqueCount = 0;
-    this.sexCounts = {
-      papAgricole: { male: 0, female: 0 },
-      databasePapPlaceAffaire: { male: 0, female: 0 },
-      papEconomique: { male: 0, female: 0 },
-    };
-    const categories = ["papAgricole", "databasePapPlaceAffaire"];
-    categories.forEach((category) => {
-      this.getPapByCategory(category);
-    });
+      this.barChart = {
+        ...this.barChart,
+        series: [
+          {
+            name: "Effectif masculin",
+            data: [agricoleHommes, placeAffaireHommes],
+          },
+          {
+            name: "Effectif féminin",
+            data: [agricoleFemmes, placeAffaireFemmes],
+          },
+        ]
+      };
+    }
+  }
+
+  updateCompensationChart() {
+    if (this.agricoleStats && this.placeAffaireStats) {
+      const agricolePerte = this.agricoleStats.statsPertes?.totalPerte || 0;
+      const placeAffairePerte = this.placeAffaireStats.statsPertes?.totalPerte || 0;
+
+      this.compensationChart = {
+        ...this.compensationChart,
+        series: [
+          {
+            name: "Total des compensations",
+            data: [agricolePerte, placeAffairePerte],
+          },
+        ]
+      };
+    }
   }
 
   getEntente() {
@@ -376,18 +295,10 @@ export class MiseEnOeuvreComponent implements OnInit {
       .subscribe(
         (data: any) => {
           console.log(data);
-
-          this.loadData = false;
           if (data["responseCode"] == 200) {
-            this.loadData = false;
-            // this.dataSource = new MatTableDataSource(data["data"]);
-            // this.dataSource.paginator = this.paginator;
-            // this.dataSource.sort = this.sort;
-            // this.datas = data["data"];
             this.ententesCompensation = data["length"];
             this._changeDetectorRef.markForCheck();
           } else {
-            this.loadData = false;
             this.dataSource = new MatTableDataSource();
           }
         },
@@ -396,4 +307,18 @@ export class MiseEnOeuvreComponent implements OnInit {
         }
       );
   }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  // Méthodes supprimées car remplacées par getStatCombine :
+  // - loadAllCategories()
+  // - getPapByCategory()
+  // - updateSexCounts()
+  // - updateVulnerabilityCounts()
+  // - countElementsByCategory()
+  // - countElementsByVulnerabilityStatus()
+  // - countElementsBySex()
 }

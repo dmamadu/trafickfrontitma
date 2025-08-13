@@ -393,7 +393,7 @@ private destroy$ = new Subject<void>();
     console.log(information);
     this.snackbar.openModal(
       AddPapAgricoleComponent,
-      "60rem",
+      "50rem",
       "edit",
       "",
       information,
@@ -704,7 +704,7 @@ private destroy$ = new Subject<void>();
     }
     this.snackbar.openModal(
       AddPapAgricoleComponent,
-      "60rem",
+      "50rem",
       "new",
       "auto",
       this.datas,
