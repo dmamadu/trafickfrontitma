@@ -7,6 +7,7 @@ import {
   Output,
   ChangeDetectorRef,
   Inject,
+  inject,
 } from "@angular/core";
 import {
   FormArray,
@@ -51,6 +52,7 @@ import {
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MomentDateAdapter } from "@angular/material-moment-adapter";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
+import { LocalService } from "src/app/core/services/local.service";
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -102,10 +104,14 @@ export const MY_DATE_FORMATS = {
 export class AddComponent {
   imageToff: any;
   listProject: Project[];
-  urlImage = environment.apiUrl + "fileAws/download/";
+  urlImage = environment.apiUrl + "fileMinios/download/";
   isloading: boolean = false;
   buttonText: string = "";
   textHead: string = "";
+      userId:string;
+
+      private localService = inject(LocalService);
+  
   constructor(
     private fb: FormBuilder,
     private dialog: MatDialog,
@@ -118,6 +124,16 @@ export class AddComponent {
     public matDialogRef: MatDialogRef<AddComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
+
+
+
+ this.localService.getDataJson("user");
+
+
+ this.userId=this.localService.getDataJson("user").id;
+
+console.log(this.userId);
+
     this.initializeForm();
     if (data && data.action == "edit") {
       this.buttonText = "Modifier";
@@ -356,7 +372,7 @@ export class AddComponent {
           if (result["value"] == true) {
             this.projectService
               .add<ResponseData<Project>>(
-                "projects/createProject",
+                `projects/createProject/${this.userId}`,
                 projectRequest
               )
               .subscribe(

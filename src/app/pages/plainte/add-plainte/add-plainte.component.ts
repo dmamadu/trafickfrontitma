@@ -89,7 +89,7 @@ export class AddPlainteComponent implements OnInit {
   uploadedImage!: File;
   imageURL: string | undefined;
   // urlImage = environment.apiUrl + "image/getFile/";
-  urlImage = environment.apiUrl + "fileAws/download/";
+  urlImage = environment.apiUrl + "fileMinios/upload/";
   isLoading: boolean = false;
 
   sexe = [

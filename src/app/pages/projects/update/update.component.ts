@@ -32,7 +32,7 @@ export class UpdateComponent {
 
   imageToff: any;
 
-  urlImage = environment.apiUrl + "fileAws/download/";
+  urlImage = environment.apiUrl + "fileMinios/upload/";
   isloading: boolean = false;
   buttonText: string = "Créer le projet";
   lengthMo: any;

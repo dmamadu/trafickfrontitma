@@ -101,7 +101,7 @@ ngOnDestroy() {
   updateItems(information: any): void {
     this.snackbar.openModal(
       AddComponent,
-      "60rem",
+      "50rem",
       "edit",
       "",
       information,
@@ -212,7 +212,7 @@ ngOnDestroy() {
   addItems(): void {
     this.snackbar.openModal(
       AddComponent,
-      "60rem",
+      "50rem",
       "new",
       "",
       this.datas,

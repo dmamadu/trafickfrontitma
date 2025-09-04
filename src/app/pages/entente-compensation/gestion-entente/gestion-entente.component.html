@@ -1,0 +1,535 @@
+<mat-toolbar class="mat-accent m-0 backToolbar">
+  <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
+    <span class="">{{ action === 'edit' ? 'Modifier' : 'Détails' }} l'entente de compensation</span>
+    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+<div class="p-4" *ngIf="ententeDetails">
+  <div class="flex justify-between items-center mb-6 p-4 bg-gray-50 rounded-lg">
+    <div>
+      <h2 class="text-xl font-bold">{{ ententeDetails.prenom }} {{ ententeDetails.nom }}</h2>
+      <p class="text-gray-600">Code PAP: {{ ententeDetails.codePap }}</p>
+      <p class="text-gray-600">Commune: {{ ententeDetails.commune }}, Département: {{ ententeDetails.departement }}</p>
+      <div class="flex items-center mt-2">
+        <div class="flex items-center mt-2">
+          <mat-chip [ngStyle]="getStatusStyle(ententeDetails.statut)">
+            {{ ententeDetails.statut }}
+          </mat-chip>
+          <mat-chip class="ml-2" [ngStyle]="getProcessStyle(ententeDetails.etatProcessus)">
+            {{ ententeDetails.etatProcessus }}
+          </mat-chip>
+        </div>
+      </div>
+    </div>
+    <div class="flex gap-2" *ngIf="action === 'edit'">
+      <button mat-raised-button color="primary" (click)="synchroniserEntente()" 
+              [disabled]="ententeDetails.statut !== 'BROUILLON' || loading">
+        <mat-icon>sync</mat-icon>
+        Synchroniser
+      </button>
+      <button mat-raised-button color="accent" (click)="finaliserEntente()" 
+              [disabled]="ententeDetails.statut !== 'SYNCHRONISEE' || loading">
+        <mat-icon>lock</mat-icon>
+        Finaliser
+      </button>
+    </div>
+  </div>
+
+  <div class="bg-yellow-50 p-4 rounded-lg mb-6" *ngIf="ententeDetails.vulnerabilite">
+    <h3 class="font-bold text-yellow-800 mb-2">Vulnérabilités identifiées</h3>
+    <p class="text-yellow-700">{{ ententeDetails.vulnerabilite }}</p>
+  </div>
+
+  <!-- Section Processus d'Entente -->
+  <mat-expansion-panel [expanded]="true" class="mt-6">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Processus d'Entente</mat-panel-title>
+    </mat-expansion-panel-header>
+    
+    <div class="processus-container">
+      <!-- Barre de progression -->
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-step" [class.active]="isStepActive('compensation')" 
+               [class.completed]="isStepCompleted('compensation')">
+            <div class="step-number">1</div>
+            <div class="step-label">Compensation</div>
+          </div>
+          
+          <div class="progress-step" [class.active]="isStepActive('information')" 
+               [class.completed]="isStepCompleted('information')">
+            <div class="step-number">2</div>
+            <div class="step-label">Information PAP</div>
+          </div>
+          
+          <div class="progress-step" [class.active]="isStepActive('accord')" 
+               [class.completed]="isStepCompleted('accord')">
+            <div class="step-number">3</div>
+            <div class="step-label">Accord PAP</div>
+          </div>
+          
+          <div class="progress-step" [class.active]="isStepActive('paiement')" 
+               [class.completed]="isStepCompleted('paiement')">
+            <div class="step-number">4</div>
+            <div class="step-label">Paiement</div>
+          </div>
+          
+          <div class="progress-step" [class.active]="isStepActive('formation')" 
+               [class.completed]="isStepCompleted('formation')">
+            <div class="step-number">5</div>
+            <div class="step-label">Formation</div>
+          </div>
+          
+          <div class="progress-step" [class.active]="isStepActive('suivi')" 
+               [class.completed]="isStepCompleted('suivi')">
+            <div class="step-number">6</div>
+            <div class="step-label">Suivi</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Étape active -->
+      <div class="step-content" *ngIf="currentStep">
+        <div class="step-header">
+          <h4>{{ getStepTitle(currentStep) }}</h4>
+          <span class="step-status" [ngClass]="{'completed': isStepCompleted(currentStep)}">
+            {{ isStepCompleted(currentStep) ? 'Complétée' : 'En attente' }}
+          </span>
+        </div>
+
+        <!-- Formulaire spécifique à chaque étape -->
+        <div [ngSwitch]="currentStep">
+          <!-- Étape Compensation -->
+          <div *ngSwitchCase="'compensation'">
+            <div class="compensation-summary">
+              <h5>Détails de la compensation</h5>
+              <div class="compensation-grid">
+                <div class="comp-item">
+                  <span class="label">Perte totale:</span>
+                  <span class="value">{{ formatMontant(ententeDetails.perteTotale) }}</span>
+                </div>
+                <div class="comp-item">
+                  <span class="label">Frais de déplacement:</span>
+                  <span class="value">{{ formatMontant(ententeDetails.fraisDeplacement) }}</span>
+                </div>
+                <div class="comp-item">
+                  <span class="label">Appui relocalisation:</span>
+                  <span class="value">{{ formatMontant(ententeDetails.appuiRelocalisation) }}</span>
+                </div>
+                <div class="comp-item">
+                  <span class="label">Perte revenue:</span>
+                  <span class="value">{{ formatMontant(ententeDetails.perteRevenue) }}</span>
+                </div>
+                <div class="comp-item">
+                  <span class="label">Perte bâtiment:</span>
+                  <span class="value">{{ formatMontant(ententeDetails.perteBatiment) }}</span>
+                </div>
+                <div class="comp-item">
+                  <span class="label">Perte loyer:</span>
+                  <span class="value">{{ formatMontant(ententeDetails.perteLoyer) }}</span>
+                </div>
+                <div class="comp-item">
+                  <span class="label">Perte clôture:</span>
+                  <span class="value">{{ formatMontant(ententeDetails.perteCloture) }}</span>
+                </div>
+                <div class="comp-item">
+                  <span class="label">Arbres jeunes:</span>
+                  <span class="value">{{ formatMontant(ententeDetails.perteArbreJeune) }}</span>
+                </div>
+                <div class="comp-item">
+                  <span class="label">Arbres adultes:</span>
+                  <span class="value">{{ formatMontant(ententeDetails.perteArbreAdulte) }}</span>
+                </div>
+                <div class="comp-item">
+                  <span class="label">Équipements:</span>
+                  <span class="value">{{ formatMontant(ententeDetails.perteEquipement) }}</span>
+                </div>
+              </div>
+              <div class="comp-total">
+                <span class="label">Total:</span>
+                <span class="value">{{ formatMontant(calculerTotalCompensation()) }}</span>
+              </div>
+            </div>
+            
+            <button mat-raised-button color="primary" 
+                    (click)="validerEtape('compensation')"
+                    [disabled]="isStepCompleted('compensation') || loading"
+                    class="mt-4">
+              {{ isStepCompleted('compensation') ? 'Complétée' : 'Établir la compensation' }}
+            </button>
+          </div>
+
+          <!-- Étape Information -->
+          <div *ngSwitchCase="'information'">
+            <form [formGroup]="informationForm" *ngIf="!isStepCompleted('information')">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Mode d'information</mat-label>
+                <mat-select formControlName="modeInformation" required>
+                  <mat-option value="email">Email</mat-option>
+                  <mat-option value="telephone">Téléphone</mat-option>
+                  <mat-option value="visite">Visite en personne</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Détails supplémentaires</mat-label>
+                <textarea matInput formControlName="detailsInformation" rows="3"></textarea>
+              </mat-form-field>
+            </form>
+            <div class="paiement-details">
+      <p *ngIf="ententeDetails.modeInformation"><strong>Mode d'information:</strong> {{ ententeDetails.modeInformation }}</p>
+      <p *ngIf="ententeDetails.detailsInformation"><strong>Détails supplémentaires:</strong> {{ ententeDetails.detailsInformation }}</p>
+            </div>
+
+        <div class="paiement-proof" *ngIf="isStepCompleted('information')">
+      <mat-icon class="proof-icon">check_circle</mat-icon>
+      <span>information effectuée le {{ ententeDetails.dateInformationPap | date:'dd/MM/yyyy' }}</span>
+    </div>
+
+            <button mat-raised-button color="primary" 
+                    (click)="validerEtape('information')"
+                    [disabled]="informationForm.invalid || loading"
+                    class="mt-4">
+              Informer le PAP
+            </button>
+          </div>
+
+          <!-- Étape Accord -->
+          <div *ngSwitchCase="'accord'">
+             <p>Obtenir l'accord formel du PAP pour la compensation proposée.</p>
+
+             <div>
+
+             </div>
+
+      <div class="paiement-proof" *ngIf="isStepCompleted('accord')">
+      <mat-icon class="proof-icon">check_circle</mat-icon>
+      <span>Accord du PAP obtenu le {{ ententeDetails.dateAccordPap | date:'dd/MM/yyyy' }}</span>
+    </div>
+
+        <div class="w-1/2 mt-2">
+          <img class="w-32 h-32" [src]="preuveAccord" alt=""
+            *ngIf="preuveAccord"
+            (click)="openImageModal(preuveAccord)">
+          <div class="flex items-center mt-6 lg:mt-0 space-x-6" *ngIf="!isStepCompleted('accord')">
+            <div class="flex flex-col">
+              <input matInput type="text" name="numeroPni" hidden />
+              <button (click)="signatureClient('urlSignatureResponsable')"
+                class="c_btnAccount_attribut c_btnAccountF h-10 w-10 rounded-full"
+                matTooltip="Ajouter signature du Responsable">
+                <i class="bx bx-pencil"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+            <button mat-raised-button color="primary" 
+                    (click)="validerEtape('accord')"
+                    [disabled]="(preuveAccord == null && !isStepCompleted('accord')) || loading"
+                    class="mt-4">
+              {{ isStepCompleted('accord') ? 'Accord obtenu' : 'Valider l\'accord' }}
+            </button>
+          </div>
+
+          <div *ngSwitchCase="'paiement'">
+  <div class="paiement-content">
+    <p>Effectuer le paiement de la compensation au PAP.</p>
+    
+    <div class="paiement-details" *ngIf="ententeDetails.optionPaiement">
+      <p><strong>Mode de paiement:</strong> {{ ententeDetails.optionPaiement }}</p>
+      <p><strong>Téléphone:</strong> {{ ententeDetails.numeroTelephone }}</p>
+    </div>
+
+    <div class="upload-section" *ngIf="!isStepCompleted('paiement')">
+      <button mat-stroked-button color="primary" (click)="paiementFileInput.click()" class="mt-4">
+        <mat-icon>attach_file</mat-icon>
+        Télécharger la preuve de paiement
+      </button>
+      <input hidden #paiementFileInput type="file" (change)="onFileSelected($event)" accept=".pdf,.jpg,.jpeg,.png">
+      
+      <div class="w-1/2 mt-2" *ngIf="preuvePaiement">
+        <img class="w-32 h-32 cursor-pointer" [src]="preuvePaiement" 
+             alt="Preuve de paiement"
+             (click)="openImageModal(preuvePaiement)">
+      </div>
+    </div>
+
+    <div class="paiement-proof" *ngIf="isStepCompleted('paiement')">
+      <mat-icon class="proof-icon">check_circle</mat-icon>
+      <span>Paiement effectué le {{ ententeDetails.datePaiement | date:'dd/MM/yyyy' }}</span>
+    </div>
+  </div>
+
+  <button mat-raised-button color="primary" 
+          (click)="validerEtape('paiement')"
+          [disabled]="(!preuvePaiement && !isStepCompleted('paiement')) || loading"
+          class="mt-4">
+    {{ isStepCompleted('paiement') ? 'Paiement effectué' : 'Valider le paiement' }}
+  </button>
+</div>
+
+<div *ngSwitchCase="'formation'">
+  <div class="formation-content">
+    <p>Donner la formation au PAP sur les nouvelles compétences ou activités.</p>
+    
+    <div class="formation-form" *ngIf="!isStepCompleted('formation')">
+      <mat-form-field appearance="outline" class="w-full mt-2">
+        <mat-label>Type de formation</mat-label>
+        <input matInput [(ngModel)]="typeFormation" required>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full mt-2">
+        <mat-label>Nom du formateur</mat-label>
+        <input matInput [(ngModel)]="formateur" required>
+      </mat-form-field>
+    </div>
+
+    <div class="paiement-proof" *ngIf="isStepCompleted('formation')">
+      <mat-icon class="paiement-icon">check_circle</mat-icon>
+      <span>Formation donnée le {{ ententeDetails.dateFormation | date:'dd/MM/yyyy' }}</span>
+    </div>
+        <div class="paiement-details">
+<p *ngIf="ententeDetails.typeFormation"><strong>Type de formation:</strong> {{ ententeDetails.typeFormation }}</p>
+      <p *ngIf="ententeDetails.formateur"><strong>Formateur:</strong> {{ ententeDetails.formateur }}</p>
+    </div>
+
+  </div>
+
+  <button mat-raised-button color="primary" 
+          (click)="validerEtape('formation')"
+          [disabled]="(!typeFormation || !formateur) && !isStepCompleted('formation') || loading"
+          class="mt-4">
+    {{ isStepCompleted('formation') ? 'Formation donnée' : 'Marquer comme formé' }}
+  </button>
+</div>
+          <div *ngSwitchCase="'suivi'">
+  <div class="suivi-content">
+    <p>Effectuer le suivi post-compensation du PAP.</p>
+    
+    <div class="suivi-form" *ngIf="!isStepCompleted('suivi')">
+      <mat-form-field appearance="outline" class="w-full mt-4">
+        <mat-label>Résultat du suivi</mat-label>
+        <textarea matInput [(ngModel)]="resultatSuivi" rows="3" required></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full mt-4">
+        <mat-label>Commentaires</mat-label>
+        <textarea matInput [(ngModel)]="commentairesSuivi" rows="3"></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="paiement-proof" *ngIf="isStepCompleted('suivi')">
+      <mat-icon class="proof-icon">check_circle</mat-icon>
+      <span>Suivi effectué le {{ ententeDetails.dateSuivi | date:'dd/MM/yyyy' }}</span>
+    </div>
+        <div  class="paiement-details">
+<p *ngIf="ententeDetails.resultatSuivi"><strong>Résultat du suivi:</strong> {{ ententeDetails.resultatSuivi }}</p>
+      <p *ngIf="ententeDetails.commentairesSuivi"><strong>Commentaires:</strong> {{ ententeDetails.commentairesSuivi }}</p>
+    </div>
+
+  </div>
+
+  <button mat-raised-button color="primary" 
+          (click)="validerEtape('suivi')"
+          [disabled]="(!resultatSuivi && !isStepCompleted('suivi')) || loading"
+          class="mt-4">
+    {{ isStepCompleted('suivi') ? 'Suivi effectué' : 'Marquer le suivi comme fait' }}
+  </button>
+</div>
+        </div>
+      </div>
+
+      <!-- Navigation entre les étapes -->
+      <div class="step-navigation">
+        <button mat-stroked-button (click)="previousStep()" [disabled]="isFirstStep() || loading">
+          <mat-icon>arrow_back</mat-icon>
+          Étape précédente
+        </button>
+        
+        <button mat-stroked-button (click)="nextStep()" [disabled]="isLastStep() || loading">
+          Étape suivante
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel class="mt-6" *ngIf="ententeDetails.statut !== 'FINALISEE' && action === 'edit'">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Modifications avancées</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="p-4">
+      <h4 class="font-bold mb-4">Modifier les valeurs de compensation</h4>
+      
+      <form [formGroup]="modificationsForm">
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <mat-form-field appearance="outline">
+            <mat-label>Perte totale</mat-label>
+            <input matInput type="number" formControlName="perteTotale">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Frais déplacement</mat-label>
+            <input matInput type="number" formControlName="fraisDeplacement">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Appui relocalisation</mat-label>
+            <input matInput type="number" formControlName="appuiRelocalisation">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Perte revenue</mat-label>
+            <input matInput type="number" formControlName="perteRevenue">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Perte bâtiment</mat-label>
+            <input matInput type="number" formControlName="perteBatiment">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Perte loyer</mat-label>
+            <input matInput type="number" formControlName="perteLoyer">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Perte clôture</mat-label>
+            <input matInput type="number" formControlName="perteCloture">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Arbres jeunes</mat-label>
+            <input matInput type="number" formControlName="perteArbreJeune">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Arbres adultes</mat-label>
+            <input matInput type="number" formControlName="perteArbreAdulte">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Équipements</mat-label>
+            <input matInput type="number" formControlName="perteEquipement">
+          </mat-form-field>
+        </div>
+
+        <mat-checkbox [(ngModel)]="propagerVersPapSource" class="mb-4">
+          Propager les modifications vers le PAP source
+        </mat-checkbox>
+
+        <mat-form-field appearance="outline" class="w-full mb-4">
+          <mat-label>Raison de la modification</mat-label>
+          <textarea matInput rows="2" formControlName="raisonModification" required></textarea>
+          <mat-error *ngIf="modificationsForm.get('raisonModification')?.hasError('required')">
+            La raison est obligatoire
+          </mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button color="warn" (click)="appliquerModifications()" 
+                [disabled]="modificationsForm.invalid || loading">
+          Appliquer les modifications
+        </button>
+      </form>
+    </div>
+  </mat-expansion-panel>
+
+  <div *ngIf="ententeDetails.statut === 'FINALISEE' && action === 'edit'" class="bg-blue-50 p-4 my-3 rounded-lg mb-6">
+    <div class="flex items-center">
+      <mat-icon class="text-blue-500 mr-2">lock</mat-icon>
+      <span class="text-blue-800 font-medium">Cette entente est finalisée et ne peut plus être modifiée</span>
+    </div>
+  </div>
+
+    <div class="bg-white p-4 rounded-lg shadow-sm mb-2" *ngIf="ententeDetails.statut == 'FINALISEE' && action === 'edit'">
+    <h3 class="font-bold text-lg mb-2">Valeurs de compensation</h3>
+    
+<div class="grid grid-cols-2 gap-2">
+  <div class="flex flex-col">
+    <span class="text-sm text-gray-500">Perte totale</span>
+    <span class="font-medium">{{ formatMontant(ententeDetails.perteTotale) }}</span>
+  </div>
+  
+  <div class="flex flex-col">
+    <span class="text-sm text-gray-500">Frais déplacement</span>
+    <span class="font-medium">{{ formatMontant(ententeDetails.fraisDeplacement) }}</span>
+  </div>
+  
+  <div class="flex flex-col">
+    <span class="text-sm text-gray-500">Appui relocalisation</span>
+    <span class="font-medium">{{ formatMontant(ententeDetails.appuiRelocalisation) }}</span>
+  </div>
+  
+  <div class="flex flex-col">
+    <span class="text-sm text-gray-500">Perte revenue</span>
+    <span class="font-medium">{{ formatMontant(ententeDetails.perteRevenue) }}</span>
+  </div>
+  
+  <div class="flex flex-col">
+    <span class="text-sm text-gray-500">Perte bâtiment</span>
+    <span class="font-medium">{{ formatMontant(ententeDetails.perteBatiment) }}</span>
+  </div>
+  
+  <div class="flex flex-col">
+    <span class="text-sm text-gray-500">Perte loyer</span>
+    <span class="font-medium">{{ formatMontant(ententeDetails.perteLoyer) }}</span>
+  </div>
+  
+  <div class="flex flex-col">
+    <span class="text-sm text-gray-500">Perte clôture</span>
+    <span class="font-medium">{{ formatMontant(ententeDetails.perteCloture) }}</span>
+  </div>
+  
+  <div class="flex flex-col">
+    <span class="text-sm text-gray-500">Arbres jeunes</span>
+    <span class="font-medium">{{ formatMontant(ententeDetails.perteArbreJeune) }}</span>
+  </div>
+  
+  <div class="flex flex-col">
+    <span class="text-sm text-gray-500">Arbres adultes</span>
+    <span class="font-medium">{{ formatMontant(ententeDetails.perteArbreAdulte) }}</span>
+  </div>
+  
+  <div class="flex flex-col">
+    <span class="text-sm text-gray-500">Équipements</span>
+    <span class="font-medium">{{ formatMontant(ententeDetails.perteEquipement) }}</span>
+  </div>
+</div>
+
+<!-- Pour le total -->
+<div class="mt-6 pt-4 border-t border-gray-200">
+  <div class="flex p-2 justify-between items-center">
+    <span class="text-lg font-bold">Total compensation</span>
+    <span class="text-xl font-bold text-green-600">
+      {{ formatMontant(calculerTotalCompensation()) }}
+    </span>
+  </div>
+</div>
+  </div>
+
+  <mat-expansion-panel class="mt-4">
+    <mat-expansion-panel-header>
+      <mat-panel-title>Historique des modifications</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="p-4">
+      <mat-list>
+        <mat-list-item *ngFor="let modif of historiqueModifications">
+          <div matLine>
+            <strong>{{ modif.champ }}</strong>: {{ modif.ancienneValeur }} → {{ modif.nouvelleValeur }}
+          </div>
+          <div matLine class="text-sm text-gray-500">
+            Par {{ modif.utilisateur }} le {{ modif.date | date:'dd/MM/yyyy HH:mm' }}
+          </div>
+        </mat-list-item>
+        <mat-list-item *ngIf="historiqueModifications.length === 0">
+          <div matLine>Aucune modification enregistrée</div>
+        </mat-list-item>
+      </mat-list>
+    </div>
+  </mat-expansion-panel>
+</div>
+
+<app-loader-data *ngIf="loading"></app-loader-data>

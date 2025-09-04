@@ -394,7 +394,7 @@ private destroy$ = new Subject<void>();
     console.log(information);
     this.snackbar.openModal(
       AddUserComponent,
-      "57rem",
+      "45rem",
       "edit",
       "38",
       information,
@@ -429,7 +429,7 @@ private destroy$ = new Subject<void>();
   addItems(): void {
     this.snackbar.openModal(
       AddMaitreOuvrageComponent,
-      "57rem",
+      "45rem",
       "new",
       "38rem",
       this.datas,

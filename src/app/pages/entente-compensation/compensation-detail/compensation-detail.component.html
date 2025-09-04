@@ -1,119 +1,160 @@
-<mat-toolbar class="mat-accent m-0 backToolbar">
-  <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
-    <span class="">Détail d'une entente de compensation</span>
-    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
-      <mat-icon>close</mat-icon>
-    </button>
-  </mat-toolbar-row>
-</mat-toolbar>
-
-<mat-card *ngIf="compensation" class="compensation-card">
-  <mat-card-header class="mx-4">
-    <div mat-card-avatar class="header-avatar"></div>
-    <mat-card-title>{{ compensation.prenom }} {{ compensation.nom }}</mat-card-title> <br>
-    <mat-card-subtitle>{{ compensation.codePap }}</mat-card-subtitle>
-  </mat-card-header>
-
-  <mat-card-content>
-    <!-- Section Informations Personnelles -->
-    <div fxLayout="row" fxLayoutGap="40px">
-      <!-- Section Informations Personnelles -->
-      <div fxFlex="50">
-        <h3>Informations Personnelles</h3>
-        <mat-list>
-          <mat-list-item fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-            <mat-icon matListIcon>person</mat-icon>
-            <div matLine>{{ compensation.sexe }}</div>
-          </mat-list-item>
-          <mat-list-item fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-            <mat-icon matListIcon>location_on</mat-icon>
-            <div matLine>{{ compensation.departement }}, {{ compensation.commune }}</div>
-          </mat-list-item>
-          <mat-list-item fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-            <mat-icon matListIcon>flag</mat-icon>
-            <div matLine>{{ compensation.nationalite }}</div>
-          </mat-list-item>
-        </mat-list>
-      </div>
-
-      <!-- Section Détails de la Compensation -->
-      <div fxFlex="50">
-        <h3>Détails de la Compensation</h3>
-        <mat-list>
-          <mat-list-item fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-            <mat-icon matListIcon>attach_money</mat-icon>
-            <div matLine>Frais de déplacement: {{ compensation.fraisDeplacement | currency }}</div>
-          </mat-list-item>
-          <mat-list-item fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-            <mat-icon matListIcon>home</mat-icon>
-            <div matLine>Superficie affectée: {{ compensation.superficieAffecte }} m²</div>
-          </mat-list-item>
-          <mat-list-item fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
-            <mat-icon matListIcon>money_off</mat-icon>
-            <div matLine>Perte totale: {{ compensation.perteTotale | currency }}</div>
-          </mat-list-item>
-        </mat-list>
-      </div>
-    </div>
-
-    <mat-divider></mat-divider>
-
-    <!-- Section Signatures -->
-
-
-    <!-- Section Pertes de Récoltes -->
-    <h3><mat-icon matListIcon class="mr-3">local_florist</mat-icon> Pertes de Récoltes</h3>
-    <mat-list>
-      <mat-list-item *ngFor="let recolte of  compensation.perteRecoltes">
-
-        <div matLine>{{ recolte.produit }} - Rendement: {{ recolte.rendement }} - Prix: {{ recolte.prix | currency }}
-        </div>
-      </mat-list-item>
-    </mat-list>
-
-    <!-- Section Pertes d'Arbres -->
-    <h3> <mat-icon matListIcon class="mr-3">park</mat-icon>Pertes d'Arbres</h3>
-    <mat-list>
-      <mat-list-item *ngFor="let arbre of compensation.perteArbres">
-
-        <div matLine>{{ arbre.espece }} - Type: {{ arbre.type }} - Nombre: {{ arbre.nombre }} - Total: {{ arbre.total |
-          currency }}</div>
-      </mat-list-item>
-    </mat-list>
-
-    <!-- Section Pertes de Revenus -->
-    <h3><mat-icon matListIcon class="mr-3">trending_down</mat-icon>Pertes de Revenus</h3>
-    <mat-list>
-      <mat-list-item *ngFor="let revenue of compensation.perteRevenues">
-
-        <div matLine>{{ revenue.categorieRevenue }} - Perte: {{ revenue.perteRevenue | currency }}</div>
-      </mat-list-item>
-    </mat-list>
-
-    <!-- Section Pertes d'Équipements -->
-    <h3> <mat-icon matListIcon class="mr-3">build</mat-icon>Pertes d'Équipements</h3>
-    <mat-list>
-      <mat-list-item *ngFor="let equipement of compensation.perteEquipements">
-
-        <div matLine>{{ equipement.libelle }} - Nombre: {{ equipement.nombre }} - Prix: {{ equipement.prix | currency }}
-        </div>
-      </mat-list-item>
-    </mat-list>
-  </mat-card-content>
-
-  <mat-divider></mat-divider>
-
-
-  <h3>Signatures</h3>
-  <div fxLayout="row" fxLayoutGap="40px">
-    <div fxFlex="50">
-      <h4>Signature du PAP</h4>
-      <img [src]="compensation.urlSignaturePap"    (click)="openImageModal(compensation.urlSignaturePap)" alt="Signature du PAP" class="signature-image">
-    </div>
-    <div fxFlex="50">
-      <h4>Signature du Responsable</h4>
-      <img [src]="compensation.urlSignatureResponsable"  (click)="openImageModal(compensation.urlSignatureResponsable)" alt="Signature du Responsable" class="signature-image">
+<div class="compensation-detail-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <h1 class="title">Détail de l'entente</h1>
+      <button mat-icon-button (click)="close()" class="close-btn" aria-label="Fermer">
+        <mat-icon>close</mat-icon>
+      </button>
     </div>
   </div>
 
-</mat-card>
+  <!-- Main Content -->
+  <div class="content" *ngIf="compensation">
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <div class="profile-avatar">
+        <mat-icon>person</mat-icon>
+      </div>
+      <div class="profile-info">
+        <h2>{{ compensation.prenom }} {{ compensation.nom }}</h2>
+        <p class="code-pap">{{ compensation.codePap }}</p>
+        <p class="pap-type">{{ compensation.papType }}</p>
+      </div>
+      <div class="status-badges">
+        <span class="status-badge" [class]="'status-' + compensation.statut.toLowerCase()">
+          {{ compensation.statut }}
+        </span>
+        <span class="status-badge" [class]="'process-' + compensation.etatProcessus.toLowerCase()">
+          {{ compensation.etatProcessus }}
+        </span>
+      </div>
+    </div>
+
+
+
+    <!-- Information Grid - Même hauteur pour les cartes -->
+    <div class="info-grid">
+      <!-- Personal Information -->
+      <div class="info-card">
+        <div class="card-header">
+          <mat-icon>person</mat-icon>
+          <h4>Informations Personnelles</h4>
+        </div>
+        <div class="card-content">
+          <div class="info-item">
+            <mat-icon>wc</mat-icon>
+            <span>Sexe:</span>
+            <strong>{{ compensation.sexe }}</strong>
+          </div>
+          <div class="info-item">
+            <mat-icon>cake</mat-icon>
+            <span>Âge:</span>
+            <strong>{{ compensation.age || 'N/A' }}</strong>
+          </div>
+          <div class="info-item">
+            <mat-icon>phone</mat-icon>
+            <span>Téléphone:</span>
+            <strong>{{ compensation.numeroTelephone }}</strong>
+          </div>
+          <div class="info-item">
+            <mat-icon>location_on</mat-icon>
+            <span>Localisation:</span>
+            <strong>{{ compensation.commune }}, {{ compensation.departement }}</strong>
+          </div>
+          <div class="info-item">
+            <mat-icon>work</mat-icon>
+            <span>Activité:</span>
+            <strong>{{ compensation.activitePrincipale || 'N/A' }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compensation Details -->
+      <div class="info-card">
+        <div class="card-header">
+          <mat-icon>attach_money</mat-icon>
+          <h4>Détails Compensation</h4>
+        </div>
+        <div class="card-content">
+          <div class="info-item highlight">
+            <mat-icon>payments</mat-icon>
+            <span>Perte totale:</span>
+            <strong>{{ compensation.perteTotale | currency:'XOF':'symbol':'1.0-0' }}</strong>
+          </div>
+          <div class="info-item">
+            <mat-icon>account_balance</mat-icon>
+            <span>Option paiement:</span>
+            <strong>{{ compensation.optionPaiement }}</strong>
+          </div>
+          <div class="info-item">
+            <mat-icon>home</mat-icon>
+            <span>Perte bâtiment:</span>
+            <strong>{{ compensation.perteBatiment | currency:'XOF':'symbol':'1.0-0' }}</strong>
+          </div>
+          <div class="info-item">
+            <mat-icon>park</mat-icon>
+            <span>Arbres jeunes:</span>
+            <strong>{{ compensation.perteArbreJeune | currency:'XOF':'symbol':'1.0-0' }}</strong>
+          </div>
+          <div class="info-item">
+            <mat-icon>nature</mat-icon>
+            <span>Arbres adultes:</span>
+            <strong>{{ compensation.perteArbreAdulte | currency:'XOF':'symbol':'1.0-0' }}</strong>
+          </div>
+          <div class="info-item">
+            <mat-icon>build</mat-icon>
+            <span>Équipement:</span>
+            <strong>{{ compensation.perteEquipement | currency:'XOF':'symbol':'1.0-0' }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+        <!-- Process Steps -->
+    <div class="process-section">
+      <h3>Progression du processus</h3>
+      <div class="process-steps">
+        <div *ngFor="let step of processSteps; let i = index" class="process-step" [class.completed]="step.completed">
+          <div class="step-indicator">
+            <div class="step-number">{{ i + 1 }}</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">{{ step.step }}</div>
+            <div *ngIf="step.completed && step.date" class="step-date">
+              {{ step.date | date:'dd/MM/yyyy HH:mm' }}
+            </div>
+          </div>
+          <mat-icon class="step-icon">
+            {{ step.completed ? 'check_circle' : 'radio_button_unchecked' }}
+          </mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Information - Même largeur que le grid -->
+    <div class="additional-section">
+      <div class="info-card">
+        <div class="card-header">
+          <mat-icon>info</mat-icon>
+          <h4>Informations Complémentaires</h4>
+        </div>
+        <div class="card-content">
+          <div class="info-section">
+            <h5>Évaluation des pertes</h5>
+            <p>{{ compensation.evaluationPerte }}</p>
+          </div>
+          <div class="info-section">
+            <h5>Vulnérabilités</h5>
+            <p>{{ compensation.vulnerabilite }}</p>
+          </div>
+          <div class="info-section">
+            <h5>Coordonnées géométriques</h5>
+            <p>{{ compensation.pointGeometriques }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

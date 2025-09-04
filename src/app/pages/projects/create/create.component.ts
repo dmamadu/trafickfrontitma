@@ -6,6 +6,7 @@ import {
   ViewChild,
   Output,
   ChangeDetectorRef,
+  inject,
 } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
@@ -22,6 +23,7 @@ import { environment } from "src/environments/environment";
 import { AddMaitreOuvrageComponent } from "../../maitrouvrages/add-maitre-ouvrage/add-maitre-ouvrage.component";
 import { MatDialog } from "@angular/material/dialog";
 import { ImageModalComponent } from "src/app/shared/image-modal.component";
+import { LocalService } from "src/app/core/services/local.service";
 
 @Component({
   selector: "app-create",
@@ -38,9 +40,14 @@ export class CreateComponent implements OnInit {
 
   suggestions$!: Observable<string[]>;
   listProject: Project[];
-  urlImage = environment.apiUrl + "fileAws/download/";
+  urlImage = environment.apiUrl + "fileMinios/upload/";
   isloading: boolean = false;
   buttonText: string = "Créer le projet";
+
+    private localService = inject(LocalService);
+
+    userId:string;
+  
   constructor(
     private fb: FormBuilder,
     private dialog: MatDialog,
@@ -51,6 +58,13 @@ export class CreateComponent implements OnInit {
     private clientServive: ClientVueService,
     private _changeDetectorRef: ChangeDetectorRef
   ) {
+
+ this.localService.getDataJson("user");
+ this.userId=this.localService.getDataJson("user").id;
+
+console.log(this.userId);
+
+
     this.projectForm = this.fb.group(
       {
         id: [],
@@ -149,7 +163,7 @@ export class CreateComponent implements OnInit {
   create() {
     return this.projectService
       .add<ResponseData<Project>>(
-        "projects/createProject",
+        `projects/createProject/${this.userId}`,
         this.projectForm.value
       )
       .subscribe((data: ResponseData<Project>) => {

@@ -250,13 +250,22 @@ private handleSuccessfulLogin(user: Auth) {
   localStorage.setItem("token", user.token);
 
   // Gestion de la redirection selon le rôle et les projets
-  if (this.isAdmin(user)) {
+  if (this.isAdmin(user) && this.hasMultipleProjects(user)) {
     this.choicePeojectADmin();
-  } else if (this.hasMultipleProjects(user)) {
-    this.choicePeoject();
   } else {
-    this.navigateToDefaultProject(user);
+     this.navigateToDefaultProject(user);
   }
+
+  if (!this.isAdmin(user)) {
+    this.choicePeoject();
+  }
+
+
+  //   if (this.hasMultipleProjects(user)) {
+  //   this.choicePeoject();
+  // } else {
+   
+  // }
 
   // Affichage du message de bienvenue
   this.showWelcomeToast(user);
@@ -275,7 +284,7 @@ private navigateToDefaultProject(user: Auth) {
   const projectId = user.user.projects[0]?.id.toString();
   const projectLogo = user.user.projects[0]?.imageUrl || "default-logo.png";
 
-  console.log('project',projectId);
+  console.log('project',user);
   
   
   this.localService.saveData("ProjectId", projectId);

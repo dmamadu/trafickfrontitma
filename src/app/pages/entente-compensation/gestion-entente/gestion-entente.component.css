@@ -1,0 +1,284 @@
+/* Classes pour les statuts */
+.status-brouillon {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-synchronisee {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.status-finalisee {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-default {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+/* Classes pour les états de processus */
+.process-compensation {
+  background-color: #ffedd5;
+  color: #9a3412;
+}
+
+.process-pap-informer {
+  background-color: #f3e8ff;
+  color: #7e22ce;
+}
+
+.process-accord {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.process-termine {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.process-default {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+
+/* Styles pour les snackbars de différentes couleurs */
+.mycssSnackbarRed {
+  background-color: #f44336 !important; /* Rouge pour les erreurs */
+  color: white !important;
+}
+
+.mycssSnackbarYellow {
+  background-color: #ff9800 !important; /* Orange pour les avertissements */
+  color: white !important;
+}
+
+.mycssSnackbarGreen {
+  background-color: #4caf50 !important; /* Vert pour les succès */
+  color: white !important;
+}
+
+.mycssSnackbarBlue {
+  background-color: #2196f3 !important; /* Bleu pour les informations */
+  color: white !important;
+}
+
+/* Styles supplémentaires pour améliorer l'apparence */
+.mycssSnackbarRed .mat-simple-snackbar-action,
+.mycssSnackbarYellow .mat-simple-snackbar-action,
+.mycssSnackbarGreen .mat-simple-snackbar-action,
+.mycssSnackbarBlue .mat-simple-snackbar-action {
+  color: white !important;
+  font-weight: bold;
+}
+
+/* Animation d'entrée */
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.mycssSnackbarRed,
+.mycssSnackbarYellow,
+.mycssSnackbarGreen,
+.mycssSnackbarBlue {
+  animation: slideInFromBottom 0.3s ease-out;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .mycssSnackbarRed,
+  .mycssSnackbarYellow,
+  .mycssSnackbarGreen,
+  .mycssSnackbarBlue {
+    margin: 8px;
+    border-radius: 4px;
+    max-width: calc(100% - 16px) !important;
+  }
+}
+
+/* Icônes optionnelles (si vous voulez ajouter des icônes) */
+.mycssSnackbarRed::before {
+  content: '❗ '; /* Icône d'erreur */
+}
+
+.mycssSnackbarYellow::before {
+  content: '⚠️ '; /* Icône d'avertissement */
+}
+
+.mycssSnackbarGreen::before {
+  content: '✅ '; /* Icône de succès */
+}
+
+.mycssSnackbarBlue::before {
+  content: 'ℹ️ '; /* Icône d'information */
+}
+
+
+.processus-container {
+  padding: 16px;
+}
+
+.progress-container {
+  margin: 20px 0;
+}
+
+.progress-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: relative;
+}
+
+.progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #e0e0e0;
+  z-index: 1;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: white;
+}
+
+.step-label {
+  font-size: 12px;
+  text-align: center;
+  max-width: 80px;
+}
+
+.progress-step.active .step-number {
+  background: #3f51b5;
+}
+
+.progress-step.completed .step-number {
+  background: #4caf50;
+}
+
+.step-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.step-status {
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.step-status.completed {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.step-status:not(.completed) {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.compensation-summary {
+  margin-bottom: 20px;
+}
+
+.compensation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.comp-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.comp-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-top: 2px solid #eee;
+  font-weight: bold;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.upload-section {
+  margin: 16px 0;
+}
+
+.file-name {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.accord-proof, .paiement-proof {
+  display: flex;
+  align-items: center;
+  color: #4caf50;
+  margin: 16px 0;
+}
+
+.proof-icon {
+  margin-right: 8px;
+}
+
+.step-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.paiement-details {
+  margin: 16px 0;
+  padding: 12px;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+

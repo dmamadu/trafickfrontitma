@@ -285,4 +285,83 @@ export class SnackBarService {
       confirmButtonText: "OK",
     });
   }
+
+
+
+
+  /**
+   * Affiche un message d'erreur
+   */
+  showError(message: string): void {
+    this.openSnackBar(message, 'Fermer', ['mycssSnackbarRed']);
+  }
+
+  /**
+   * Affiche un message d'avertissement
+   */
+  showWarning(message: string): void {
+    this.openSnackBar(message, 'Fermer', ['mycssSnackbarYellow']);
+  }
+
+  /**
+   * Affiche un message de succès
+   */
+  showSuccess(message: string): void {
+    this.openSnackBar(message, 'Fermer', ['mycssSnackbarGreen']);
+  }
+
+  /**
+   * Affiche une confirmation avec SweetAlert2
+   * Retourne une promesse qui résout true si confirmé, false si annulé
+   */
+  // showConfirmation(message: string): Promise<boolean> {
+  //   return swal.fire({
+  //     title: 'Confirmation',
+  //     text: message,
+  //     icon: 'warning',
+  //     showCancelButton: true,
+  //     confirmButtonText: 'Valider',
+  //     cancelButtonText: 'Annuler',
+  //     confirmButtonColor: '#3085d6',
+  //     cancelButtonColor: '#d33'
+  //   }).then((result) => {
+  //     return result.isConfirmed;
+  //   });
+  // }
+
+  /**
+   * Version alternative de confirmation avec personnalisation des boutons
+   */
+  showConfirmationWithCustomButtons(
+    message: string, 
+    confirmText: string = 'Valider', 
+    cancelText: string = 'Annuler'
+  ): Promise<boolean> {
+    return swal.fire({
+      title: 'Confirmation',
+      text: message,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: confirmText,
+      cancelButtonText: cancelText,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33'
+    }).then((result) => {
+      return result.isConfirmed;
+    });
+  }
+
+  /**
+   * Affiche une info-bulle
+   */
+  showInfo(message: string): void {
+    this.openSnackBar(message, 'Fermer', ['mycssSnackbarBlue']);
+  }
+
+
+
+
+
+
+
 }

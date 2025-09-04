@@ -22,6 +22,8 @@ import { AjoutEntenteComponent } from "../ajout-entente/ajout-entente.component"
 import { CoreService } from "src/app/shared/core/core.service";
 import { CompensationDetailComponent } from "../compensation-detail/compensation-detail.component";
 import { ToastrService } from "ngx-toastr";
+import { GestionEntenteComponent } from "../gestion-entente/gestion-entente.component";
+import { ProcessusEntenteService } from "src/app/core/services/processus-entente.service";
 
 @Component({
   selector: "app-list-entente",
@@ -96,7 +98,8 @@ export class ListEntenteComponent implements OnInit {
   userConnecter;
   offset: number = 0;
   title: string = "Gestion des ententes";
-  url: string = "ententes";
+  // url: string = "ententes";
+  url: string = "ententeSynchroniser";
   panelOpenState = false;
   img;
   image;
@@ -115,7 +118,9 @@ export class ListEntenteComponent implements OnInit {
     private localService: LocalService,
     private snackbar: SnackBarService,
     public toastr: ToastrService,
-    private coreService: CoreService
+    private coreService: CoreService,
+    private processusService: ProcessusEntenteService,
+    
   ) {
     this.currentProjectId = this.localService.getData("ProjectId");
   }
@@ -127,12 +132,24 @@ export class ListEntenteComponent implements OnInit {
         td: "codePap",
       },
       {
-        th: "Prénom",
-        td: "prenom",
+        th: "Statut du processus",
+        td: "etatProcessus",
       },
       {
-        th: "nom",
-        td: "nom",
+      th: "Nom complet",
+      td: "prenom"
+    },
+      {
+        th: "Status",
+        td: "statut",
+      },
+      {
+        th: "Categorie",
+        td: "categorie",
+      },
+      {
+        th: "M. de la compensation",
+        td: "perteTotale",
       },
     ];
   }
@@ -172,8 +189,8 @@ export class ListEntenteComponent implements OnInit {
       return;
     }
     this.snackbar.openModal(
-      AjoutEntenteComponent,
-      "60rem",
+      GestionEntenteComponent,
+      "50rem",
       "new",
       "",
       this.datas,
@@ -188,8 +205,8 @@ export class ListEntenteComponent implements OnInit {
     console.log(element);
 
     this.snackbar.openModal(
-      AjoutEntenteComponent,
-      "73rem",
+      GestionEntenteComponent,
+      "50rem",
       "edit",
       "",
       element,
@@ -199,6 +216,50 @@ export class ListEntenteComponent implements OnInit {
       }
     );
   }
+
+
+
+
+
+
+chargerEntente(): void {
+  console.log('Chargement de l\'entente ID:', this.currentProjectId);
+  this.snackbar
+    .showConfirmation(`Voulez-vous vraiment charger les ententes pour ce projet ?`)
+    .then((result) => {
+      if (result["value"] == true) {
+        this.isLoading = true;
+        this.processusService.chargerEntente(this.currentProjectId).subscribe({
+          next: (response: any) => {
+            this.isLoading = false;
+            if (response) {
+              this.snackbar.showSuccess(response.message || 'Création des ententes réussie');
+              this.getEntente(); 
+            }        
+          },
+          error: (error) => {
+            console.error('Erreur création ententes:', error);
+            this.isLoading = false;
+            if (error.error && error.error.message) {
+              this.snackbar.showError(error.error.message);
+            } else {
+              this.snackbar.showError('Erreur lors de la création des ententes');
+            }
+          }
+        });
+      }
+    })
+    .catch((error) => {
+      console.error('Erreur confirmation:', error);
+      this.isLoading = false;
+    });
+}
+
+
+
+
+
+
   supprimerItems(id, information) {
     this.snackbar
       .showConfirmation("Voulez-vous vraiment supprimer cette entente?")

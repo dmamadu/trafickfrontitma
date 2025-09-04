@@ -60,7 +60,7 @@ export class AddRencontreComponent {
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   ng2TelOptions;
   uploadedImage!: File;
-  urlImage = environment.apiUrl + "fileAws/download/";
+  urlImage = environment.apiUrl + "fileMinios/upload/";
 
   roles: any[] = [];
   categories: any[] = [];

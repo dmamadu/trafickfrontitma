@@ -49,7 +49,7 @@ export class AddMaitreOuvrageComponent {
   categoriePartieInteresses: any;
   uploadedImage!: File;
   imageURL: string | undefined;
-  urlImage = environment.apiUrl + "fileAws/download/";
+  urlImage = environment.apiUrl + "fileMinios/download/";
 
   roles: any[] = [];
   categories: any[] = [];

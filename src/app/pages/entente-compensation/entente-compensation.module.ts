@@ -9,7 +9,7 @@ import { CompensationDetailComponent } from './compensation-detail/compensation-
   declarations: [
     
   
-    CompensationDetailComponent
+    // CompensationDetailComponent
   ],
   imports: [
     CommonModule

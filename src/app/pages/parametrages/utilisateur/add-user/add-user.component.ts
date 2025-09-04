@@ -50,7 +50,7 @@ export class AddUserComponent {
   uploadedImage!: File;
   imageURL: string | undefined;
 
-  urlImage = environment.apiUrl + "fileAws/download/";
+  urlImage = environment.apiUrl + "fileMinios/upload/";
 
   roles: any[] = [];
   categories: any[] = [];

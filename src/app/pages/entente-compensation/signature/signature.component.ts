@@ -24,7 +24,7 @@ export class SignatureComponent {
   infosPap: any;
   noImage;
   //urlImage = environment.apiUrl + "image/getFile/";
-  urlImage = environment.apiUrl + "fileAws/download/";
+  urlImage = environment.apiUrl + "fileMinios/download/";
   signatureUrlSubject: Subject<string> = new Subject<string>();
   constructor(
     public matDialogRef: MatDialogRef<SignatureComponent>,
