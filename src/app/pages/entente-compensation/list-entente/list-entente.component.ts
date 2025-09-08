@@ -326,7 +326,6 @@ chargerEntente(): void {
       .subscribe(
         (data: any) => {
           console.log(data);
-
           this.loadData = false;
           if (data["responseCode"] == 200) {
             this.loadData = false;

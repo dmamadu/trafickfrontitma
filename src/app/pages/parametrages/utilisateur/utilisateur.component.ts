@@ -145,13 +145,16 @@ throw new Error('Method not implemented.');
   }
 
   addItems(): void {
+
+      console.log(this.currentProjectId);
+
   if (!this.currentProjectId) {
       this.showProjectSelectionError();
       return;
     }
     this.snackbar.openModal(
       AddUserComponent,
-      "55rem",
+      "45rem",
       "new",
       "auto",
       this.datas,
@@ -246,7 +249,7 @@ throw new Error('Method not implemented.');
     console.log(information);
     this.snackbar.openModal(
       AddUserComponent,
-      "50rem",
+      "45rem",
       "edit",
       "",
       information,

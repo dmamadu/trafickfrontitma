@@ -155,7 +155,7 @@ private executerSynchronisation(): void {
   console.log('Synchronisation de l\'entente ID:', this.ententeDetails.ententeId);
   this.loading = true;
   
-  this.ententeService.synchroniserEntente(this.ententeDetails.papId).subscribe({
+  this.ententeService.synchroniserEntente(this.ententeDetails.ententeId).subscribe({
     next: (response: any) => {
       if (response && response.responseCode == 200) {
         this.snackbar.showSuccess('Entente synchronisée avec succès');
@@ -298,10 +298,8 @@ commentairesSuivi: string = '';
 
 
 private executerFinalisation(): void {
-  console.log('Finalisation de l\'entente ID:', this.ententeDetails.papId);
   this.loading = true;
-  
-  this.ententeService.finaliserEntente(this.ententeDetails.papId).subscribe({
+  this.ententeService.finaliserEntente(this.ententeDetails.ententeId).subscribe({
     next: (response: any) => {
       if (response && response.responseCode == 200) {
         this.snackbar.showSuccess('Entente finalisée avec succès');
@@ -322,7 +320,7 @@ private executerFinalisation(): void {
     this.loading = true;
     switch (etape) {
       case 'compensation':
-        this.processusService.etablirCompensation(this.ententeDetails.papId).subscribe({
+        this.processusService.etablirCompensation(this.ententeDetails.ententeId).subscribe({
           next: (updatedEntente) => {
             this.ententeDetails = updatedEntente;
             this.loading = false;
@@ -334,7 +332,7 @@ private executerFinalisation(): void {
       case 'information':
         const infoData = this.informationForm.value;
         this.processusService.informerPap(
-          this.ententeDetails.papId, 
+          this.ententeDetails.ententeId, 
           infoData.modeInformation,
           infoData.detailsInformation
         ).subscribe({
@@ -349,7 +347,7 @@ private executerFinalisation(): void {
         break;
       
       case 'accord':
-        this.processusService.obtenirAccordPap(this.ententeDetails.papId,this.preuveAccord).subscribe({
+        this.processusService.obtenirAccordPap(this.ententeDetails.ententeId,this.preuveAccord).subscribe({
           next: (updatedEntente) => {
             this.ententeDetails = updatedEntente;
             this.nextStep();
@@ -360,7 +358,7 @@ private executerFinalisation(): void {
         break;
       
       case 'paiement':
-        this.processusService.effectuerPaiement(this.ententeDetails.papId,this.preuvePaiement).subscribe({
+        this.processusService.effectuerPaiement(this.ententeDetails.ententeId,this.preuvePaiement).subscribe({
           next: (updatedEntente) => {
             this.ententeDetails = updatedEntente;
              this.nextStep();
@@ -372,7 +370,7 @@ private executerFinalisation(): void {
       
       case 'formation':
       this.processusService.donnerFormation(
-      this.ententeDetails.papId, 
+      this.ententeDetails.ententeId, 
       this.typeFormation, 
       this.formateur
     ).subscribe({
@@ -388,7 +386,7 @@ private executerFinalisation(): void {
         break;
       case 'suivi':
       this.processusService.effectuerSuivi(
-      this.ententeDetails.papId, 
+      this.ententeDetails.ententeId, 
       this.resultatSuivi, 
       this.commentairesSuivi
     ).subscribe({
@@ -446,7 +444,7 @@ appliquerModifications(): void {
 
 private executerModification(formValue: any, modifications: any): void {
   const modificationDTO = {
-    ententeId: this.ententeDetails.papId,
+    ententeId: this.ententeDetails.ententeId,
     modifications: modifications,
     raisonModification: formValue.raisonModification,
     email: this.user.email,
@@ -456,7 +454,7 @@ private executerModification(formValue: any, modifications: any): void {
   console.log('Modifications à appliquer:', modificationDTO);
   
   this.loading = true;
-  this.modificationService.modifierValeurs(modificationDTO, this.ententeDetails.papId).subscribe({
+  this.modificationService.modifierValeurs(modificationDTO, this.ententeDetails.ententeId).subscribe({
     next: (response: any) => {
       console.log('Réponse modification:', response);
       if(response && response.responseCode == 200){
@@ -479,7 +477,7 @@ private executerModification(formValue: any, modifications: any): void {
 
   loadHistoriqueModifications(): void {
     if (this.ententeDetails?.ententeId) {
-      this.modificationService.getHistoriqueModifications(this.ententeDetails.papId).subscribe({
+      this.modificationService.getHistoriqueModifications(this.ententeDetails.ententeId).subscribe({
         next: (historique) => {
           this.historiqueModifications = historique;
         },

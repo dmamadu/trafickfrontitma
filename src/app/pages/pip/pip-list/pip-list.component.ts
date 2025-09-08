@@ -135,12 +135,7 @@ export class PipListComponent implements OnInit {
     ];
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
-    // if (this.privilegePage) {
-    //   this.getList();
-    // //  this.checkCodePrivilegeForRole();
-    // }
     this.lienBrute = this.router.url;
-    // Extraire une partie spécifique de l'URL
     this.lien = this.lienBrute.substring(1, this.lienBrute.length);
     console.log("URL modifiée:", this.lien);
     this.getPip();
@@ -337,33 +332,6 @@ export class PipListComponent implements OnInit {
             }
           );
       }
-
-
-    // return this.parentService
-    //   .list("partie-interesse", this.pageSize, this.offset)
-    //   .subscribe(
-    //     (data: any) => {
-    //       this.loadData = false;
-    //       if (data["responseCode"] == 200) {
-    //         console.log(data);
-    //         this.loadData = false;
-    //         console.log(data);
-    //         this.dataSource = new MatTableDataSource(data["data"]);
-    //         this.dataSource.paginator = this.paginator;
-    //         this.dataSource.sort = this.sort;
-    //         this.datas = data["data"];
-    //         this.length = data["length"];
-    //         console.log("length", this.length);
-    //         this._changeDetectorRef.markForCheck();
-    //       } else {
-    //         this.loadData = false;
-    //         this.dataSource = new MatTableDataSource();
-    //       }
-    //     },
-    //     (err) => {
-    //       console.log(err);
-    //     }
-    //   );
   }
 
   pageChanged(event) {
@@ -380,7 +348,7 @@ export class PipListComponent implements OnInit {
   updateItems(information): void {
     this.snackbar.openModal(
       PipAddComponent,
-      "50rem",
+      "45rem",
       "edit",
       "",
       information,
@@ -393,9 +361,6 @@ export class PipListComponent implements OnInit {
 
   //cette fonction permet de supprimer
   supprimerItems(id, information) {
-    console.log("====================================");
-    console.log(information.categoriePartieInteresse);
-    console.log("====================================");
     this.snackbar
       .showConfirmation(
         `Voulez-vous vraiment supprimer ce ${this.getCategorie(
@@ -600,9 +565,9 @@ export class PipListComponent implements OnInit {
   addItems(): void {
     this.snackbar.openModal(
       PipAddComponent,
-      "50rem",
-      "new",
       "45rem",
+      "new",
+      "40rem",
       this.datas,
       "",
       () => {

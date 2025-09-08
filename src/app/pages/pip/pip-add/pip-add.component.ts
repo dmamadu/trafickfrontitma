@@ -141,6 +141,8 @@ export class PipAddComponent implements OnInit {
         this.initForm.get("pays").setValue(_data.data.pays);
       }
     }
+      this.contacts = new MatTableDataSource<any>([]);
+
     this.action = _data?.action;
     this.canAdd = _data.canAdd;
     this.dialogTitle = this.labelButton + this.suffixe;
@@ -152,16 +154,18 @@ export class PipAddComponent implements OnInit {
     this.initForm.get("statutVulnerable")?.setValue(value);
   }
 
+  displayedColumns: string[] = ['nom', 'prenom', 'email', 'telephone', 'actions'];
+
+
   ngOnInit(): void {
-    // this.getcategories();
-    this.displayedColumns = ['nom', 'prenom', 'email', 'telephone'];
+    this.displayedColumns = ['nom', 'prenom', 'email', 'telephone','actions'];
     this.lienBrute = this.router.url;
-    // Extraire une partie spécifique de l'URL
     this.lien = this.lienBrute.substring(1, this.lienBrute.length);
     console.log("URL modifiée:", this.lien);
     let segments = this.lien.split("/");
     this.dernierSegment = segments[segments.length - 1];
     this.createContactForm();
+  this.contacts = new MatTableDataSource<any>(this.contacts.data || []);
   }
 
   goToStep(index) {
@@ -346,7 +350,7 @@ export class PipAddComponent implements OnInit {
     { id: "M", name: "Masculin" },
     { id: "F", name: "Féminin" },
   ];
-  displayedColumns: string[] = ["nom", "prenom", "email", "telephone"];
+  // displayedColumns: string[] = ["nom", "prenom", "email", "telephone"];
 
   // Fonction pour créer le formulaire
   createContactForm() {
@@ -405,4 +409,48 @@ export class PipAddComponent implements OnInit {
       this.myStepper.selectedIndex = selectedIndex - 1;
     }
   }
+
+  editingIndex: number = -1;
+isEditing: boolean = false;
+
+  // Méthode pour éditer un contact
+editContact(contact: any, index: number): void {
+  this.contactForm.patchValue({
+    nomContactPrincipal: contact.nomContactPrincipal,
+    prenomContactPrincipal: contact.prenomContactPrincipal,
+    emailContactPrincipal: contact.emailContactPrincipal,
+    telephoneContactPrincipal: contact.telephoneContactPrincipal
+  });
+  this.editingIndex = index;
+  this.isEditing = true;
+}
+
+// Méthode pour supprimer un contact
+deleteContact(index: number): void {
+  const currentData = this.contacts.data;
+  currentData.splice(index, 1);
+  this.contacts.data = [...currentData];
+  
+  if (this.isEditing && this.editingIndex === index) {
+    this.cancelEdit();
+  }
+}
+
+// Méthode pour annuler l'édition
+cancelEdit(): void {
+  this.contactForm.reset();
+  this.isEditing = false;
+  this.editingIndex = -1;
+}
+
+// Méthode pour réinitialiser le formulaire
+resetContactForm(): void {
+  this.contactForm.reset();
+  this.contactForm.setValue({
+    nomContactPrincipal: "",
+    prenomContactPrincipal: "",
+    emailContactPrincipal: "",
+    telephoneContactPrincipal: "",
+  });
+}
 }

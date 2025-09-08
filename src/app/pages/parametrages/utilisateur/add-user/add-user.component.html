@@ -1,4 +1,3 @@
-
 <mat-toolbar class="mat-accent m-0 backToolbar">
   <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
     <span class="c_title dialog-title">{{ dialogTitle }}</span>
@@ -54,49 +53,45 @@
 
 <div class="flex flex-col flex-auto min-w-10-0 p-2 md:p-4">
   <form [formGroup]="initForm" class="event-form w-100-p">
+    <!-- Nom & Prénom -->
     <div class="flex gap-2">
       <mat-form-field class="w-1/2 mt-2" appearance="outline">
-        <mat-label class="enteteccColor">Nom
-        </mat-label>
-        <input class="typeTitle" matInput type="text" name="lastname" formControlName="lastname" />
+        <mat-label class="enteteccColor">Nom</mat-label>
+        <input matInput type="text" name="lastname" formControlName="lastname" />
         <mat-icon matSuffix class="secondary-text">code</mat-icon>
         <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
-
-      <mat-form-field class=" w-1/2 mt-2" appearance="outline">
-        <mat-label class="enteteccColor">Prénom
-        </mat-label>
-        <input class="typeTitle" matInput type="text" name="firstname" formControlName="firstname" />
+      <mat-form-field class="w-1/2 mt-2" appearance="outline">
+        <mat-label class="enteteccColor">Prénom</mat-label>
+        <input matInput type="text" name="firstname" formControlName="firstname" />
         <mat-icon matSuffix class="secondary-text">code</mat-icon>
         <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
     </div>
+    <!-- Email & Adresse -->
     <div class="flex gap-2">
-      <mat-form-field class=" w-1/2 mt-2"  appearance="outline">
-        <mat-label disabled value="" selected class="enteteccColor">Email</mat-label>
-        <input class="typeTitle" matInput type="email" name="email" formControlName="email" />
+      <mat-form-field class="w-1/2 mt-2" appearance="outline">
+        <mat-label class="enteteccColor">Email</mat-label>
+        <input matInput type="email" name="email" formControlName="email" />
         <mat-icon matSuffix class="secondary-text">email</mat-icon>
-        <mat-error>Le champs est oligatoire</mat-error>
+        <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
-      <mat-form-field class=" w-1/2 mt-2" fxFlex="100" appearance="outline">
-        <mat-label disabled value="" selected class="enteteccColor">Adresse</mat-label>
-        <input class="typeTitle" matInput type="text" name="locality" formControlName="locality" />
+      <mat-form-field class="w-1/2 mt-2" appearance="outline">
+        <mat-label class="enteteccColor">Adresse</mat-label>
+        <input matInput type="text" name="locality" formControlName="locality" />
         <mat-icon matSuffix class="secondary-text">home</mat-icon>
-        <mat-error>Le champs est oligatoire</mat-error>
+        <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
-
     </div>
-    <div  class="flex gap-2">
-       <mat-form-field  class=" w-full mt-2 telephone" appearance="outline">
+    <!-- Téléphone & Role -->
+    <div class="flex gap-2">
+      <mat-form-field class="w-1/2 mt-2 telephone" appearance="outline">
         <ngx-mat-intl-tel-input [preferredCountries]="['sn', 'fr']" [enablePlaceholder]="true" [enableSearch]="true"
           name="contact" describedBy="Téléphone WhatsApp"
           formControlName="contact"></ngx-mat-intl-tel-input>
-          <mat-icon matSuffix class="secondary-text">phone</mat-icon>
+        <mat-icon matSuffix class="secondary-text">phone</mat-icon>
         <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
-    </div>
-
-    <div class="flex gap-2">
       <mat-form-field class="w-1/2 mt-2" appearance="outline">
         <mat-label class="enteteccColor">Role</mat-label>
         <mat-select formControlName="role_id">
@@ -107,6 +102,9 @@
         <mat-icon matSuffix class="secondary-text">code</mat-icon>
         <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
+    </div>
+    <!-- Niveau & Fonctions -->
+    <div class="flex gap-2">
       <mat-form-field class="w-1/2 mt-2" appearance="outline">
         <mat-label class="enteteccColor">Niveau</mat-label>
         <mat-select formControlName="categorie_id" (selectionChange)="onCategoryChange($event.value)">
@@ -117,19 +115,15 @@
         <mat-icon matSuffix class="secondary-text">code</mat-icon>
         <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
-
-    </div>
-    <div class="flex gap-2">
-      <mat-form-field class="w-full mt-2" appearance="outline" >
+      <mat-form-field class="w-1/2 mt-2" appearance="outline">
         <mat-label class="enteteccColor">Fonctions</mat-label>
         <mat-select formControlName="fonction_id" *ngIf="action=='new'">
-          <mat-option *ngFor="let profil of filteredProfils" [value]="profil.id" >
+          <mat-option *ngFor="let profil of filteredProfils" [value]="profil.id">
             {{ profil.libelle }}
           </mat-option>
         </mat-select>
-
         <mat-select formControlName="fonction_id" *ngIf="action=='edit'">
-          <mat-option *ngFor="let profil of profils" [value]="profil.id" >
+          <mat-option *ngFor="let profil of profils" [value]="profil.id">
             {{ profil.libelle }}
           </mat-option>
         </mat-select>
@@ -137,11 +131,11 @@
         <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
     </div>
-
-    <div class="flex justify-center gap-4">
+    <!-- Boutons -->
+    <div class="flex justify-center gap-4 mt-4">
       <button mat-raised-button class="submit-buttonRed" type="button">
         <span class="textForm">Retour</span>
-      </button>&nbsp;
+      </button>
       <button [disabled]="loader" mat-raised-button class="submit-button" (click)="checkRecap(action)">
         <span class="textForm">{{ labelButton }}</span>
       </button>

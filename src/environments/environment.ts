@@ -2,7 +2,7 @@ export const environment = {
   production: false,
   defaultauth: "fakebackend",
  //apiUrl:"https://solutiondigitale.sunuresto.com/",
-  //  apiUrl:"https://api.invodis.com/",
+    // apiUrl:"https://api.invodis.com/",
    apiUrl:"http://localhost:8081/",
   //baseUrl: 'http://localhost:4200',
    // production: false,

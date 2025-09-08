@@ -339,7 +339,7 @@ console.log(this.userId);
       return;
     }
 
-    if (this.buttonText == "Modifier le projet") {
+    if (this.buttonText == "Modifier") {
       this.updateProject(this.projectForm.value);
     } else {
       this.createProject(this.projectForm.value);

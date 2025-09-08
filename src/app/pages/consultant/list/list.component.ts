@@ -189,7 +189,7 @@ ngOnDestroy() {
     console.log(information);
     this.snackbar.openModal(
       AddComponent,
-      "50rem",
+      "45rem",
       "edit",
       "",
       information,
@@ -202,9 +202,6 @@ ngOnDestroy() {
 
   //cette fonction permet de supprimer
   supprimerItems(id, information) {
-    console.log("====================================");
-    console.log(id);
-    console.log("====================================");
     this.snackbar
       .showConfirmation("Voulez-vous vraiment supprimer ce consultant?")
       .then((result) => {
@@ -261,7 +258,7 @@ ngOnDestroy() {
 
     this.snackbar.openModal(
       AddComponent,
-      "55rem",
+      "45rem",
       "new",
       "",
       this.datas,
@@ -309,7 +306,6 @@ ngOnDestroy() {
   }
 
   detailItems(id, information) {
-    console.log(information);
     this.localService.saveDataJson("consultant", information);
     this.sharedService.setSelectedItem(information);
     this._router.navigate(["consultant/detail"]);

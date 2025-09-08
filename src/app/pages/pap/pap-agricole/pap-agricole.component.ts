@@ -758,6 +758,9 @@ private destroy$ = new Subject<void>();
   }
 
   triggerFileUpload() {
+
+      console.log(this.currentProjectId);
+
     if (!this.currentProjectId) {
       this.showProjectSelectionError();
       return;
