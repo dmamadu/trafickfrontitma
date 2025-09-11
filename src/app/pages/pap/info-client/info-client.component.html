@@ -476,26 +476,26 @@
                 <!-- Perte de terre -->
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-green-700 mr-2">terrain</mat-icon>
-                  <span><strong>Perte de terre :</strong> {{ infosPap.perteTerre ?? 'Aucune perte' }}</span>
+                  <span><strong>Perte de terre :</strong> {{ infosPap?.perteTerre ?? 'Aucune perte' }}</span>
                 </div>
                 <!-- Perte d'arbres -->
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-green-500 mr-2">nature</mat-icon>
-                  <span><strong>Arbres jeunes :</strong> {{ infosPap.perteArbreJeune ?? 'Aucune perte' }}</span>
+                  <span><strong>Arbres jeunes :</strong> {{ infosPap?.perteArbreJeune ?? 'Aucune perte' }}</span>
                 </div>
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-green-700 mr-2">park</mat-icon>
-                  <span><strong>Arbres adultes :</strong> {{ infosPap.perteArbreAdulte ?? 'Aucune perte' }}</span>
+                  <span><strong>Arbres adultes :</strong> {{ infosPap?.perteArbreAdulte ?? 'Aucune perte' }}</span>
                 </div>
                 <!-- Perte d'équipements -->
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-blue-500 mr-2">devices</mat-icon>
-                  <span><strong>Pertes d'équipements :</strong> {{ infosPap.perteEquipement  }}</span>
+                  <span><strong>Pertes d'équipements :</strong> {{ infosPap?.perteEquipement }}</span>
                 </div>
                 <!-- Perte de bâtiments -->
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-brown-500 mr-2">apartment</mat-icon>
-                  <span><strong>Pertes de bâtiments :</strong> {{ infosPap.perteBatiment}}</span>
+                  <span><strong>Pertes de bâtiments :</strong> {{ infosPap?.perteBatiment }}</span>
                 </div>
                 <!-- Perte Totale -->
                  <div class="bg-red-100 p-1 rounded-lg shadow-sm flex items-center flex-col">
@@ -503,7 +503,7 @@
                   <mat-icon class="mr-2 text-red-600">warning</mat-icon> Perte totale :
                 </h3>
                 <p class="text-xl font-bold text-red-600 ">
-                  {{ infosPap.evaluationPerte.perteTotale !== null ? (infosPap.perteTotale | number) + ' FCFA' : 'Non évalué' }}
+                  {{ infosPap?.evaluationPerte?.perteTotale !== null ? (infosPap?.perteTotale | number) + ' FCFA' : 'Non évalué' }}
                 </p>
                  </div>
                
@@ -739,7 +739,7 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-green-500 mr-2">nature</mat-icon>
-                  <span><strong>Arbres jeunes :</strong> {{ infosPap.perteArbreJeune }}</span>
+                  <span><strong>Arbres jeunes :</strong> {{ infosPap?.perteArbreJeune }}</span>
                 </div>
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-green-700 mr-2">park</mat-icon>
@@ -747,38 +747,38 @@
                 </div>
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-yellow-500 mr-2">attach_money</mat-icon>
-                  <span><strong>Revenus :</strong> {{ infosPap.perteRevenue | number }} FCFA</span>
+                  <span><strong>Revenus :</strong> {{ infosPap?.perteRevenue | number }} FCFA</span>
                 </div>
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-blue-500 mr-2">home</mat-icon>
-                  <span><strong>Appui relocalisation :</strong> {{ infosPap.appuieRelocalisation | number }} FCFA</span>
+                  <span><strong>Appui relocalisation :</strong> {{ infosPap?.appuieRelocalisation | number }} FCFA</span>
                 </div>
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-purple-500 mr-2">directions_car</mat-icon>
-                  <span><strong>Frais déplacement :</strong> {{ infosPap.fraisDeplacement | number }} FCFA</span>
+                  <span><strong>Frais déplacement :</strong> {{ infosPap?.fraisDeplacement | number }} FCFA</span>
                 </div>
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-orange-500 mr-2">real_estate_agent</mat-icon>
-                  <span><strong>Perte loyer :</strong> {{ infosPap.perteLoyer | number }} FCFA</span>
+                  <span><strong>Perte loyer :</strong> {{ infosPap?.perteLoyer | number }} FCFA</span>
                 </div>
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-red-700 mr-2">fence</mat-icon>
-                  <span><strong>Perte clôture :</strong> {{ infosPap.perteCloture | number }} FCFA</span>
+                  <span><strong>Perte clôture :</strong> {{ infosPap?.perteCloture | number }} FCFA</span>
                 </div>
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-blue-500 mr-2">devices</mat-icon>
-                  <span><strong>Pertes d'équipements :</strong> {{ infosPap.perteEquipement  }}</span>
+                  <span><strong>Pertes d'équipements :</strong> {{ infosPap?.perteEquipement }}</span>
                 </div>
                <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-brown-500 mr-2">apartment</mat-icon>
-                  <span><strong>Pertes de bâtiments :</strong> {{ infosPap.perteBatiment}}</span>
+                  <span><strong>Pertes de bâtiments :</strong> {{ infosPap?.perteBatiment }}</span>
                 </div>
                  <div class="bg-red-100 p-1 rounded-lg shadow-sm flex items-center flex-col">
  <h3 class="mt-6 text-lg font-bold text-red-600 flex items-center">
                   <mat-icon class="mr-2 text-red-600">warning</mat-icon> Perte totale :
                 </h3>
                 <p class="text-xl font-bold text-red-600 ">
-                  {{ infosPap.evaluationPerte.perteTotale !== null ? (infosPap.perteTotale | number) + ' FCFA' : 'Non évalué' }}
+                  {{ infosPap?.evaluationPerte?.perteTotale !== null ? (infosPap?.perteTotale | number) + ' FCFA' : 'Non évalué' }}
                 </p>
                  </div>
               </div>                        
