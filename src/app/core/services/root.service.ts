@@ -73,4 +73,20 @@ export class RootService {
       .set('codePap', codePap)
     return this.http.get<T>(`${this.url}${url}/byCodePap`, { params });
   }
+
+  deleteMultipleByIds(endpoint: string, ids: number[]): Observable<any> {
+    // Vérification si la liste est vide
+    if (!ids || ids.length === 0) {
+      throw new Error('La liste des IDs ne peut pas être vide');
+    }
+    // Pour un DELETE avec body, on utilise request()
+    return this.http.request<any>(
+      'DELETE',
+      `${this.url}${endpoint}/batch`,
+      {
+        body: ids,
+        headers: this.httpOptions.headers
+      }
+    );
+  }
 }

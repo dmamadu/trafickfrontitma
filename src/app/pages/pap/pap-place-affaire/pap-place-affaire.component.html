@@ -50,6 +50,8 @@
 
 <div style="z-index: 0" class="pt-3">
   <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" [total]="length"
-    [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
+    [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"   [enableSelection]="true"
+  [enableBulkDelete]="true"
+  (bulkDelete)="handleBulkDelete($event)"
     (changePage)="pageChanged($event)" *ngIf="!loadData"></tableau>
 </div>

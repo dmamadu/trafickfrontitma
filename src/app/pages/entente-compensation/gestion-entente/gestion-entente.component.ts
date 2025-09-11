@@ -316,92 +316,203 @@ private executerFinalisation(): void {
   });
 }
 
-  validerEtape(etape: string): void {
-    this.loading = true;
-    switch (etape) {
-      case 'compensation':
-        this.processusService.etablirCompensation(this.ententeDetails.ententeId).subscribe({
-          next: (updatedEntente) => {
-            this.ententeDetails = updatedEntente;
-            this.loading = false;
-          },
-          error: (error) => this.handleEtapeError(error)
-        });
-        break;
+  // validerEtape(etape: string): void {
+  //   this.loading = true;
+  //   switch (etape) {
+  //     case 'compensation':
+  //       this.processusService.etablirCompensation(this.ententeDetails.ententeId).subscribe({
+  //         next: (updatedEntente) => {
+  //           this.ententeDetails = updatedEntente;
+  //           this.loading = false;
+  //         },
+  //         error: (error) => this.handleEtapeError(error)
+  //       });
+  //       break;
       
-      case 'information':
-        const infoData = this.informationForm.value;
-        this.processusService.informerPap(
-          this.ententeDetails.ententeId, 
-          infoData.modeInformation,
-          infoData.detailsInformation
-        ).subscribe({
-          next: (updatedEntente) => {
-            this.ententeDetails = updatedEntente;
-            this.informationForm.reset();
-            this.nextStep();
-            this.loading = false;
-          },
-          error: (error) => this.handleEtapeError(error)
-        });
-        break;
+  //     case 'information':
+  //       const infoData = this.informationForm.value;
+  //       this.processusService.informerPap(
+  //         this.ententeDetails.ententeId, 
+  //         infoData.modeInformation,
+  //         infoData.detailsInformation
+  //       ).subscribe({
+  //         next: (updatedEntente) => {
+  //           this.ententeDetails = updatedEntente;
+  //           this.informationForm.reset();
+  //           this.nextStep();
+  //           this.loading = false;
+  //         },
+  //         error: (error) => this.handleEtapeError(error)
+  //       });
+  //       break;
       
-      case 'accord':
-        this.processusService.obtenirAccordPap(this.ententeDetails.ententeId,this.preuveAccord).subscribe({
-          next: (updatedEntente) => {
-            this.ententeDetails = updatedEntente;
-            this.nextStep();
-            this.loading = false;
-          },
-          error: (error) => this.handleEtapeError(error)
-        });
-        break;
+  //     case 'accord':
+  //       this.processusService.obtenirAccordPap(this.ententeDetails.ententeId,this.preuveAccord).subscribe({
+  //         next: (updatedEntente) => {
+  //           this.ententeDetails = updatedEntente;
+  //           this.nextStep();
+  //           this.loading = false;
+  //         },
+  //         error: (error) => this.handleEtapeError(error)
+  //       });
+  //       break;
       
-      case 'paiement':
-        this.processusService.effectuerPaiement(this.ententeDetails.ententeId,this.preuvePaiement).subscribe({
-          next: (updatedEntente) => {
-            this.ententeDetails = updatedEntente;
-             this.nextStep();
-            this.loading = false;
-          },
-          error: (error) => this.handleEtapeError(error)
-        });
-        break;
+  //     case 'paiement':
+  //       this.processusService.effectuerPaiement(this.ententeDetails.ententeId,this.preuvePaiement).subscribe({
+  //         next: (updatedEntente) => {
+  //           this.ententeDetails = updatedEntente;
+  //            this.nextStep();
+  //           this.loading = false;
+  //         },
+  //         error: (error) => this.handleEtapeError(error)
+  //       });
+  //       break;
       
-      case 'formation':
-      this.processusService.donnerFormation(
-      this.ententeDetails.ententeId, 
-      this.typeFormation, 
-      this.formateur
-    ).subscribe({
-      next: (response) => {
-        this.ententeDetails = response;
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Erreur lors de la validation de la formation', error);
-        this.loading = false;
+  //     case 'formation':
+  //     this.processusService.donnerFormation(
+  //     this.ententeDetails.ententeId, 
+  //     this.typeFormation, 
+  //     this.formateur
+  //   ).subscribe({
+  //     next: (response) => {
+  //       this.ententeDetails = response;
+  //       this.loading = false;
+  //     },
+  //     error: (error) => {
+  //       console.error('Erreur lors de la validation de la formation', error);
+  //       this.loading = false;
+  //     }
+  //   });
+  //       break;
+  //     case 'suivi':
+  //     this.processusService.effectuerSuivi(
+  //     this.ententeDetails.ententeId, 
+  //     this.resultatSuivi, 
+  //     this.commentairesSuivi
+  //   ).subscribe({
+  //     next: (response) => {
+  //       this.ententeDetails = response;
+  //       this.loading = false;
+  //     },
+  //     error: (error) => {
+  //       console.error('Erreur lors de la validation du suivi', error);
+  //       this.loading = false;
+  //     }
+  //   });
+  //     break;
+  //   }
+  // }
+
+
+
+validerEtape(etape: string): void {
+  // Messages de confirmation selon l'étape
+  const messagesConfirmation = {
+    compensation: 'Voulez-vous vraiment établir la compensation ?',
+    information: 'Voulez-vous vraiment informer le PAP ?',
+    accord: 'Voulez-vous vraiment valider l\'accord du PAP ?',
+    paiement: 'Voulez-vous vraiment effectuer le paiement ?',
+    formation: 'Voulez-vous vraiment valider la formation ?',
+    suivi: 'Voulez-vous vraiment valider le suivi ?'
+  };
+
+  this.snackbar
+    .showConfirmation(messagesConfirmation[etape] || 'Voulez-vous vraiment continuer ?')
+    .then((confirmed) => {
+      if (confirmed) {
+        this.executerValidationEtape(etape);
       }
     });
-        break;
-      case 'suivi':
-      this.processusService.effectuerSuivi(
-      this.ententeDetails.ententeId, 
-      this.resultatSuivi, 
-      this.commentairesSuivi
-    ).subscribe({
-      next: (response) => {
-        this.ententeDetails = response;
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Erreur lors de la validation du suivi', error);
-        this.loading = false;
-      }
-    });
+}
+
+private executerValidationEtape(etape: string): void {
+  this.loading = true;
+  
+  switch (etape) {
+    case 'compensation':
+      this.processusService.etablirCompensation(this.ententeDetails.ententeId).subscribe({
+        next: (updatedEntente) => {
+          this.ententeDetails = updatedEntente;
+          this.loading = false;
+        },
+        error: (error) => this.handleEtapeError(error)
+      });
       break;
-    }
+    
+    case 'information':
+      const infoData = this.informationForm.value;
+      this.processusService.informerPap(
+        this.ententeDetails.ententeId, 
+        infoData.modeInformation,
+        infoData.detailsInformation
+      ).subscribe({
+        next: (updatedEntente) => {
+          this.ententeDetails = updatedEntente;
+          this.informationForm.reset();
+          this.nextStep();
+          this.loading = false;
+        },
+        error: (error) => this.handleEtapeError(error)
+      });
+      break;
+    
+    case 'accord':
+      this.processusService.obtenirAccordPap(this.ententeDetails.ententeId, this.preuveAccord).subscribe({
+        next: (updatedEntente) => {
+          this.ententeDetails = updatedEntente;
+          this.nextStep();
+          this.loading = false;
+        },
+        error: (error) => this.handleEtapeError(error)
+      });
+      break;
+    
+    case 'paiement':
+      this.processusService.effectuerPaiement(this.ententeDetails.ententeId, this.preuvePaiement).subscribe({
+        next: (updatedEntente) => {
+          this.ententeDetails = updatedEntente;
+          this.nextStep();
+          this.loading = false;
+        },
+        error: (error) => this.handleEtapeError(error)
+      });
+      break;
+    
+    case 'formation':
+      this.processusService.donnerFormation(
+        this.ententeDetails.ententeId, 
+        this.typeFormation, 
+        this.formateur
+      ).subscribe({
+        next: (response) => {
+          this.ententeDetails = response;
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Erreur lors de la validation de la formation', error);
+          this.loading = false;
+        }
+      });
+      break;
+    
+    case 'suivi':
+      this.processusService.effectuerSuivi(
+        this.ententeDetails.ententeId, 
+        this.resultatSuivi, 
+        this.commentairesSuivi
+      ).subscribe({
+        next: (response) => {
+          this.ententeDetails = response;
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Erreur lors de la validation du suivi', error);
+          this.loading = false;
+        }
+      });
+      break;
   }
+}
 
   handleEtapeError(error: any): void {
     console.error('Erreur lors de l\'étape:', error);

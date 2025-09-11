@@ -1,69 +1,123 @@
 <div class="flex flex-col overflow-x-auto w-full">
-  <table aria-label="client" class="shadow-lg" mat-table matSort
-    [matSortActive]="'libelle'" [matSortDisableClear]="true" [matSortDirection]="'asc'" [multiTemplateDataRows]="true"
-    [dataSource]="dataSource" [trackBy]="trackByFn">
+  <!-- Barre d'actions pour la suppression multiple -->
+  <div *ngIf="enableSelection && enableBulkDelete && selection.hasValue()" 
+       class="bg-blue-50 p-3 mb-4 rounded-md flex items-center justify-between bulk-action-bar">
+    <div class="text-sm text-blue-800 font-medium">
+      <i class="bx bx-check-circle mr-2"></i>
+      {{ getSelectedCount() }} élément(s) sélectionné(s)
+    </div>
+    <button mat-raised-button color="warn" (click)="deleteSelectedItems()" 
+            class="flex items-center gap-2 px-4 py-2">
+      <i class="bx bx-trash text-lg"></i>
+      Supprimer la sélection
+    </button>
+  </div>
 
-    <ng-container [matColumnDef]="entete[i]['th']" *ngFor="let item of entete;let i=index">
-      <th class="w-40 entteTable" mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
+  <table aria-label="client" class="shadow-lg w-full" mat-table matSort
+    [matSortActive]="'libelle'" [matSortDisableClear]="true" [matSortDirection]="'asc'" 
+    [multiTemplateDataRows]="true" [dataSource]="dataSource" [trackBy]="trackByFn">
+
+    <!-- Colonne de sélection -->
+    <ng-container *ngIf="enableSelection" matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef class="w-12">
+        <mat-checkbox 
+          [checked]="isAllSelected()"
+          [indeterminate]="selection.hasValue() && !isAllSelected()"
+          (change)="toggleAllRows()"
+          aria-label="Select all"
+          class="ml-2">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row" class="w-12">
+        <mat-checkbox
+          [checked]="isRowSelected(row)"
+          (change)="toggleRow(row)"
+          aria-label="Select row"
+          class="ml-2">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container [matColumnDef]="entete[i]['th']" *ngFor="let item of entete; let i = index">
+      <th class="w-40 enteteTable px-4 py-3 bg-gray-100 text-left text-xs font-medium text-gray-700 uppercase tracking-wider" 
+          mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
         {{ item['th'] }}
       </th>
-      <td class="pr-8 truncate contentTable" mat-cell *matCellDef="let element">
+      <td class="pr-8 truncate contentTable px-4 py-3 text-sm text-gray-900" mat-cell *matCellDef="let element">
         <span
-          [matTooltip]="(element[item['td']])?.length > 23  ? element[item['td']] : item['el'] ? element[item['td']] ? element[item['td']][item['el']]:'' : ''"
-          class="{{getBadgeClass(element,entete[i]) || getBadgeStatut(element,entete[i])}}">
+          [matTooltip]="(element[item['td']])?.length > 23 ? element[item['td']] : item['el'] ? element[item['td']] ? element[item['td']][item['el']] : '' : ''"
+          class="{{getBadgeClass(element, entete[i]) || getBadgeStatut(element, entete[i])}}">
           {{
           item['el'] ?
-          item['type'] == 'n' ? (element[item['td']][item['el']] | number : '1.0-0':'fr') : element[item['td']] ?
-          (element[item['td']][item['el']])?.length > 23 ? (element[item['td']][item['el']] | slice : 0 : 23) + '...' :
-          element[item['td']][item['el']] : '' :
+          item['type'] == 'n' ? (element[item['td']][item['el']] | number : '1.0-0':'fr') : 
+          element[item['td']] ? (element[item['td']][item['el']])?.length > 23 ? 
+          (element[item['td']][item['el']] | slice:0:23) + '...' : element[item['td']][item['el']] : '' :
           item['type'] == 'n' ? (element[item['td']] | number : '1.0-0':'fr') :
 
           item['el'] ?
-          item['type'] == 'd' ? (element[item['td']][item['el']] | date: 'dd-MM-yyyy') : element[item['td']] ?
-          element[item['td']][item['el']] : '' :
+          item['type'] == 'd' ? (element[item['td']][item['el']] | date: 'dd-MM-yyyy') : 
+          element[item['td']] ? element[item['td']][item['el']] : '' :
           item['type'] == 'd' ? (element[item['td']] | date: 'dd-MM-yyyy') :
+
           item['el'] ?
-          item['type'] == 's' ? (element[item['td']][item['el']]) : element[item['td']] ?
-          element[item['td']][item['el']] : '' :
+          item['type'] == 's' ? (element[item['td']][item['el']]) : 
+          element[item['td']] ? element[item['td']][item['el']] : '' :
           item['type'] == 's' ? (element[item['td']]) :
+
           item['el'] ?
-          item['type'] == 'titeCase' ? (element[item['td']][item['el']] | titlecase) : element[item['td']] ?
-          element[item['td']][item['el']] : '' :
+          item['type'] == 'titeCase' ? (element[item['td']][item['el']] | titlecase) : 
+          element[item['td']] ? element[item['td']][item['el']] : '' :
           item['type'] == 'titeCase' ? (element[item['td']] | titlecase) :
+
           element[item['td']] === true ? 'oui' :
-
           element[item['td']] === false ? 'non' :
-
-          (element[item['td']])?.length > 23 ? (element[item['td']] | slice : 0 : 23) + '...' : element[item['td']]
+          (element[item['td']])?.length > 23 ? (element[item['td']] | slice:0:23) + '...' : element[item['td']]
           }}
         </span>
       </td>
     </ng-container>
 
-    <ng-container matColumnDef="Action">
-      <th class="w-40 enteteTable" mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
+    <!-- Colonne Action - SEULEMENT si des actions sont définies -->
+    <ng-container *ngIf="actions && actions.length > 0" matColumnDef="Action">
+      <th class="w-40 enteteTable px-4 py-3 bg-gray-100 text-left text-xs font-medium text-gray-700 uppercase tracking-wider" 
+          mat-header-cell *matHeaderCellDef>
         Action
       </th>
-      <td class="pr-4" mat-cell *matCellDef="let element">
-        <p class="flex">
-          <button class="pl-2" [matTooltip]="actionBtn.title"
-            [disabled]="actionBtn.isDisabled || (actionBtn.constraint ? actionBtn.constraint(element) : false)"
-            (click)="actionBtn.action(element)" *ngFor="let actionBtn of actions" mat-icon-button>
-            <!-- Exemple d'utilisation dans un template Angular -->
-            <i class="bx {{actionBtn.icon}}" [ngStyle]="{'color': actionBtn.couleur}"></i>
-
+      <td class="pr-4 px-4 py-3" mat-cell *matCellDef="let element">
+        <div class="flex items-center space-x-1">
+          <button class="p-1 rounded hover:bg-gray-200 transition-colors" 
+                  [matTooltip]="actionBtn.title"
+                  [disabled]="actionBtn.isDisabled || (actionBtn.constraint ? actionBtn.constraint(element) : false)"
+                  (click)="actionBtn.action(element)" 
+                  *ngFor="let actionBtn of actions" 
+                  mat-icon-button>
+            <i class="bx {{actionBtn.icon}} text-lg" [ngStyle]="{'color': actionBtn.couleur}"></i>
           </button>
-        </p>
+        </div>
       </td>
     </ng-container>
-    <tr class="shadow" mat-header-row *matHeaderRowDef="mapObject(entete); sticky: true"></tr>
-    <tr class="hover:bg-gray-100 dark:hover:bg-hover" mat-row *matRowDef="let role; columns: mapObject(entete);"></tr>
 
+    <tr class="shadow" mat-header-row *matHeaderRowDef="getDisplayedColumns(); sticky: true"></tr>
+    <tr class="hover:bg-gray-100 dark:hover:bg-hover transition-colors" 
+        mat-row 
+        *matRowDef="let role; columns: getDisplayedColumns();"
+        [class.bg-blue-50]="enableSelection && isRowSelected(role)">
+    </tr>
   </table>
-  <div *ngIf="dataSource.data?.length === 0" class="w-full text-center py-4">
-    <p style="color: #D55E00;">La liste est vide.</p>
+
+  <div *ngIf="dataSource.data?.length === 0" class="w-full text-center py-8 bg-gray-50 rounded-lg">
+    <i class="bx bx-inbox text-4xl text-gray-400 mb-2"></i>
+    <p class="text-gray-500 font-medium">Aucune donnée disponible</p>
+    <p class="text-sm text-gray-400 mt-1">La liste est vide.</p>
   </div>
 </div>
-<mat-paginator *ngIf="dataSource.data?.length!=0" class="paginator c-paginator" #paginator (page)="pageChanged($event)"
-  [length]="total" [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions">
+
+<mat-paginator *ngIf="dataSource.data?.length !== 0" 
+               class="paginator c-paginator mt-4" 
+               #paginator 
+               (page)="pageChanged($event)"
+               [length]="total" 
+               [pageIndex]="pageIndex" 
+               [pageSize]="pageSize" 
+               [pageSizeOptions]="pageSizeOptions">
 </mat-paginator>

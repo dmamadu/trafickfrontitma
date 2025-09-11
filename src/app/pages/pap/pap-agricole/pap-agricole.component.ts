@@ -359,14 +359,14 @@ private destroy$ = new Subject<void>();
         isDisabled: this.hasUpdate,
         action: (element?) => this.updateItems(element),
       },
-      {
-        icon: "bxs-trash-alt",
-        couleur: "#D55E00",
-        size: "icon-size-4",
-        title: "Supprimer",
-        isDisabled: this.hasDelete,
-        action: (element?) => this.supprimerItems(element.id, element),
-      },
+      // {
+      //   icon: "bxs-trash-alt",
+      //   couleur: "#D55E00",
+      //   size: "icon-size-4",
+      //   title: "Supprimer",
+      //   isDisabled: this.hasDelete,
+      //   action: (element?) => this.supprimerItems(element.id, element),
+      // },
       {
         icon: "bxs-info-circle",
         couleur: "black",
@@ -823,4 +823,36 @@ private destroy$ = new Subject<void>();
       }
     );
   }
+
+
+  handleBulkDelete(selectedIds: number[]): void {
+  console.log('IDs à supprimer:', selectedIds);
+  this.snackbar
+    .showConfirmation("Voulez-vous vraiment supprimer ces partis affectés ?")
+    .then((result) => {
+      if (result["value"] == true) {
+        this.deleteUser = true;
+          this.showLoader = "isShow";
+          const message = "Partis affectés supprimés avec succès";
+          this.papService.deleteMultipleByIds(this.url, selectedIds).subscribe(
+            (resp) => {
+              this.showLoader = "isNotShow";
+              this.coreService
+                .list(this.url, this.offset, this.pageSize)
+                .subscribe((resp: any) => {
+                  this.snackbar.openSnackBar(message + " avec succès", "OK", [
+                    "mycssSnackbarGreen",
+                  ]);
+                   this.getPapAgricole();
+                });
+            },
+            (error) => {
+              this.showLoader = "isNotShow";
+              this.deleteUser = false;
+              this.snackbar.showErrors(error);
+            }
+          );
+        }
+      });
+}
 }

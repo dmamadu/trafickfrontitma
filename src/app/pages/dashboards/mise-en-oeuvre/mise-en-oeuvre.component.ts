@@ -64,6 +64,8 @@ export class MiseEnOeuvreComponent implements OnInit, OnDestroy {
   userConnecter;
   offset: number = 0;
 
+  urlEntente:string = "ententeSynchroniser";
+
   currentProjectId: any;
   
   // Données des statistiques combinées

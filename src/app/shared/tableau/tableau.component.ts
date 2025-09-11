@@ -17,6 +17,7 @@ import { MatTableDataSource } from "@angular/material/table";
 //import {ExportService} from 'app/core/auth/export.service';
 import { Subject } from "rxjs";
 import { AngularMaterialModule } from "../angular-materiel-module/angular-materiel-module";
+import { SelectionModel } from "@angular/cdk/collections";
 //import {CoreService} from "../../core/core/core.service";
 
 @Component({
@@ -41,6 +42,16 @@ export class TableauComponent implements OnInit {
   @Input() pageSizeOptions: number[];
   @Input() actions!: ButtonAction[];
   @Output() changePage = new EventEmitter<any>();
+
+
+
+   @Input() enableSelection: boolean = false; // Nouvelle input pour activer la sélection
+   @Input() enableBulkDelete: boolean = false; // Nouvelle input pour activer la suppression multiple
+   @Output() bulkDelete = new EventEmitter<any[]>(); // Nouvel output pour la suppression multiple
+  
+  selection = new SelectionModel<any>(true, []); // Gestionnaire de sélection
+  selectedItems: any[] = []; 
+
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) private sort: MatSort;
@@ -105,13 +116,37 @@ export class TableauComponent implements OnInit {
     return this._data;
   }
 
-  mapObject(tab) {
-    const tt = tab.map((el) => el.th);
-    if (this.actions) {
-      tt.push("Action");
-    }
-    return tt;
+  // mapObject(tab) {
+  //   const tt = tab.map((el) => el.th);
+  //   if (this.actions) {
+  //     tt.push("Action");
+  //   }
+  //   return tt;
+  // }
+
+  // Remplacer la méthode mapObject() par :
+mapObject(tab) {
+  return tab.map((el) => el.th);
+}
+
+// Et modifier getDisplayedColumns() :
+getDisplayedColumns(): string[] {
+  let columns = [];
+  
+  if (this.enableSelection) {
+    columns.push('select');
   }
+  
+  // Ajouter seulement les colonnes de l'entête
+  columns = columns.concat(this.mapObject(this.entete));
+  
+  // Ajouter la colonne Action seulement si des actions sont définies
+  if (this.actions && this.actions.length > 0) {
+    columns.push('Action');
+  }
+  
+  return columns;
+}
 
   getBadgeClass(element, entete) {
     if (entete.badgeClass) {
@@ -275,6 +310,50 @@ export class TableauComponent implements OnInit {
   protected readonly length = length;
 
 
+  // Méthodes pour la sélection multiple
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected(): boolean {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+    toggleAllRows(): void {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      this.selectedItems = [];
+      return;
+    }
+    this.selection.select(...this.dataSource.data);
+    this.selectedItems = this.selection.selected;
+  }
+
+
+  /** Toggle selection for a single row */
+  toggleRow(row: any): void {
+    this.selection.toggle(row);
+    this.selectedItems = this.selection.selected;
+  }
+
+  /** Check if a row is selected */
+  isRowSelected(row: any): boolean {
+    return this.selection.isSelected(row);
+  }
+
+  /** Get the number of selected items */
+  getSelectedCount(): number {
+    return this.selection.selected.length;
+  }
+
+  /** Delete selected items */
+  deleteSelectedItems(): void {
+    if (this.selectedItems.length > 0) {
+      const selectedIds = this.selectedItems.map(item => item.id);
+      this.bulkDelete.emit(selectedIds);
+      this.selection.clear();
+      this.selectedItems = [];
+    }
+  }
 }
 
 export type ButtonAction = {
