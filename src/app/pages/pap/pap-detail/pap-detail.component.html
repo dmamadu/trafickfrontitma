@@ -1,8 +1,5 @@
-<div class="flex flex-col flex-auto min-w-0">
+<!-- <div class="flex flex-col flex-auto min-w-0">
   <div class="flex flex-col shadow bg-card">
-    <div>
-      <img class="h-24 lg:h-24 object-fit w-full" src="../../../../assets/images/banniere1.webp" alt="Cover image">
-    </div>
     <div class="d-flex justify-between items-center ">
       <div class="rounded-full cursor-pointer relative" matTooltip="Charger l'image du client"
         style="margin-left: 50px; margin-top: 5px;" (click)="photoP.click()">
@@ -10,10 +7,6 @@
           <img class="w-20 h-20 rounded-full ring-4 ring-bg-card background_avatarNoImage" [src]="imagePath || noImage"
             alt="">
         </ng-container>
-        <!-- <ng-container *ngIf="noImage === ''">
-          <h1 class="w-26 h-26 rounded-full object-center ring-4 ring-bg-card background_avatar">
-            {{getFirstElementWord(infosClient?.intitule)}}</h1>
-        </ng-container> -->
         <input hidden #photoP class="use-avatar" (change)="selectOnFile($event,'photo_profile','Thumbnail')" type="file"
           id="file" required
           accept="image/png, image/PNG, image/jpg, image/JPG, image/jpeg, image/JPEG, .pdf , .PDF , .doc , .DOC , .docx , .DOCX , .docm , .DOCM" />
@@ -23,16 +16,6 @@
           </mat-progress-spinner>
         </div>
       </div>
-      <!-- <button
-      class="px-4 mb-2 w-[120px] py-2 bgPrimaire  text-white font-semibold rounded shadow-md flex items-center justify-center space-x-2 transition-all duration-300"
-      onclick="history.back()">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-        class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-      </svg>
-      <span>Retour</span>
-    </button> -->
-
       <div class="flex flex-col items-center lg:items-start mt-4 lg:mt-0 lg:ml-8">
         <div class="text-secondary">Id Pap</div>
         <div class="text-lg font-bold leading-none">{{infosPap?.idPap}}</div>
@@ -67,7 +50,6 @@
         </button>
         <input type="file" id="file-upload" (change)="fileUpload($event)" name="fileUpload" accept=".xls,.xlsx"
           style="display: none;">
-
         <div *ngIf="loader">
           <mat-progress-spinner class="circle-loader" color="#000000" [mode]="'indeterminate'" [strokeWidth]="4"
             [value]="2" [diameter]="20"></mat-progress-spinner>
@@ -75,7 +57,6 @@
       </div>
     </div>
   </div>
-
   @if (dataExcel.length>0) {
   <app-datatable [headings]="headings" [dataExcel]="dataExcel"></app-datatable>
   <div class="row">
@@ -87,7 +68,6 @@
     </div>
   </div>
   }
-
   <div class="flex flex-col w-full min-w-0 sm:inset-0 sm:overflow-hidden">
     <mat-drawer-container class="flex-auto sm:h-auto">
       <mat-drawer id="c_mat_drawerId" class="sm:w-80 dark:bg-gray-900 c_mat_drawer" [autoFocus]="false" [mode]="'side'"
@@ -99,18 +79,6 @@
                 <div class="space-y-3" *ngFor="let item of menuData">
                   <label class="px-3 text-xs c_label">{{item?.title}}</label>
                   <hr>
-                  <!-- <button
-                    class="flex w-full items-center cursor-pointer px-3 py-2 text-black transition-colors duration-300 transform rounded-lg dark:text-black hover:bg-black dark:black:bg-gray-800 dark:hover:text-black hover:text-black"
-                    *ngFor="let child of item?.children"
-                    [disabled]="(child.id =='bureau' || child.id == 'audit' || child.id =='wallet' || child.id == 'decouvert') || (infosPap?.statut ==='DEMISSION' ? child.id == 'transfert' : '') || (infosPap?.statut ==='DEMISSION' ? child.id == 'demande' : '')"
-                    (click)="goToPanel(child.id)" [ngClass]="{
-                        'hover:bg-gray-100 dark:hover:bg-hover': !selectedPanel || selectedPanel !== child.id,
-                        'bg-primary-50 dark:bg-hover': selectedPanel && selectedPanel === child.id,
-                        'act': selectedPanel === child.id
-                      }">
-                    <i class="bx {{child?.icon}} icon-size-5"></i>
-                    <span class="mx-2 c_text_sm">{{child?.title}}</span>
-                  </button> -->
                   <button
                     class="flex w-full items-center cursor-pointer px-3 py-2 text-black transition-all duration-200 transform rounded-lg hover:bg-gray-100"
                     *ngFor="let child of item?.children"
@@ -131,7 +99,6 @@
           </div>
         </div>
       </mat-drawer>
-
       <mat-drawer-content class="flex flex-col">
         <div class="flex-auto c_padding">
           <div class="flex items-center">
@@ -160,11 +127,119 @@
                 </div>
               </div>
             </div>
-
           </div>
-
         </div>
       </mat-drawer-content>
     </mat-drawer-container>
   </div>
+</div> -->
+
+<div class="page-wrapper">
+
+  <!-- ===== HEADER COMPACT ===== -->
+  <div class="page-header">
+    <!-- Avatar -->
+    <div class="avatar-wrap" matTooltip="Charger l'image du client" (click)="photoP.click()">
+      <img class="avatar-img" [src]="imagePath || noImage" alt="Photo client" />
+      <div class="avatar-overlay"><i class="bx bx-camera"></i></div>
+      <mat-progress-spinner *ngIf="loaderImg" class="avatar-spinner" [mode]="'indeterminate'" [strokeWidth]="3" [diameter]="24"></mat-progress-spinner>
+      <input hidden #photoP (change)="selectOnFile($event,'photo_profile','Thumbnail')" type="file" accept="image/png,image/jpg,image/jpeg,.pdf,.doc,.docx,.docm" />
+    </div>
+
+    <!-- Infos client -->
+    <div class="header-meta">
+      <div class="meta-item">
+        <span class="meta-label">Id Pap</span>
+        <span class="meta-value">{{infosPap?.idPap}}</span>
+      </div>
+      <div class="sep"></div>
+      <div class="meta-item">
+        <span class="meta-label">N° Identification</span>
+        <span class="meta-value">{{infosPap?.numeroIdentification}}</span>
+      </div>
+      <div class="sep"></div>
+      <button class="icon-btn" (click)="signatureClient()" matTooltip="Voir signature">
+        <i class="bx bx-pencil"></i>
+      </button>
+    </div>
+
+    <!-- Actions -->
+    <div class="header-actions">
+      <button class="btn-action" (click)="changeClient('dedommage', infosPap.id)" matTooltip="Dédommager client">
+        <i class="bx bx-user-check"></i>
+        <span>Dédommager</span>
+      </button>
+      <button class="btn-action" (click)="triggerFileUpload()">
+        <i class="bx bx-upload"></i>
+        <span>Importer</span>
+      </button>
+      <button class="btn-action" (click)="addItems()">
+        <i class="bx bx-plus"></i>
+        <span>Formuler</span>
+      </button>
+      <input type="file" id="file-upload" (change)="fileUpload($event)" name="fileUpload" accept=".xls,.xlsx" style="display:none" />
+      <mat-progress-spinner *ngIf="loader" [mode]="'indeterminate'" [strokeWidth]="3" [diameter]="20"></mat-progress-spinner>
+    </div>
+  </div>
+
+  <!-- ===== IMPORT EXCEL PREVIEW ===== -->
+  @if (dataExcel.length > 0) {
+    <div class="excel-preview">
+      <app-datatable [headings]="headings" [dataExcel]="dataExcel"></app-datatable>
+      <div class="excel-actions">
+        <button class="btn-cancel" (click)="resetDataFromExcel()">Annuler</button>
+        <button class="btn-confirm" (click)="importData()">Ajouter</button>
+      </div>
+    </div>
+  }
+
+  <!-- ===== LAYOUT DRAWER ===== -->
+  <mat-drawer-container class="drawer-container" autosize>
+
+    <!-- Sidebar -->
+    <mat-drawer class="sidebar" [autoFocus]="false" [mode]="'side'" [opened]="true" #drawer>
+      <nav class="sidebar-nav">
+        <ng-container *ngFor="let item of menuData">
+          <p class="nav-group-label">{{item?.title}}</p>
+          <button
+            *ngFor="let child of item?.children"
+            class="nav-item"
+            [disabled]="(child.id =='bureau' || child.id == 'audit' || child.id =='wallet' || child.id == 'decouvert') || (infosPap?.statut ==='DEMISSION' ? child.id == 'transfert' : '') || (infosPap?.statut ==='DEMISSION' ? child.id == 'demande' : '')"
+            (click)="goToPanel(child.id)"
+            [class.nav-item--active]="selectedPanel === child.id"
+            [class.nav-item--disabled]="(child.id =='bureau' || child.id == 'audit' || child.id =='wallet' || child.id == 'decouvert')">
+            <i class="bx {{child?.icon}}"></i>
+            <span>{{child?.title}}</span>
+            <span *ngIf="selectedPanel === child.id" class="nav-dot"></span>
+          </button>
+        </ng-container>
+      </nav>
+    </mat-drawer>
+
+    <!-- Content -->
+    <mat-drawer-content class="drawer-content">
+      <button class="menu-toggle lg:hidden" (click)="drawer.toggle()">
+        <i class="bx bx-menu"></i>
+      </button>
+
+      <div class="panel-content">
+        <div [ngSwitch]="selectedPanel">
+          <div *ngSwitchCase="'info-client'">
+            <info-client [infosPap]="infosPap"></info-client>
+          </div>
+          <div *ngSwitchCase="'plainte'">
+            <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize"
+              [total]="length" [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
+              (changePage)="pageChanged($event)"></tableau>
+          </div>
+          <div *ngSwitchCase="'entente'">
+            <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize"
+              [total]="length" [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
+              (changePage)="pageChanged($event)"></tableau>
+          </div>
+        </div>
+      </div>
+    </mat-drawer-content>
+
+  </mat-drawer-container>
 </div>

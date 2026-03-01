@@ -1,16 +1,14 @@
-<section class="section hero-section bg-ico-hero" id="home">
+<!-- <section class="section hero-section bg-ico-hero" id="home">
   <video autoplay  loop playsinline  preload="auto" class="background-video">
     <source src="assets/images/1570682_Highway_Land Transport_1920x1080.mp4" type="video/mp4" />
     Votre navigateur ne supporte pas la vidéo HTML5.
   </video>
   <div class="container mx-auto flex flex-col lg:flex-row items-center lg:px-0">
 
-    <!-- Colonne gauche statique (ne change pas) -->
     <div class="lg:w-1/2">
       <img src="assets/images/Frame1WithPhone.svg" alt="Bienvenue sur notre plateforme" class="max-w-full h-auto mb-3">
     </div>
 
-    <!-- Colonne droite avec contenu dynamique -->
     <div class="banner text-white">
       <div>
         <h1 class="text-xl font-bold ">{{ currentSlide.title }}</h1>
@@ -25,5 +23,42 @@
         </a>
       </div>
     </div>
+  </div>
+</section> -->
+
+<section class="hero-section" id="home">
+  <!-- Vidéo de fond -->
+  <video autoplay muted loop playsinline preload="auto" class="background-video">
+    <source src="assets/images/1570682_Highway_Land Transport_1920x1080.mp4" type="video/mp4" />
+    Votre navigateur ne supporte pas la vidéo HTML5.
+  </video>
+
+  <!-- Calque sombre -->
+  <div class="overlay"></div>
+
+  <!-- Wrapper principal centré -->
+  <div class="hero-wrapper">
+
+    <!-- Texte + bouton -->
+    <div class="hero-text">
+      <h1 class="hero-title">
+        Une application de<br>
+        <strong>gestion des parties prenantes</strong>
+      </h1>
+      <p class="hero-description">
+        Invodis est une plateforme collaborative qui simplifie la gestion des déplacements involontaires
+        de populations, comme pour les projets d'infrastructure ou les crises humanitaires.
+        Elle connecte tous les acteurs clés autour d'un outil de gestion efficace et simple d'utilisation.
+      </p>
+      <a href="javascript:void(0);" class="hero-btn">
+        Commencer maintenant
+      </a>
+    </div>
+
+    <!-- Mockup centré en bas -->
+    <div class="hero-mockup">
+      <img src="assets/images/Frame1WithPhone.svg" alt="Aperçu de la plateforme" />
+    </div>
+
   </div>
 </section>

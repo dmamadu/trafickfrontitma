@@ -1,0 +1,331 @@
+<app-dialog-header 
+  title="{{ dialogTitle }} - {{ papCode }}" 
+  icon="person_search"
+  (close)="matDialogRef.close()">
+</app-dialog-header>
+
+<div class="flex flex-col p-6 max-h-[80vh] overflow-y-auto">
+  <form [formGroup]="identificationForm" class="w-full">
+    
+    <!-- Barre de progression -->
+    <div class="mb-6">
+      <div class="flex justify-between mb-2">
+        <span class="text-sm font-medium text-gray-700">Section {{ currentSection }} sur {{ totalSections }}</span>
+        <span class="text-sm text-gray-500">{{ ((currentSection / totalSections) * 100) | number:'1.0-0' }}%</span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2">
+        <div class="bg-green-500 h-2 rounded-full transition-all duration-300" 
+             [style.width.%]="(currentSection / totalSections) * 100"></div>
+      </div>
+      
+      <!-- Navigation par sections -->
+      <div class="flex justify-between mt-3 gap-2">
+        <button type="button" *ngFor="let section of [1,2,3,4,5]"
+          (click)="goToSection(section)"
+          [class]="'flex-1 py-2 text-xs font-medium rounded transition-colors ' + 
+                   (currentSection === section ? 'bg-green-500 text-white' : 
+                    getSectionValidity(section) ? 'bg-green-100 text-green-700' : 
+                    'bg-gray-100 text-gray-600')">
+          {{ section }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Alerte identification -->
+    <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 rounded-lg">
+      <div class="flex items-start">
+        <svg class="w-5 h-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+        </svg>
+        <div>
+          <p class="font-medium text-green-800">Mode Identification Terrain</p>
+          <p class="text-sm text-green-700 mt-1">Collectez les informations du PAP et validez pour le marquer comme "Complet"</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 1: Identité -->
+    <div *ngIf="currentSection === 1" class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
+        1. Identité du PAP *
+      </h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Code PAP</mat-label>
+          <input matInput formControlName="codePap" />
+          <mat-icon matSuffix class="text-gray-400">badge</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Sexe *</mat-label>
+          <mat-select formControlName="sexe">
+            <mat-option value="Masculin">Masculin</mat-option>
+            <mat-option value="Féminin">Féminin</mat-option>
+          </mat-select>
+          <mat-icon matSuffix class="text-gray-400">wc</mat-icon>
+          <mat-error>Champ obligatoire</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Prénom *</mat-label>
+          <input matInput formControlName="prenom" />
+          <mat-icon matSuffix class="text-gray-400">person</mat-icon>
+          <mat-error>Champ obligatoire</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Nom *</mat-label>
+          <input matInput formControlName="nom" />
+          <mat-icon matSuffix class="text-gray-400">person</mat-icon>
+          <mat-error>Champ obligatoire</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Nationalité *</mat-label>
+          <input matInput formControlName="nationalite" />
+          <mat-icon matSuffix class="text-gray-400">flag</mat-icon>
+          <mat-error>Champ obligatoire</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Situation matrimoniale *</mat-label>
+          <mat-select formControlName="situationMatrimoniale">
+            <mat-option value="Célibataire">Célibataire</mat-option>
+            <mat-option value="Marié(e)">Marié(e)</mat-option>
+            <mat-option value="Divorcé(e)">Divorcé(e)</mat-option>
+            <mat-option value="Veuf(ve)">Veuf(ve)</mat-option>
+          </mat-select>
+          <mat-icon matSuffix class="text-gray-400">favorite</mat-icon>
+          <mat-error>Champ obligatoire</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Surnom</mat-label>
+          <input matInput formControlName="surnom" />
+          <mat-icon matSuffix class="text-gray-400">person_outline</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Photo -->
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Photo du PAP</label>
+        <div class="flex items-center gap-4">
+          <div class="relative">
+            <img [src]="imageToff || 'assets/images/users/user-dummy-img.jpg'"
+              class="w-24 h-24 rounded-full object-cover border-2 border-gray-300 cursor-pointer"
+              (click)="openImageModal(imageToff)" />
+            <label for="photo-input" 
+              class="absolute bottom-0 right-0 bg-green-500 text-white rounded-full p-2 cursor-pointer hover:bg-green-600 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+            </label>
+            <input id="photo-input" type="file" class="hidden" accept="image/*" (change)="selectOnFile($event)">
+          </div>
+          <p class="text-sm text-gray-500">Prenez une photo du PAP pour faciliter l'identification future</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: Contact & Localisation -->
+    <div *ngIf="currentSection === 2" class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
+        2. Contact & Localisation *
+      </h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Numéro téléphone *</mat-label>
+          <input matInput formControlName="numeroTelephone" />
+          <mat-icon matSuffix class="text-gray-400">phone</mat-icon>
+          <mat-error>Champ obligatoire</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Langue parlée</mat-label>
+          <input matInput formControlName="langueParlee" />
+          <mat-icon matSuffix class="text-gray-400">language</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Commune *</mat-label>
+          <input matInput formControlName="commune" />
+          <mat-icon matSuffix class="text-gray-400">location_city</mat-icon>
+          <mat-error>Champ obligatoire</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Département *</mat-label>
+          <input matInput formControlName="departement" />
+          <mat-icon matSuffix class="text-gray-400">map</mat-icon>
+          <mat-error>Champ obligatoire</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- SECTION 3: Informations socio-économiques -->
+    <div *ngIf="currentSection === 3" class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
+        3. Informations socio-économiques
+      </h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Niveau d'étude</mat-label>
+          <mat-select formControlName="niveauEtude">
+            <mat-option value="Aucun">Aucun</mat-option>
+            <mat-option value="Primaire">Primaire</mat-option>
+            <mat-option value="Secondaire">Secondaire</mat-option>
+            <mat-option value="Supérieur">Supérieur</mat-option>
+          </mat-select>
+          <mat-icon matSuffix class="text-gray-400">school</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Religion</mat-label>
+          <input matInput formControlName="religion" />
+          <mat-icon matSuffix class="text-gray-400">church</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Membres du foyer *</mat-label>
+          <input matInput type="number" formControlName="membreFoyer" />
+          <mat-icon matSuffix class="text-gray-400">groups</mat-icon>
+          <mat-error>Champ obligatoire</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Membres handicapés</mat-label>
+          <input matInput type="number" formControlName="membreFoyerHandicape" />
+          <mat-icon matSuffix class="text-gray-400">accessible_forward</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Vulnérabilité</mat-label>
+          <mat-select formControlName="vulnerabilite">
+            <mat-option value="Aucune">Aucune</mat-option>
+            <mat-option value="Personne âgée">Personne âgée</mat-option>
+            <mat-option value="Handicap">Handicap</mat-option>
+            <mat-option value="Femme chef de ménage">Femme chef de ménage</mat-option>
+            <mat-option value="Orphelin">Orphelin</mat-option>
+          </mat-select>
+          <mat-icon matSuffix class="text-gray-400">accessibility</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Type handicap</mat-label>
+          <input matInput formControlName="typeHandicape" />
+          <mat-icon matSuffix class="text-gray-400">accessible</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- SECTION 4: Documents -->
+    <div *ngIf="currentSection === 4" class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
+        4. Documents d'identité
+      </h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Type pièce d'identité</mat-label>
+          <mat-select formControlName="typePni">
+            <mat-option value="CNI">Carte Nationale d'Identité</mat-option>
+            <mat-option value="Passeport">Passeport</mat-option>
+            <mat-option value="Permis de conduire">Permis de conduire</mat-option>
+            <mat-option value="Autre">Autre</mat-option>
+          </mat-select>
+          <mat-icon matSuffix class="text-gray-400">badge</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Numéro pièce</mat-label>
+          <input matInput formControlName="numeroPni" />
+          <mat-icon matSuffix class="text-gray-400">numbers</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- SECTION 5: Pertes (Optionnel) -->
+    <div *ngIf="currentSection === 5" class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">
+        5. Évaluation des pertes (Optionnel)
+      </h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Nombre de parcelles</mat-label>
+          <input matInput type="number" formControlName="nombrePlaceAffaire" />
+          <mat-icon matSuffix class="text-gray-400">grid_on</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Code place affaire</mat-label>
+          <input matInput formControlName="codePlaceAffaire" />
+          <mat-icon matSuffix class="text-gray-400">business</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full md:col-span-2">
+          <mat-label>Évaluation de la perte</mat-label>
+          <textarea matInput formControlName="evaluationPerte" rows="2"></textarea>
+          <mat-icon matSuffix class="text-gray-400">assessment</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full md:col-span-2">
+          <mat-label>Description / Remarques</mat-label>
+          <textarea matInput formControlName="description" rows="3"></textarea>
+          <mat-icon matSuffix class="text-gray-400">notes</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Boutons navigation -->
+    <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+      <button type="button" 
+        *ngIf="currentSection > 1"
+        (click)="previousSection()"
+        class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Précédent
+      </button>
+
+      <div class="flex gap-3" [class.ml-auto]="currentSection === 1">
+        <button type="button" 
+          (click)="matDialogRef.close()"
+          class="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          Annuler
+        </button>
+
+        <button type="button" 
+          *ngIf="currentSection < totalSections"
+          (click)="nextSection()"
+          class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2">
+          Suivant
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+
+        <button type="button" 
+          *ngIf="currentSection === totalSections"
+          [disabled]="loader || identificationForm.invalid"
+          (click)="identifierPap()"
+          class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Identifier et Valider
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<app-loader-data *ngIf="loader"></app-loader-data>

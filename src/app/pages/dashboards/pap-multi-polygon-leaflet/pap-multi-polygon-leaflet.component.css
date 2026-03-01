@@ -1,0 +1,203 @@
+.map-container {
+  position: relative;
+  width: 100%;
+  height: 600px;
+}
+
+.leaflet-map {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Loader overlay */
+.loader-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loaderData {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Légende */
+.legend {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 200px;
+}
+
+.legend h4 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.legend-item:last-child {
+  margin-bottom: 0;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  margin-right: 10px;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.legend-color.recense {
+  background-color: #4285F4;
+}
+
+.legend-color.en_etude {
+  background-color: #FBBC05;
+}
+
+.legend-color.indemnisation_terminee {
+  background-color: #34A853;
+}
+
+.legend-color.unknown {
+  background-color: #EA4335;
+}
+
+.legend-item span {
+  font-size: 13px;
+  color: #666;
+}
+
+/* Styles pour les popups Leaflet */
+:host ::ng-deep .leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  padding: 0;
+}
+
+:host ::ng-deep .leaflet-popup-content {
+  margin: 0;
+  min-width: 250px;
+}
+
+:host ::ng-deep .info-window {
+  padding: 15px;
+}
+
+:host ::ng-deep .info-window h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 8px;
+}
+
+:host ::ng-deep .info-window p {
+  margin: 8px 0;
+  font-size: 13px;
+  color: #555;
+}
+
+:host ::ng-deep .info-window p strong {
+  color: #333;
+  font-weight: 600;
+}
+
+/* Status badges */
+:host ::ng-deep .status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 10px;
+}
+
+:host ::ng-deep .badge-recense {
+  background-color: #E3F2FD;
+  color: #1565C0;
+  border: 1px solid #4285F4;
+}
+
+:host ::ng-deep .badge-en_etude {
+  background-color: #FFF9C4;
+  color: #F57F17;
+  border: 1px solid #FBBC05;
+}
+
+:host ::ng-deep .badge-indemnisation_terminee {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+  border: 1px solid #34A853;
+}
+
+:host ::ng-deep .badge-unknown {
+  background-color: #FFEBEE;
+  color: #C62828;
+  border: 1px solid #EA4335;
+}
+
+/* Style des polygones sur la carte */
+:host ::ng-deep .leaflet-interactive {
+  cursor: pointer;
+  transition: fill-opacity 0.2s;
+}
+
+:host ::ng-deep .leaflet-interactive:hover {
+  fill-opacity: 0.6 !important;
+  stroke-width: 4 !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .legend {
+    bottom: 10px;
+    right: 10px;
+    padding: 10px;
+    min-width: 150px;
+  }
+
+  .legend h4 {
+    font-size: 12px;
+  }
+
+  .legend-item span {
+    font-size: 11px;
+  }
+
+  .legend-color {
+    width: 16px;
+    height: 16px;
+  }
+}

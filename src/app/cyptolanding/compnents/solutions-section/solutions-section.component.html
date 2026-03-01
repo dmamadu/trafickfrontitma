@@ -1,0 +1,29 @@
+<section class="solutions-section">
+  <!-- Image de fond -->
+  <div class="solutions-bg"></div>
+  <!-- Assombrissement global -->
+  <div class="solutions-dimmer"></div>
+
+  <!-- Bandeau Titre -->
+  <div class="title-wrap">
+    <div class="title-banner">
+      <h2>Solutions</h2>
+    </div>
+  </div>
+
+  <!-- Cartes -->
+  <div class="container">
+    <div class="cards">
+      <div
+        class="card"
+        *ngFor="let s of solutions; let i = index"
+        [ngClass]="s.couleur === 'green' ? 'card-green' : 'card-dark'"
+        [style.animationDelay]="(i * 100) + 'ms'"
+      >
+      <div class="card-icon" [innerHTML]="s.iconSvg"></div>
+        <h3 class="card-title">{{ s.titre }}</h3>
+        <p class="card-desc">{{ s.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>

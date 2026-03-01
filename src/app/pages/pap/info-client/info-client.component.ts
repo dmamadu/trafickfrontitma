@@ -420,44 +420,7 @@ parsedBatiments: any[] = [];
 
 
 
-  coProprietaires: any[]  = [
-    {
-      codeCoProprietaire: 'CP001',
-      nomComplet: 'Jean Dupont',
-      contactTelephonique: '+33 6 12 34 56 78',
-      sexe: 'Homme',
-      age: 35,
-      situationMatrimoniale: 'Marié(e)',
-      infoComplementaire: 'Propriétaire depuis 2015.'
-    },
-    {
-      codeCoProprietaire: 'CP002',
-      nomComplet: 'Marie Curie',
-      contactTelephonique: '+33 6 98 76 54 32',
-      sexe: 'Femme',
-      age: 42,
-      situationMatrimoniale: 'Célibataire',
-      infoComplementaire: 'Propriétaire depuis 2018.'
-    },
-    {
-      codeCoProprietaire: 'CP003',
-      nomComplet: 'Pierre Durand',
-      contactTelephonique: '+33 6 55 44 33 22',
-      sexe: 'Homme',
-      age: 28,
-      situationMatrimoniale: 'Divorcé(e)',
-      infoComplementaire: 'Propriétaire depuis 2020.'
-    },
-    {
-      codeCoProprietaire: 'CP004',
-      nomComplet: 'Sophie Martin',
-      contactTelephonique: '+33 6 11 22 33 44',
-      sexe: 'Femme',
-      age: 50,
-      situationMatrimoniale: 'Veuf/Veuve',
-      infoComplementaire: 'Propriétaire depuis 2010.'
-    }
-  ];
+  coProprietaires: any[]  = [];
 
 
 

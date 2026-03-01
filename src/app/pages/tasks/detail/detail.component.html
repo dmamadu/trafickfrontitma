@@ -1,109 +1,116 @@
-<div class="task-detail-container bg-white rounded-lg overflow-hidden">
-  <!-- En-tête -->
-  <div class="bg-[green] py-4 px-6 flex items-center justify-between shadow-sm">
-    <h2 class="text-xl font-semibold text-white">
-      <mat-icon class="align-middle mr-2">assignment</mat-icon>
-      Détail de la tâche
-    </h2>
-    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Fermer" class="text-white hover:bg-orange-700">
-      <mat-icon>close</mat-icon>
+<app-dialog-header
+  title="Détail de la tâche"
+  icon="assignment"
+  (close)="matDialogRef.close()">
+</app-dialog-header>
+
+<div class="detail-root">
+
+  <!-- ── Hero banner statut ───────────────────────────────── -->
+  <div class="detail-hero" [ngClass]="'hero-' + tache.statut">
+    <div class="hero-left">
+      <div class="hero-icon">
+        <mat-icon>task_alt</mat-icon>
+      </div>
+      <div>
+        <p class="hero-label">Tâche</p>
+        <h2 class="hero-title">{{ tache.libelle }}</h2>
+      </div>
+    </div>
+    <span class="statut-badge" [ngClass]="'badge-' + tache.statut">
+      {{ formatStatut(tache.statut) }}
+    </span>
+  </div>
+
+  <!-- ── Corps ────────────────────────────────────────────── -->
+  <div class="detail-body">
+
+    <!-- Colonne principale -->
+    <div class="detail-main">
+
+      <!-- Description -->
+      <div class="info-block">
+        <div class="info-block-header">
+          <mat-icon>notes</mat-icon>
+          <span>Description</span>
+        </div>
+        <p class="info-text">{{ tache.description || '—' }}</p>
+      </div>
+
+      <!-- Dates -->
+      <div class="dates-row">
+        <div class="date-card">
+          <div class="date-card-icon start">
+            <mat-icon>play_circle</mat-icon>
+          </div>
+          <div>
+            <p class="date-label">Date de début</p>
+            <p class="date-value">{{ tache.dateDebut | date:'dd MMM yyyy' }}</p>
+          </div>
+        </div>
+
+        <div class="dates-arrow">
+          <mat-icon>arrow_forward</mat-icon>
+        </div>
+
+        <div class="date-card">
+          <div class="date-card-icon end">
+            <mat-icon>stop_circle</mat-icon>
+          </div>
+          <div>
+            <p class="date-label">Date de fin</p>
+            <p class="date-value">{{ tache.dateFin | date:'dd MMM yyyy' }}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Colonne assignés -->
+    <div class="detail-aside">
+      <div class="aside-header">
+        <mat-icon>group</mat-icon>
+        <span>Assignés</span>
+        <span class="aside-count">{{ tache.utilisateurs?.length || 0 }}</span>
+      </div>
+
+      <div class="assignee-list">
+        @for (item of tache.utilisateurs; track $index) {
+          <div class="assignee-card">
+            <!-- Avatar -->
+            <div class="assignee-avatar">
+              <img *ngIf="item.image"
+                [src]="getImageFromBase64(item.image.type, item.image.image)"
+                class="avatar-img" />
+              <div *ngIf="!item.image" class="avatar-initials">
+                {{ item.lastname | slice:0:1 }}{{ item.firstname | slice:0:1 }}
+              </div>
+              <span class="online-dot"></span>
+            </div>
+            <!-- Info -->
+            <div class="assignee-info">
+              <p class="assignee-name">{{ item.lastname }} {{ item.firstname }}</p>
+              <p class="assignee-contact">{{ item.contact || item.email || '—' }}</p>
+            </div>
+          </div>
+        }
+
+        @empty {
+          <div class="empty-assignees">
+            <mat-icon>person_off</mat-icon>
+            <p>Aucune personne assignée</p>
+          </div>
+        }
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Footer actions ────────────────────────────────────── -->
+  <div class="detail-footer">
+    <button mat-stroked-button class="close-btn" (click)="matDialogRef.close()">
+      <mat-icon>close</mat-icon> Fermer
     </button>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
-    <!-- Colonne principale -->
-    <div class="md:col-span-2">
-      <div class="bg-white rounded-lg shadow-md p-6 border border-gray-100">
-        <!-- Libellé -->
-        <div class="mb-6">
-          <div class="flex items-center text-[#D45C00] mb-2">
-            <mat-icon class="mr-2">title</mat-icon>
-            <h3 class="text-lg font-medium">Libellé</h3>
-          </div>
-          <p class="text-gray-800 pl-8">{{tache.libelle}}</p>
-        </div>
-
-        <!-- Description -->
-        <div class="mb-6">
-          <div class="flex items-center text-[#D45C00] mb-2">
-            <mat-icon class="mr-2">description</mat-icon>
-            <h3 class="text-lg font-medium">Description</h3>
-          </div>
-          <div class="bg-gray-50 p-4 rounded border border-gray-200">
-            <p class="text-gray-800 whitespace-pre-line">{{tache.description}}</p>
-          </div>
-        </div>
-
-        <!-- Dates -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          <div class="bg-gray-50 p-4 rounded border border-gray-200">
-            <div class="flex items-center text-[#D45C00] mb-2">
-              <mat-icon class="mr-2">event</mat-icon>
-              <h3 class="text-lg font-medium">Date de début</h3>
-            </div>
-            <p class="text-gray-800">{{tache.dateDebut | date:'dd/MM/yyyy'}}</p>
-          </div>
-
-          <div class="bg-gray-50 p-4 rounded border border-gray-200">
-            <div class="flex items-center text-[#D45C00] mb-2">
-              <mat-icon class="mr-2">event_available</mat-icon>
-              <h3 class="text-lg font-medium">Date de fin</h3>
-            </div>
-            <p class="text-gray-800">{{tache.dateFin | date:'dd/MM/yyyy'}}</p>
-          </div>
-        </div>
-
-        <!-- Statut -->
-        <div class="flex items-center">
-          <mat-icon class="text-[#D45C00] mr-2">flag</mat-icon>
-          <h3 class="text-lg font-medium text-[#D45C00] mr-3">Statut :</h3>
-          <span class="px-3 py-1 rounded-full text-sm font-medium"
-                [ngClass]="{
-                  'bg-green-100 text-green-800': tache.statut === 'complete',
-                  'bg-amber-100 text-amber-800': tache.statut === 'en-cours',
-                  'bg-gray-100 text-gray-800': tache.statut === 'en-attente'
-                }">
-            {{formatStatut(tache.statut)}}
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Colonne latérale - Personnes assignées -->
-    <div class="md:col-span-1">
-      <div class="bg-white rounded-lg shadow-md p-6 border border-gray-100 h-full">
-        <div class="flex items-center text-[#D45C00] mb-4">
-          <mat-icon class="mr-2">group</mat-icon>
-          <h2 class="text-xl font-bold">Personnes assignées</h2>
-        </div>
-
-        <div class="space-y-3">
-          @for (item of tache.utilisateurs; track $index) {
-          <div class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition">
-            <div class="relative">
-              @if (item.image) {
-                <img [src]="getImageFromBase64(item.image.type, item.image.image)"
-                     class="w-10 h-10 rounded-full object-cover border-2 border-[#D45C00]">
-              } @else {
-                <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center border-2 border-[#D45C00]">
-                  <span class="text-gray-600 font-medium">{{item.lastname | slice:0:1}}</span>
-                </div>
-              }
-              <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
-            </div>
-            <div class="ml-3">
-              <h4 class="text-sm font-medium text-gray-900">{{item.lastname}} {{item.firstname}}</h4>
-              <p class="text-xs text-gray-500">{{item.contact || 'Non spécifié'}}</p>
-            </div>
-          </div>
-          } @empty {
-          <div class="text-center py-4 text-gray-500">
-            <mat-icon class="text-gray-400">group_off</mat-icon>
-            <p>Aucune personne assignée</p>
-          </div>
-          }
-        </div>
-      </div>
-    </div>
-  </div>
 </div>

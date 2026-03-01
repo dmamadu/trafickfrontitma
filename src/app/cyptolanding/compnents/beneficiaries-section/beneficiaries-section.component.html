@@ -1,0 +1,29 @@
+<section class="beneficiaries">
+  <h2 class="title">
+    {{ heading }} <span class="accent">bénéficiaires</span>
+  </h2>
+
+  <div class="grid">
+    <div
+      class="benefit-card"
+      *ngFor="let c of cards; let i = index"
+      [ngClass]="c.color"
+      tabindex="0"
+      role="button"
+      aria-label="{{ c.title }}"
+    >
+      <div class="card-image">
+        <img [src]="c.img" [alt]="c.title" />
+      </div>
+
+      <div class="card-footer">
+        {{ c.title }}
+      </div>
+
+      <div class="overlay">
+        <h3>{{ c.title }}</h3>
+        <p>{{ c.hoverText }}</p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -17,13 +17,14 @@ import { ClientVueService } from "src/app/pages/admin/client-vue/client-vue.serv
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { LoaderComponent } from "../../../../shared/loader/loader.component";
 import { ToastrService } from "ngx-toastr";
+import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
 
 @Component({
   selector: "app-add-user",
   templateUrl: "./add-user.component.html",
   styleUrl: "./add-user.component.css",
   standalone: true,
-  imports: [AngularMaterialModule, LoaderComponent],
+  imports: [AngularMaterialModule, LoaderComponent, DialogHeaderComponent],
 })
 export class AddUserComponent {
   panelOpenState = false;

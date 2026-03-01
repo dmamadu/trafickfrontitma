@@ -53,6 +53,7 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MomentDateAdapter } from "@angular/material-moment-adapter";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
 import { LocalService } from "src/app/core/services/local.service";
+import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -88,7 +89,8 @@ export const MY_DATE_FORMATS = {
     MatNativeDateModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    LoaderComponent
+    LoaderComponent,
+    DialogHeaderComponent
 ],
   providers: [
     {

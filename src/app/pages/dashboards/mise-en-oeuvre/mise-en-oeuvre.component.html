@@ -1,4 +1,4 @@
-<div class="container" *ngIf="loadData">
+<!-- <div class="container" *ngIf="loadData">
   <h1 class="couleurPrimary py-3">Statistiques dynamiques relatives à la mise en œuvre du PAR</h1>
   <app-loader-custom></app-loader-custom>
 </div>
@@ -68,4 +68,311 @@
       </apx-chart>
     </div>
   </div>
+</div> -->
+
+<!-- <div class="meo-root" *ngIf="loadData">
+  <div class="page-header">
+    <div class="header-icon"><mat-icon>analytics</mat-icon></div>
+    <div>
+      <h1 class="page-title">Statistiques dynamiques</h1>
+      <p class="page-subtitle">Mise en œuvre du PAR</p>
+    </div>
+  </div>
+  <app-loader-custom></app-loader-custom>
+</div>
+
+<div class="meo-root" *ngIf="!loadData">
+
+  <div class="page-header">
+    <div class="header-icon"><mat-icon>analytics</mat-icon></div>
+    <div>
+      <h1 class="page-title">Statistiques dynamiques</h1>
+      <p class="page-subtitle">Mise en œuvre du PAR</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <div class="section-header">
+      <mat-icon>folder_open</mat-icon>
+      <h2>Statut des dossiers</h2>
+    </div>
+
+    <div class="kpi-grid">
+
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-orange">
+          <mat-icon>description</mat-icon>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-value">{{ ententesCompensation }}</span>
+          <span class="kpi-label">Ententes de compensation</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-green">
+          <mat-icon>send</mat-icon>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-value">{{ dossiersTransmis }}</span>
+          <span class="kpi-label">Dossiers transmis pour paiement</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-orange">
+          <mat-icon>payments</mat-icon>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-value">{{ papPayees }}</span>
+          <span class="kpi-label">Nombre de PAP payées</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="charts-row">
+
+    <div class="section-block">
+      <div class="section-header">
+        <mat-icon>pie_chart</mat-icon>
+        <h2>Effectif désagrégé par catégories</h2>
+      </div>
+      <div class="chart-body">
+        <apx-chart
+          [series]="pieChart.series"
+          [chart]="pieChart.chart"
+          [labels]="pieChart.labels"
+          [colors]="pieChart.colors"
+          [legend]="pieChart.legend">
+        </apx-chart>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-header">
+        <mat-icon>accessibility</mat-icon>
+        <h2>Selon la vulnérabilité</h2>
+      </div>
+      <div class="chart-body">
+        <apx-chart
+          [series]="vulnerableChart.series"
+          [chart]="vulnerableChart.chart"
+          [labels]="vulnerableChart.labels"
+          [colors]="vulnerableChart.colors"
+          [legend]="vulnerableChart.legend">
+        </apx-chart>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="charts-row">
+
+    <div class="section-block">
+      <div class="section-header">
+        <mat-icon>stacked_bar_chart</mat-icon>
+        <h2>Effectif féminin et masculin par catégorie</h2>
+      </div>
+      <div class="chart-body">
+        <apx-chart
+          [series]="barChart.series"
+          [chart]="barChart.chart"
+          [xaxis]="barChart.xaxis"
+          [colors]="barChart.colors"
+          [legend]="barChart.legend"
+          [plotOptions]="barChart.plotOptions">
+        </apx-chart>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-header">
+        <mat-icon>bar_chart</mat-icon>
+        <h2>Total des compensations par catégorie</h2>
+      </div>
+      <div class="chart-body">
+        <apx-chart
+          [series]="compensationChart.series"
+          [chart]="compensationChart.chart"
+          [xaxis]="compensationChart.xaxis"
+          [colors]="compensationChart.colors"
+          [dataLabels]="compensationChart.dataLabels">
+        </apx-chart>
+      </div>
+    </div>
+
+  </div>
+
+</div> -->
+
+<div class="meo-root" *ngIf="loadData">
+  <div class="page-header">
+    <div class="header-icon"><mat-icon>analytics</mat-icon></div>
+    <div>
+      <h1 class="page-title">Statistiques dynamiques</h1>
+      <p class="page-subtitle">Mise en œuvre du PAR</p>
+    </div>
+  </div>
+  <app-loader-custom></app-loader-custom>
+</div>
+
+<div class="meo-root" *ngIf="!loadData">
+
+  <div class="page-header">
+    <div class="header-icon"><mat-icon>analytics</mat-icon></div>
+    <div>
+      <h1 class="page-title">Statistiques dynamiques</h1>
+      <p class="page-subtitle">Mise en œuvre du PAR</p>
+    </div>
+  </div>
+
+  <!-- ── Statut des dossiers ── -->
+  <div class="section-block">
+    <div class="section-header">
+      <mat-icon>folder_open</mat-icon>
+      <h2>Statut des dossiers</h2>
+    </div>
+
+    <div class="kpi-grid">
+
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-green">
+          <mat-icon>people</mat-icon>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-value">{{ statsData?.summary?.totalPersonnesAffectees }}</span>
+          <span class="kpi-label">Personnes affectées</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-orange">
+          <mat-icon>accessibility_new</mat-icon>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-value">{{ statsData?.summary?.totalVulnerables }}</span>
+          <span class="kpi-label">PAP vulnérables</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-orange">
+          <mat-icon>description</mat-icon>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-value">{{ ententesCompensation }}</span>
+          <span class="kpi-label">Ententes de compensation</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-green">
+          <mat-icon>send</mat-icon>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-value">{{ dossiersTransmis }}</span>
+          <span class="kpi-label">Dossiers transmis</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-orange">
+          <mat-icon>payments</mat-icon>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-value">{{ papPayees }}</span>
+          <span class="kpi-label">PAP payées</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-green">
+          <mat-icon>account_balance_wallet</mat-icon>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-value">{{ statsData?.summary?.totalCompensations | currency:'CFA ':true:'1.0-0' }}</span>
+          <span class="kpi-label">Total compensations</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Graphiques ligne 1 ── -->
+  <div class="charts-row">
+
+    <div class="section-block">
+      <div class="section-header">
+        <mat-icon>pie_chart</mat-icon>
+        <h2>Effectif désagrégé par catégories</h2>
+      </div>
+      <div class="chart-body">
+        <apx-chart
+          [series]="pieChart.series"
+          [chart]="pieChart.chart"
+          [labels]="pieChart.labels"
+          [colors]="pieChart.colors"
+          [legend]="pieChart.legend">
+        </apx-chart>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-header">
+        <mat-icon>accessibility</mat-icon>
+        <h2>Selon la vulnérabilité</h2>
+      </div>
+      <div class="chart-body">
+        <apx-chart
+          [series]="vulnerableChart.series"
+          [chart]="vulnerableChart.chart"
+          [labels]="vulnerableChart.labels"
+          [colors]="vulnerableChart.colors"
+          [legend]="vulnerableChart.legend">
+        </apx-chart>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Graphiques ligne 2 ── -->
+  <div class="charts-row">
+
+    <div class="section-block">
+      <div class="section-header">
+        <mat-icon>stacked_bar_chart</mat-icon>
+        <h2>Effectif féminin et masculin par catégorie</h2>
+      </div>
+      <div class="chart-body">
+        <apx-chart
+          [series]="barChart.series"
+          [chart]="barChart.chart"
+          [xaxis]="barChart.xaxis"
+          [colors]="barChart.colors"
+          [legend]="barChart.legend"
+          [plotOptions]="barChart.plotOptions">
+        </apx-chart>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-header">
+        <mat-icon>bar_chart</mat-icon>
+        <h2>Total des compensations par catégorie</h2>
+      </div>
+      <div class="chart-body">
+        <apx-chart
+          [series]="compensationChart.series"
+          [chart]="compensationChart.chart"
+          [xaxis]="compensationChart.xaxis"
+          [colors]="compensationChart.colors"
+          [dataLabels]="compensationChart.dataLabels">
+        </apx-chart>
+      </div>
+    </div>
+
+  </div>
+
 </div>

@@ -1,231 +1,151 @@
 import { DatePipe } from "@angular/common";
-import {
-  ChangeDetectorRef,
-  Component,
-  CUSTOM_ELEMENTS_SCHEMA,
-  ViewChild,
-} from "@angular/core";
-import { UntypedFormGroup } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
+import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
-import { Router } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { CoreService } from "src/app/shared/core/core.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
-import {
-  TableauComponent,
-  ButtonAction,
-} from "src/app/shared/tableau/tableau.component";
+import { ButtonAction, TableauComponent } from "src/app/shared/tableau/tableau.component";
 import { UIModule } from "src/app/shared/ui/ui.module";
-import { AddCategorieComponent } from "../../categorie-utilisateur/add-categorie/add-categorie.component";
 import { AddCategorieDossierComponent } from "./add-categorie-dossier/add-categorie-dossier.component";
+import { AddCategorieComponent } from "../../categorie-utilisateur/add-categorie/add-categorie.component";
+import { ActionButton, PageActionsComponent } from "src/app/shared/refactore/page-actions/page-actions.component";
 
 @Component({
   selector: "app-categorie-dossier",
   standalone: true,
-  imports: [TableauComponent, UIModule, AngularMaterialModule],
+  imports: [TableauComponent, UIModule, AngularMaterialModule, PageActionsComponent],
   providers: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: "./categorie-dossier.component.html",
   styleUrl: "./categorie-dossier.component.css",
 })
-export class CategorieDossierComponent {
-  url: string = "categorieDocuments";
+export class CategorieDossierComponent implements OnInit {
+
+  // ── Breadcrumb ────────────────────────────────────────────────────────────
+  breadCrumbItems = [
+    { label: "Catégories" },
+    { label: "Dossiers", active: true },
+  ];
+
+  // ── Page actions ──────────────────────────────────────────────────────────
+  pageActions: ActionButton[] = [
+    {
+      label: "Créer une catégorie",
+      icon: "bx bx-plus",
+      action: "add",
+      type: "primary",
+    },
+  ];
+
+  // ── Table ─────────────────────────────────────────────────────────────────
+  headers: any[] = [];
+  btnActions: ButtonAction[] = [];
+  datas: any[] = [];
+  dataSource: MatTableDataSource<any>;
+  length = 0;
+  loadData = false;
+  pageSize = 10;
+  pageIndex = 0;
+  pageSizeOptions = [5, 10, 25, 100, 500, 1000];
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  informations: any;
-  displayedColumns: any;
-  searchList: any;
-  codeEnvoye: number; //code envoye par notre menu
-  hasList: boolean;
-  hasAdd: boolean;
-  hasUpdate: boolean;
-  hasDelete: boolean;
-  hasDetail: boolean;
-  length = 100;
-  searchForm: UntypedFormGroup;
-  dialogRef: any;
-  dataSource: MatTableDataSource<any>;
-  datas = [];
-  deleteUser: boolean = false;
-  currentIndex;
-  loadData: boolean = false;
-  exporter: boolean = false;
-  isCollapsed: boolean = false;
-  isSearch2: boolean = false;
-  isSearch: boolean = false;
-  rechercher = "";
-  showLoader = "isNotShow";
-  message = "";
-  config: any;
-  isLoading: boolean = false;
-  pageSizeOptions = [5, 10, 25, 100, 500, 1000];
-  pageSize: number = 10;
-  pageIndex: number = 0;
 
-  offset: number = 0;
-  title: string = "Gestion des catégories";
+  private readonly url = "categorieDocuments";
 
-  headers: any = [];
-  btnActions: any = [];
+  constructor(
+    private parentService: ServiceParent,
+    private coreService: CoreService,
+    private snackbar: SnackBarService,
+    private cd: ChangeDetectorRef,
+  ) {}
 
-  breadCrumbItems: (
-    | { label: string; active?: undefined }
-    | { label: string; active: boolean }
-  )[];
-
-  roles: any[] = [];
   ngOnInit(): void {
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
-    this.getcatégories();
+    this.getCategories();
   }
 
-  filterTable($event: any) {
-    throw new Error("Method not implemented.");
+  // ── Fetch ─────────────────────────────────────────────────────────────────
+  getCategories(): void {
+    this.loadData = true;
+    this.parentService.list(this.url, this.pageSize, this.pageIndex).subscribe({
+      next: (data: any) => {
+        this.loadData = false;
+        if (data?.responseCode === 200) {
+          this.datas = data.data;
+          this.length = data.length;
+          this.dataSource = new MatTableDataSource(data.data);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+          this.cd.markForCheck();
+        } else {
+          this.dataSource = new MatTableDataSource();
+        }
+      },
+      error: () => { this.loadData = false; },
+    });
   }
 
+  // ── Search ────────────────────────────────────────────────────────────────
+  filterTable(searchValue: string): void {
+    if (!this.dataSource) return;
+    this.dataSource.filterPredicate = (data: any, filter: string) =>
+      [data.id?.toString(), data.libelle]
+        .some(v => v?.toLowerCase().includes(filter));
+    this.dataSource.filter = searchValue.toLowerCase();
+  }
+
+  // ── Page action handler ───────────────────────────────────────────────────
+  handlePageAction(action: string): void {
+    if (action === 'add') this.addItems();
+  }
+
+  // ── Pagination ────────────────────────────────────────────────────────────
+  pageChanged(event: any): void {
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex;
+    this.getCategories();
+  }
+
+  // ── CRUD modals ───────────────────────────────────────────────────────────
+  addItems(): void {
+    this.snackbar.openModal(AddCategorieDossierComponent, "35rem", "new", "20rem", this.datas, "", () => this.getCategories());
+  }
+
+  updateItems(information: any): void {
+    this.snackbar.openModal(AddCategorieComponent, "50rem", "edit", "", information, "", () => this.getCategories());
+  }
+
+  supprimerItems(id: any): void {
+    this.snackbar.showConfirmation("Voulez-vous vraiment supprimer cette catégorie?").then((result) => {
+      if (result?.value === true) {
+        this.coreService.deleteItem(id, this.url).subscribe({
+          next: () => {
+            this.getCategories();
+            this.snackbar.openSnackBar("Catégorie supprimée avec succès", "OK", ["mycssSnackbarGreen"]);
+          },
+          error: (err) => this.snackbar.showErrors(err),
+        });
+      }
+    });
+  }
+
+  // ── Table config ──────────────────────────────────────────────────────────
   createHeader() {
     return [
-      {
-        th: "Id",
-        td: "id",
-      },
-      {
-        th: "Libelle",
-        td: "libelle",
-      },
+      { th: "Id",      td: "id"      },
+      { th: "Libelle", td: "libelle" },
     ];
   }
 
   createActions(): ButtonAction[] {
     return [
-      {
-        icon: "bxs-edit",
-        couleur: "green",
-        size: "icon-size-4",
-        title: "Modifier",
-        isDisabled: this.hasUpdate,
-        action: (element?) => this.updateItems(element),
-      },
-      {
-        icon: "bxs-trash-alt",
-        couleur: "#D45C00",
-        size: "icon-size-4",
-        title: "Supprimer",
-        isDisabled: this.hasDelete,
-        action: (element?) => this.supprimerItems(element.id, element),
-      },
+      { icon: "bxs-edit",      couleur: "green",   size: "icon-size-4", title: "Modifier",  isDisabled: false, action: (el) => this.updateItems(el)      },
+      { icon: "bxs-trash-alt", couleur: "#D45C00", size: "icon-size-4", title: "Supprimer", isDisabled: false, action: (el) => this.supprimerItems(el.id) },
     ];
-  }
-
-  constructor(
-    private changeDetectorRefs: ChangeDetectorRef,
-    private parentService: ServiceParent,
-    private _router: Router,
-    private datePipe: DatePipe,
-    private snackbar: SnackBarService,
-    private _matDialog: MatDialog,
-    private coreService: CoreService,
-    //  public matDialogRef: MatDialogRef<>,
-    private _changeDetectorRef: ChangeDetectorRef,
-    public toastr: ToastrService
-  ) {}
-
-  getcatégories() {
-    return this.parentService
-      .list(this.url, this.pageSize, this.offset)
-      .subscribe(
-        (data: any) => {
-          this.loadData = false;
-          if (data["responseCode"] == 200) {
-            this.loadData = false;
-            console.log(data);
-            this.dataSource = new MatTableDataSource(data["data"]);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-            this.datas = data["data"];
-            this.length = data["length"];
-            console.log(data);
-            this._changeDetectorRef.markForCheck();
-          } else {
-            this.loadData = false;
-            this.dataSource = new MatTableDataSource();
-          }
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-  }
-
-  updateItems(information): void {
-    console.log(information);
-    this.snackbar.openModal(
-      AddCategorieComponent,
-      "50rem",
-      "edit",
-      "",
-      information,
-      "",
-      () => {
-        this.getcatégories();
-      }
-    );
-  }
-
-  //cette catégorie permet de supprimer
-  supprimerItems(id, information) {
-    this.snackbar
-      .showConfirmation("Voulez-vous vraiment supprimer cette catégorie?")
-      .then((result) => {
-        if (result["value"] == true) {
-          this.deleteUser = true;
-          this.currentIndex = information;
-          this.coreService.deleteItem(id, "categorieDocuments").subscribe(
-            (resp) => {
-              this.getcatégories();
-              this.snackbar.openSnackBar(
-                "catégorie  supprimée avec succés",
-                "OK",
-                ["mycssSnackbarGreen"]
-              );
-            },
-            (error) => {
-              this.deleteUser = false;
-              this.snackbar.showErrors(error);
-            }
-          );
-        }
-      });
-  }
-  addItems(): void {
-    this.snackbar.openModal(
-      AddCategorieDossierComponent,
-      "35rem",
-      "new",
-      "20rem",
-      this.datas,
-      "",
-      () => {
-        this.getcatégories();
-      }
-    );
-  }
-
-  pageChanged(event) {
-    console.log(event);
-    this.datas = [];
-    this._changeDetectorRef.markForCheck();
-    console.log(event.pageIndex);
-    this.pageSize = event.pageSize;
-    this.pageIndex = event.pageIndex;
-    this.offset = this.pageIndex;
-    this.getcatégories();
   }
 }

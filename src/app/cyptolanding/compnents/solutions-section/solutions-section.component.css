@@ -1,0 +1,151 @@
+/* ── Section / Fond ── */
+.solutions-section {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  align-content: start;
+  padding: 40px 0 80px;
+  overflow: hidden;
+}
+
+.solutions-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('../../../../assets/images/noSolutions.jpg');
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+}
+
+.solutions-dimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,.65) 0 220px,
+    rgba(0,0,0,.35) 220px 100%
+  );
+  z-index: 2;
+}
+
+/* ── Bandeau Titre ── */
+.title-wrap {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  margin: 10px 0 36px;
+}
+
+.title-banner {
+  background: rgba(0,0,0,.70);
+  color: #fff;
+  padding: 28px 80px;
+  border-radius: 12px;
+  backdrop-filter: blur(2px);
+}
+
+.title-banner h2 {
+  margin: 0;
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: .3px;
+}
+
+/* ── Grille de cartes ── */
+.container {
+  position: relative;
+  z-index: 3;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(180px, 1fr));
+  gap: 22px;
+}
+
+/* ── Carte ── */
+.card {
+  position: relative;
+  color: #fff;
+  border-radius: 10px;
+  padding: 26px 22px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.20);
+  backdrop-filter: blur(4px);
+  transform: translateY(24px);
+  opacity: 0;
+  animation: fadeInUp .6s ease-out forwards;
+  transition: background 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+}
+
+/* ── Variantes de fond ── */
+.card-green {
+  background: rgba(52, 168, 83, .92);
+}
+
+.card-dark {
+  background: rgba(33, 33, 33, .60);
+}
+
+/* ── Hover : toutes les cartes deviennent vertes ── */
+.card:hover {
+  background: rgba(52, 168, 83, .95) !important;
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0,0,0,.25);
+}
+
+/* ── Icône ── */
+.card-icon {
+  color: #fff;
+  margin-bottom: 16px;
+  display: inline-flex;
+  opacity: .95;
+}
+
+/* ── Titre carte ── */
+.card-title {
+  margin: 0 0 12px 0;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #fff;
+}
+
+/* ── Description carte ── */
+.card-desc {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.65;
+  opacity: .93;
+}
+
+/* ── Animation entrée ── */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Responsive ── */
+@media (max-width: 1280px) {
+  .cards { grid-template-columns: repeat(3, minmax(220px, 1fr)); }
+}
+
+@media (max-width: 900px) {
+  .title-banner h2 { font-size: 34px; }
+  .cards { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+}
+
+@media (max-width: 560px) {
+  .title-banner { padding: 18px 32px; }
+  .title-banner h2 { font-size: 28px; }
+  .cards { grid-template-columns: 1fr; }
+}

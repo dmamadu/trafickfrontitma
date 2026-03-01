@@ -449,26 +449,6 @@ export class PapDetailComponent implements OnInit {
       });
   }
 
-  // getEntentes() {
-  //   return this.papservice.all("ententes").subscribe((data: any) => {
-  //     this.loadData = false;
-  //     if (data["responseCode"] == 200) {
-  //       this.loadData = false;
-  //       console.log(data["data"]);
-  //       this.dataSource = new MatTableDataSource(data["data"]);
-  //       this.dataSource.paginator = this.paginator;
-  //       this.dataSource.sort = this.sort;
-  //       this.datas = data["data"];
-  //       this.length = data["length"];
-  //       console.log("length", this.length);
-  //       this._changeDetectorRef.markForCheck();
-  //     } else {
-  //       this.loadData = false;
-  //       this.dataSource = new MatTableDataSource();
-  //     }
-  //   });
-  // }
-
   getPlainteByCodePap() {
     this.datas = [];
     return this.papservice
@@ -491,39 +471,6 @@ export class PapDetailComponent implements OnInit {
         }
       });
   }
-
-  // getEntente() {
-  //   this.datas = [];
-  //   return this.parentService
-  //     .listeByProject(
-  //       "ententes",
-  //       this.pageSize,
-  //       this.offset,
-  //       this.currentUser.projects[0]?.id
-  //     )
-  //     .subscribe(
-  //       (data: any) => {
-  //         console.log("ententes");
-  //         console.log(data);
-  //         this.loadData = false;
-  //         if (data["responseCode"] == 200) {
-  //           this.loadData = false;
-  //           this.dataSource = new MatTableDataSource(data["data"]);
-  //           this.dataSource.paginator = this.paginator;
-  //           this.dataSource.sort = this.sort;
-  //           this.datas = data["data"];
-  //           this.length = data["length"];
-  //           this._changeDetectorRef.markForCheck();
-  //         } else {
-  //           this.loadData = false;
-  //           this.dataSource = new MatTableDataSource();
-  //         }
-  //       },
-  //       (err) => {
-  //         console.log(err);
-  //       }
-  //     );
-  // }
 
   createHeaderPlainte() {
     return [

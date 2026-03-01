@@ -13,10 +13,12 @@ const routes: Routes = [
         path: 'create',
         component: CreatetaskComponent
     },
-    {
-      path: 'liste',
-      component: ListTacheComponent
-  }
+//     {
+//       path: 'liste',
+//       component: ListTacheComponent
+//   },
+    { path: 'liste', loadComponent: () => import('./task-calendar/task-calendar.component').then(m => m.TaskCalendarComponent) },
+
 ];
 
 @NgModule({

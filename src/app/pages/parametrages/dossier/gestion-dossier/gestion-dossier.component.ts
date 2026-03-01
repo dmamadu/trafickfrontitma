@@ -1,280 +1,167 @@
 import { DatePipe } from "@angular/common";
-import { ChangeDetectorRef, Component, ViewChild } from "@angular/core";
-import { UntypedFormGroup } from "@angular/forms";
+import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { MatPaginator, MatPaginatorIntl } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
-import { ToastrService } from "ngx-toastr";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { LocalService } from "src/app/core/services/local.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { PapAddComponent } from "src/app/pages/pap/pap-add/pap-add.component";
 import { CoreService } from "src/app/shared/core/core.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
-import {
-  ButtonAction,
-  TableauComponent,
-} from "src/app/shared/tableau/tableau.component";
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import { ButtonAction, TableauComponent } from "src/app/shared/tableau/tableau.component";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { UIModule } from "src/app/shared/ui/ui.module";
 import { AddDossierComponent } from "./add-dossier/add-dossier.component";
+import { ActionButton, PageActionsComponent } from "src/app/shared/refactore/page-actions/page-actions.component";
 
 @Component({
   selector: "app-gestion-dossier",
   standalone: true,
   providers: [
     DatePipe,
-    {
-      provide: MatDialogRef,
-      useValue: [],
-    },
+    { provide: MatDialogRef, useValue: [] },
     { provide: MAT_DIALOG_DATA, useValue: {} },
     { provide: MatPaginatorIntl },
-    {
-      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: { appearance: "outline" },
-    },
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: "outline" } },
   ],
-  imports: [TableauComponent, UIModule, AngularMaterialModule],
+  imports: [TableauComponent, UIModule, AngularMaterialModule, PageActionsComponent],
   templateUrl: "./gestion-dossier.component.html",
   styleUrl: "./gestion-dossier.component.css",
 })
-export class GestionDossierComponent {
-  currentProjectId: any;
-  filterTable($event: any) {
-    throw new Error("Method not implemented.");
-  }
+export class GestionDossierComponent implements OnInit {
+
+  // ── Breadcrumb ────────────────────────────────────────────────────────────
+  breadCrumbItems = [
+    { label: "Dossier" },
+    { label: "Liste des dossiers", active: true },
+  ];
+
+  // ── Page actions ──────────────────────────────────────────────────────────
+  pageActions: ActionButton[] = [
+    {
+      label: "Ajouter un dossier",
+      icon: "bx bx-plus",
+      action: "add",
+      type: "primary",
+    },
+  ];
+
+  // ── Table ─────────────────────────────────────────────────────────────────
+  headers: any[] = [];
+  btnActions: ButtonAction[] = [];
+  datas: any[] = [];
+  dataSource: MatTableDataSource<any>;
+  length = 0;
+  loadData = false;
+  pageSize = 10;
+  pageIndex = 0;
+  pageSizeOptions = [5, 10, 25, 100, 500, 1000];
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  informations: any;
-  displayedColumns: any;
-  searchList: any;
-  codeEnvoye: number; //code envoye par notre menu
-  hasList: boolean;
-  hasAdd: boolean;
-  hasUpdate: boolean;
-  hasDelete: boolean;
-  hasDetail: boolean;
-  length = 100;
-  searchForm: UntypedFormGroup;
-  dialogRef: any;
-  dataSource: MatTableDataSource<any>;
-  datas = [];
-  deleteUser: boolean = false;
-  currentIndex;
-  loadData: boolean = false;
-  exporter: boolean = false;
-  isCollapsed: boolean = false;
-  isSearch2: boolean = false;
-  isSearch: boolean = false;
-  rechercher = "";
-  showLoader = "isNotShow";
-  message = "";
-  config: any;
-  isLoading: boolean = false;
-  pageSizeOptions = [5, 10, 25, 100, 500, 1000];
-  pageSize: number = 10;
-  pageIndex: number = 0;
-  //constantes = CONSTANTES;
-  userConnecter;
-  offset: number = 0;
-  title: string = "Gestion des produits";
-  url: string = "documents";
-  panelOpenState = false;
-  img;
-  image;
-  privilegeByRole: any; //liste des codes recu de l'api lors de la connexion
-  privilegeForPage: number = 2520; //code privilege envoye pour afficher la page
-  privilegePage;
-  headers: any = [];
-  btnActions: any = [];
 
-  breadCrumbItems: (
-    | { label: string; active?: undefined }
-    | { label: string; active: boolean }
-  )[];
+  private readonly url = "documents";
+  private currentProjectId: any;
 
   constructor(
     private snackbar: SnackBarService,
     private parentService: ServiceParent,
     public matDialogRef: MatDialogRef<PapAddComponent>,
-    private _changeDetectorRef: ChangeDetectorRef,
+    private cd: ChangeDetectorRef,
     private localService: LocalService,
-    public toastr: ToastrService,
-    private coreService: CoreService
+    private coreService: CoreService,
   ) {
     this.currentProjectId = this.localService.getData("ProjectId");
   }
+
   ngOnInit(): void {
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
     this.getDossiers();
-
-    this.breadCrumbItems = [
-      { label: "dossier" },
-      { label: "Liste des dossiers", active: true },
-    ];
   }
 
-  addItems(): void {
-    // if (!this.currentProjectId) {
-    //   this.showProjectSelectionError();
-    //   return;
-    // }
-    this.snackbar.openModal(
-      AddDossierComponent,
-      "45rem",
-      "new",
-      "30rem",
-      this.datas,
-      "",
-      () => {
-        this.getDossiers();
-      }
-    );
+  // ── Fetch ─────────────────────────────────────────────────────────────────
+  getDossiers(): void {
+    this.loadData = true;
+    this.parentService.list(this.url, this.pageSize, this.pageIndex, this.currentProjectId).subscribe({
+      next: (data: any) => {
+        this.loadData = false;
+        if (data?.responseCode === 200) {
+          this.datas = data.data;
+          this.length = data.length;
+          this.dataSource = new MatTableDataSource(data.data);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+          this.cd.markForCheck();
+        } else {
+          this.dataSource = new MatTableDataSource();
+        }
+      },
+      error: () => { this.loadData = false; },
+    });
   }
 
-  pageChanged(event) {
-    console.log(event);
-    this.datas = [];
-    this._changeDetectorRef.markForCheck();
-    console.log(event.pageIndex);
+  // ── Search ────────────────────────────────────────────────────────────────
+  filterTable(searchValue: string): void {
+    if (!this.dataSource) return;
+    this.dataSource.filterPredicate = (data: any, filter: string) =>
+      [data.libelle, data.urlDocument, data.categorie?.libelle]
+        .some(v => v?.toLowerCase().includes(filter));
+    this.dataSource.filter = searchValue.toLowerCase();
+  }
+
+  // ── Page action handler ───────────────────────────────────────────────────
+  handlePageAction(action: string): void {
+    if (action === 'add') this.addItems();
+  }
+
+  // ── Pagination ────────────────────────────────────────────────────────────
+  pageChanged(event: any): void {
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
-    this.offset = this.pageIndex;
     this.getDossiers();
   }
 
+  // ── CRUD modals ───────────────────────────────────────────────────────────
+  addItems(): void {
+    this.snackbar.openModal(AddDossierComponent, "45rem", "new", "30rem", this.datas, "", () => this.getDossiers());
+  }
+
+  updateItems(information: any): void {
+    this.snackbar.openModal(AddDossierComponent, "50rem", "edit", "", information, "", () => this.getDossiers());
+  }
+
+  detailItems(element: any): void {
+    // TODO: implémenter la page détail dossier
+  }
+
+  supprimerItems(id: any): void {
+    this.snackbar.showConfirmation("Voulez-vous vraiment supprimer ce dossier?").then((result) => {
+      if (result?.value === true) {
+        this.coreService.deleteItem(id, this.url).subscribe({
+          next: (resp: any) => { if (resp?.responseCode === 200) this.getDossiers(); },
+          error: (err) => this.snackbar.showErrors(err),
+        });
+      }
+    });
+  }
+
+  // ── Table config ──────────────────────────────────────────────────────────
   createHeader() {
     return [
-      {
-        th: "Libellé",
-        td: "libelle",
-      },
-      {
-        th: "URL du Document",
-        td: "urlDocument",
-      },
-      {
-        th: "Catégorie de Document",
-        td: "categorie",
-        el: "libelle",
-      },
+      { th: "Libellé",               td: "libelle"      },
+      { th: "URL du Document",       td: "urlDocument"  },
+      { th: "Catégorie de Document", td: "categorie", el: "libelle" },
     ];
   }
 
   createActions(): ButtonAction[] {
     return [
-      {
-        icon: "bxs-edit",
-        couleur: "green",
-        size: "icon-size-4",
-        title: "Modifier",
-        isDisabled: this.hasUpdate,
-        action: (element?) => this.updateItems(element),
-      },
-      {
-        icon: "bxs-trash-alt",
-        couleur: "#D45C00",
-        size: "icon-size-4",
-        title: "Supprimer",
-        isDisabled: this.hasDelete,
-        action: (element?) => this.supprimerItems(element.id, element),
-      },
-      {
-        icon: "bxs-info-circle",
-        couleur: "black	",
-        size: "icon-size-4",
-        title: "détail",
-        isDisabled: this.hasDelete,
-        action: (element?) => this.detailItems(element.id, element),
-      },
+      { icon: "bxs-edit",        couleur: "green",   size: "icon-size-4", title: "Modifier",  isDisabled: false, action: (el) => this.updateItems(el)      },
+      { icon: "bxs-trash-alt",   couleur: "#D45C00", size: "icon-size-4", title: "Supprimer", isDisabled: false, action: (el) => this.supprimerItems(el.id) },
+      { icon: "bxs-info-circle", couleur: "black",   size: "icon-size-4", title: "Détail",    isDisabled: false, action: (el) => this.detailItems(el)       },
     ];
-  }
-  detailItems(id: any, element: any) {
-    throw new Error("Method not implemented.");
-  }
-  updateItems(information): void {
-    this.snackbar.openModal(
-      AddDossierComponent,
-      "50rem",
-      "edit",
-      "",
-      information,
-      "",
-      () => {
-        this.getDossiers();
-      }
-    );
-  }
-
-  //cette fonction permet de supprimer
-  supprimerItems(id, information) {
-    this.snackbar
-      .showConfirmation("Voulez-vous vraiment supprimer ce dossier?")
-      .then((result) => {
-        if (result["value"] == true) {
-          this.deleteUser = true;
-          this.currentIndex = information;
-          this.showLoader = "isShow";
-          const message = "dossier  supprimé";
-          this.coreService.deleteItem(id, this.url).subscribe(
-            (resp) => {
-              this.showLoader = "isNotShow";
-              if (resp["responseCode"] == 200) {
-                this.getDossiers();
-              }
-            },
-            (error) => {
-              this.showLoader = "isNotShow";
-              this.deleteUser = false;
-              this.snackbar.showErrors(error);
-            }
-          );
-        }
-      });
-  }
-
-  getDossiers() {
-    this.loadData = true;
-    return this.parentService
-      .list(this.url, this.pageSize, this.offset, this.currentProjectId)
-      .subscribe(
-        (data: any) => {
-          this.loadData = false;
-          if (data["responseCode"] == 200) {
-            this.loadData = false;
-            console.log(data);
-            this.dataSource = new MatTableDataSource(data["data"]);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-            this.datas = data["data"];
-            this.length = data["length"];
-            console.log(data);
-            this._changeDetectorRef.markForCheck();
-          } else {
-            this.loadData = false;
-            this.dataSource = new MatTableDataSource();
-          }
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-  }
-
-  private showProjectSelectionError(): void {
-    this.toastr.error(
-      "Vous devez vous connecter en tant que maître d'ouvrage responsable d'un projet.",
-      "Action non autorisée",
-      {
-        timeOut: 15000,
-        progressBar: true,
-        closeButton: true,
-        enableHtml: true,
-      }
-    );
   }
 }

@@ -1,0 +1,327 @@
+$orange:       #D45C00;
+$orange-light: #FFF0E6;
+$orange-mid:   #FFD4B3;
+$green:        #2E7D32;
+$green-light:  #E8F5E9;
+$dark:         #1A1A2E;
+
+// keep $brand aliases for compatibility
+$brand:        $orange;
+$brand-light:  $orange-light;
+$radius: 12px;
+
+.task-calendar-root {
+  padding: 24px;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+// ── Stat cards ─────────────────────────────────────────────
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.stat-card {
+  background: white;
+  border-radius: $radius;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.07);
+  transition: box-shadow .2s;
+
+  &:hover {
+    box-shadow: 0 6px 18px rgba(212, 92, 0, .13);
+    transform: translateY(-2px);
+  }
+
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    mat-icon { font-size: 22px; width: 22px; height: 22px; }
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin: 0 0 2px;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+    line-height: 1;
+  }
+}
+
+// ── Toolbar ────────────────────────────────────────────────
+.cal-toolbar {
+  background: white;
+  border-radius: $radius;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.07);
+
+  .toolbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+
+    .toolbar-title {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #111827;
+      min-width: 180px;
+      text-align: center;
+    }
+
+    .today-btn {
+      margin-left: 8px;
+      font-size: 0.8rem;
+      border-color: $orange;
+      color: $orange;
+      height: 32px;
+      line-height: 30px;
+      border-radius: 8px !important;
+      font-weight: 600;
+      &:hover { background: $orange-light !important; }
+    }
+  }
+
+  .view-tabs {
+    display: flex;
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 3px;
+    gap: 2px;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 12px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #6b7280;
+      cursor: pointer;
+      transition: all .15s;
+
+      &.active {
+        background: white;
+        color: $orange;
+        font-weight: 700;
+        box-shadow: 0 1px 4px rgba(212, 92, 0, .15);
+      }
+
+      &:hover:not(.active) { background: rgba(255,255,255,.6); color: $orange; }
+    }
+  }
+
+  .add-btn {
+    background: linear-gradient(135deg, $orange, #b84f00) !important;
+    color: white !important;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 3px 8px rgba(212, 92, 0, .35);
+    transition: transform .15s, box-shadow .15s;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(212, 92, 0, .5) !important;
+    }
+  }
+}
+
+// ── Légende ────────────────────────────────────────────────
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+
+  .legend-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1.5px solid;
+  }
+
+  .legend-hint {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin-left: auto;
+  }
+}
+
+// ── Calendrier wrapper ─────────────────────────────────────
+.cal-wrapper {
+  background: white;
+  border-radius: $radius;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.07);
+  transition: opacity .2s;
+
+  &.is-loading { opacity: 0.4; pointer-events: none; }
+}
+
+// ── Override FullCalendar ──────────────────────────────────
+:host ::ng-deep {
+
+  .fc {
+    font-family: inherit;
+  }
+
+  // Header jours
+  .fc-col-header-cell-cushion {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #6b7280;
+    padding: 10px 4px;
+  }
+
+  // Numéros de jour
+  .fc-daygrid-day-number {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #374151;
+    padding: 6px 8px;
+  }
+
+  // Jour today
+  .fc-day-today {
+    background: $orange-light !important;
+    .fc-daygrid-day-number {
+      color: $orange;
+      font-weight: 800;
+      background: $orange;
+      color: white;
+      border-radius: 50%;
+      width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0; margin: 4px;
+    }
+  }
+
+  // Événements
+  .fc-daygrid-event {
+    border-radius: 6px !important;
+    border-width: 2px !important;
+    margin: 1px 2px !important;
+    font-size: 0.72rem !important;
+    cursor: pointer;
+    transition: transform .1s, box-shadow .1s;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0,0,0,.15) !important;
+    }
+  }
+
+  // Event inner custom
+  .fc-event-inner {
+    padding: 2px 4px;
+  }
+
+  // Select highlight
+  .fc-highlight {
+    background: rgba(212, 92, 0, 0.1) !important;
+    border: 2px dashed $orange !important;
+    border-radius: 6px;
+  }
+
+  // Vue liste
+  .fc-list-event {
+    cursor: pointer;
+    &:hover td { background: $orange-light !important; }
+  }
+
+  .fc-list-event-dot { border-color: $orange !important; }
+
+  .fc-list-event-title a {
+    font-weight: 600;
+    color: #111827 !important;
+    text-decoration: none;
+  }
+
+  .fc-list-day-cushion {
+    background: linear-gradient(135deg, $orange-light, white) !important;
+  }
+
+  .fc-list-day-text, .fc-list-day-side-text {
+    color: $orange !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+  }
+
+  // Bouton "more"
+  .fc-more-link {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: $orange !important;
+    background: $orange-light;
+    padding: 2px 6px;
+    border-radius: 4px;
+    &:hover { background: $orange-mid; }
+  }
+
+  // Divider lines
+  .fc-scrollgrid { border-radius: $radius; overflow: hidden; }
+  .fc-theme-standard td, .fc-theme-standard th { border-color: #f1f5f9 !important; }
+
+  // Time grid
+  .fc-timegrid-slot { height: 36px !important; }
+  .fc-timegrid-slot-label { font-size: 0.72rem; color: #9ca3af; }
+
+  // Now indicator
+  .fc-timegrid-now-indicator-line {
+    border-color: $orange !important;
+    border-width: 2px !important;
+  }
+  .fc-timegrid-now-indicator-arrow {
+    border-top-color: $orange !important;
+    border-bottom-color: $orange !important;
+  }
+
+  // Scrollbar
+  .fc-scroller::-webkit-scrollbar { width: 4px; height: 4px; }
+  .fc-scroller::-webkit-scrollbar-track { background: transparent; }
+  .fc-scroller::-webkit-scrollbar-thumb {
+    background: $orange-mid;
+    border-radius: 4px;
+  }
+}

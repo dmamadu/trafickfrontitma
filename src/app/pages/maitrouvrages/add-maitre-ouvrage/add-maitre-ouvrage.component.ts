@@ -17,11 +17,12 @@ import { ClientVueService } from "src/app/pages/admin/client-vue/client-vue.serv
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { LoaderComponent } from "../../../shared/loader/loader.component";
 import { ImageModalComponent } from "src/app/shared/image-modal.component";
+import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
 
 @Component({
   selector: "app-add-maitre-ouvrage",
   standalone: true,
-  imports: [AngularMaterialModule, LoaderComponent],
+  imports: [AngularMaterialModule, LoaderComponent, DialogHeaderComponent],
   templateUrl: "./add-maitre-ouvrage.component.html",
   styleUrl: "./add-maitre-ouvrage.component.css",
 })

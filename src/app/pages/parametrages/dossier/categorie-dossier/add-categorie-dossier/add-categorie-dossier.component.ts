@@ -16,6 +16,7 @@ import { AddComponent } from "src/app/pages/tasks/add/add.component";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { CoreService } from "src/app/shared/core/core.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
+import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
 
 @Component({
   selector: "app-add-categorie-dossier",
@@ -29,7 +30,8 @@ import { SnackBarService } from "src/app/shared/core/snackBar.service";
     MatNativeDateModule,
     MatDatepickerModule,
     MatNativeDateModule,
-  ],
+    DialogHeaderComponent
+],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
     { provide: MatPaginatorIntl },

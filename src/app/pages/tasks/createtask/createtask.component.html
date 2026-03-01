@@ -1,172 +1,173 @@
-<mat-toolbar class="mat-accent m-0 backToolbar">
-  <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
-    <span class="c_title dialog-title">{{ dialogTitle }}</span>
-    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
-      <mat-icon>close</mat-icon>
-    </button>
-  </mat-toolbar-row>
-</mat-toolbar>
-<div class="row">
-  <form action="" [formGroup]="initForm">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-body">
-          <div data-repeater-list="outer-group" class="outer">
-            <div data-repeater-item class="outer">
-              <div class="mb-2">
-                <mat-form-field class="w-full" appearance="outline">
-                  <mat-label>Libelle</mat-label>
-                  <input matInput formControlName="libelle" placeholder="libelle...">
-                  <mat-icon matSuffix class="secondary-text">code</mat-icon>
-                  <mat-error>Le champ est obligatoire</mat-error>
-                </mat-form-field>
-              </div>
-              <div class="row ">
-                <mat-form-field class="w-full" appearance="outline">
-                  <mat-label>Description</mat-label>
-                  <textarea matInput formControlName="description" placeholder="Décrivez ici..." rows="3"></textarea>
-                  <mat-error>Le champ est obligatoire</mat-error>
-                </mat-form-field>
-              </div>
-              <div>
-                <label class="col-form-label col-lg-2">Date estimée</label>
-              </div>
-              <div class="form-group row " style="display: flex; align-items: center;">
-                <div class="col-lg-6">
-                  <mat-form-field appearance="outline" class="w-full">
-                    <mat-label>Date de début</mat-label>
-                    <input matInput [matDatepicker]="picker1" formControlName="dateDebut">
-                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                    <mat-datepicker #picker1></mat-datepicker>
-                    <mat-error>Le champ est obligatoire</mat-error>
-                  </mat-form-field>
-                </div>
-                <div class="col-lg-6">
-                  <mat-form-field appearance="outline" class="w-full">
-                    <mat-label>Date de fin</mat-label>
-                    <input matInput [matDatepicker]="picker2" formControlName="dateFin">
-                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                    <mat-datepicker #picker2></mat-datepicker>
-                    <mat-error>Le champ est obligatoire</mat-error>
-                  </mat-form-field>
-                </div>
-              </div>
+<app-dialog-header
+  [title]="dialogTitle"
+  icon="task_alt"
+  (close)="matDialogRef.close()">
+</app-dialog-header>
 
-              <!-- <div class="mb-3 position-relative">
+<div class="create-root">
+  <form [formGroup]="initForm" autocomplete="off">
 
-                <label for="task-assign-input" class="form-label">Assigné à</label>
-                <div *ngIf="assignList && assignList.length > 0" class="d-flex flex-wrap mb-2">
-                  <ng-container *ngFor="let data of assignList; let i = index">
-                    <div class="d-flex align-items-center me-3">
-                      @if (data.image) {
-                      <img [src]="getImageFromBase64(data.image.type,data.image.image)" alt=""
-                        class="rounded-circle avatar-xs me-2">
-                      }
-                      <span>{{ data.lastname }}</span>
-                    </div>
-                  </ng-container>
-                </div>
-                <div class="select-element" id="select-element" dropdown>
-                  <button class="btn btn-light w-100 d-flex justify-content-between" dropdownToggle type="button"
-                    data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                    <span>Assigné à <b id="total-assignee" class="mx-1">{{assignList?.length}}</b> Members</span>
-                    <i class="mdi mdi-chevron-down"></i>
-                  </button>
-                  <div class="dropdown-menu w-100" *dropdownMenu>
-                    <ngx-simplebar style="max-height: 172px">
-                      <ul class="list-unstyled mb-0 assignto-list">
-                        <ng-container *ngFor="let data of listMo; let i = index">
-                          <li>
-                            <a class="dropdown-item d-flex align-items-center"
-                              [ngClass]="{'active': data.checked === '1'}" href="javascript:void(0);"
-                              (click)="slectMember(i)">
-                              <div class="flex-grow-1">{{ data.lastname }}</div>
-                            </a>
-                          </li>
-                        </ng-container>
-                      </ul>
-                    </ngx-simplebar>
-                  </div>
-                </div>
-              </div> -->
-              <div class="mb-3 position-relative">
-                <label class="form-label">Assigné à</label>
+    <!-- ── Section : Informations ──────────────────────── -->
+    <div class="form-section">
+      <div class="section-label">
+        <mat-icon>info</mat-icon>
+        <span>Informations</span>
+      </div>
 
-                <!-- Utilisateurs sélectionnés - Version compacte -->
-                <div *ngIf="assignList.length > 0" class="selected-users-box mb-2 p-2 bg-light rounded"
-                     style="max-height: 80px; overflow-y: auto;">
-                  <div class="d-flex flex-wrap gap-1">
-                    <div *ngFor="let user of assignList" class="selected-user-item">
-                      <div class="d-flex align-items-center bg-white p-1 pe-2 rounded border">
-                        @if (user.image) {
-                          <img [src]="getImageFromBase64(user.image.type, user.image.image)"
-                               alt="{{user.lastname}}"
-                               class="rounded-circle avatar-xs me-1">
-                        } @else {
-                          <div class="avatar-xs me-1 bg-[#D45C00] rounded-circle d-flex align-items-center justify-content-center">
-                            <span class="text-white small">{{user.lastname | slice:0:1}}</span>
-                          </div>
-                        }
-                        <span class="small">{{user.lastname}}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+      <!-- Libellé -->
+      <mat-form-field class="field-full" appearance="outline">
+        <mat-label>Libellé de la tâche</mat-label>
+        <input matInput formControlName="libelle" placeholder="Ex : Étude d'impact environnemental…" />
+        <mat-icon matSuffix>label</mat-icon>
+        <mat-error>Champ obligatoire</mat-error>
+      </mat-form-field>
 
-                <!-- Liste scrollable des MO -->
-                <div class="mo-list-container border rounded" style="height: 100px; overflow-y: auto;">
-                  <div *ngFor="let mo of listMo"
-                       class="mo-list-item p-2 d-flex align-items-center cursor-pointer border-bottom"
-                       [class.bg-light]="isSelected(mo)"
-                       (click)="toggleUserSelection(mo)">
+      <!-- Description -->
+      <mat-form-field class="field-full" appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description"
+          placeholder="Décrivez les objectifs et livrables…"
+          rows="3" cdkTextareaAutosize cdkAutosizeMinRows="3"></textarea>
+        <mat-error>Champ obligatoire</mat-error>
+      </mat-form-field>
+    </div>
 
-                    @if (mo.image) {
-                      <img [src]="getImageFromBase64(mo.image.type, mo.image.image)"
-                           alt="{{mo.lastname}}"
-                           class="rounded-circle avatar-xs me-2">
-                    } @else {
-                      <div class="avatar-xs me-2 bg-secondary rounded-circle d-flex align-items-center justify-content-center">
-                        <span class="text-white small">{{mo.lastname | slice:0:1}}</span>
-                      </div>
-                    }
+    <!-- ── Section : Dates ─────────────────────────────── -->
+    <div class="form-section">
+      <div class="section-label">
+        <mat-icon>date_range</mat-icon>
+        <span>Période estimée</span>
+      </div>
 
-                    <span class="small">{{mo.lastname}} {{mo.firstname}}</span>
+      <div class="dates-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Date de début</mat-label>
+          <input matInput [matDatepicker]="picker1" formControlName="dateDebut" readonly />
+          <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+          <mat-error>Champ obligatoire</mat-error>
+        </mat-form-field>
 
-                    <span class="ms-auto">
-                      <i class="mdi mdi-check-circle text-success" *ngIf="isSelected(mo)"></i>
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Status<span class="text-danger">*</span></mat-label>
-                <mat-select formControlName="statut" required>
-                  <mat-option value="" disabled>Choisir...</mat-option>
-                  <mat-option value="en-attente">En attente</mat-option>
-                  <mat-option value="approuve">Approuvé</mat-option>
-                  <mat-option value="en-cours">En cours</mat-option>
-                  <mat-option value="complete">Complété</mat-option>
-                </mat-select>
-                <mat-error>Le champ est obligatoire</mat-error>
-              </mat-form-field>
+        <div class="dates-sep">
+          <mat-icon>arrow_forward</mat-icon>
+        </div>
 
-            </div>
+        <mat-form-field appearance="outline">
+          <mat-label>Date de fin</mat-label>
+          <input matInput [matDatepicker]="picker2" formControlName="dateFin" readonly />
+          <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+          <mat-error>Champ obligatoire</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- ── Section : Statut ────────────────────────────── -->
+    <div class="form-section">
+      <div class="section-label">
+        <mat-icon>flag</mat-icon>
+        <span>Statut</span>
+      </div>
+
+      <div class="statut-chips">
+        <button type="button"
+          *ngFor="let s of statutOptions"
+          class="statut-chip"
+          [class.active]="initForm.get('statut').value === s.value"
+          [ngStyle]="initForm.get('statut').value === s.value
+            ? { background: s.bg, borderColor: s.border, color: s.color }
+            : {}"
+          (click)="initForm.get('statut').setValue(s.value)">
+          <mat-icon>{{ s.icon }}</mat-icon>
+          {{ s.label }}
+        </button>
+      </div>
+      <div *ngIf="initForm.get('statut')!.invalid && initForm.get('statut')!.touched"
+        class="field-error">Veuillez sélectionner un statut</div>
+    </div>
+
+    <!-- ── Section : Assignés ──────────────────────────── -->
+    <div class="form-section no-border">
+      <div class="section-label">
+        <mat-icon>group</mat-icon>
+        <span>Assigné à</span>
+        <span class="assignee-count" *ngIf="assignList.length > 0">{{ assignList.length }}</span>
+      </div>
+
+      <!-- Chips sélectionnés -->
+      <div class="selected-chips" *ngIf="assignList.length > 0">
+        <div class="assignee-chip" *ngFor="let user of assignList">
+          <div class="chip-avatar">
+            <img *ngIf="user.image"
+              [src]="getImageFromBase64(user.image.type, user.image.image)" />
+            <span *ngIf="!user.image">{{ user.lastname | slice:0:1 }}</span>
           </div>
-          <div class="justify-content-end flex items-center flex-row">
-            <div class="mx-2">
-              <button type="submit" class="bg-[green]  botn  text-white  w-[100px]" (click)="checkRecap(action)">{{
-                labelButton }}</button>
-            </div>
-            <div class="">
-              <button class="bg-[#D45C00] botn text-white cursor-pointer w-[100px]" (click)="annuler()">Annuler</button>
-            </div>
+          <span class="chip-name">{{ user.lastname }}</span>
+          <button type="button" class="chip-remove" (click)="removeAssignee(user)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Recherche -->
+      <div class="user-search-wrap">
+        <mat-icon class="search-ico">search</mat-icon>
+        <input
+          type="text"
+          class="user-search"
+          placeholder="Rechercher un membre…"
+          [(ngModel)]="userSearchText"
+          [ngModelOptions]="{standalone: true}"
+          (input)="filterUsers()" />
+      </div>
+
+      <!-- Liste utilisateurs -->
+      <div class="user-list">
+        <div class="user-list-empty" *ngIf="listMo.length === 0">
+          <mat-icon>person_search</mat-icon>
+          <span>Aucun membre disponible</span>
+        </div>
+
+        <div class="user-row"
+          *ngFor="let mo of (userSearchText ? filteredUsers : listMo)"
+          [class.selected]="isSelected(mo)"
+          (click)="toggleUserSelection(mo)">
+
+          <!-- Avatar -->
+          <div class="user-avatar">
+            <img *ngIf="mo.image"
+              [src]="getImageFromBase64(mo.image.type, mo.image.image)" />
+            <span *ngIf="!mo.image">{{ mo.lastname | slice:0:1 }}</span>
           </div>
 
+          <!-- Nom -->
+          <div class="user-info">
+            <span class="user-name">{{ mo.lastname }} {{ mo.firstname }}</span>
+            <span class="user-role" *ngIf="mo.role">{{ mo.role }}</span>
+          </div>
+
+          <!-- Check -->
+          <div class="user-check" [class.checked]="isSelected(mo)">
+            <mat-icon>{{ isSelected(mo) ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+          </div>
         </div>
       </div>
     </div>
+
   </form>
-  <app-loader-custom *ngIf="loader"></app-loader-custom>
+
+  <!-- ── Footer ─────────────────────────────────────────── -->
+  <div class="form-footer">
+    <button mat-stroked-button type="button" class="btn-cancel" (click)="matDialogRef.close()">
+      Annuler
+    </button>
+    <button mat-raised-button type="button" class="btn-submit"
+      [disabled]="loader"
+      (click)="checkRecap(action)">
+      <mat-icon *ngIf="!loader">{{ action === 'edit' ? 'save' : 'add_task' }}</mat-icon>
+      <span class="btn-spinner" *ngIf="loader"></span>
+      {{ labelButton }}
+    </button>
+  </div>
 
 </div>
-<!-- end row -->

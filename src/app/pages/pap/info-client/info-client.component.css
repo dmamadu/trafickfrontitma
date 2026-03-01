@@ -1,12 +1,237 @@
-
-
-mat-icon{
-  color: #D45C00;
+:host {
+  --p:  #D45C00;
+  --pl: #FF8534;
+  --pd: #A84700;
+  --bg: #FBF7F4;
+  --surface: #fff;
+  --text: #1A0A00;
+  --border: rgba(212,92,0,0.14);
+  --r: 10px;
+  --t: all 0.2s cubic-bezier(0.4,0,0.2,1);
+  font-family: 'DM Sans', sans-serif;
+  display: block;
 }
+
+/* ICONS */
+mat-icon { color: var(--p); font-size: 18px; width: 18px; height: 18px; flex-shrink: 0; }
+
+/* CARD WRAPPER */
+.heighContentRight { width: 100%; }
+fuse-card { border-radius: 14px !important; box-shadow: 0 4px 24px rgba(26,10,0,0.08) !important; border: 1px solid var(--border); overflow: hidden; }
+
+/* SECTION HEADER */
+.section-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 0 10px;
+}
+
+.c_title_header {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--p);
+  position: relative;
+  padding-left: 10px;
+}
+
+.c_title_header::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 3px; height: 70%;
+  background: linear-gradient(var(--p), var(--pl));
+  border-radius: 3px;
+}
+
+/* EDIT BUTTONS */
+.c_btnAccountF {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(212,92,0,0.08);
+  border: 1px solid rgba(212,92,0,0.2);
+  color: var(--p) !important;
+  transition: var(--t);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+
+.c_btnAccountF:hover:not([disabled]) {
+  background: var(--p);
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(212,92,0,0.35);
+  transform: translateY(-1px);
+}
+
+.c_btnAccountF[disabled] { opacity: .35; cursor: not-allowed; }
+.c_btnAccountF mat-icon { color: inherit !important; }
+
+/* DIVIDER */
+hr { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
+
+/* INFO GRID — 2 colonnes côte à côte */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 32px;
+  width: 100%;
+}
+
+/* FIELD ROW */
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 8px;
+  transition: var(--t);
+  gap: 8px;
+}
+
+.field-row:hover { background: rgba(212,92,0,0.04); }
+
+/* LABEL */
 .span-text {
-  color: black;
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #6B4C3B;
+  font-size: 12px;
   font-weight: 500;
+  white-space: nowrap;
 }
 
+/* VALUE */
+.field-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  word-break: break-word;
+}
 
+/* PERTES CARDS */
+.pertes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+  padding: 14px 0;
+}
+
+.perte-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  font-size: 13px;
+  transition: var(--t);
+}
+
+.perte-card:hover { border-color: var(--p); box-shadow: 0 2px 12px rgba(212,92,0,0.1); transform: translateY(-1px); }
+.perte-card strong { color: var(--text); font-weight: 600; }
+
+.perte-card.total {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(212,92,0,0.08), rgba(255,133,52,0.06));
+  border-color: rgba(212,92,0,0.3);
+  padding: 16px;
+  text-align: center;
+}
+
+.total-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--p);
+}
+
+.total-amount {
+  font-size: 20px; font-weight: 800; color: var(--pd);
+  margin-top: 4px; letter-spacing: -.01em;
+}
+
+/* SECTION TITLE (évaluation) */
+.eval-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 700; color: var(--text);
+  margin-bottom: 12px;
+}
+
+/* CO-PROPRIETAIRE CARD */
+.copro-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  transition: var(--t);
+}
+
+.copro-card:hover { border-color: var(--p); box-shadow: 0 4px 16px rgba(212,92,0,0.09); }
+
+.copro-count {
+  font-size: 13px; font-weight: 600; color: var(--text);
+  padding: 4px 12px; background: rgba(212,92,0,0.08);
+  border-radius: 20px; display: inline-block; margin-bottom: 8px;
+}
+
+.copro-empty {
+  font-size: 13px; font-weight: 600; color: #EF4444;
+  padding: 4px 12px; background: rgba(239,68,68,0.08);
+  border-radius: 20px; display: inline-block; margin-bottom: 8px;
+}
+
+/* TAB PANEL */
+.tab-panel {
+  padding: 16px 4px;
+}
+
+/* INFO ETENDUES / CARACTERISTIQUES */
+.text-panel {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 80px;
+}
+
+/* PHOTO HABITAT */
+.photo-habitat {
+  margin-top: 14px;
+}
+
+.photo-habitat img {
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(26,10,0,0.1);
+  max-height: 180px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: var(--t);
+  border: 2px solid var(--border);
+}
+
+.photo-habitat img:hover {
+  border-color: var(--p);
+  box-shadow: 0 8px 24px rgba(212,92,0,0.18);
+  transform: scale(1.01);
+}
+
+/* SCROLLBAR */
+.scroll-area { overflow-y: auto; max-height: 420px; }
+.scroll-area::-webkit-scrollbar { width: 4px; }
+.scroll-area::-webkit-scrollbar-thumb { background: rgba(212,92,0,0.2); border-radius: 4px; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .info-grid { grid-template-columns: 1fr; gap: 0; }
+}
+
+@media (max-width: 600px) {
+  .field-row { grid-template-columns: 1fr; }
+  .pertes-grid { grid-template-columns: 1fr; }
+}

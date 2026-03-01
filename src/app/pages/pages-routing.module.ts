@@ -16,13 +16,11 @@ import { RencontreComponent } from "./elaboration/rencontre/rencontre.component"
 
 const routes: Routes = [
   // { path: '', redirectTo: 'dashboard' },
-  
   {
     path: "dashboards",
     loadChildren: () =>
       import("./dashboards/dashboards.module").then((m) => m.DashboardsModule),
   },
-
   {
     path: "projects",
     loadChildren: () =>
@@ -84,13 +82,11 @@ const routes: Routes = [
     loadChildren: () =>
       import("./ficheIdentificationPap/ficheIdentification-routing.module").then((m) => m.FicheIdentificationRoutingModule),
   },
-
   {
     path: "pip",
     loadChildren: () =>
       import("./pip/pip-routing.module").then((m) => m.PipRoutingModule),
   },
-
   {
     path: "consultant",
     loadChildren: () =>

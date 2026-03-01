@@ -19,13 +19,14 @@ import { Image } from "src/app/shared/models/image.model";
 import { MoService } from "src/app/core/services/mo.service";
 import { ResponseData } from "../../projects/project.model";
 import { LocalService } from "src/app/core/services/local.service";
+import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
 
 @Component({
   selector: "app-add",
   templateUrl: "./add.component.html",
   styleUrl: "./add.component.css",
   standalone: true,
-  imports: [AngularMaterialModule],
+  imports: [AngularMaterialModule, DialogHeaderComponent],
 })
 export class AddComponent {
   panelOpenState = false;

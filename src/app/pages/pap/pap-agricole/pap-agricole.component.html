@@ -1,4 +1,4 @@
-<div>
+<!-- <div>
   <app-page-title title="Liste des Pap Agricoles affectées par le projet"
     [breadcrumbItems]="breadCrumbItems"></app-page-title>
 </div>
@@ -14,12 +14,6 @@
   </div>
   <div class="col-sm-auto">
     <div class="d-flex flex-wrap gap-2">
-
-      <!-- <button (click)="exportAs('pdf')"> <img src="assets/images/pdf-icon.png" alt="default image"
-          class="c_icon"></button>
-          <button (click)="exportAs('excel')">
-            <img src="assets/images/xlsx-icon.png" alt="default image" class="c_icon">
-          </button> -->
       <button type="submit" class="btn bgPrimaire" (click)="addItems()"> <i class="mdi mdi-plus me-1"></i> Ajouter un
         pap agricole</button>
 
@@ -36,7 +30,6 @@
 
 <div class="row mt-4">
   <div class="col-lg-12">
-    <!-- Affichage des erreurs si besoin -->
     @if (dataTable.hasErrors()) {
     <div class="mb-3 text-sm text-red-600 text-end">
       Veuillez corriger les erreurs pour pouvoir importer
@@ -65,4 +58,64 @@
     
     (changePage)="pageChanged($event)"
     *ngIf="!loadData"></tableau>
+</div> -->
+<!-- PAGE ACTIONS : titre + recherche + boutons -->
+<!-- <app-page-actions
+  title="Liste des PAP Agricoles"
+  [breadcrumbItems]="breadCrumbItems"
+  showSearch="true"
+  searchPlaceholder="Rechercher un PAP..."
+  (search)="filterTable($event)"
+  [actions]="actions">
+  >
+</app-page-actions> -->
+
+<app-page-actions
+  title="Liste des Pap habitats affectés par le projet"
+  [breadcrumbItems]="breadCrumbItems"
+  searchPlaceholder="Rechercher un PAP habitat..."
+  [showSearch]="true"
+  [actions]="actions"
+  (onSearch)="filterTable($event)"
+  (onAction)="handleAction($event)">
+</app-page-actions>
+
+<input type="file" id="file-upload" (change)="fileUpload($event)" name="fileUpload" accept=".xls,.xlsx" style="display:none">
+
+<!-- PREVIEW EXCEL -->
+@if (dataExcel.length > 0) {
+  <div class="excel-preview">
+    <app-datatable [headings]="headings" [dataExcel]="dataExcel" #dataTable></app-datatable>
+    <div class="excel-actions">
+      @if (dataTable.hasErrors()) {
+        <span class="error-hint">Veuillez corriger les erreurs avant d'importer</span>
+      }
+      <button class="btn-cancel" (click)="resetDataFromExcel()">Annuler</button>
+      <button class="btn-confirm"
+        [disabled]="dataTable.hasErrors()"
+        [class.disabled]="dataTable.hasErrors()"
+        (click)="importData()">Importer</button>
+    </div>
+  </div>
+}
+
+<!-- LOADER -->
+<app-loader-data *ngIf="loadData"></app-loader-data>
+
+<!-- TABLEAU -->
+<div class="table-wrap" *ngIf="!loadData">
+  <tableau
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="pageSizeOptions"
+    [pageSize]="pageSize"
+    [total]="length"
+    [coleurEntete]="headers"
+    [entete]="headers"
+    [data]="datas"
+    [actions]="btnActions"
+    [enableSelection]="true"
+    [enableBulkDelete]="true"
+    (bulkDelete)="handleBulkDelete($event)"
+    (changePage)="pageChanged($event)">
+  </tableau>
 </div>

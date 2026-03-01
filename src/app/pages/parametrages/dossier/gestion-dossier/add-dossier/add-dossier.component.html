@@ -1,4 +1,4 @@
-<mat-toolbar class="mat-accent m-0 backToolbar">
+<!-- <mat-toolbar class="mat-accent m-0 backToolbar">
   <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
     <span class="c_title dialog-title">{{ dialogTitle }}</span>
     <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
@@ -7,7 +7,6 @@
   </mat-toolbar-row>
 </mat-toolbar>
 
-<!-- Image Section -->
 <div class="row">
   <div class="d-flex justify-content-center  align-items-center font-bold text-xl ">
     <span>Document</span>
@@ -23,12 +22,10 @@
             </div>
           </div>
         </label>
-        <!-- <input class="form-control d-none" id="document-image-input" type="file" accept="*" (change)="selectOnFile($event, '', 'Thumbnail')"> -->
         <input class="form-control d-none" value="" id="document-image-input" type="file"
           accept="image/png, image/PNG, image/jpg, image/JPG, image/jpeg, image/JPEG, .pdf , .PDF , .doc , .DOC , .docx , .DOCX , .docm , .DOCM"
           (change)="selectOnFile($event)">
 
-        <!-- Bouton pour supprimer l'image -->
         <div *ngIf="uploadedImage">
           <button type="button" class="btn btn-danger btn-sm mt-1" id="delete-image-btn" (click)="deleteImage()">
             <i class="bx bx-trash me-1"></i>
@@ -46,7 +43,6 @@
   </div>
 </div>
 
-<!-- Form Fields Section -->
 <div class="flex flex-col flex-auto min-w-10-0 p-2 md:p-4">
   <form [formGroup]="initForm" class="event-form w-100-p">
     <div class="flex gap-2">
@@ -89,6 +85,78 @@
         <span class="textForm">{{ labelButton }}</span>
       </button>
     </div>
+  </form>
+
+  <app-loader-data *ngIf="loader"></app-loader-data>
+</div> -->
+<app-dialog-header
+  [title]="dialogTitle"
+  icon="folder"
+  (close)="matDialogRef.close()">
+</app-dialog-header>
+
+<div class="p-3 md:p-4">
+
+  <!-- Sous-titre -->
+  <p class="text-center text-sm font-semibold text-[#245363] mb-3">Document</p>
+
+  <!-- Avatar document -->
+  <div class="flex justify-center mb-3">
+    <div class="relative inline-block">
+      <div class="w-20 h-20 rounded-full overflow-hidden bg-gray-100 ring-2 ring-[#245363]/20">
+        <img
+          [src]="imageToff ? imageToff : 'assets/images/documents-icon.jpg'"
+          class="w-full h-full object-cover cursor-pointer"
+          (click)="openImageModal(imageToff)" />
+      </div>
+      <label for="document-image-input"
+        class="absolute bottom-0 right-0 w-6 h-6 bg-white border border-gray-200 rounded-full flex items-center justify-center cursor-pointer shadow-sm hover:bg-gray-50 transition-colors">
+        <i class="bx bxs-image-alt text-xs text-gray-500"></i>
+      </label>
+      <input class="hidden" id="document-image-input" type="file"
+        accept="image/png,image/jpg,image/jpeg,.pdf,.doc,.docx,.docm"
+        (change)="selectOnFile($event)">
+      <button *ngIf="uploadedImage" type="button"
+        class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center shadow-sm hover:bg-red-600 transition-colors"
+        (click)="deleteImage()">
+        <i class="bx bx-trash text-white" style="font-size: 10px;"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="initForm" class="w-full">
+
+    <!-- Libellé -->
+    <mat-form-field class="w-full" appearance="outline">
+      <mat-label>Libellé</mat-label>
+      <input matInput type="text" formControlName="libelle" />
+      <mat-icon matSuffix class="secondary-text">label</mat-icon>
+      <mat-error>Champ obligatoire</mat-error>
+    </mat-form-field>
+
+    <!-- Catégorie -->
+    <mat-form-field class="w-full" appearance="outline">
+      <mat-label>Catégorie de document</mat-label>
+      <mat-select formControlName="categorieDocumentId">
+        <mat-option *ngFor="let categorie of categories" [value]="categorie.id">
+          {{ categorie.libelle }}
+        </mat-option>
+      </mat-select>
+      <mat-icon matSuffix class="secondary-text">category</mat-icon>
+      <mat-error>Champ obligatoire</mat-error>
+    </mat-form-field>
+
+    <!-- Actions -->
+    <div class="flex justify-end gap-2 mt-2">
+      <button mat-stroked-button type="button" (click)="matDialogRef.close()">
+        Annuler
+      </button>
+      <button mat-raised-button color="primary" [disabled]="loader" (click)="checkRecap(action)">
+        {{ labelButton }}
+      </button>
+    </div>
+
   </form>
 
   <app-loader-data *ngIf="loader"></app-loader-data>

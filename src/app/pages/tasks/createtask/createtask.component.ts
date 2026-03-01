@@ -1,438 +1,192 @@
 import {
   Component,
   OnInit,
-  ViewChild,
-  EventEmitter,
-  Output,
-  Input,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Inject,
-  CUSTOM_ELEMENTS_SCHEMA,
 } from "@angular/core";
 import {
   FormArray,
   FormBuilder,
   FormsModule,
   ReactiveFormsModule,
-  UntypedFormArray,
-  UntypedFormControl,
-  UntypedFormGroup,
   Validators,
 } from "@angular/forms";
-
-import * as ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { CommonModule } from "@angular/common";
 import { provideNativeDateAdapter } from "@angular/material/core";
-import { DropzoneConfigInterface } from "ngx-dropzone-wrapper";
-
-import { Store } from "@ngrx/store";
-import { Mo, ResponseData } from "../../projects/project.model";
-import { ProjectService } from "src/app/core/services/project.service";
-import { SnackBarService } from "src/app/shared/core/snackBar.service";
-import { CoreService } from "src/app/shared/core/core.service";
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
   MatDialogRef,
 } from "@angular/material/dialog";
-import { LocalService } from "src/app/core/services/local.service";
-import { Router } from "@angular/router";
-import { CommonModule } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
-import { MatCheckboxModule } from "@angular/material/checkbox";
-import { MatOptionModule, MatNativeDateModule } from "@angular/material/core";
+import { MatNativeDateModule } from "@angular/material/core";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
-import { MatSelectModule } from "@angular/material/select";
-import { CKEditorModule } from "@ckeditor/ckeditor5-angular";
-import { NgApexchartsModule } from "ng-apexcharts";
-import { DndModule } from "ngx-drag-drop";
-import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
-import { UIModule } from "src/app/shared/ui/ui.module";
-import { BsDropdownModule } from "ngx-bootstrap/dropdown";
+
+import { SnackBarService } from "src/app/shared/core/snackBar.service";
+import { CoreService } from "src/app/shared/core/core.service";
+import { LocalService } from "src/app/core/services/local.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
+import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
+import { UIModule } from "src/app/shared/ui/ui.module";
+
+export interface StatutOption {
+  value: string;
+  label: string;
+  icon: string;
+  bg: string;
+  border: string;
+  color: string;
+}
 
 @Component({
   selector: "app-createtask",
   templateUrl: "./createtask.component.html",
+  styleUrls: ["./createtask.component.scss"],
   standalone: true,
   imports: [
-    UIModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatInputModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    UIModule,
-    NgApexchartsModule,
-    CKEditorModule,
-    DndModule,
-    AngularMaterialModule,
-    MatDialogModule,
-    MatSelectModule,
-    MatOptionModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatNativeDateModule,
-    MatCheckboxModule,
     MatIconModule,
     MatButtonModule,
-    BsDropdownModule,
+    MatDialogModule,
+    DialogHeaderComponent,
+    UIModule,
   ],
-  styleUrls: ["./createtask.component.scss"],
   providers: [provideNativeDateAdapter()],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
-/**
- * Tasks-create component
- */
 export class CreatetaskComponent implements OnInit {
-  // bread crumb items
-  breadCrumbItems: Array<{}>;
-  dialogTitle: string = "";
-  public Editor = ClassicEditor;
-  form = new UntypedFormGroup({
-    member: new UntypedFormArray([new UntypedFormControl("")]),
-  });
-  loader: boolean = false;
-  hidden: boolean;
-  selected: any;
-  initForm: UntypedFormGroup;
-  id: string;
+
+  dialogTitle = "";
+  labelButton = "Ajouter";
   action = "";
-  labelButton: string = "Créer une tache";
+  id: string;
+  loader = false;
   url = "taches";
-  @Output() dateRangeSelected: EventEmitter<{}> = new EventEmitter();
-  memberLists: any;
-  tacheToUpdate: any = null;
-  pageSize: number = 100;
-  pageIndex: number = 0;
-    offset: number = 0;
-  @ViewChild("dp", { static: true }) datePicker: any;
 
-  /**
-   * Returns the form field value
-   */
-  get member(): UntypedFormArray {
-    return this.form.get("member") as UntypedFormArray;
-  }
-  /**
-   * Add the member field in form
-   */
-  addMember() {
-    this.member.push(new UntypedFormControl());
-  }
-  /**
-   * Onclick delete member from form
-   */
-  deleteMember(i: number) {
-    this.member.removeAt(i);
-  }
-  listMo: Mo[] = [];
+  // Utilisateurs
+  listMo: any[] = [];
+  assignList: any[] = [];
+  usersToUpdate: any[] = [];
+  userSearchText = "";
+  filteredUsers: any[] = [];
 
-  usersToUpdate: any = [];
-  ngOnInit() {
-    this.fetchMo();
-    this.breadCrumbItems = [
-      { label: "Taches" },
-      { label: "Création d'une tache", active: true },
-    ];
-  }
+  pageSize = 100;
+  offset = 0;
   currentProjectId: any;
+
+  // Formulaire
+  initForm = this.fb.group({
+    libelle:      this.fb.control<string | null>(null, Validators.required),
+    description:  this.fb.control<string | null>(null, Validators.required),
+    dateDebut:    this.fb.control<string | null>(null, Validators.required),
+    dateFin:      this.fb.control<string | null>(null, Validators.required),
+    statut:       this.fb.control<string | null>(null, Validators.required),
+    utilisateurs: this.fb.array([]),
+  });
+
+  // Options statut avec couleurs Jibili
+  readonly statutOptions: StatutOption[] = [
+    { value: 'en-attente', label: 'En attente', icon: 'hourglass_empty', bg: '#FFF3CD', border: '#F59E0B', color: '#92400E' },
+    { value: 'en-cours',   label: 'En cours',   icon: 'sync',            bg: '#DBEAFE', border: '#2563EB', color: '#1E3A8A' },
+    { value: 'approuve',   label: 'Approuvé',   icon: 'verified',        bg: '#E8F5E9', border: '#2E7D32', color: '#1B5E20' },
+    { value: 'complete',   label: 'Complété',   icon: 'check_circle',    bg: '#EDE9FE', border: '#7C3AED', color: '#4C1D95' },
+  ];
 
   constructor(
     public matDialogRef: MatDialogRef<CreatetaskComponent>,
-    @Inject(MAT_DIALOG_DATA) _data,
-    public store: Store,
+    @Inject(MAT_DIALOG_DATA) _data: any,
     private fb: FormBuilder,
-    private projectService: ProjectService,
     private coreService: CoreService,
     private localService: LocalService,
     private snackbar: SnackBarService,
-    private changeDetectorRefs: ChangeDetectorRef,
-    private parentService: ServiceParent
+    private cdr: ChangeDetectorRef,
+    private parentService: ServiceParent,
   ) {
     this.currentProjectId = this.localService.getData("ProjectId");
-
     this.action = _data.action;
-    if (_data?.action == "new") {
-      this.initForms();
-      this.labelButton = "Ajouter ";
-      this.dialogTitle = "Créer une tache";
-    } else if (_data?.action == "edit") {
-      this.labelButton = "Modifier ";
+
+    if (_data?.action === "new") {
+      this.labelButton = "Créer la tâche";
+      this.dialogTitle = "Nouvelle tâche";
+      // Pré-remplissage dates depuis calendrier
+      if (_data?.data?.prefillDateDebut) {
+        this.initForm.patchValue({
+          dateDebut: _data.data.prefillDateDebut,
+          dateFin:   _data.data.prefillDateFin,
+        });
+      }
+    } else if (_data?.action === "edit") {
+      this.labelButton = "Enregistrer";
+      this.dialogTitle = "Modifier la tâche";
       this.id = _data.data.id;
-      this;
-      this.dialogTitle = "Modifier une tache";
-      this.initForms(_data.data);
+      this.patchForm(_data.data);
     }
   }
 
-  // initForms(donnees?) {
-  //   this.initForm = this.fb.group({
-  //     libelle: this.fb.control(donnees ? donnees?.libelle : null, [
-  //       Validators.required,
-  //     ]),
-  //     description: this.fb.control(donnees ? donnees?.description : null, [
-  //       Validators.required,
-  //     ]),
-  //     dateDebut: this.fb.control(donnees ? donnees?.dateDebut : null, [
-  //       Validators.required,
-  //     ]),
-  //     dateFin: this.fb.control(donnees ? donnees?.dateFin : null, [
-  //       Validators.required,
-  //     ]),
-  //     statut: this.fb.control(donnees ? donnees?.statut : null, [
-  //       Validators.required,
-  //     ]),
-  //     utilisateurs: this.fb.array([]),
-  //   });
-  // }
-
-  initForms(donnees?: any) {
-    this.initForm = this.fb.group({
-      libelle: this.fb.control(donnees ? donnees?.libelle : null, [
-        Validators.required,
-      ]),
-      description: this.fb.control(donnees ? donnees?.description : null, [
-        Validators.required,
-      ]),
-      dateDebut: this.fb.control(donnees ? donnees?.dateDebut : null, [
-        Validators.required,
-      ]),
-      dateFin: this.fb.control(donnees ? donnees?.dateFin : null, [
-        Validators.required,
-      ]),
-      statut: this.fb.control(donnees ? donnees?.statut : null, [
-        Validators.required,
-      ]),
-      utilisateurs: this.fb.array([]),
-    });
-
-    if (donnees && donnees.utilisateurs) {
-      this.tacheToUpdate = donnees;
-      this.usersToUpdate = donnees.utilisateurs;
-    }
+  ngOnInit(): void {
     this.fetchMo();
   }
+
+  // ── Formulaire ───────────────────────────────────────────
+  private patchForm(data: any): void {
+    this.initForm.patchValue({
+      libelle:     data.libelle,
+      description: data.description,
+      dateDebut:   data.dateDebut,
+      dateFin:     data.dateFin,
+      statut:      data.statut,
+    });
+    if (data.utilisateurs?.length) {
+      this.usersToUpdate = data.utilisateurs;
+    }
+  }
+
   get assignListFormArray(): FormArray {
     return this.initForm.get("utilisateurs") as FormArray;
   }
-  assignList: any = [];
-  slectMember(id: number) {
-    if (this.listMo[id].checked === "0") {
-      this.listMo[id].checked = "1";
-      this.assignList.push(this.listMo[id]);
-      this.assignListFormArray.push(this.fb.control(this.listMo[id]));
-    } else {
-      this.listMo[id].checked = "0";
-      const index = this.assignList.findIndex(
-        (member) => member.id === this.listMo[id].id
-      );
-      if (index !== -1) {
-        this.assignList.splice(index, 1);
-        this.assignListFormArray.removeAt(index);
-      }
-    }
-  }
 
-  // fetchMo(): void {
-  //   this.projectService
-  //     .all<ResponseData<any[]>>("users/all")
-  //     .subscribe((response: ResponseData<any[]>) => {
-  //       console.log(response);
-  //       if (this.tacheToUpdate !== null) {
-  //         this.usersToUpdate = this.tacheToUpdate.utilisateurs;
-  //       }
-
-  //       this.listMo = response.data.map((user) => {
-  //         const isUserToUpdate = this.usersToUpdate.some(
-  //           (updateUser) => updateUser.id === user.id
-  //         );
-  //         return {
-  //           ...user,
-  //           checked: isUserToUpdate ? "1" : "0",
-  //         };
-  //       });
-
-  //       this.listMo.forEach((user) => {
-  //         if (user.checked === "1") {
-  //           this.assignListFormArray.push(this.fb.control(user));
-  //         }
-  //       });
-
-  //       console.log(this.listMo);
-  //     });
-  // }
+  // ── Chargement membres ───────────────────────────────────
   fetchMo(): void {
     this.parentService
-      .list(`users/by_role/projects?roleName=Maitre d'ouvrage&projectId=${this.currentProjectId}`,
-     this.pageSize,
-      this.offset)
-      .subscribe((response:any) => {
-        this.listMo = response.data.map((user) => {
-          this.changeDetectorRefs.detectChanges();
-          const isAssigned =
-            this.usersToUpdate?.some((u) => u.id === user.id) ||
-            this.assignList.some((a) => a.id === user.id);
-          return {
-            ...user,
-            checked: isAssigned ? "1" : "0",
-          };
-        });
+      .list(
+        `users/by_role/projects?roleName=Maitre d'ouvrage&projectId=${this.currentProjectId}`,
+        this.pageSize,
+        this.offset
+      )
+      .subscribe((response: any) => {
+        this.listMo = (response.data ?? []).map((user: any) => ({
+          ...user,
+          checked: this.usersToUpdate.some((u) => u.id === user.id) ? "1" : "0",
+        }));
 
-        // Ajoute les utilisateurs assignés au FormArray
-        if (this.usersToUpdate) {
-          this.usersToUpdate.forEach((user) => {
-            if (!this.assignList.some((a) => a.id === user.id)) {
-              this.assignList.push(user);
-              this.assignListFormArray.push(this.fb.control(user));
-            }
-          });
-        }
-      });
-  }
-
-
-
-  myImage: string;
-  getImageFromBase64(imageType: string, imageName: number[]): string {
-    const base64Representation = "data:" + imageType + ";base64," + imageName;
-    return base64Representation;
-  }
-
-  save() {
-    console.log(this.initForm.value);
-  }
-
-  addItems() {
-    console.log("====================================");
-    console.log(this.initForm.value);
-    console.log("====================================");
-    if (this.initForm.valid) {
-      this.snackbar
-        .showConfirmation("Voulez-vous vraiment créé cette tache ?")
-        .then((result) => {
-          if (result["value"] == true) {
-            this.loader = true;
-            const value = this.initForm.value;
-            this.coreService
-              .addItemWithProject(value, this.url, +this.currentProjectId)
-              .subscribe(
-                (resp) => {
-                  console.log("====================================");
-                  console.log(resp);
-                  console.log("====================================");
-                  if (resp["responseCode"] == 200) {
-                    this.snackbar.openSnackBar(
-                      "Tache  ajoutée avec succés",
-                      "OK",
-                      ["mycssSnackbarGreen"]
-                    );
-                    this.matDialogRef.close(resp["data"]);
-                    this.loader = false;
-                    this.changeDetectorRefs.markForCheck();
-                  }
-                },
-                (error) => {
-                  this.loader = false;
-                  this.changeDetectorRefs.markForCheck();
-                  this.snackbar.showErrors(error);
-                }
-              );
+        // Pré-sélection en édition
+        this.usersToUpdate.forEach((user) => {
+          if (!this.assignList.some((a) => a.id === user.id)) {
+            this.assignList.push(user);
+            this.assignListFormArray.push(this.fb.control(user));
           }
         });
-    } else {
-    }
-  }
 
-  checkRecap(type) {
-    if (type == "new") {
-      this.addItems();
-    } else if (type == "edit") {
-      this.updateItems();
-    }
-  }
-
-  updateItems() {
-    console.log(this.initForm.value, this.id);
-    this.snackbar
-      .showConfirmation(`Voulez-vous vraiment modifier cette tache `)
-      .then((result) => {
-        if (result["value"] == true) {
-          this.loader = true;
-          const value = this.initForm.value;
-          this.coreService.updateItem(value, this.id, this.url).subscribe(
-            (resp) => {
-              if (resp) {
-                this.loader = false;
-                this.snackbar.openSnackBar(
-                  "Consultant  modifié avec succés",
-                  "OK",
-                  ["mycssSnackbarGreen"]
-                );
-                this.matDialogRef.close(resp["data"]);
-              }
-            },
-            (error) => {
-              this.loader = false;
-              this.loader = false;
-              this.snackbar.showErrors(error);
-            }
-          );
-        }
+        this.filteredUsers = [...this.listMo];
+        this.cdr.markForCheck();
       });
   }
 
-  annuler() {
-    this.initForm.reset();
-  }
-
-  // Ajoutez ces nouvelles propriétés
-  userSearchText: string = "";
-  filteredUsers: any[] = [];
-
-  // Modifiez fetchMo()
-  // fetchMo(): void {
-  //   this.projectService.all<ResponseData<any[]>>("users/all").subscribe((response: ResponseData<any[]>) => {
-  //     this.listMo = response.data;
-  //     this.filteredUsers = [...this.listMo];
-
-  //     // Pré-sélection des utilisateurs existants
-  //     if (this.tacheToUpdate?.utilisateurs) {
-  //       this.tacheToUpdate.utilisateurs.forEach(user => {
-  //         if (!this.assignList.some(u => u.id === user.id)) {
-  //           this.assignList.push(user);
-  //           this.assignListFormArray.push(this.fb.control(user));
-  //         }
-  //       });
-  //     }
-  //   });
-  // }
-
-  // Nouvelle méthode de filtrage
-  filterUsers(): void {
-    if (!this.userSearchText) {
-      this.filteredUsers = [...this.listMo];
-      return;
-    }
-
-    const searchText = this.userSearchText.toLowerCase();
-    this.filteredUsers = this.listMo.filter(
-      (user) =>
-        user.lastname.toLowerCase().includes(searchText) ||
-        user.firstname.toLowerCase().includes(searchText)
-    );
-  }
-
-  // Méthode pour vérifier la sélection
+  // ── Sélection membres ────────────────────────────────────
   isSelected(user: any): boolean {
     return this.assignList.some((u) => u.id === user.id);
   }
 
-  // Méthode pour basculer la sélection
   toggleUserSelection(user: any): void {
     if (this.isSelected(user)) {
       this.removeAssignee(user);
@@ -440,14 +194,92 @@ export class CreatetaskComponent implements OnInit {
       this.assignList.push(user);
       this.assignListFormArray.push(this.fb.control(user));
     }
+    this.cdr.markForCheck();
   }
 
-  // Méthode pour supprimer un assigné
   removeAssignee(user: any): void {
     const index = this.assignList.findIndex((u) => u.id === user.id);
     if (index >= 0) {
       this.assignList.splice(index, 1);
       this.assignListFormArray.removeAt(index);
+      this.cdr.markForCheck();
     }
+  }
+
+  filterUsers(): void {
+    const q = this.userSearchText.toLowerCase().trim();
+    this.filteredUsers = q
+      ? this.listMo.filter(
+          (u) =>
+            u.lastname?.toLowerCase().includes(q) ||
+            u.firstname?.toLowerCase().includes(q)
+        )
+      : [...this.listMo];
+  }
+
+  // ── Sauvegarde ───────────────────────────────────────────
+  checkRecap(type: string): void {
+    this.initForm.markAllAsTouched();
+    if (!this.initForm.valid) return;
+
+    if (type === "new")  this.addItems();
+    if (type === "edit") this.updateItems();
+  }
+
+  private addItems(): void {
+    this.snackbar
+      .showConfirmation("Voulez-vous vraiment créer cette tâche ?")
+      .then((result) => {
+        if (result?.value) {
+          this.loader = true;
+          this.coreService
+            .addItemWithProject(this.initForm.value, this.url, +this.currentProjectId)
+            .subscribe({
+              next: (resp: any) => {
+                this.loader = false;
+                if (resp?.responseCode === 200) {
+                  this.snackbar.openSnackBar("Tâche ajoutée avec succès", "OK", ["mycssSnackbarGreen"]);
+                  this.matDialogRef.close(resp.data);
+                }
+                this.cdr.markForCheck();
+              },
+              error: (err) => {
+                this.loader = false;
+                this.snackbar.showErrors(err);
+                this.cdr.markForCheck();
+              },
+            });
+        }
+      });
+  }
+
+  private updateItems(): void {
+    this.snackbar
+      .showConfirmation("Voulez-vous vraiment modifier cette tâche ?")
+      .then((result) => {
+        if (result?.value) {
+          this.loader = true;
+          this.coreService
+            .updateItem(this.initForm.value, this.id, this.url)
+            .subscribe({
+              next: (resp: any) => {
+                this.loader = false;
+                this.snackbar.openSnackBar("Tâche modifiée avec succès", "OK", ["mycssSnackbarGreen"]);
+                this.matDialogRef.close(resp?.data);
+                this.cdr.markForCheck();
+              },
+              error: (err) => {
+                this.loader = false;
+                this.snackbar.showErrors(err);
+                this.cdr.markForCheck();
+              },
+            });
+        }
+      });
+  }
+
+  // ── Helpers ──────────────────────────────────────────────
+  getImageFromBase64(imageType: string, imageData: any): string {
+    return `data:${imageType};base64,${imageData}`;
   }
 }

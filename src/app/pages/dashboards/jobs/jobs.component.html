@@ -1,4 +1,4 @@
-<div class="container-fluid stats-container">
+<!-- <div class="container-fluid stats-container">
   <h1 class="main-title couleurPrimary">
     <mat-icon>assessment</mat-icon> Statistiques des données
   </h1>
@@ -8,7 +8,7 @@
       <div class="card-icon">
         <mat-icon>people</mat-icon>
       </div>
-      <div class="card-value"> {{placeAffaireStats?.Sexes_globaux?.Total + agricoleStats?.Sexes_globaux?.Total }}</div>
+      <div class="card-value"> {{placeAffaireStats?.Sexes_globaux?.Total + agricoleStats?.Sexes_globaux?.Total + habitatStats?.Sexes_globaux?.Total }}</div>
       <div class="card-label">Personnes affectées</div>
     </div>
 
@@ -22,7 +22,9 @@
           placeAffaireStats?.Sexes_globaux.Hommes,
           placeAffaireStats?.Sexes_globaux.Total,
           agricoleStats?.Sexes_globaux.Hommes,
-          agricoleStats?.Sexes_globaux.Total
+          agricoleStats?.Sexes_globaux.Total,
+          habitatStats?.Sexes_globaux.Hommes,
+          habitatStats?.Sexes_globaux.Total
         ).toFixed(1) }}%)
   </div>
   <div class="gender-value female">
@@ -30,11 +32,12 @@
           placeAffaireStats?.Sexes_globaux.Femmes,
           placeAffaireStats?.Sexes_globaux.Total,
           agricoleStats?.Sexes_globaux.Femmes,
-          agricoleStats?.Sexes_globaux.Total
+          agricoleStats?.Sexes_globaux.Total,
+          habitatStats?.Sexes_globaux.Femmes,
+          habitatStats?.Sexes_globaux.Total
         ).toFixed(1) }}%)
   </div>
 </div>
-
 
       <div class="card-label">Répartition H/F</div>
     </div>
@@ -55,6 +58,7 @@
       <div class="card-label">Nombre de consultations</div>
     </div>
 </div>
+
   <div class="graphs-section">
     <h1 class="section-title couleurPrimary">
       <mat-icon>show_chart</mat-icon> Statistiques
@@ -74,25 +78,32 @@
     </thead>
     <tbody>
       <tr *ngIf="placeAffaireStats">
-        <td> Place Affaire/Economique</td>
+        <td>Place Affaire/Economique</td>
         <td>{{ getVulnerablePlaceAffaireBySex().femmes }}</td>
-         <td>{{ getVulnerablePlaceAffaireBySex().hommes }}</td>
+        <td>{{ getVulnerablePlaceAffaireBySex().hommes }}</td>
         <td>{{ getVulnerablePlaceAffaireBySex().hommes + getVulnerablePlaceAffaireBySex().femmes }}</td>
-        <td>{{ placeAffaireStats.Sexes_globaux.TotalCompensation || 0 }}</td>
+        <td>{{ placeAffaireStats.statsPertes?.totalPerte | currency:'CFA ':true:'1.0-0' }}</td>
       </tr>
       <tr *ngIf="agricoleStats">
         <td>Agricole/Exploitant</td>
         <td>{{ getVulnerableAgricoleBySex().femmes  }}</td>
-         <td>{{ getVulnerableAgricoleBySex().hommes }}</td>
+        <td>{{ getVulnerableAgricoleBySex().hommes }}</td>
         <td>{{getVulnerableAgricoleBySex().hommes +  getVulnerableAgricoleBySex().femmes }}</td>
-        <td>{{ agricoleStats.totalCompensation || 0 }}</td>
+        <td>{{ agricoleStats.statsPertes?.totalPerte | currency:'CFA ':true:'1.0-0' }}</td>
+      </tr>
+      <tr *ngIf="habitatStats">
+        <td>Habitat</td>
+        <td>{{ getVulnerableHabitatBySex().femmes }}</td>
+        <td>{{ getVulnerableHabitatBySex().hommes }}</td>
+        <td>{{ getVulnerableHabitatBySex().hommes + getVulnerableHabitatBySex().femmes }}</td>
+        <td>{{ habitatStats.statsPertes?.totalPerte | currency:'CFA ':true:'1.0-0' }}</td>
       </tr>
       <tr *ngIf="totalStats" class="total-row">
         <td><strong>Total</strong></td>
-        <td><strong>{{ getVulnerablePlaceAffaireBySex().femmes + getVulnerableAgricoleBySex().femmes }}</strong></td>
-        <td><strong>{{ getVulnerablePlaceAffaireBySex().hommes + getVulnerableAgricoleBySex().hommes }}</strong></td>
-        <td><strong>{{ getVulnerablePlaceAffaireBySex().femmes + getVulnerableAgricoleBySex().femmes +  getVulnerablePlaceAffaireBySex().hommes + getVulnerableAgricoleBySex().hommes  }}</strong></td>
-        <td><strong>{{ totalStats.totalCompensation || 0 }}</strong></td>
+        <td><strong>{{ getVulnerablePlaceAffaireBySex().femmes + getVulnerableAgricoleBySex().femmes + getVulnerableHabitatBySex().femmes }}</strong></td>
+        <td><strong>{{ getVulnerablePlaceAffaireBySex().hommes + getVulnerableAgricoleBySex().hommes + getVulnerableHabitatBySex().hommes }}</strong></td>
+        <td><strong>{{ getVulnerablePlaceAffaireBySex().femmes + getVulnerableAgricoleBySex().femmes + getVulnerableHabitatBySex().femmes +  getVulnerablePlaceAffaireBySex().hommes + getVulnerableAgricoleBySex().hommes + getVulnerableHabitatBySex().hommes }}</strong></td>
+        <td><strong>{{ (placeAffaireStats?.statsPertes?.totalPerte + agricoleStats?.statsPertes?.totalPerte + habitatStats?.statsPertes?.totalPerte) | currency:'CFA ':true:'1.0-0' }}</strong></td>
       </tr>
     </tbody>
   </table>
@@ -103,8 +114,6 @@
 <div class="vulnerability-container">
   <h2>Répartition des vulnérabilités par critère</h2>
   
-
-  
   <table class="vulnerability-table">
     <thead>
       <tr>
@@ -114,7 +123,7 @@
     </thead>
     <tbody>
       <tr>
-        <td>Place Affaire/Economiaue</td>
+        <td>Place Affaire/Economique</td>
         <td *ngFor="let criterion of VULNERABILITY_CRITERIA">
           {{ getCriterionCount('placeAffaireStats', criterion.key) }}
         </td>
@@ -125,15 +134,18 @@
           {{ getCriterionCount('agricoleStats', criterion.key) }}
         </td>
       </tr>
+      <tr>
+        <td>Habitat</td>
+        <td *ngFor="let criterion of VULNERABILITY_CRITERIA">
+          {{ getCriterionCount('habitatStats', criterion.key) }}
+        </td>
+      </tr>
     </tbody>
   </table>
 </div>
 </div>
   </div>
 
-  
-
-  <!-- Section Documents et Carte -->
   <div class="documents-map-section">
     <div class="map-container">
       <h2 class="section-title couleurPrimary">
@@ -143,7 +155,7 @@
     </div>
   </div>
 
-    <div class="documents-map-section">
+  <div class="documents-map-section">
     <div class="map-container">
       <h2 class="section-title couleurPrimary">
         <mat-icon>map</mat-icon> Délimitation de la zone impactée par le projet des pap places agricoles
@@ -152,50 +164,23 @@
     </div>
   </div>
 
-  <!-- Section Calendrier -->
-   <div>
-    <h2 class="section-title couleurPrimary">
-      <mat-icon>calendar_today</mat-icon> Calendrier des  tâches
-    </h2>
-  <app-calendar-component [tasks]="tasksData"></app-calendar-component>
-   </div>
-  <!-- Section Tableaux -->
-  <div class="tables-section">
-    <!-- Tableau Rencontres -->
-    <div class="table-container">
+  <div class="documents-map-section">
+    <div class="map-container">
       <h2 class="section-title couleurPrimary">
-        <mat-icon>event_note</mat-icon> Résumé des rencontres
+        <mat-icon>map</mat-icon> Délimitation de la zone impactée par le projet des pap habitat
       </h2>
-
-      <div class="custom-table">
-        <div class="table-header">
-          <div class="header-cell">#</div>
-          <div class="header-cell">Type d'engagement</div>
-          <div class="header-cell">Date</div>
-          <div class="header-cell">Référence compte rendu</div>
-          <div class="header-cell">Action</div>
-        </div>
-
-        <div class="table-body">
-          <!-- <div class="table-row"
-            *ngFor="let rencontre of lisRencontre | paginate: { itemsPerPage: 5, currentPage: page }; let i = index">
-            <div class="table-cell">{{ rencontre.id }}</div>
-            <div class="table-cell">{{ rencontre.libelle }}</div>
-            <div class="table-cell">{{ rencontre.date }}</div>
-            <div class="table-cell">{{ rencontre.urlPvRencontre }}</div>
-            <div class="table-cell">
-              <button class="view-btn" (click)="openImageModal(rencontre.urlPvRencontre)" title="Voir le PV">
-                <mat-icon>visibility</mat-icon>
-              </button>
-            </div>
-          </div> -->
-        </div>
-      </div>
-
-      <!-- <pagination-controls (pageChange)="page = $event" class="custom-pagination"></pagination-controls> -->
+      <app-pap-google-maps [paps]="papsHabitat" [isLoading]="isLoadingPap"></app-pap-google-maps>
     </div>
+  </div>
 
-    <!-- Tableau Budget -->
+   <div>
+  <h2 class="section-title couleurPrimary">
+    <mat-icon>calendar_today</mat-icon> Calendrier des tâches
+  </h2>
+  <app-task-calendar></app-task-calendar>
+</div>
+
+  <div class="tables-section">
     <div class="table-container">
       <h2 class="section-title couleurPrimary">
         <mat-icon>attach_money</mat-icon> Estimation des coûts
@@ -214,17 +199,466 @@
             <div class="table-cell">Pap Agricoles/exploitants</div>
             <div class="table-cell">{{agricoleStats?.statsPertes?.totalPerte | currency:'CFA ':true:'1.0-0'}}</div>
           </div>
-          <!-- Répéter pour les autres lignes -->
+          <div class="table-row">
+            <div class="table-cell">Pap Habitat</div>
+            <div class="table-cell">{{habitatStats?.statsPertes?.totalPerte | currency:'CFA ':true:'1.0-0'}}</div>
+          </div>
           <div class="table-row total-row">
             <div class="table-cell">Total général</div>
-            <div class="table-cell">{{ (placeAffaireStats?.statsPertes?.totalPerte + agricoleStats?.statsPertes?.totalPerte) | currency:'CFA ':true:'1.0-0' }}</div>
+            <div class="table-cell">{{ (placeAffaireStats?.statsPertes?.totalPerte + agricoleStats?.statsPertes?.totalPerte + habitatStats?.statsPertes?.totalPerte) | currency:'CFA ':true:'1.0-0' }}</div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div> -->
+
+<!-- <div class="stats-root">
+
+
+
+  <div class="page-header">
+    <div class="header-left">
+      <div class="header-icon">
+        <mat-icon>assessment</mat-icon>
+      </div>
+      <div>
+        <h1 class="page-title">Tableau de bord</h1>
+        <p class="page-subtitle">Statistiques et données du projet</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+
+    <div class="kpi-card kpi-orange">
+      <div class="kpi-icon"><mat-icon>people</mat-icon></div>
+      <div class="kpi-content">
+        <span class="kpi-value">
+          {{ placeAffaireStats?.Sexes_globaux?.Total + agricoleStats?.Sexes_globaux?.Total + habitatStats?.Sexes_globaux?.Total }}
+        </span>
+        <span class="kpi-label">Personnes affectées</span>
+      </div>
+      <div class="kpi-bar"></div>
+    </div>
+
+    <div class="kpi-card kpi-green">
+      <div class="kpi-icon"><mat-icon>wc</mat-icon></div>
+      <div class="kpi-content">
+        <span class="kpi-value gender-row">
+          <span class="gender-h">
+            <mat-icon>male</mat-icon>
+            {{ getGlobalPercentage(
+                placeAffaireStats?.Sexes_globaux.Hommes, placeAffaireStats?.Sexes_globaux.Total,
+                agricoleStats?.Sexes_globaux.Hommes, agricoleStats?.Sexes_globaux.Total,
+                habitatStats?.Sexes_globaux.Hommes, habitatStats?.Sexes_globaux.Total
+              ).toFixed(1) }}%
+          </span>
+          <span class="gender-sep">/</span>
+          <span class="gender-f">
+            <mat-icon>female</mat-icon>
+            {{ getGlobalPercentage(
+                placeAffaireStats?.Sexes_globaux.Femmes, placeAffaireStats?.Sexes_globaux.Total,
+                agricoleStats?.Sexes_globaux.Femmes, agricoleStats?.Sexes_globaux.Total,
+                habitatStats?.Sexes_globaux.Femmes, habitatStats?.Sexes_globaux.Total
+              ).toFixed(1) }}%
+          </span>
+        </span>
+        <span class="kpi-label">Répartition Hommes / Femmes</span>
+      </div>
+      <div class="kpi-bar"></div>
+    </div>
+
+    <div class="kpi-card kpi-orange">
+      <div class="kpi-icon"><mat-icon>accessibility_new</mat-icon></div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ getVulnerablePeopleCount() }}</span>
+        <span class="kpi-label">PAP vulnérables</span>
+      </div>
+      <div class="kpi-bar"></div>
+    </div>
+
+    <div class="kpi-card kpi-green">
+      <div class="kpi-icon"><mat-icon>forum</mat-icon></div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ lengthRencontre }}</span>
+        <span class="kpi-label">Consultations</span>
+      </div>
+      <div class="kpi-bar"></div>
+    </div>
+
+  </div>
+
+  <div class="section-block">
+    <div class="section-header">
+      <mat-icon>bar_chart</mat-icon>
+      <h2>Répartition des PAP selon les critères de vulnérabilité</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="th-label">Regroupement</th>
+            <th><mat-icon>female</mat-icon> Effectif féminin</th>
+            <th><mat-icon>male</mat-icon> Effectif masculin</th>
+            <th>Effectif total</th>
+            <th><mat-icon>payments</mat-icon> Total compensations</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="placeAffaireStats" class="row-pa">
+            <td class="td-label">Place Affaire / Économique</td>
+            <td>{{ getVulnerablePlaceAffaireBySex().femmes }}</td>
+            <td>{{ getVulnerablePlaceAffaireBySex().hommes }}</td>
+            <td class="td-total">{{ getVulnerablePlaceAffaireBySex().hommes + getVulnerablePlaceAffaireBySex().femmes }}</td>
+            <td class="td-money">{{ placeAffaireStats.statsPertes?.totalPerte | currency:'CFA ':true:'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="agricoleStats" class="row-ag">
+            <td class="td-label">Agricole / Exploitant</td>
+            <td>{{ getVulnerableAgricoleBySex().femmes }}</td>
+            <td>{{ getVulnerableAgricoleBySex().hommes }}</td>
+            <td class="td-total">{{ getVulnerableAgricoleBySex().hommes + getVulnerableAgricoleBySex().femmes }}</td>
+            <td class="td-money">{{ agricoleStats.statsPertes?.totalPerte | currency:'CFA ':true:'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="habitatStats" class="row-hab">
+            <td class="td-label">Habitat</td>
+            <td>{{ getVulnerableHabitatBySex().femmes }}</td>
+            <td>{{ getVulnerableHabitatBySex().hommes }}</td>
+            <td class="td-total">{{ getVulnerableHabitatBySex().hommes + getVulnerableHabitatBySex().femmes }}</td>
+            <td class="td-money">{{ habitatStats.statsPertes?.totalPerte | currency:'CFA ':true:'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="totalStats" class="row-total">
+            <td class="td-label"><strong>Total général</strong></td>
+            <td><strong>{{ getVulnerablePlaceAffaireBySex().femmes + getVulnerableAgricoleBySex().femmes + getVulnerableHabitatBySex().femmes }}</strong></td>
+            <td><strong>{{ getVulnerablePlaceAffaireBySex().hommes + getVulnerableAgricoleBySex().hommes + getVulnerableHabitatBySex().hommes }}</strong></td>
+            <td class="td-total"><strong>{{ getVulnerablePlaceAffaireBySex().femmes + getVulnerableAgricoleBySex().femmes + getVulnerableHabitatBySex().femmes + getVulnerablePlaceAffaireBySex().hommes + getVulnerableAgricoleBySex().hommes + getVulnerableHabitatBySex().hommes }}</strong></td>
+            <td class="td-money"><strong>{{ (placeAffaireStats?.statsPertes?.totalPerte + agricoleStats?.statsPertes?.totalPerte + habitatStats?.statsPertes?.totalPerte) | currency:'CFA ':true:'1.0-0' }}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <div class="section-header">
+      <mat-icon>category</mat-icon>
+      <h2>Répartition des vulnérabilités par critère</h2>
+    </div>
+
+    <div class="table-wrap overflow-x">
+      <table class="data-table vuln-table">
+        <thead>
+          <tr>
+            <th class="th-label">Catégories</th>
+            <th *ngFor="let criterion of VULNERABILITY_CRITERIA">{{ criterion.label }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row-pa">
+            <td class="td-label">Place Affaire / Économique</td>
+            <td *ngFor="let criterion of VULNERABILITY_CRITERIA">
+              {{ getCriterionCount('placeAffaireStats', criterion.key) }}
+            </td>
+          </tr>
+          <tr class="row-ag">
+            <td class="td-label">Agricole / Exploitant</td>
+            <td *ngFor="let criterion of VULNERABILITY_CRITERIA">
+              {{ getCriterionCount('agricoleStats', criterion.key) }}
+            </td>
+          </tr>
+          <tr class="row-hab">
+            <td class="td-label">Habitat</td>
+            <td *ngFor="let criterion of VULNERABILITY_CRITERIA">
+              {{ getCriterionCount('habitatStats', criterion.key) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <div class="section-header">
+      <mat-icon>map</mat-icon>
+      <h2>Zones impactées</h2>
+    </div>
+
+    <div class="maps-grid">
+
+      <div class="map-card">
+        <div class="map-card-header">PAP Places affaires / Économiques</div>
+        <app-pap-google-maps [paps]="paps" [isLoading]="isLoadingPap"></app-pap-google-maps>
+      </div>
+
+      <div class="map-card">
+        <div class="map-card-header">PAP Agricoles / Exploitants</div>
+        <app-pap-multi-polygon-maps [paps]="papsAgricole" [isLoading]="isLoadingPap"></app-pap-multi-polygon-maps>
+      </div>
+
+      <div class="map-card">
+        <div class="map-card-header">PAP Habitat</div>
+        <app-pap-google-maps [paps]="papsHabitat" [isLoading]="isLoadingPap"></app-pap-google-maps>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section-block">
+    <div class="section-header">
+      <mat-icon>calendar_month</mat-icon>
+      <h2>Calendrier des tâches</h2>
+    </div>
+    <app-task-calendar></app-task-calendar>
+  </div>
+
+  <div class="section-block">
+    <div class="section-header">
+      <mat-icon>payments</mat-icon>
+      <h2>Estimation des coûts</h2>
+    </div>
+
+    <div class="cost-grid">
+
+      <div class="cost-row">
+        <div class="cost-label">Pap places affaires / Économiques</div>
+        <div class="cost-value">{{ placeAffaireStats?.statsPertes?.totalPerte | currency:'CFA ':true:'1.0-0' }}</div>
+      </div>
+
+      <div class="cost-row">
+        <div class="cost-label">Pap Agricoles / Exploitants</div>
+        <div class="cost-value">{{ agricoleStats?.statsPertes?.totalPerte | currency:'CFA ':true:'1.0-0' }}</div>
+      </div>
+
+      <div class="cost-row">
+        <div class="cost-label">Pap Habitat</div>
+        <div class="cost-value">{{ habitatStats?.statsPertes?.totalPerte | currency:'CFA ':true:'1.0-0' }}</div>
+      </div>
+
+      <div class="cost-row cost-total">
+        <div class="cost-label"><strong>Total général</strong></div>
+        <div class="cost-value cost-total-val">
+          <strong>{{ (placeAffaireStats?.statsPertes?.totalPerte + agricoleStats?.statsPertes?.totalPerte + habitatStats?.statsPertes?.totalPerte) | currency:'CFA ':true:'1.0-0' }}</strong>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div> -->
+
+<div class="stats-root">
+
+  <!-- ── Header ── -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="header-icon"><mat-icon>assessment</mat-icon></div>
+      <div>
+        <h1 class="page-title">Tableau de bord</h1>
+        <p class="page-subtitle">Statistiques et données du projet</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── KPI Cards ── -->
+  <div class="kpi-grid">
+
+    <div class="kpi-card kpi-orange">
+      <div class="kpi-icon"><mat-icon>people</mat-icon></div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ statsData?.summary?.totalPersonnesAffectees }}</span>
+        <span class="kpi-label">Personnes affectées</span>
+      </div>
+      <div class="kpi-bar"></div>
+    </div>
+
+    <div class="kpi-card kpi-green">
+      <div class="kpi-icon"><mat-icon>wc</mat-icon></div>
+      <div class="kpi-content">
+        <span class="kpi-value gender-row">
+          <span class="gender-h">
+            <mat-icon>male</mat-icon>
+            {{ statsData?.summary?.percentHommesGlobal | number:'1.1-1' }}%
+          </span>
+          <span class="gender-sep">/</span>
+          <span class="gender-f">
+            <mat-icon>female</mat-icon>
+            {{ statsData?.summary?.percentFemmesGlobal | number:'1.1-1' }}%
+          </span>
+        </span>
+        <span class="kpi-label">Répartition Hommes / Femmes</span>
+      </div>
+      <div class="kpi-bar"></div>
+    </div>
+
+    <div class="kpi-card kpi-orange">
+      <div class="kpi-icon"><mat-icon>accessibility_new</mat-icon></div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ statsData?.summary?.totalVulnerables }}</span>
+        <span class="kpi-label">PAP vulnérables</span>
+      </div>
+      <div class="kpi-bar"></div>
+    </div>
+
+    <div class="kpi-card kpi-green">
+      <div class="kpi-icon"><mat-icon>forum</mat-icon></div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ lengthRencontre }}</span>
+        <span class="kpi-label">Consultations</span>
+      </div>
+      <div class="kpi-bar"></div>
+    </div>
+
+  </div>
+
+  <!-- ── Répartition PAP vulnérables ── -->
+  <div class="section-block">
+    <div class="section-header">
+      <mat-icon>bar_chart</mat-icon>
+      <h2>Répartition des PAP selon les critères de vulnérabilité</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="th-label">Regroupement</th>
+            <th><mat-icon>female</mat-icon> Effectif féminin</th>
+            <th><mat-icon>male</mat-icon> Effectif masculin</th>
+            <th>Effectif total</th>
+            <th><mat-icon>payments</mat-icon> Total compensations</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="statsData?.placeAffaireStats" class="row-pa">
+            <td class="td-label">Place Affaire / Économique</td>
+            <td>{{ statsData.placeAffaireStats.vulnerablesFemmes }}</td>
+            <td>{{ statsData.placeAffaireStats.vulnerablesHommes }}</td>
+            <td class="td-total">{{ statsData.placeAffaireStats.totalVulnerables }}</td>
+            <td class="td-money">{{ statsData.placeAffaireStats.totalPerte | currency:'CFA ':true:'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="statsData?.agricoleStats" class="row-ag">
+            <td class="td-label">Agricole / Exploitant</td>
+            <td>{{ statsData.agricoleStats.vulnerablesFemmes }}</td>
+            <td>{{ statsData.agricoleStats.vulnerablesHommes }}</td>
+            <td class="td-total">{{ statsData.agricoleStats.totalVulnerables }}</td>
+            <td class="td-money">{{ statsData.agricoleStats.totalPerte | currency:'CFA ':true:'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="statsData?.habitatStats" class="row-hab">
+            <td class="td-label">Habitat</td>
+            <td>{{ statsData.habitatStats.vulnerablesFemmes }}</td>
+            <td>{{ statsData.habitatStats.vulnerablesHommes }}</td>
+            <td class="td-total">{{ statsData.habitatStats.totalVulnerables }}</td>
+            <td class="td-money">{{ statsData.habitatStats.totalPerte | currency:'CFA ':true:'1.0-0' }}</td>
+          </tr>
+          <tr *ngIf="statsData?.totalStats" class="row-total">
+            <td class="td-label"><strong>Total général</strong></td>
+            <td><strong>{{ statsData.totalStats.vulnerablesFemmes }}</strong></td>
+            <td><strong>{{ statsData.totalStats.vulnerablesHommes }}</strong></td>
+            <td class="td-total"><strong>{{ statsData.totalStats.totalVulnerables }}</strong></td>
+            <td class="td-money"><strong>{{ statsData.summary.totalCompensations | currency:'CFA ':true:'1.0-0' }}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Vulnérabilités par critère ── -->
+  <div class="section-block">
+    <div class="section-header">
+      <mat-icon>category</mat-icon>
+      <h2>Répartition des vulnérabilités par critère</h2>
+    </div>
+
+    <div class="table-wrap overflow-x">
+      <table class="data-table vuln-table">
+        <thead>
+          <tr>
+            <th class="th-label">Catégories</th>
+            <th *ngFor="let criterion of CRITERES">{{ criterion.label }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="row-pa">
+            <td class="td-label">Place Affaire / Économique</td>
+            <td *ngFor="let criterion of CRITERES">
+              {{ statsData?.placeAffaireStats?.criteresVulnerabilite?.[criterion.key]?.total ?? 0 }}
+            </td>
+          </tr>
+          <tr class="row-ag">
+            <td class="td-label">Agricole / Exploitant</td>
+            <td *ngFor="let criterion of CRITERES">
+              {{ statsData?.agricoleStats?.criteresVulnerabilite?.[criterion.key]?.total ?? 0 }}
+            </td>
+          </tr>
+          <tr class="row-hab">
+            <td class="td-label">Habitat</td>
+            <td *ngFor="let criterion of CRITERES">
+              {{ statsData?.habitatStats?.criteresVulnerabilite?.[criterion.key]?.total ?? 0 }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Cartes ── -->
+  <div class="section-block">
+    <div class="section-header">
+      <mat-icon>map</mat-icon>
+      <h2>Zones impactées</h2>
+    </div>
+    <div class="maps-grid">
+      <div class="map-card">
+        <div class="map-card-header">PAP Places affaires / Économiques</div>
+        <app-pap-google-maps [paps]="paps" [isLoading]="isLoadingPap"></app-pap-google-maps>
+      </div>
+      <div class="map-card">
+        <div class="map-card-header">PAP Agricoles / Exploitants</div>
+        <app-pap-multi-polygon-maps [paps]="papsAgricole" [isLoading]="isLoadingPap"></app-pap-multi-polygon-maps>
+      </div>
+      <div class="map-card">
+        <div class="map-card-header">PAP Habitat</div>
+        <app-pap-google-maps [paps]="papsHabitat" [isLoading]="isLoadingPap"></app-pap-google-maps>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Calendrier ── -->
+  <div class="section-block">
+    <div class="section-header">
+      <mat-icon>calendar_month</mat-icon>
+      <h2>Calendrier des tâches</h2>
+    </div>
+    <app-task-calendar></app-task-calendar>
+  </div>
+
+  <!-- ── Estimation des coûts ── -->
+  <div class="section-block">
+    <div class="section-header">
+      <mat-icon>payments</mat-icon>
+      <h2>Estimation des coûts</h2>
+    </div>
+    <div class="cost-grid">
+      <div class="cost-row">
+        <div class="cost-label">Pap places affaires / Économiques</div>
+        <div class="cost-value">{{ statsData?.placeAffaireStats?.totalPerte | currency:'CFA ':true:'1.0-0' }}</div>
+      </div>
+      <div class="cost-row">
+        <div class="cost-label">Pap Agricoles / Exploitants</div>
+        <div class="cost-value">{{ statsData?.agricoleStats?.totalPerte | currency:'CFA ':true:'1.0-0' }}</div>
+      </div>
+      <div class="cost-row">
+        <div class="cost-label">Pap Habitat</div>
+        <div class="cost-value">{{ statsData?.habitatStats?.totalPerte | currency:'CFA ':true:'1.0-0' }}</div>
+      </div>
+      <div class="cost-row cost-total">
+        <div class="cost-label"><strong>Total général</strong></div>
+        <div class="cost-value cost-total-val">
+          <strong>{{ statsData?.summary?.totalCompensations | currency:'CFA ':true:'1.0-0' }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
-
-
-
-<!-- container-fluid -->

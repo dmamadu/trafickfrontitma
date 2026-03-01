@@ -1,0 +1,123 @@
+<!-- ╔══════════════════════════════════════════════════════════╗ -->
+<!-- ║              TASK CALENDAR COMPONENT                    ║ -->
+<!-- ╚══════════════════════════════════════════════════════════╝ -->
+
+<div class="task-calendar-root">
+
+  <!-- ── Breadcrumb ──────────────────────────────────────────────── -->
+  <div class="flex items-center gap-2 text-xs text-gray-400 mb-4">
+    <span class="text-[#245363] font-semibold">Tâches</span>
+    <mat-icon class="!text-sm !w-4 !h-4">chevron_right</mat-icon>
+    <span>Calendrier</span>
+  </div>
+
+  <!-- ── Stat cards ──────────────────────────────────────────────── -->
+  <div class="stats-row">
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#EFF6FF; color:#3B82F6">
+        <mat-icon>task_alt</mat-icon>
+      </div>
+      <div>
+        <p class="stat-label">Total</p>
+        <p class="stat-value">{{ stats.total }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#FFF3CD; color:#F59E0B">
+        <mat-icon>hourglass_empty</mat-icon>
+      </div>
+      <div>
+        <p class="stat-label">En attente</p>
+        <p class="stat-value">{{ stats.enAttente }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#DBEAFE; color:#2563EB">
+        <mat-icon>sync</mat-icon>
+      </div>
+      <div>
+        <p class="stat-label">En cours</p>
+        <p class="stat-value">{{ stats.enCours }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#D1FAE5; color:#10B981">
+        <mat-icon>check_circle</mat-icon>
+      </div>
+      <div>
+        <p class="stat-label">Complétées</p>
+        <p class="stat-value">{{ stats.complete }}</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Toolbar custom ─────────────────────────────────────────── -->
+  <div class="cal-toolbar">
+
+    <!-- Navigation -->
+    <div class="toolbar-nav">
+      <button mat-icon-button (click)="prev()" matTooltip="Précédent">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <span class="toolbar-title">{{ currentTitle }}</span>
+      <button mat-icon-button (click)="next()" matTooltip="Suivant">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+      <button mat-stroked-button class="today-btn" (click)="today()">Aujourd'hui</button>
+    </div>
+
+    <!-- Vue selector -->
+    <div class="view-tabs">
+      <button
+        [class.active]="activeView === 'dayGridMonth'"
+        (click)="setView('dayGridMonth')">
+        <mat-icon class="!text-sm !w-4 !h-4">calendar_month</mat-icon> Mois
+      </button>
+      <button
+        [class.active]="activeView === 'timeGridWeek'"
+        (click)="setView('timeGridWeek')">
+        <mat-icon class="!text-sm !w-4 !h-4">view_week</mat-icon> Semaine
+      </button>
+      <button
+        [class.active]="activeView === 'listWeek'"
+        (click)="setView('listWeek')">
+        <mat-icon class="!text-sm !w-4 !h-4">format_list_bulleted</mat-icon> Liste
+      </button>
+    </div>
+
+    <!-- Action -->
+    <button mat-raised-button class="add-btn" (click)="addTask()">
+      <mat-icon>add</mat-icon> Nouvelle tâche
+    </button>
+
+  </div>
+
+  <!-- ── Légende ────────────────────────────────────────────────── -->
+  <div class="legend-row">
+    <span class="legend-badge" style="background:#FFF3CD; border-color:#F59E0B; color:#92400E">En attente</span>
+    <span class="legend-badge" style="background:#DBEAFE; border-color:#3B82F6; color:#1E3A8A">En cours</span>
+    <span class="legend-badge" style="background:#D1FAE5; border-color:#10B981; color:#065F46">Approuvé</span>
+    <span class="legend-badge" style="background:#EDE9FE; border-color:#8B5CF6; color:#4C1D95">Complété</span>
+    <span class="legend-hint">
+      <mat-icon class="!text-xs !w-3 !h-3">touch_app</mat-icon>
+      Cliquer sur une date pour créer · Glisser-déposer pour déplacer
+    </span>
+  </div>
+
+  <!-- ── Loader ─────────────────────────────────────────────────── -->
+  <app-loader-custom *ngIf="loadData"></app-loader-custom>
+
+  <!-- ── FullCalendar ───────────────────────────────────────────── -->
+  <div class="cal-wrapper" [class.is-loading]="loadData">
+    <full-calendar
+      #calendar
+      [options]="calendarOptions">
+    </full-calendar>
+  </div>
+
+</div>

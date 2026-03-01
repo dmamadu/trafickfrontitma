@@ -25,8 +25,131 @@
 
 /* Par défaut, navbar transparente avec texte sombre */
 nav {
-  background-color: rgba(15, 15, 15, 0.541);
+  background-color: #1A831487;
 }
+
+/*nav
+
+/* ── Navbar principale ── */
+.navbar-custom {
+  background-color: #1A831487;
+  // border-top: 3px solid #7a1c10;
+  // border-bottom: 3px solid #7a1c10;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+
+  /* ── Inner container ── */
+  .navbar-inner {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* ── Logo ── */
+  .navbar-logo {
+    img {
+      height: 52px;
+      width: auto;
+      display: block;
+    }
+  }
+
+  /* ── Burger mobile ── */
+  .burger-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 8px;
+  }
+
+  /* ── Menu wrapper ── */
+  .navbar-menu {
+
+    /* ── Liens ── */
+    .nav-links {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        a {
+          color: #ffffff;
+          font-size: 0.95rem;
+          font-weight: 400;
+          text-decoration: none;
+          white-space: nowrap;
+          padding: 4px 0;
+          transition: color 0.2s ease;
+
+          &:hover {
+            color: #d4d4d4;
+          }
+
+          &.active {
+            font-weight: 700;
+            color: #ffffff;
+          }
+        }
+      }
+    }
+
+    /* ── Bouton Se connecter ── */
+    .btn-connect {
+      display: inline-block;
+      padding: 8px 22px;
+      background-color: #D45C00;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: 2px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+
+      &:hover {
+        background-color: #E66900;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(212, 92, 0, 0.35);
+      }
+    }
+  }
+
+  /* ── Menu mobile ── */
+  @media (max-width: 1023px) {
+    .navbar-menu {
+      display: none;
+      flex-direction: column;
+      gap: 0;
+      background-color: rgba(34, 68, 28, 0.97);
+      position: absolute;
+      top: 72px;
+      left: 0;
+      width: 100%;
+      padding: 16px 24px 24px;
+      border-bottom: 3px solid #7a1c10;
+
+      &.menu-open {
+        display: flex;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .btn-connect {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  }
+}
+
+
 
 
 
@@ -687,6 +810,7 @@ nav {
 }
 
 .contact-image-container {
+
   padding: 2rem;
 
   img {
@@ -731,13 +855,13 @@ nav {
 
 /* checklist.component.scss */
 .checklist-container {
-  border: 1px solid #dee2e6;
+  border: 0.9px solid #dee2e6;
   border-radius: 0.25rem;
   padding: 2rem;
 }
 
 .checklist-item {
-  padding: 0.75rem 0;
+  padding: 0.70rem 0;
   border-bottom: 1px solid #eee;
 
   &:last-child {
@@ -756,11 +880,11 @@ nav {
 }
 
 .form-check-label strong {
-  font-size: 19px;
+  font-size: 17px;
  color: #000000;
 }
 .form-check-label p {
-  font-size: 16px;
+  font-size: 14px;
  color: #000000;
 }
 .video-placeholder {
@@ -973,7 +1097,7 @@ h4 {
   p {
     margin-bottom: 1rem;
     color: #4a5568;
-    font-size: medium;
+    font-size: small;
     line-height: 1.6;
   }
 }

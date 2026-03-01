@@ -1,0 +1,59 @@
+<app-page-actions
+  title="Liste des Pap habitats affectés par le projet"
+  [breadcrumbItems]="breadCrumbItems"
+  searchPlaceholder="Rechercher un PAP habitat..."
+  [showSearch]="true"
+  [actions]="actions"
+  (onSearch)="handleSearch($event)"
+  (onAction)="handleAction($event)">
+</app-page-actions>
+
+<!-- Input file caché pour import Excel -->
+<input 
+  type="file" 
+  id="file-upload" 
+  (change)="fileUpload($event)" 
+  name="fileUpload" 
+  accept=".xls,.xlsx"
+  class="hidden"
+/>
+
+<!-- Datatable de prévisualisation Excel -->
+@if (dataExcel.length > 0) {
+  <app-datatable [headings]="headings" [dataExcel]="dataExcel"></app-datatable>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="text-end">
+        <button type="button" class="btn btn-danger me-1 w-36" (click)="resetDataFromExcel()">
+          Annuler
+        </button>
+        <button type="submit" class="btn btn-success w-36" (click)="importData()">
+          Importer
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Loader -->
+<app-loader-data *ngIf="loadData"></app-loader-data>
+
+<!-- Tableau des données -->
+<div style="z-index: 0" class="pt-3">
+  <tableau 
+    [pageIndex]="pageIndex" 
+    [pageSizeOptions]="pageSizeOptions" 
+    [pageSize]="pageSize" 
+    [total]="length"
+    [coleurEntete]="headers" 
+    [entete]="headers" 
+    [data]="datas" 
+    [actions]="btnActions"
+    [enableSelection]="true"
+    [enableBulkDelete]="true"
+    (bulkDelete)="handleBulkDelete($event)"
+    (changePage)="pageChanged($event)" 
+    *ngIf="!loadData">
+  </tableau>
+</div>

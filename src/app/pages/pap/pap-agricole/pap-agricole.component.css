@@ -1,0 +1,107 @@
+/* @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+:host {
+  --p:  #D45C00;
+  --pl: #FF8534;
+  --pd: #A84700;
+  --bg: #FBF7F4;
+  --surface: #fff;
+  --text: #1A0A00;
+  --border: rgba(212,92,0,0.14);
+  --r: 10px;
+  --t: all 0.2s cubic-bezier(0.4,0,0.2,1);
+  font-family: 'DM Sans', sans-serif;
+  display: block;
+}
+
+.excel-preview {
+  margin: 12px 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(26,10,0,0.07);
+  animation: fadeDown .3s ease both;
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.excel-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.error-hint {
+  font-size: 12px;
+  font-weight: 600;
+  color: #EF4444;
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.error-hint::before {
+  content: '⚠';
+  font-size: 14px;
+}
+
+.btn-cancel {
+  padding: 7px 20px;
+  border-radius: var(--r);
+  border: 1.5px solid #EF4444;
+  background: transparent;
+  color: #EF4444;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: var(--t);
+}
+
+.btn-cancel:hover { background: #EF4444; color: #fff; box-shadow: 0 4px 12px rgba(239,68,68,0.25); }
+
+.btn-confirm {
+  padding: 7px 20px;
+  border-radius: var(--r);
+  border: none;
+  background: linear-gradient(135deg, #16A34A, #22C55E);
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: var(--t);
+  box-shadow: 0 4px 12px rgba(22,163,74,0.28);
+}
+
+.btn-confirm:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(22,163,74,0.35); }
+
+.btn-confirm.disabled,
+.btn-confirm:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.table-wrap {
+  margin-top: 4px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(26,10,0,0.07);
+  border: 1px solid var(--border);
+  animation: fadeUp .35s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+} */

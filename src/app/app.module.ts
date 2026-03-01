@@ -54,6 +54,15 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { AngularMaterialModule } from './shared/angular-materiel-module/angular-materiel-module';
 import { HeroCarouselComponent } from "./cyptolanding/hero-carousel/hero-carousel.component";
+import { FonctionnalitesComponent } from "./cyptolanding/compnents/fonctionnalites";
+import { SuccesStatsComponent } from "./cyptolanding/compnents/succes-stats";
+import { SecteursActivitesComponent } from "./cyptolanding/compnents/secteurs-activites";
+import { NotreOffreComponent } from "./cyptolanding/compnents/notre-offre";
+import { PourquoiPartiesPrenantesComponent } from "./cyptolanding/compnents/pourquoi-parties-prenantes";
+import { CommentResoudreComponent } from "./cyptolanding/compnents/comment-resoudre";
+import { SolutionsSectionComponent } from "./cyptolanding/compnents/solutions-section/solutions-section.component";
+import { BeneficiariesSectionComponent } from "./cyptolanding/compnents/beneficiaries-section/beneficiaries-section.component";
+import { NotreExpertiseComponent } from "./cyptolanding/compnents/notre-expertise";
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -110,7 +119,16 @@ export function createTranslateLoader(http: HttpClient): any {
         MatIconModule,
         AccordionModule
     ]),
-    HeroCarouselComponent
+    HeroCarouselComponent,
+    FonctionnalitesComponent,
+    SuccesStatsComponent,
+    SecteursActivitesComponent,
+    NotreOffreComponent,
+    PourquoiPartiesPrenantesComponent,
+    CommentResoudreComponent,
+    SolutionsSectionComponent,
+    BeneficiariesSectionComponent,
+    NotreExpertiseComponent
 ],
   bootstrap: [AppComponent],
   providers: [

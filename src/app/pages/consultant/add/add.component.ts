@@ -24,13 +24,14 @@ import { LoaderComponent } from "../../../shared/loader/loader.component";
 import { ImageModalComponent } from "src/app/shared/image-modal.component";
 import { ToastrService } from "ngx-toastr";
 import { Subject, takeUntil } from "rxjs";
+import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
 
 @Component({
   selector: "app-add",
   templateUrl: "./add.component.html",
   styleUrl: "./add.component.css",
   standalone: true,
-  imports: [AngularMaterialModule, LoaderComponent],
+  imports: [AngularMaterialModule, LoaderComponent, DialogHeaderComponent],
 })
 export class AddComponent implements OnInit,OnDestroy {
   panelOpenState = false;

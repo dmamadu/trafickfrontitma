@@ -20,6 +20,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { MatPaginatorIntl } from "@angular/material/paginator";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { LoaderComponent } from "../../shared/loader/loader.component";
+import { PageActionsComponent } from "src/app/shared/refactore/page-actions/page-actions.component";
 
 @NgModule({
   declarations: [MoprofileComponent, MolistComponent],
@@ -53,7 +54,8 @@ import { LoaderComponent } from "../../shared/loader/loader.component";
     AngularMaterialModule,
     NgMultiSelectDropDownModule,
     TableauComponent,
-    LoaderComponent
+    LoaderComponent,
+    PageActionsComponent
 ],
 })
 export class MaitrouvragesModule {}

@@ -1,11 +1,12 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
+import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
 
 @Component({
   selector: "app-detail-user",
   standalone: true,
-  imports: [AngularMaterialModule],
+  imports: [AngularMaterialModule, DialogHeaderComponent],
   templateUrl: "./detail-user.component.html",
   styleUrl: "./detail-user.component.css",
 })

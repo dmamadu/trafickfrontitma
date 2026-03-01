@@ -1,0 +1,30 @@
+<div class="map-container">
+  <!-- Loader -->
+  <div *ngIf="isLoading" class="loader-overlay">
+    <div class="loaderData"></div>
+  </div>
+
+  <!-- Leaflet Map avec ID dynamique -->
+  <div [id]="mapId" class="leaflet-map"></div>
+
+  <!-- Légende -->
+  <div class="legend">
+    <h4>Légende</h4>
+    <div class="legend-item">
+      <div class="legend-color recense"></div>
+      <span>Recensé</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color en_etude"></div>
+      <span>En étude</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color indemnisation_terminee"></div>
+      <span>Indemnisation terminée</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color unknown"></div>
+      <span>Statut inconnu</span>
+    </div>
+  </div>
+</div>

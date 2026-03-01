@@ -1,4 +1,4 @@
-<mat-toolbar class="mat-accent m-0 backToolbar shadow-md">
+<!-- <mat-toolbar class="mat-accent m-0 backToolbar shadow-md">
   <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire px-4">
     <span class="c_title dialog-title text-lg font-semibold text-white">{{ dialogTitle }}</span>
     <button
@@ -30,7 +30,6 @@
       </mat-form-field>
     </div>
 
-    <!-- Action Buttons -->
     <div class="flex justify-center gap-4 mt-4">
       <button
         mat-raised-button
@@ -51,4 +50,32 @@
   </form>
 </div>
 
+ -->
 
+ <app-dialog-header
+  [title]="dialogTitle"
+  icon="label"
+  (close)="matDialogRef.close()">
+</app-dialog-header>
+
+<div class="p-3 md:p-4">
+  <form [formGroup]="initForm" class="w-full">
+
+    <mat-form-field class="w-full" appearance="outline">
+      <mat-label>Libellé</mat-label>
+      <input matInput type="text" formControlName="libelle" />
+      <mat-icon matSuffix class="secondary-text">label</mat-icon>
+      <mat-error>Champ obligatoire</mat-error>
+    </mat-form-field>
+
+    <div class="flex justify-end gap-2 mt-2">
+      <button mat-stroked-button type="button" (click)="matDialogRef.close()">
+        Annuler
+      </button>
+      <button mat-raised-button color="primary" [disabled]="loader" (click)="checkRecap(action)">
+        {{ labelButton }}
+      </button>
+    </div>
+
+  </form>
+</div>

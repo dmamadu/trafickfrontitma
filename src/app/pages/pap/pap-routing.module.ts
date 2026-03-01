@@ -7,6 +7,7 @@ import { InfoClientComponent } from "./info-client/info-client.component";
 import { PapAgricoleComponent } from "./pap-agricole/pap-agricole.component";
 import { PapPlaceAffaireComponent } from "./pap-place-affaire/pap-place-affaire.component";
 import { PapEconomiqueComponent } from "./pap-economique/pap-economique.component";
+import { PapHabitatComponent } from "./pap-habitat/pap-habitat.component";
 
 const routes: Routes = [
   {
@@ -30,12 +31,15 @@ const routes: Routes = [
     path: "papPlaceAffaire",
     component: PapPlaceAffaireComponent,
   },
+    {
+    path: "papHabitat",
+    component: PapHabitatComponent,
+  },
 
   {
     path: "papEconomique",
     component: PapEconomiqueComponent,
   },
-
   {
     path: "detail",
     component: PapDetailComponent,

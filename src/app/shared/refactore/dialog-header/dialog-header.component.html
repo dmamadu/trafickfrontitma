@@ -1,0 +1,21 @@
+<div class="dialog-header">
+  <div class="dialog-header-content">
+    <!-- Icon -->
+    <div class="dialog-header-icon" *ngIf="icon">
+      <mat-icon>{{ icon }}</mat-icon>
+    </div>
+
+    <!-- Title -->
+    <h2 class="dialog-header-title">{{ title }}</h2>
+
+    <!-- Close Button -->
+    <button 
+      *ngIf="showClose"
+      mat-icon-button 
+      class="dialog-header-close"
+      (click)="onClose()"
+      aria-label="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>

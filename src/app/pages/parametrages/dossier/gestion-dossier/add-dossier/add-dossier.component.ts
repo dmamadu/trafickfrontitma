@@ -23,11 +23,12 @@ import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/an
 import { Image } from "src/app/shared/models/image.model";
 import { LoaderComponent } from "../../../../../shared/loader/loader.component";
 import { ImageModalComponent } from "src/app/shared/image-modal.component";
+import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
 
 @Component({
   selector: "app-add-dossier",
   standalone: true,
-  imports: [AngularMaterialModule, LoaderComponent],
+  imports: [AngularMaterialModule, LoaderComponent, DialogHeaderComponent],
   templateUrl: "./add-dossier.component.html",
   styleUrl: "./add-dossier.component.css",
 })

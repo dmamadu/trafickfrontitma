@@ -359,6 +359,13 @@ export const MENU: MenuItem[] = [
             link: "/pap/papPlaceAffaire",
             parentId: 10,
           },
+                    {
+            id: 13,
+            label: "Habitat",
+            icon: "bxs-home",
+            link: "/pap/papHabitat",
+            parentId: 10,
+          },
         ],
       },
       {

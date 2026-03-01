@@ -45,6 +45,7 @@ import { LoaderComponent } from "../../../shared/loader/loader.component";
 import { AppConfig } from "src/app/app.config";
 import { ImageModalComponent } from "src/app/shared/image-modal.component";
 import { Subject, takeUntil } from "rxjs";
+import { ActionButton, PageActionsComponent } from "src/app/shared/refactore/page-actions/page-actions.component";
 
 @Component({
   selector: "app-pap-agricole",
@@ -73,7 +74,8 @@ import { Subject, takeUntil } from "rxjs";
     DatatableComponent,
     FormsModule,
     LoaderComponent,
-  ],
+    PageActionsComponent
+],
 })
 export class PapAgricoleComponent implements OnInit,OnDestroy {
   appName: string = AppConfig.appName;
@@ -286,11 +288,41 @@ export class PapAgricoleComponent implements OnInit,OnDestroy {
    this.destroy$.complete();
 }
 
+  handleAction(action: string): void {
+    switch (action) {
+      case "add":
+        this.addItems();
+        break;
+      case "import":
+        this.triggerFileUpload();
+        break;
+      case "export-pdf":
+        this.exportAs("pdf");
+        break;
+      case "export-excel":
+        this.exportAs("excel");
+        break;
+    }
+  }
 
 private destroy$ = new Subject<void>();
 
 
-
+  // Actions configuration
+  actions: ActionButton[] = [
+    {
+      label: "Ajouter un PAP Agricole",
+      icon: "plus",
+      action: "add",
+      type: "primary",
+    },
+    {
+      label: "Importer Excel",
+      icon: "file-excel",
+      action: "import",
+      type: "primary",
+    }
+  ];
 
 
 

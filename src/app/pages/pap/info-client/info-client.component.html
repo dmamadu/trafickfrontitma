@@ -1,332 +1,5 @@
-<div class="w-full heighContentRight" id="heighContentRightId">
+<!-- <div class="w-full heighContentRight" id="heighContentRightId">
   <div class="w-full mb-10 ">
-    <fuse-card class="flex flex-col w-full p-4"
-      *ngIf="(infosPap.type!='PAPAGRICOLE' &&  infosPap.type!='PAPPLACEAFFAIRE' && infosPap.type!='PAPECONOMIQUE')">
-      <mat-tab-group dynamicHeight class="w-full">
-        <mat-tab label="Détails">
-          <div class="">
-            <div class="flex flex-col w-full p-4">
-              <div class="flex justify-between">
-                <div class="leading-tight uppercase c_title_header">Partie affecté par le projet</div>
-                <div class="">
-                  <button (click)="updateClient(infosPap)" class="c_btnAccount_attribut c_btnAccountF"
-                    [disabled]="infosPap?.statut ==='DEMISSION'" matTooltip="Modifier le pap" mat-icon-button>
-                    <i class="bx bx-edit"></i>
-                  </button>
-                  <button (click)="templateConsentementClient(infosPap)"
-                    class="ml-2 c_btnAccount_attribut c_btnAccountF" [disabled]="infosPap?.statut ==='DEMISSION'"
-                    matTooltip="Lettre de consentement" mat-icon-button>
-                    <i class="bx bx-envelope"></i>
-                  </button>
-                </div>
-              </div>
-              <hr class="w-full border-t">
-              <div class="flex flex-auto w-full">
-                <div class="flex flex-col w-full">
-                  <div class="grid grid-cols-2">
-                    <span class="mr-3 span-text">Code du Pap:</span>
-                    <span class="leading-none font-bold">{{infosPap?.codePap}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Nom: </span>
-                    <span class="leading-none font-bold">{{infosPap?.nom}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Prénom: </span>
-                    <span class="leading-none font-bold">{{infosPap?.prenom}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Date Naissance: </span>
-                    <span class="leading-none font-bold">{{infosPap?.dateNaissance}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Lieu de Naissance: </span>
-                    <span class="leading-none font-bold">{{infosPap?.lieuNaissance}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Sexe: </span>
-                    <span class="leading-none font-bold">{{infosPap?.sexe}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Age: </span>
-                    <span class="leading-none font-bold">{{infosPap?.age}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Situation Matrimoniale: </span>
-                    <span class="leading-none font-bold">{{infosPap?.situationMatrimoniale}}</span>
-                  </div>
-                </div>
-                <div class="flex flex-col w-full">
-                  <div class="grid grid-cols-2">
-                    <span class="span-text">Type d'identification: </span>
-                    <span class="leading-none font-bold">{{infosPap?.typeIdentification}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="span-text">Numéro d'identification: </span>
-                    <span class="leading-none font-bold">{{infosPap?.numeroIdentification}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="span-text">Numéro téléphone: </span>
-                    <span class="leading-none font-bold">{{infosPap?.numeroTelephone}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Localité de résidence: </span>
-                    <span class="leading-none font-bold">{{infosPap?.localiteResidence}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Département: </span>
-                    <span class="leading-none font-bold">{{infosPap?.departement}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Commune: </span>
-                    <span class="leading-none font-bold">{{infosPap?.commune}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Statut: </span>
-                    <span class="leading-none font-bold">{{infosPap?.statutPap}}</span>
-
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Statut vulnérable: </span>
-                    <span class="leading-none font-bold">{{infosPap?.statutVulnerable }}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="leading-tight mt-8 uppercase c_title_header">Personne impitable</div>
-              <hr class="w-full border-t">
-              <div class="flex flex-auto w-full -mt-4">
-                <div class="flex flex-col w-full">
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="span-text">Prénom & Nom : </span>
-                    <span class="leading-none font-bold">{{infosPap?.gestionnaire?.prenom}}
-                      {{infosPap?.gestionnaire?.nom}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Téléphone : </span>
-                    <span class="leading-none font-bold">+{{infosPap?.gestionnaire?.phoneCode}}
-                      {{infosPap?.gestionnaire?.phoneNumber}}</span>
-                  </div>
-                </div>
-                <div class="flex flex-col w-full">
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Email : </span>
-                    <span class="leading-none font-bold">{{infosPap?.gestionnaire?.email}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Numéro : </span>
-                    <span class="leading-none font-bold">{{infosPap?.gestionnaire?.numero}}</span>
-                  </div>
-                </div>
-              </div>
-
-
-              <attribut-complementaire title="Attribut complémentaire"
-                (ajoutAttributComplementaire)="ajoutAttributComplementaire(infosPap,_attributComplementaire)"
-                [infosPap]="infosPap" (updateAttributComplementaire)="updateAttributComplementaire($event,infosPap)"
-                [attributComplementaire]="_attributComplementaire"
-                [natureAttribut]="'CLIENT'"></attribut-complementaire>
-
-            </div>
-          </div>
-        </mat-tab>
-        <mat-tab label="Biens affectés">
-          <div class="">
-            <div class="flex flex-col w-full p-4">
-              <div class="flex flex-col w-full mb-4">
-                <label class="leading-tight uppercase c_title_header mb-4 ">Bâtiments</label>
-                <div class="my-2 text-gray-700 font-semibold" *ngIf="batiments.length>0">
-                  Nombre total de bâtiments : {{ batiments.length }}
-                </div>
-                <div class="my-2 text-red-700 font-semibold" *ngIf="batiments.length==0">
-                  Aucun batiment
-                </div>
-
-                <div class="overflow-x-auto">
-                  <div class="flex flex-nowrap">
-                    <div *ngFor="let batiment of batiments"
-                      class="p-4 border border-gray-300 rounded-lg shadow-sm mb-4 mr-3 span-text bg-white min-w-max">
-                      <div *ngFor="let key of getKeys(batiment)" class="flex justify-between items-center mb-2">
-                        <span class="font-semibold capitalize text-gray-700">
-                          {{ formatKey(key) }}:
-                        </span>
-                        <span class="text-gray-900">{{ batiment[key] }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex flex-col w-full mb-3">
-                <label class="leading-tight uppercase c_title_header mb-4">Equipement</label>
-                <div class="my-2 text-gray-700 font-semibold" *ngIf="equipements.length>0">
-                  Nombre total des équipements : {{ equipements.length }}
-                </div>
-                <div class="my-2 text-red-700 font-semibold" *ngIf="equipements.length==0">
-                  Aucun équipement
-                </div>
-                <div class="overflow-x-auto">
-                  <div class="flex flex-nowrap">
-                    <div *ngFor="let equipement of equipements"
-                      class="bg-white p-6 rounded-lg shadow-md min-w-max mr-4">
-                      <div *ngFor="let key of getKeys(equipement)" class="flex justify-between items-center mb-2">
-                        <span class="font-semibold capitalize text-gray-700">
-                          {{ formatKey(key) }}:
-                        </span>
-                        <span class="text-gray-900">{{ equipement[key] }}</span>
-                      </div>
-                      <hr class="mt-4" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col w-full mb-3">
-                <label class="leading-tight uppercase c_title_header mb-4">Culture</label>
-                <div class="my-2 text-gray-700 font-semibold" *ngIf="cultures.length>0">
-                  Nombre total des cultures : {{ cultures.length }}
-                </div>
-                <div class="my-2 text-red-700 font-semibold" *ngIf="cultures.length==0">
-                  Aucun culture
-                </div>
-                <div class="overflow-x-auto">
-                  <div class="flex flex-nowrap">
-                    <div *ngFor="let culture of cultures" class="bg-white p-6 rounded-lg shadow-md mr-4 min-w-max">
-                      <div *ngFor="let key of getKeys(culture)" class="flex justify-between items-center mb-4">
-                        <span class="font-semibold capitalize text-gray-700">
-                          {{ formatKey(key) }}:
-                        </span>
-                        <span class="text-gray-900">{{ culture[key] }}</span>
-                      </div>
-                      <hr class="border-gray-200" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </mat-tab>
-        <mat-tab label="Co-propriétaire">
-          <div class="">
-            <div class="flex flex-col w-full p-4">
-              <div class="flex justify-between">
-                <div class="leading-tight uppercase c_title_header">Co-propriétaire</div>
-              </div>
-              <div class="my-2 text-gray-700 font-semibold" *ngIf="coProprietaires.length>0">
-                Nombre total des co-propriétaires : {{ coProprietaires.length }}
-              </div>
-              <div class="my-2 text-red-700 font-semibold" *ngIf="coProprietaires.length==0">
-                Aucun co-propriétaires
-              </div>
-              <hr class="w-full border-t">
-              <div class="flex flex-col w-full" *ngFor="let coProprietaire of coProprietaires">
-                <div class="flex flex-col w-full p-4 mb-4 border border-gray-300 rounded-lg bg-white">
-                  <div class="grid grid-cols-2 items-center">
-                    <span class="span-text">Code CoPropriétaire: </span>
-                    <span class="leading-none font-bold">{{ coProprietaire.codeCoProprietaire }}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4 items-center">
-                    <span class="span-text">Nom complet: </span>
-                    <span class="leading-none font-bold">{{ coProprietaire.nomComplet }}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4 items-center">
-                    <span class="span-text">Contact Téléphonique: </span>
-                    <span class="leading-none font-bold">{{ coProprietaire.contactTelephonique }}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4 items-center">
-                    <span class="span-text">Sexe: </span>
-                    <span class="leading-none font-bold">{{ coProprietaire.sexe }}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4 items-center">
-                    <span class="">Âge: </span>
-                    <span class="leading-none font-bold">{{ coProprietaire.age }}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4 items-center">
-                    <span class="span-text">Situation matrimoniale: </span>
-                    <span class="leading-none font-bold">{{ coProprietaire.situationMatrimoniale }}</span>
-                  </div>
-                  <div class="leading-tight mt-8 uppercase c_title_header">Information complémentaire</div>
-                  <div class="flex flex-auto w-full mt-4">
-                    <span class="leading-none font-bold">{{ coProprietaire.infoComplementaire }}</span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </mat-tab>
-        <mat-tab label="Employé">
-          <div class="">
-            <div class="flex flex-col w-full p-4">
-              <div class="flex justify-between">
-                <div class="leading-tight uppercase c_title_header">Employé</div>
-              </div>
-
-              <div class="my-2 text-gray-700 font-semibold" *ngIf="employes.length>0">
-                Nombre total des employés : {{ employes.length }}
-              </div>
-              <div class="my-2 text-red-700 font-semibold" *ngIf="employes.length==0">
-                Aucun employé
-              </div>
-              <hr class="w-full border-t">
-              <div class="flex flex-auto w-full" *ngFor="let employe of employes">
-                <div class="flex flex-col w-full p-4 mb-4 border border-gray-300 rounded-lg bg-white">
-                  <div class="grid grid-cols-2 items-center">
-                    <span class="span-text">Code Employé: </span>
-                    <span class="leading-none font-bold">{{ employe.codeEmploye }}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4 items-center span-text">
-                    <span>Numéro Identifiant: </span>
-                    <span class="leading-none font-bold">{{ employe.numeroIdentifiant }}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4 items-center">
-                    <span class="span-text">Nom complet: </span>
-                    <span class="leading-none font-bold">{{ employe.prenomNom }}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4 items-center">
-                    <span class="span-text">Contact Téléphonique: </span>
-                    <span class="leading-none font-bold">{{ employe.contactTelephonique }}</span>
-                  </div>
-
-                  <div class="grid grid-cols-2 mt-4 items-center">
-                    <span class="span-text">Catégorie Activité: </span>
-                    <span class="leading-none font-bold">{{ employe.categorieActivite }}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4 items-center">
-                    <span class="span-text">Sexe: </span>
-                    <span class="leading-none font-bold">{{ employe.sexe }}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4 items-center">
-                    <span class="span-text">Âge: </span>
-                    <span class="leading-none font-bold">{{ employe.age }}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4 items-center">
-                    <span class="span-text">Nationalité: </span>
-                    <span class="leading-none font-bold">{{ employe.nationalite }}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4 items-center">
-                    <span class="span-text">Qualité Employé: </span>
-                    <span class="leading-none font-bold">{{ employe.qualiteEmploye }}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4 items-center">
-                    <span class="span-text">Rémunération: </span>
-                    <span class="leading-none font-bold">{{ employe.remuneration }}</span>
-                  </div>
-                  <div class="leading-tight mt-8 uppercase c_title_header">Information Complémentaire</div>
-                  <div class="flex flex-auto w-full mt-4">
-                    {{ employe.infoComplementaire }}
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </mat-tab>
-
-
-      </mat-tab-group>
-    </fuse-card>
-
-    <!---PAP AGRICOLE-->
-
     <fuse-card class="flex flex-col w-full p-4" *ngIf="infosPap.type=='PAPAGRICOLE'">
       <mat-tab-group dynamicHeight class="w-full">
         <mat-tab label="Détails">
@@ -466,19 +139,15 @@
         </mat-tab>
         <mat-tab label="Évaluation des pertes subies">
           <div class="border border-gray-300 rounded-lg p-6 bg-white shadow-md">
-            <!-- En-tête fixe -->
             <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
               <mat-icon class="mr-2 text-red-500">assessment</mat-icon> Évaluation des pertes
             </h2>
-            <!-- Conteneur de défilement pour les évaluations -->
             <div class="overflow-y-auto" style="max-height: 500px;">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Perte de terre -->
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-green-700 mr-2">terrain</mat-icon>
                   <span><strong>Perte de terre :</strong> {{ infosPap?.perteTerre ?? 'Aucune perte' }}</span>
                 </div>
-                <!-- Perte d'arbres -->
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-green-500 mr-2">nature</mat-icon>
                   <span><strong>Arbres jeunes :</strong> {{ infosPap?.perteArbreJeune ?? 'Aucune perte' }}</span>
@@ -487,23 +156,20 @@
                   <mat-icon class="text-green-700 mr-2">park</mat-icon>
                   <span><strong>Arbres adultes :</strong> {{ infosPap?.perteArbreAdulte ?? 'Aucune perte' }}</span>
                 </div>
-                <!-- Perte d'équipements -->
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-blue-500 mr-2">devices</mat-icon>
                   <span><strong>Pertes d'équipements :</strong> {{ infosPap?.perteEquipement }}</span>
                 </div>
-                <!-- Perte de bâtiments -->
                 <div class="bg-gray-100 p-4 rounded-lg shadow-sm flex items-center">
                   <mat-icon class="text-brown-500 mr-2">apartment</mat-icon>
                   <span><strong>Pertes de bâtiments :</strong> {{ infosPap?.perteBatiment }}</span>
                 </div>
-                <!-- Perte Totale -->
                  <div class="bg-red-100 p-1 rounded-lg shadow-sm flex items-center flex-col">
  <h3 class="mt-6 text-lg font-bold text-red-600 flex items-center">
                   <mat-icon class="mr-2 text-red-600">warning</mat-icon> Perte totale :
                 </h3>
                 <p class="text-xl font-bold text-red-600 ">
-                  {{ infosPap?.evaluationPerte?.perteTotale !== null ? (infosPap?.perteTotale | number) + ' FCFA' : 'Non évalué' }}
+                  {{ infosPap?.perteTotale !== null ? (infosPap?.perteTotale | number) + ' FCFA' : 'Non évalué' }}
                 </p>
                  </div>
                
@@ -657,7 +323,6 @@
         <mat-tab label="Co-propriétaire">
           <div class="">
             <div class="flex flex-col w-full p-4">
-              <!-- En-tête fixe -->
               <div class="flex justify-between">
                 <div class="leading-tight uppercase c_title_header">Co-propriétaire</div>
               </div>
@@ -669,7 +334,6 @@
               </div>
               <hr class="w-full border-t">
 
-              <!-- Conteneur de la liste avec défilement -->
               <div class="flex flex-col w-full overflow-y-auto" style="max-height: 400px;">
                 <div class="flex flex-col w-full" *ngFor="let coProprietaire of coProprietaires">
                   <div class="flex flex-col w-full p-4 mb-4 border border-gray-300 rounded-lg bg-white">
@@ -778,7 +442,7 @@
                   <mat-icon class="mr-2 text-red-600">warning</mat-icon> Perte totale :
                 </h3>
                 <p class="text-xl font-bold text-red-600 ">
-                  {{ infosPap?.evaluationPerte?.perteTotale !== null ? (infosPap?.perteTotale | number) + ' FCFA' : 'Non évalué' }}
+                  {{ infosPap?.perteTotale !== null ? (infosPap?.perteTotale | number) + ' FCFA' : 'Non évalué' }}
                 </p>
                  </div>
               </div>                        
@@ -794,145 +458,310 @@
 
       </mat-tab-group>
     </fuse-card>
+  </div>
+</div> -->
 
+<div class="heighContentRight">
+  <div class="w-full mb-10">
 
-    <fuse-card class="flex flex-col w-full p-4" *ngIf="infosPap.type=='PAPECONOMIQUE'">
+    <!-- Macro réutilisable : chaque type de PAP utilise les mêmes classes -->
+
+    <!-- ══════════ PAP AGRICOLE ══════════ -->
+    <fuse-card class="flex flex-col w-full p-4" *ngIf="infosPap.type=='PAPAGRICOLE'">
       <mat-tab-group dynamicHeight class="w-full">
+
         <mat-tab label="Détails">
-          <div class="">
-            <div class="flex flex-col w-full p-4">
-              <div class="flex justify-between">
-                <div class="leading-tight uppercase c_title_header">Partie affecté par le projet</div>
-                <div class="">
-                  <button (click)="updateClient(infosPap)" class="c_btnAccount_attribut c_btnAccountF"
-                    [disabled]="infosPap?.statut ==='DEMISSION'" matTooltip="Modifier le pap" mat-icon-button>
-                    <i class="bx bx-edit"></i>
-                  </button>
-                  <button (click)="templateConsentementClient(infosPap)"
-                    class="ml-2 c_btnAccount_attribut c_btnAccountF" [disabled]="infosPap?.statut ==='DEMISSION'"
-                    matTooltip="Lettre de consentement" mat-icon-button>
-                    <i class="bx bx-envelope"></i>
-                  </button>
-                </div>
+          <div class="tab-panel">
+            <div class="section-header">
+              <div class="c_title_header">Partie affectée par le projet</div>
+              <div class="flex gap-1">
+                <button mat-icon-button class="c_btnAccountF" (click)="updateClient(infosPap)"
+                  [disabled]="infosPap?.statut==='DEMISSION'" matTooltip="Modifier le pap">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button class="c_btnAccountF" (click)="templateConsentementClient(infosPap)"
+                  [disabled]="infosPap?.statut==='DEMISSION'" matTooltip="Lettre de consentement">
+                  <mat-icon>email</mat-icon>
+                </button>
               </div>
-              <hr class="w-full border-t">
-              <div class="flex flex-auto w-full">
-                <div class="flex flex-col w-full">
-                  <div class="grid grid-cols-2">
-                    <span class="mr-3 span-text">Code du Pap:</span>
-                    <span class="leading-none font-bold">{{infosPap?.codePap}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Nom: </span>
-                    <span class="leading-none font-bold">{{infosPap?.nom}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Prénom: </span>
-                    <span class="leading-none font-bold">{{infosPap?.prenom}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Nationalité: </span>
-                    <span class="leading-none font-bold">{{infosPap?.nationalite}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Langue Parlée: </span>
-                    <span class="leading-none font-bold">{{infosPap?.langueParlee}}</span>
-                  </div>
+            </div>
+            <hr>
 
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Sexe: </span>
-                    <span class="leading-none font-bold">{{infosPap?.sexe}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Age: </span>
-                    <span class="leading-none font-bold">{{infosPap?.age}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Situation Matrimoniale: </span>
-                    <span class="leading-none font-bold">{{infosPap?.situationMatrimoniale}}</span>
-                  </div>
-                </div>
-                <div class="flex flex-col w-full">
-                  <div class="grid grid-cols-2">
-                    <span class="span-text">Type d'identification: </span>
-                    <span class="leading-none font-bold">{{infosPap?.typePni}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="span-text">Numéro d'identification: </span>
-                    <span class="leading-none font-bold">{{infosPap?.numeroPni}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="span-text">Numéro téléphone: </span>
-                    <span class="leading-none font-bold">{{infosPap?.numeroTelephone}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Nombre de place affaire affectée: </span>
-                    <span class="leading-none font-bold">{{infosPap?.nombrePlaceAffaire}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Département: </span>
-                    <span class="leading-none font-bold">{{infosPap?.departement}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Commune: </span>
-                    <span class="leading-none font-bold">{{infosPap?.commune}}</span>
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Statut: </span>
-                    <span class="leading-none font-bold">{{infosPap?.statutPap}}</span>
-
-                  </div>
-                  <div class="grid grid-cols-2 mt-4">
-                    <span class="mr-3 span-text">Statut vulnérable: </span>
-                    <span class="leading-none font-bold">{{infosPap?.vulnerabilite }}</span>
-                  </div>
-                </div>
+            <div class="info-grid">
+              <!-- Colonne gauche -->
+              <div>
+                <div class="field-row"><span class="span-text"><mat-icon>assignment</mat-icon> Code du Pap:</span><span class="field-value">{{infosPap?.codePap}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>person</mat-icon> Nom:</span><span class="field-value">{{infosPap?.nom}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>person_outline</mat-icon> Prénom:</span><span class="field-value">{{infosPap?.prenom}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>public</mat-icon> Nationalité:</span><span class="field-value">{{infosPap?.nationalite}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>language</mat-icon> Langue parlée:</span><span class="field-value">{{infosPap?.langueParlee}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>wc</mat-icon> Sexe:</span><span class="field-value">{{infosPap?.sexe}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>cake</mat-icon> Âge:</span><span class="field-value">{{infosPap?.age}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>favorite</mat-icon> Situation matrimoniale:</span><span class="field-value">{{infosPap?.situationMatrimoniale}}</span></div>
               </div>
+              <!-- Colonne droite -->
+              <div>
+                <div class="field-row"><span class="span-text"><mat-icon>badge</mat-icon> Type d'identification:</span><span class="field-value">{{infosPap?.typePni}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>credit_card</mat-icon> N° identification:</span><span class="field-value">{{infosPap?.numeroPni}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>phone</mat-icon> Téléphone:</span><span class="field-value">{{infosPap?.numeroTelephone}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>map</mat-icon> Nb parcelles affectées:</span><span class="field-value">{{infosPap?.nombreParcelle}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>location_city</mat-icon> Département:</span><span class="field-value">{{infosPap?.departement}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>place</mat-icon> Commune:</span><span class="field-value">{{infosPap?.commune}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>flag</mat-icon> Statut:</span><span class="field-value">{{infosPap?.statutPap}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>warning</mat-icon> Vulnérabilité:</span><span class="field-value">{{infosPap?.vulnerabilite}}</span></div>
+              </div>
+            </div>
 
+            <attribut-complementaire title="Attribut complémentaire"
+              (ajoutAttributComplementaire)="ajoutAttributComplementaire(infosPap,_attributComplementaire)"
+              [infosPap]="infosPap" (updateAttributComplementaire)="updateAttributComplementaire($event,infosPap)"
+              [attributComplementaire]="_attributComplementaire" [natureAttribut]="'CLIENT'">
+            </attribut-complementaire>
+          </div>
+        </mat-tab>
 
-              <attribut-complementaire title="Attribut complémentaire"
-                (ajoutAttributComplementaire)="ajoutAttributComplementaire(infosPap,_attributComplementaire)"
-                [infosPap]="infosPap" (updateAttributComplementaire)="updateAttributComplementaire($event,infosPap)"
-                [attributComplementaire]="_attributComplementaire"
-                [natureAttribut]="'CLIENT'"></attribut-complementaire>
+        <mat-tab label="Caractéristiques Parcelle">
+          <div class="tab-panel">
+            <div class="text-panel">{{ infosPap.caracteristiqueParcelle }}</div>
+          </div>
+        </mat-tab>
 
+        <mat-tab label="Évaluation des pertes">
+          <div class="tab-panel">
+            <div class="eval-title"><mat-icon>assessment</mat-icon> Évaluation des pertes subies</div>
+            <div class="pertes-grid">
+              <div class="perte-card"><mat-icon>terrain</mat-icon><span><strong>Perte de terre :</strong> {{infosPap?.perteTerre ?? 'Aucune'}}</span></div>
+              <div class="perte-card"><mat-icon>nature</mat-icon><span><strong>Arbres jeunes :</strong> {{infosPap?.perteArbreJeune ?? 'Aucune'}}</span></div>
+              <div class="perte-card"><mat-icon>park</mat-icon><span><strong>Arbres adultes :</strong> {{infosPap?.perteArbreAdulte ?? 'Aucune'}}</span></div>
+              <div class="perte-card"><mat-icon>devices</mat-icon><span><strong>Équipements :</strong> {{infosPap?.perteEquipement}}</span></div>
+              <div class="perte-card"><mat-icon>apartment</mat-icon><span><strong>Bâtiments :</strong> {{infosPap?.perteBatiment}}</span></div>
+              <div class="perte-card total">
+                <div class="total-label"><mat-icon>warning</mat-icon> Perte totale</div>
+                <div class="total-amount">{{infosPap?.perteTotale !== null ? (infosPap?.perteTotale | number) + ' FCFA' : 'Non évalué'}}</div>
+              </div>
             </div>
           </div>
         </mat-tab>
-        <mat-tab label="Caractéristiques des équipements">
-          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
-            {{ infosPap.descriptionEquipement }}
-          </div>
-        </mat-tab>
-        <mat-tab label="Evaluation des pertes subies">
-          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
-            {{ infosPap.evaluationPerte }}
-          </div>
-        </mat-tab>
-        <mat-tab label="Description des animeaux">
-          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
-            {{ infosPap.descriptionAnimeaux }}
-          </div>
-        </mat-tab>
-        <mat-tab label="Description des batiments & Cloture">
 
-          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
-            <div>Batiments</div>
-            {{ infosPap.descriptionBatiment }}
-          </div>
-          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
-            <div>Clotures</div>
-            {{ infosPap.descriptionCloture }}
+        <mat-tab label="Infos complémentaires">
+          <div class="tab-panel">
+            <div class="text-panel">{{ infosPap.informationsEtendues }}</div>
           </div>
         </mat-tab>
-
-        <mat-tab label="Informations complémentaires">
-          <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 shadow-sm">
-            {{ infosPap.informationsEtendues }}
-          </div>
-        </mat-tab>
-
       </mat-tab-group>
     </fuse-card>
+
+
+    <!-- ══════════ PAP PLACE D'AFFAIRE ══════════ -->
+    <fuse-card class="flex flex-col w-full p-4" *ngIf="infosPap.type=='PAPPLACEAFFAIRE'">
+      <mat-tab-group dynamicHeight class="w-full">
+
+        <mat-tab label="Détails">
+          <div class="tab-panel">
+            <div class="section-header">
+              <div class="c_title_header">Partie affectée par le projet</div>
+              <div class="flex gap-1">
+                <button mat-icon-button class="c_btnAccountF" (click)="updateClient(infosPap)"
+                  [disabled]="infosPap?.statut==='DEMISSION'" matTooltip="Modifier le pap"><mat-icon>edit</mat-icon></button>
+                <button mat-icon-button class="c_btnAccountF" (click)="templateConsentementClient(infosPap)"
+                  [disabled]="infosPap?.statut==='DEMISSION'" matTooltip="Lettre de consentement"><mat-icon>email</mat-icon></button>
+              </div>
+            </div>
+            <hr>
+            <div class="info-grid">
+              <div>
+                <div class="field-row"><span class="span-text"><mat-icon>assignment</mat-icon> Code du Pap:</span><span class="field-value">{{infosPap?.codePap}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>person</mat-icon> Nom:</span><span class="field-value">{{infosPap?.nom}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>person_outline</mat-icon> Prénom:</span><span class="field-value">{{infosPap?.prenom}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>public</mat-icon> Nationalité:</span><span class="field-value">{{infosPap?.nationalite}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>language</mat-icon> Langue parlée:</span><span class="field-value">{{infosPap?.langueParlee}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>wc</mat-icon> Sexe:</span><span class="field-value">{{infosPap?.sexe}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>cake</mat-icon> Âge:</span><span class="field-value">{{infosPap?.age}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>favorite</mat-icon> Situation matrimoniale:</span><span class="field-value">{{infosPap?.situationMatrimoniale}}</span></div>
+              </div>
+              <div>
+                <div class="field-row"><span class="span-text"><mat-icon>badge</mat-icon> Type d'identification:</span><span class="field-value">{{infosPap?.typePni}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>credit_card</mat-icon> N° identification:</span><span class="field-value">{{infosPap?.numeroPni}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>phone</mat-icon> Téléphone:</span><span class="field-value">{{infosPap?.numeroTelephone}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>map</mat-icon> Nb places affaires affectées:</span><span class="field-value">{{infosPap?.nombrePlaceAffaire}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>location_city</mat-icon> Département:</span><span class="field-value">{{infosPap?.departement}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>place</mat-icon> Commune:</span><span class="field-value">{{infosPap?.commune}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>flag</mat-icon> Statut:</span><span class="field-value">{{infosPap?.statutPap}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>warning</mat-icon> Vulnérabilité:</span><span class="field-value">{{infosPap?.vulnerabilite}}</span></div>
+              </div>
+            </div>
+            <attribut-complementaire title="Attribut complémentaire"
+              (ajoutAttributComplementaire)="ajoutAttributComplementaire(infosPap,_attributComplementaire)"
+              [infosPap]="infosPap" (updateAttributComplementaire)="updateAttributComplementaire($event,infosPap)"
+              [attributComplementaire]="_attributComplementaire" [natureAttribut]="'CLIENT'">
+            </attribut-complementaire>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Co-propriétaire">
+          <div class="tab-panel">
+            <div class="section-header"><div class="c_title_header">Co-propriétaires</div></div>
+            <span class="copro-count" *ngIf="coProprietaires.length > 0">{{coProprietaires.length}} co-propriétaire(s)</span>
+            <span class="copro-empty" *ngIf="coProprietaires.length === 0">Aucun co-propriétaire</span>
+            <hr>
+            <div class="scroll-area mt-2">
+              <div class="copro-card" *ngFor="let c of coProprietaires">
+                <div class="info-grid">
+                  <div>
+                    <div class="field-row"><span class="span-text"><mat-icon>code</mat-icon> Code:</span><span class="field-value">{{c.codeCoProprietaire}}</span></div>
+                    <div class="field-row"><span class="span-text"><mat-icon>person</mat-icon> Nom complet:</span><span class="field-value">{{c.nomComplet}}</span></div>
+                    <div class="field-row"><span class="span-text"><mat-icon>phone</mat-icon> Téléphone:</span><span class="field-value">{{c.contactTelephonique}}</span></div>
+                  </div>
+                  <div>
+                    <div class="field-row"><span class="span-text"><mat-icon>wc</mat-icon> Sexe:</span><span class="field-value">{{c.sexe}}</span></div>
+                    <div class="field-row"><span class="span-text"><mat-icon>cake</mat-icon> Âge:</span><span class="field-value">{{c.age}}</span></div>
+                    <div class="field-row"><span class="span-text"><mat-icon>favorite</mat-icon> Situation matrimoniale:</span><span class="field-value">{{c.situationMatrimoniale}}</span></div>
+                  </div>
+                </div>
+                <div class="c_title_header mt-3">Info complémentaire</div>
+                <div class="text-panel mt-2">{{c.infoComplementaire}}</div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Caractéristiques place affaire">
+          <div class="tab-panel"><div class="text-panel">{{ infosPap.caracteristiquePlaceAffaire }}</div></div>
+        </mat-tab>
+
+        <mat-tab label="Évaluation des pertes">
+          <div class="tab-panel">
+            <div class="eval-title"><mat-icon>assessment</mat-icon> Évaluation des pertes subies</div>
+            <div class="pertes-grid">
+              <div class="perte-card"><mat-icon>nature</mat-icon><span><strong>Arbres jeunes :</strong> {{infosPap?.perteArbreJeune}}</span></div>
+              <div class="perte-card"><mat-icon>park</mat-icon><span><strong>Arbres adultes :</strong> {{infosPap?.perteArbreAdulte}}</span></div>
+              <div class="perte-card"><mat-icon>attach_money</mat-icon><span><strong>Revenus :</strong> {{infosPap?.perteRevenue | number}} FCFA</span></div>
+              <div class="perte-card"><mat-icon>home</mat-icon><span><strong>Appui relocalisation :</strong> {{infosPap?.appuieRelocalisation | number}} FCFA</span></div>
+              <div class="perte-card"><mat-icon>directions_car</mat-icon><span><strong>Frais déplacement :</strong> {{infosPap?.fraisDeplacement | number}} FCFA</span></div>
+              <div class="perte-card"><mat-icon>real_estate_agent</mat-icon><span><strong>Perte loyer :</strong> {{infosPap?.perteLoyer | number}} FCFA</span></div>
+              <div class="perte-card"><mat-icon>fence</mat-icon><span><strong>Perte clôture :</strong> {{infosPap?.perteCloture | number}} FCFA</span></div>
+              <div class="perte-card"><mat-icon>devices</mat-icon><span><strong>Équipements :</strong> {{infosPap?.perteEquipement}}</span></div>
+              <div class="perte-card"><mat-icon>apartment</mat-icon><span><strong>Bâtiments :</strong> {{infosPap?.perteBatiment}}</span></div>
+              <div class="perte-card total">
+                <div class="total-label"><mat-icon>warning</mat-icon> Perte totale</div>
+                <div class="total-amount">{{infosPap?.perteTotale !== null ? (infosPap?.perteTotale | number) + ' FCFA' : 'Non évalué'}}</div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Infos complémentaires">
+          <div class="tab-panel"><div class="text-panel">{{ infosPap.informationsEtendues }}</div></div>
+        </mat-tab>
+      </mat-tab-group>
+    </fuse-card>
+
+
+    <!-- ══════════ PAP HABITAT ══════════ -->
+    <fuse-card class="flex flex-col w-full p-4" *ngIf="infosPap.type=='PAPHABITAT'">
+      <mat-tab-group dynamicHeight class="w-full">
+
+        <mat-tab label="Détails">
+          <div class="tab-panel">
+            <div class="section-header">
+              <div class="c_title_header">Partie affectée par le projet</div>
+              <div class="flex gap-1">
+                <button mat-icon-button class="c_btnAccountF" (click)="updateClient(infosPap)"
+                  [disabled]="infosPap?.statut==='DEMISSION'" matTooltip="Modifier le pap"><mat-icon>edit</mat-icon></button>
+                <button mat-icon-button class="c_btnAccountF" (click)="templateConsentementClient(infosPap)"
+                  [disabled]="infosPap?.statut==='DEMISSION'" matTooltip="Lettre de consentement"><mat-icon>email</mat-icon></button>
+              </div>
+            </div>
+            <hr>
+            <div class="info-grid">
+              <div>
+                <div class="field-row"><span class="span-text"><mat-icon>assignment</mat-icon> Code du Pap:</span><span class="field-value">{{infosPap?.codePap}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>person</mat-icon> Nom:</span><span class="field-value">{{infosPap?.nom}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>person_outline</mat-icon> Prénom:</span><span class="field-value">{{infosPap?.prenom}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>public</mat-icon> Nationalité:</span><span class="field-value">{{infosPap?.nationalite}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>language</mat-icon> Langue parlée:</span><span class="field-value">{{infosPap?.langueParlee}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>wc</mat-icon> Sexe:</span><span class="field-value">{{infosPap?.sexe}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>cake</mat-icon> Âge:</span><span class="field-value">{{infosPap?.age}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>favorite</mat-icon> Situation matrimoniale:</span><span class="field-value">{{infosPap?.situationMatrimoniale}}</span></div>
+              </div>
+              <div>
+                <div class="field-row"><span class="span-text"><mat-icon>badge</mat-icon> Type d'identification:</span><span class="field-value">{{infosPap?.typePni}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>credit_card</mat-icon> N° identification:</span><span class="field-value">{{infosPap?.numeroPni}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>phone</mat-icon> Téléphone:</span><span class="field-value">{{infosPap?.numeroTelephone}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>home</mat-icon> Code habitat:</span><span class="field-value">{{infosPap?.codeHabitat}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>house</mat-icon> Type d'habitat:</span><span class="field-value">{{infosPap?.typeHabitat}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>square_foot</mat-icon> Superficie (m²):</span><span class="field-value">{{infosPap?.superficieHabitat}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>meeting_room</mat-icon> Nb de pièces:</span><span class="field-value">{{infosPap?.nombrePieces}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>construction</mat-icon> État habitat:</span><span class="field-value">{{infosPap?.etatHabitat}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>foundation</mat-icon> Matériaux:</span><span class="field-value">{{infosPap?.materiauxConstruction}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>people</mat-icon> Membres du foyer:</span><span class="field-value">{{infosPap?.membreFoyer}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>accessible</mat-icon> Membres handicapés:</span><span class="field-value">{{infosPap?.membreFoyerHandicape}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>location_city</mat-icon> Département:</span><span class="field-value">{{infosPap?.departement}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>place</mat-icon> Commune:</span><span class="field-value">{{infosPap?.commune}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>flag</mat-icon> Statut:</span><span class="field-value">{{infosPap?.statutPap}}</span></div>
+                <div class="field-row"><span class="span-text"><mat-icon>warning</mat-icon> Vulnérabilité:</span><span class="field-value">{{infosPap?.vulnerabilite}}</span></div>
+              </div>
+            </div>
+
+            <div class="photo-habitat" *ngIf="infosPap?.photoHabitat">
+              <div class="c_title_header mb-2">Photo de l'habitat</div>
+              <img [src]="infosPap.photoHabitat" alt="Photo habitat" (click)="openImageModal(infosPap.photoHabitat)">
+            </div>
+
+            <attribut-complementaire title="Attribut complémentaire"
+              (ajoutAttributComplementaire)="ajoutAttributComplementaire(infosPap,_attributComplementaire)"
+              [infosPap]="infosPap" (updateAttributComplementaire)="updateAttributComplementaire($event,infosPap)"
+              [attributComplementaire]="_attributComplementaire" [natureAttribut]="'CLIENT'">
+            </attribut-complementaire>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Co-propriétaire">
+          <div class="tab-panel">
+            <div class="section-header"><div class="c_title_header">Co-propriétaires</div></div>
+            <span class="copro-count" *ngIf="coProprietaires.length > 0">{{coProprietaires.length}} co-propriétaire(s)</span>
+            <span class="copro-empty" *ngIf="coProprietaires.length === 0">Aucun co-propriétaire</span>
+            <hr>
+            <div class="scroll-area mt-2">
+              <div class="copro-card" *ngFor="let c of coProprietaires">
+                <div class="info-grid">
+                  <div>
+                    <div class="field-row"><span class="span-text"><mat-icon>code</mat-icon> Code:</span><span class="field-value">{{c.codeCoProprietaire}}</span></div>
+                    <div class="field-row"><span class="span-text"><mat-icon>person</mat-icon> Nom complet:</span><span class="field-value">{{c.nomComplet}}</span></div>
+                    <div class="field-row"><span class="span-text"><mat-icon>phone</mat-icon> Téléphone:</span><span class="field-value">{{c.contactTelephonique}}</span></div>
+                  </div>
+                  <div>
+                    <div class="field-row"><span class="span-text"><mat-icon>wc</mat-icon> Sexe:</span><span class="field-value">{{c.sexe}}</span></div>
+                    <div class="field-row"><span class="span-text"><mat-icon>cake</mat-icon> Âge:</span><span class="field-value">{{c.age}}</span></div>
+                    <div class="field-row"><span class="span-text"><mat-icon>favorite</mat-icon> Situation matrimoniale:</span><span class="field-value">{{c.situationMatrimoniale}}</span></div>
+                  </div>
+                </div>
+                <div class="c_title_header mt-3">Info complémentaire</div>
+                <div class="text-panel mt-2">{{c.infoComplementaire}}</div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Évaluation des pertes">
+          <div class="tab-panel">
+            <div class="eval-title"><mat-icon>assessment</mat-icon> Évaluation des pertes subies</div>
+            <div class="pertes-grid">
+              <div class="perte-card"><mat-icon>home</mat-icon><span><strong>Évaluation perte habitat :</strong> {{infosPap?.evaluationPerte}}</span></div>
+              <div class="perte-card"><mat-icon>devices</mat-icon><span><strong>Équipements :</strong> {{infosPap?.perteEquipement}}</span></div>
+              <div class="perte-card total">
+                <div class="total-label"><mat-icon>warning</mat-icon> Perte totale</div>
+                <div class="total-amount">{{infosPap?.perteTotale !== null ? (infosPap?.perteTotale | number) + ' FCFA' : 'Non évalué'}}</div>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Infos complémentaires">
+          <div class="tab-panel"><div class="text-panel">{{ infosPap.informationsEtendues }}</div></div>
+        </mat-tab>
+      </mat-tab-group>
+    </fuse-card>
+
   </div>
 </div>

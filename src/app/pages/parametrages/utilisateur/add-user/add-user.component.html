@@ -1,4 +1,4 @@
-<mat-toolbar class="mat-accent m-0 backToolbar">
+<!-- <mat-toolbar class="mat-accent m-0 backToolbar">
   <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
     <span class="c_title dialog-title">{{ dialogTitle }}</span>
     <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
@@ -6,10 +6,6 @@
     </button>
   </mat-toolbar-row>
 </mat-toolbar>
-
-
-
-   <!-- Image Section -->
    <div class="row">
     <div class="col-lg-12 text-center mb-4">
       <div class="position-relative d-inline-block">
@@ -24,7 +20,6 @@
           </label>
           <input class="form-control d-none" id="member-image-input" type="file"
             accept="image/png, image/gif, image/jpeg" (change)="selectOnFile($event,'photo_profile','Thumbnail')">
-          <!-- Bouton pour supprimer l'image -->
           @if (uploadedImage) {
           <div>
             <button type="button" class="btn btn-danger btn-sm mt-1" id="delete-image-btn"
@@ -47,13 +42,11 @@
   </div>
 
 
-  <!-- Form Fields Section -->
 
 
 
 <div class="flex flex-col flex-auto min-w-10-0 p-2 md:p-4">
   <form [formGroup]="initForm" class="event-form w-100-p">
-    <!-- Nom & Prénom -->
     <div class="flex gap-2">
       <mat-form-field class="w-1/2 mt-2" appearance="outline">
         <mat-label class="enteteccColor">Nom</mat-label>
@@ -68,7 +61,6 @@
         <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
     </div>
-    <!-- Email & Adresse -->
     <div class="flex gap-2">
       <mat-form-field class="w-1/2 mt-2" appearance="outline">
         <mat-label class="enteteccColor">Email</mat-label>
@@ -83,7 +75,6 @@
         <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
     </div>
-    <!-- Téléphone & Role -->
     <div class="flex gap-2">
       <mat-form-field class="w-1/2 mt-2 telephone" appearance="outline">
         <ngx-mat-intl-tel-input [preferredCountries]="['sn', 'fr']" [enablePlaceholder]="true" [enableSearch]="true"
@@ -103,7 +94,6 @@
         <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
     </div>
-    <!-- Niveau & Fonctions -->
     <div class="flex gap-2">
       <mat-form-field class="w-1/2 mt-2" appearance="outline">
         <mat-label class="enteteccColor">Niveau</mat-label>
@@ -131,7 +121,6 @@
         <mat-error>Le champs est obligatoire</mat-error>
       </mat-form-field>
     </div>
-    <!-- Boutons -->
     <div class="flex justify-center gap-4 mt-4">
       <button mat-raised-button class="submit-buttonRed" type="button">
         <span class="textForm">Retour</span>
@@ -141,5 +130,149 @@
       </button>
     </div>
   </form>
+  <app-loader-data *ngIf="loader"></app-loader-data>
+</div> -->
+
+<app-dialog-header
+  [title]="dialogTitle"
+  icon="person_outline"
+  (close)="matDialogRef.close()">
+</app-dialog-header>
+
+<div class="flex flex-col p-3 md:p-4">
+
+  <!-- Avatar -->
+    <div class="row">
+    <div class="col-lg-12 text-center mb-4">
+      <div class="position-relative d-inline-block">
+        <div class="position-absolute bottom-0 end-0">
+          <label for="member-image-input" class="mb-0" data-bs-toggle="tooltip" data-bs-placement="right"
+            title="Select Member Image">
+            <div class="avatar-xs">
+              <div class="avatar-title bg-light border rounded-circle text-muted cursor-pointer">
+                <i class="bx bxs-image-alt"></i>
+              </div>
+            </div>
+          </label>
+          <input class="form-control d-none" id="member-image-input" type="file"
+            accept="image/png, image/gif, image/jpeg" (change)="selectOnFile($event,'photo_profile','Thumbnail')">
+          @if (uploadedImage) {
+          <div>
+            <button type="button" class="btn btn-danger btn-sm mt-1" id="delete-image-btn"
+              (click)="deleteImage()">
+              <i class="bx bx-trash me-1"></i>
+            </button>
+          </div>
+          }
+
+
+        </div>
+        <div class="avatar-lg">
+          <div class="avatar-title bg-light rounded-circle">
+            <img [src]="imageToff ? imageToff : 'assets/images/users/user-dummy-img.jpg'"
+                 class="avatar-md rounded-circle h-auto limited-image" />
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="initForm" class="w-full">
+
+    <!-- Nom & Prénom -->
+    <div class="flex gap-2">
+      <mat-form-field class="w-1/2" appearance="outline">
+        <mat-label>Nom</mat-label>
+        <input matInput type="text" formControlName="lastname" />
+        <mat-icon matSuffix class="secondary-text">person</mat-icon>
+        <mat-error>Champ obligatoire</mat-error>
+      </mat-form-field>
+      <mat-form-field class="w-1/2" appearance="outline">
+        <mat-label>Prénom</mat-label>
+        <input matInput type="text" formControlName="firstname" />
+        <mat-icon matSuffix class="secondary-text">person</mat-icon>
+        <mat-error>Champ obligatoire</mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Email & Adresse -->
+    <div class="flex gap-2">
+      <mat-form-field class="w-1/2" appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" />
+        <mat-icon matSuffix class="secondary-text">email</mat-icon>
+        <mat-error>Champ obligatoire</mat-error>
+      </mat-form-field>
+      <mat-form-field class="w-1/2" appearance="outline">
+        <mat-label>Adresse</mat-label>
+        <input matInput type="text" formControlName="locality" />
+        <mat-icon matSuffix class="secondary-text">home</mat-icon>
+        <mat-error>Champ obligatoire</mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Téléphone & Rôle -->
+    <div class="flex gap-2">
+      <mat-form-field class="w-1/2 telephone" appearance="outline">
+        <ngx-mat-intl-tel-input
+          [preferredCountries]="['sn', 'fr']"
+          [enablePlaceholder]="true"
+          [enableSearch]="true"
+          formControlName="contact">
+        </ngx-mat-intl-tel-input>
+        <mat-icon matSuffix class="secondary-text">phone</mat-icon>
+        <mat-error>Champ obligatoire</mat-error>
+      </mat-form-field>
+      <mat-form-field class="w-1/2" appearance="outline">
+        <mat-label>Rôle</mat-label>
+        <mat-select formControlName="role_id">
+          <mat-option *ngFor="let role of roles" [value]="role.id">
+            {{ role.name }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix class="secondary-text">verified_user</mat-icon>
+        <mat-error>Champ obligatoire</mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Niveau & Fonction -->
+    <div class="flex gap-2">
+      <mat-form-field class="w-1/2" appearance="outline">
+        <mat-label>Niveau</mat-label>
+        <mat-select formControlName="categorie_id" (selectionChange)="onCategoryChange($event.value)">
+          <mat-option *ngFor="let categorie of categories" [value]="categorie.id">
+            {{ categorie.libelle }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix class="secondary-text">category</mat-icon>
+        <mat-error>Champ obligatoire</mat-error>
+      </mat-form-field>
+      <mat-form-field class="w-1/2" appearance="outline">
+        <mat-label>Fonction</mat-label>
+        <mat-select formControlName="fonction_id">
+          <mat-option
+            *ngFor="let profil of action === 'new' ? filteredProfils : profils"
+            [value]="profil.id">
+            {{ profil.libelle }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix class="secondary-text">work</mat-icon>
+        <mat-error>Champ obligatoire</mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end gap-2 mt-2">
+      <button mat-stroked-button type="button" (click)="matDialogRef.close()">
+        Annuler
+      </button>
+      <button mat-raised-button color="primary" [disabled]="loader" (click)="checkRecap(action)">
+        {{ labelButton }}
+      </button>
+    </div>
+
+  </form>
+
   <app-loader-data *ngIf="loader"></app-loader-data>
 </div>

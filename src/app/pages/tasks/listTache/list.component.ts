@@ -303,7 +303,7 @@ private destroy$ = new Subject<void>();
 
     this.snackbar.openModal(
       CreatetaskComponent,
-      "55rem",
+      "45rem",
       "new",
       "auto",
       this.datas,
@@ -322,7 +322,7 @@ private destroy$ = new Subject<void>();
     console.log(information);
     this.snackbar.openModal(
       CreatetaskComponent,
-      "50rem",
+      "40rem",
       "edit",
       "",
       information,
@@ -380,9 +380,9 @@ private destroy$ = new Subject<void>();
     console.log(information);
     this.snackbar.openModal(
       DetailComponent,
-      "60rem",
-      "",
       "45rem",
+      "",
+      "35rem",
       information,
       "",
       () => {

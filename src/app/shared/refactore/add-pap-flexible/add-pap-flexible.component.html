@@ -1,0 +1,302 @@
+<app-dialog-header 
+  title="{{ dialogTitle }}" 
+  icon="person_outline"
+  (close)="matDialogRef.close()">
+</app-dialog-header>
+
+<div class="flex flex-col p-4">
+  <form [formGroup]="initForm" class="w-full">
+    
+    <!-- Alerte statut -->
+    <div *ngIf="isToComplete()" class="mb-6 p-4 bg-orange-50 border-l-4 border-orange-500 rounded-lg">
+      <div class="flex items-start">
+        <svg class="w-5 h-5 text-orange-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+        </svg>
+        <div>
+          <p class="font-medium text-orange-800">PAP "À compléter"</p>
+          <p class="text-sm text-orange-700 mt-1">Seul le code PAP est obligatoire. Les autres données peuvent être ajoutées ultérieurement lors de la mise en œuvre.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 1: Informations de base -->
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">Informations de base</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Code PAP *</mat-label>
+          <input matInput formControlName="codePap" />
+          <mat-icon matSuffix class="text-gray-400">badge</mat-icon>
+          <mat-error *ngIf="initForm.get('codePap')?.hasError('required')">
+            Le code PAP est obligatoire
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Statut</mat-label>
+          <mat-select formControlName="statutCompletion">
+            <mat-option value="a_completer">À compléter</mat-option>
+            <mat-option value="complet">Complet</mat-option>
+          </mat-select>
+          <mat-icon matSuffix class="text-gray-400">check_circle</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Section 2: Identité -->
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">Identité (Optionnel)</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Prénom</mat-label>
+          <input matInput formControlName="prenom" />
+          <mat-icon matSuffix class="text-gray-400">person</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Nom</mat-label>
+          <input matInput formControlName="nom" />
+          <mat-icon matSuffix class="text-gray-400">person</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Sexe</mat-label>
+          <mat-select formControlName="sexe">
+            <mat-option value="Masculin">Masculin</mat-option>
+            <mat-option value="Féminin">Féminin</mat-option>
+          </mat-select>
+          <mat-icon matSuffix class="text-gray-400">wc</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Nationalité</mat-label>
+          <input matInput formControlName="nationalite" />
+          <mat-icon matSuffix class="text-gray-400">flag</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Situation matrimoniale</mat-label>
+          <input matInput formControlName="situationMatrimoniale" />
+          <mat-icon matSuffix class="text-gray-400">favorite</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Surnom</mat-label>
+          <input matInput formControlName="surnom" />
+          <mat-icon matSuffix class="text-gray-400">person_outline</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Photo -->
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Photo du PAP</label>
+        <div class="flex items-center gap-4">
+          <div class="relative">
+            <img [src]="imageToff || 'assets/images/users/user-dummy-img.jpg'"
+              class="w-20 h-20 rounded-full object-cover cursor-pointer border-2 border-gray-300"
+              (click)="openImageModal(imageToff)" />
+            <label for="photo-input" 
+              class="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-1.5 cursor-pointer hover:bg-blue-600 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+            </label>
+            <input id="photo-input" type="file" class="hidden" accept="image/png, image/jpeg, image/jpg" (change)="selectOnFile($event)">
+          </div>
+          <p class="text-sm text-gray-500">Cliquez sur l'icône pour ajouter une photo</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Localisation -->
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">Localisation (Optionnel)</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Commune</mat-label>
+          <input matInput formControlName="commune" />
+          <mat-icon matSuffix class="text-gray-400">location_city</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Département</mat-label>
+          <input matInput formControlName="departement" />
+          <mat-icon matSuffix class="text-gray-400">map</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Section 4: Contact -->
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">Contact (Optionnel)</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Numéro téléphone</mat-label>
+          <input matInput formControlName="numeroTelephone" />
+          <mat-icon matSuffix class="text-gray-400">phone</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Langue parlée</mat-label>
+          <input matInput formControlName="langueParlee" />
+          <mat-icon matSuffix class="text-gray-400">language</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Section 5: Informations socio-économiques -->
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">Informations socio-économiques (Optionnel)</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Niveau d'étude</mat-label>
+          <input matInput formControlName="niveauEtude" />
+          <mat-icon matSuffix class="text-gray-400">school</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Religion</mat-label>
+          <input matInput formControlName="religion" />
+          <mat-icon matSuffix class="text-gray-400">church</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Vulnérabilité</mat-label>
+          <input matInput formControlName="vulnerabilite" />
+          <mat-icon matSuffix class="text-gray-400">accessibility</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Membres du foyer</mat-label>
+          <input matInput type="number" formControlName="membreFoyer" />
+          <mat-icon matSuffix class="text-gray-400">groups</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Membres handicapés</mat-label>
+          <input matInput type="number" formControlName="membreFoyerHandicape" />
+          <mat-icon matSuffix class="text-gray-400">accessible_forward</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Type handicap</mat-label>
+          <input matInput formControlName="typeHandicape" />
+          <mat-icon matSuffix class="text-gray-400">accessible</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Section 6: Documents -->
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">Documents (Optionnel)</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Type pièce d'identité</mat-label>
+          <input matInput formControlName="typePni" />
+          <mat-icon matSuffix class="text-gray-400">badge</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Numéro pièce</mat-label>
+          <input matInput formControlName="numeroPni" />
+          <mat-icon matSuffix class="text-gray-400">numbers</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Section 7: Pertes -->
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">Pertes (Optionnel)</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Perte équipements</mat-label>
+          <input matInput type="number" formControlName="perteEquipement" />
+          <mat-icon matSuffix class="text-gray-400">build</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Perte bâtiments</mat-label>
+          <input matInput type="number" formControlName="perteBatiment" />
+          <mat-icon matSuffix class="text-gray-400">home</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Perte totale</mat-label>
+          <input matInput type="number" formControlName="perteTotale" />
+          <mat-icon matSuffix class="text-gray-400">account_balance</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Arbres jeunes</mat-label>
+          <input matInput type="number" formControlName="perteArbreJeune" />
+          <mat-icon matSuffix class="text-gray-400">eco</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Arbres adultes</mat-label>
+          <input matInput type="number" formControlName="perteArbreAdulte" />
+          <mat-icon matSuffix class="text-gray-400">park</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Total arbres</mat-label>
+          <input matInput type="number" formControlName="perteTotaleArbre" />
+          <mat-icon matSuffix class="text-gray-400">forest</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-full mt-4">
+        <mat-label>Évaluation de la perte</mat-label>
+        <textarea matInput formControlName="evaluationPerte" rows="3"></textarea>
+        <mat-icon matSuffix class="text-gray-400">assessment</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Section 8: Paiement -->
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b-2 border-gray-200">Paiement (Optionnel)</h3>
+      
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Option de paiement</mat-label>
+        <mat-select formControlName="optionPaiement">
+          <mat-option value="Chèque ou Fiche de retrait">Chèque ou Fiche de retrait</mat-option>
+          <mat-option value="Mise à disposition">Mise à disposition</mat-option>
+          <mat-option value="Virement bancaire">Virement bancaire</mat-option>
+        </mat-select>
+        <mat-icon matSuffix class="text-gray-400">account_balance_wallet</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="flex justify-end gap-3 mt-8 pt-4 border-t border-gray-200">
+      <button type="button" 
+        (click)="matDialogRef.close()"
+        class="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+        Annuler
+      </button>
+      <button type="button" 
+        [disabled]="loader || initForm.get('codePap')?.invalid"
+        (click)="checkRecap(action)"
+        class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        {{ labelButton }}
+      </button>
+    </div>
+  </form>
+</div>
+
+<app-loader-data *ngIf="loader"></app-loader-data>
