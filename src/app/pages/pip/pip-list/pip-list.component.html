@@ -1,37 +1,55 @@
-<div>
-  <app-page-title title="Liste des parties intéréssés par le projet" [breadcrumbItems]="breadCrumbItems"></app-page-title>
-</div>
-<div class=" row mb-2">
-  <div class="col-sm">
-    <div class="search-box me-2 d-inline-block">
-      <div class="position-relative">
-        <input type="text" class="form-control" autocomplete="off" id="searchTableList" placeholder="Search..."
-          (input)="filterTable($event)">
-        <i class="bx bx-search-alt search-icon"></i>
+<div class="container-fluid">
+
+  <!-- HEADER -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Nos parties intéressées</h3>
+
+    <button class="btn bgPrimaire" (click)="addItems()">
+      + Ajouter
+    </button>
+  </div>
+
+  <!-- A → Z -->
+  <div class="alphabet-bar">
+    <span
+      *ngFor="let letter of alphabet"
+      (click)="scrollTo(letter)"
+      class="alphabet-btn"
+    >
+      {{ letter }}
+    </span>
+  </div>
+
+  <!-- LOADER -->
+  <div *ngIf="loadData" class="text-center mt-4">
+    Chargement en cours...
+  </div>
+
+  <!-- LISTE -->
+  <div *ngFor="let letter of alphabet">
+
+    <div *ngIf="groupedData[letter]?.length">
+
+      <!-- LETTRE -->
+      <div [id]="letter" class="letter-title">
+        {{ letter }}
       </div>
-    </div>
-  </div>
-  <div class="col-sm-auto">
-    <div class="d-flex flex-wrap gap-2">
-      <button type="submit" class="btn bgPrimaire" (click)="addItems()"> <i class="mdi mdi-plus me-1"></i> Ajouter un
-        pip</button>
+
+      <!-- COLONNES -->
+      <div class="list-grid">
+
+        <div
+          *ngFor="let item of groupedData[letter]"
+          class="list-item"
+          (click)="openDetailModal(item)"
+        >
+          {{ item.libelle }}
+        </div>
+
+      </div>
 
     </div>
-    <input type="file" id="file-upload" (change)="fileUpload($event)" name="fileUpload" accept=".xls,.xlsx"
-      style="display: none;">
+
   </div>
+
 </div>
-
-<div class="absolute inset-x-0 bottom-0" *ngIf="loadData">
-  <div class="p-8 sm:p-16 border-t text-1xl font-semibold tracking-tight text-center">
-      Chargement en cours ...
-  </div>
-</div>
-
-<div style="z-index: 0" class="pt-3">
-  <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" [total]="length"
-    [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
-    (changePage)="pageChanged($event)"></tableau>
-</div>
-
-

@@ -85,6 +85,14 @@
       <div *ngIf="initForm.get('statut')!.invalid && initForm.get('statut')!.touched"
         class="field-error">Veuillez sélectionner un statut</div>
     </div>
+    <div class="form-section">
+        <mat-form-field class="field-full" appearance="outline">
+        <mat-label>Observation</mat-label>
+        <textarea matInput formControlName="observation"
+          placeholder="Décrivez les objectifs et livrables…"
+          rows="3" cdkTextareaAutosize cdkAutosizeMinRows="3"></textarea>
+      </mat-form-field>
+    </div>
 
     <!-- ── Section : Assignés ──────────────────────────── -->
     <div class="form-section no-border">
@@ -153,6 +161,7 @@
         </div>
       </div>
     </div>
+
 
   </form>
 

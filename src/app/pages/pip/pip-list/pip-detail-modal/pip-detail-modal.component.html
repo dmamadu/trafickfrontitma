@@ -1,0 +1,150 @@
+<div class="detail-modal-container">
+  <!-- En-tête avec dégradé -->
+  <div class="modal-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="bx bxs-building-house"></i>
+      </div>
+      <div class="header-info">
+        <h2>{{ pap.libelle }}</h2>
+        <div class="header-badges">
+          <span class="badge" [ngClass]="getStatusClass(pap.statut)">
+            <i class="bx bxs-badge-check"></i>
+            {{ pap.statut }}
+          </span>
+          <span class="badge badge-category">
+            <i class="bx bxs-category"></i>
+            {{ getCategorieLibelle(pap.categorie) }}
+          </span>
+        </div>
+      </div>
+      <button class="close-btn" (click)="close()">
+        <i class="bx bx-x"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Onglets -->
+  <mat-tab-group animationDuration="0ms" class="detail-tabs">
+    <!-- Onglet Informations générales -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="bx bxs-info-circle"></i>
+        <span>Informations</span>
+      </ng-template>
+      
+      <div class="tab-content">
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="info-label">
+              <i class="bx bxs-map-pin"></i>
+              Localisation
+            </div>
+            <div class="info-value">{{ pap.localisation || 'Non renseignée' }}</div>
+          </div>
+          
+          <div class="info-card">
+            <div class="info-label">
+              <i class="bx bxs-envelope"></i>
+              Courriel principal
+            </div>
+            <div class="info-value">
+              <a [href]="'mailto:' + pap.courrielPrincipal" class="email-link">
+                {{ pap.courrielPrincipal || 'Non renseigné' }}
+              </a>
+            </div>
+          </div>
+          
+          <div class="info-card">
+            <div class="info-label">
+              <i class="bx bxs-home"></i>
+              Adresse
+            </div>
+            <div class="info-value">{{ pap.adresse || 'Non renseignée' }}</div>
+          </div>
+          
+          <div class="info-card">
+            <div class="info-label">
+              <i class="bx bxs-hash"></i>
+              Identifiant
+            </div>
+            <div class="info-value">#{{ pap.id }}</div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Onglet Contacts -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="bx bxs-user-detail"></i>
+        <span>Contacts</span>
+        <span class="tab-badge" *ngIf="pap.contacts?.length">
+          {{ pap.contacts.length }}
+        </span>
+      </ng-template>
+      
+      <div class="tab-content">
+        <div *ngIf="pap.contacts && pap.contacts.length > 0; else noContacts">
+          <div class="contacts-list">
+            <div class="contact-card" *ngFor="let contact of pap.contacts; let i = index">
+              <div class="contact-avatar">
+                <i class="bx bxs-user-circle"></i>
+              </div>
+              <div class="contact-info">
+                <h4>{{ contact.nomContactPrincipal }} {{ contact.prenomContactPrincipal }}</h4>
+                <div class="contact-details">
+                  <div class="contact-detail" *ngIf="contact.emailContactPrincipal">
+                    <i class="bx bx-envelope"></i>
+                    <a [href]="'mailto:' + contact.emailContactPrincipal">{{ contact.emailContactPrincipal }}</a>
+                  </div>
+                  <div class="contact-detail" *ngIf="contact.telephoneContactPrincipal">
+                    <i class="bx bx-phone"></i>
+                    <a [href]="'tel:' + contact.telephoneContactPrincipal">{{ contact.telephoneContactPrincipal }}</a>
+                  </div>
+                  <div class="contact-detail" *ngIf="contact.adresseContactPrincipal">
+                    <i class="bx bx-map"></i>
+                    <span>{{ contact.adresseContactPrincipal }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ng-template #noContacts>
+          <div class="empty-state">
+            <i class="bx bxs-user-x"></i>
+            <p>Aucun contact enregistré</p>
+          </div>
+        </ng-template>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <!-- Footer avec actions -->
+  <!-- <div class="modal-footer">
+    <button class="btn-secondary" (click)="close()">
+      <i class="bx bx-x"></i>
+      Fermer
+    </button>
+    <button class="btn-primary" (click)="refresh()">
+      <i class="bx bx-refresh"></i>
+      Actualiser
+    </button>
+  </div> -->
+  <!-- Footer avec actions -->
+<div class="modal-footer">
+  <button class="btn-secondary" (click)="close()">
+    <i class="bx bx-x"></i>
+    Fermer
+  </button>
+  <button class="btn-edit" (click)="edit()">
+    <i class="bx bxs-edit"></i>
+    Modifier
+  </button>
+  <button class="btn-primary" (click)="refresh()">
+    <i class="bx bx-refresh"></i>
+    Actualiser
+  </button>
+</div>
+</div>

@@ -1,0 +1,66 @@
+/* 🔤 Barre alphabet */
+.alphabet-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.alphabet-btn {
+  background-color: #6aa84f;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 2px;
+  min-width: 32px;
+  text-align: center;
+}
+
+.alphabet-btn:hover {
+  background-color: #5a9442;
+}
+
+/* 🔠 Titre lettre */
+.letter-title {
+  margin-top: 25px;
+  margin-bottom: 10px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #6aa84f;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+
+/* 📦 Liste en colonnes */
+.list-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px 40px;
+}
+
+/* 📄 Item */
+.list-item {
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.list-item:hover {
+  color: #6aa84f;
+  text-decoration: underline;
+}
+
+/* 📱 Responsive */
+@media (max-width: 992px) {
+  .list-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .list-grid {
+    grid-template-columns: 1fr;
+  }
+}

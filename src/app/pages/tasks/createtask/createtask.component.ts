@@ -92,6 +92,7 @@ export class CreatetaskComponent implements OnInit {
     dateFin:      this.fb.control<string | null>(null, Validators.required),
     statut:       this.fb.control<string | null>(null, Validators.required),
     utilisateurs: this.fb.array([]),
+    observation:  this.fb.control<string | null>(null),
   });
 
   // Options statut avec couleurs Jibili
@@ -145,6 +146,8 @@ export class CreatetaskComponent implements OnInit {
       dateDebut:   data.dateDebut,
       dateFin:     data.dateFin,
       statut:      data.statut,
+      observation: data.observation,
+
     });
     if (data.utilisateurs?.length) {
       this.usersToUpdate = data.utilisateurs;

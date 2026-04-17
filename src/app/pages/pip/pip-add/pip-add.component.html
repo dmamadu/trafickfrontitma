@@ -1,4 +1,4 @@
-<mat-toolbar class="mat-accent m-0 backToolbar">
+<!-- <mat-toolbar class="mat-accent m-0 backToolbar">
   <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
     <span class="c_title dialog-title">{{ dialogTitle }}</span>
     <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
@@ -65,10 +65,8 @@
       <mat-step label="Contacts Principals" [completed]="contacts.data.length > 0">
         <label for="">Ajouter ici ses répresentants physiques</label>
         <form [formGroup]="contactForm">
-          <!-- Conteneur pour les éléments fixes en haut -->
           <div class="fixed-top">
             <div class="flex gap-2">
-              <!-- Champs du contact principal -->
               <mat-form-field class="w-1/2 mt-2" appearance="outline">
                 <mat-label class="enteteccColor">Nom</mat-label>
                 <input matInput type="text" formControlName="nomContactPrincipal" />
@@ -83,24 +81,6 @@
                 <mat-error>Le champ est obligatoire</mat-error>
               </mat-form-field>
             </div>
-
-            <!-- <div class="flex gap-2">
-            <mat-form-field class="w-1/2 mt-2" appearance="outline">
-              <mat-label class="enteteccColor">Adresse</mat-label>
-              <input matInput type="text" formControlName="adresseContactPrincipal" />
-              <mat-icon matSuffix class="enteteccColor">home</mat-icon>
-              <mat-error>Le champ est obligatoire</mat-error>
-            </mat-form-field>
-
-            <mat-form-field class="w-1/2 mt-2" appearance="outline">
-              <mat-label class="enteteccColor">Sexe</mat-label>
-              <mat-select formControlName="sexeContactPrincipal">
-                <mat-option *ngFor="let sexe of sexeOptions" [value]="sexe?.id">{{ sexe?.name }}</mat-option>
-              </mat-select>
-              <mat-icon matSuffix class="secondary-text">person</mat-icon>
-              <mat-error>Le champ est obligatoire</mat-error>
-            </mat-form-field>
-          </div> -->
 
             <div class="flex gap-2">
               <mat-form-field class="w-1/2 mt-2" appearance="outline">
@@ -124,66 +104,30 @@
             </div>
           </div>
 
-          <!-- Conteneur pour le tableau avec défilement -->
-          <!-- <div class="scrollable-table">
-            <div class="contact-table mt-4" style="height: 150px; overflow-y: auto;">
-              <table mat-table [dataSource]="contacts" style="width: 100%; table-layout: fixed;">
-                <ng-container matColumnDef="nom">
-                  <th mat-header-cell *matHeaderCellDef> Nom </th>
-                  <td mat-cell *matCellDef="let contact">{{ contact.nomContactPrincipal }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="prenom">
-                  <th mat-header-cell *matHeaderCellDef> Prénom </th>
-                  <td mat-cell *matCellDef="let contact">{{ contact.prenomContactPrincipal }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="email">
-                  <th mat-header-cell *matHeaderCellDef> Email </th>
-                  <td mat-cell *matCellDef="let contact">{{ contact.emailContactPrincipal }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="telephone">
-                  <th mat-header-cell *matHeaderCellDef> Téléphone </th>
-                  <td mat-cell *matCellDef="let contact">{{ contact.telephoneContactPrincipal }}</td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-              </table>
-            </div>
-          </div> -->
-
-          <!-- Dans la section du tableau -->
 <div class="scrollable-table">
   <div class="contact-table mt-4" style="height: 150px; overflow-y: auto;">
     <table mat-table [dataSource]="contacts" style="width: 100%; table-layout: fixed;">
       
-      <!-- Colonne Nom -->
       <ng-container matColumnDef="nom">
         <th mat-header-cell *matHeaderCellDef> Nom </th>
         <td mat-cell *matCellDef="let contact">{{ contact.nomContactPrincipal }}</td>
       </ng-container>
 
-      <!-- Colonne Prénom -->
       <ng-container matColumnDef="prenom">
         <th mat-header-cell *matHeaderCellDef> Prénom </th>
         <td mat-cell *matCellDef="let contact">{{ contact.prenomContactPrincipal }}</td>
       </ng-container>
 
-      <!-- Colonne Email -->
       <ng-container matColumnDef="email">
         <th mat-header-cell *matHeaderCellDef> Email </th>
         <td mat-cell *matCellDef="let contact">{{ contact.emailContactPrincipal }}</td>
       </ng-container>
 
-      <!-- Colonne Téléphone -->
       <ng-container matColumnDef="telephone">
         <th mat-header-cell *matHeaderCellDef> Téléphone </th>
         <td mat-cell *matCellDef="let contact">{{ contact.telephoneContactPrincipal }}</td>
       </ng-container>
 
-      <!-- Colonne Actions -->
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef> Actions </th>
         <td mat-cell *matCellDef="let contact; let i = index" class="actions-cell">
@@ -196,16 +140,13 @@
         </td>
       </ng-container>
 
-      <!-- Ligne d'en-tête -->
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       
-      <!-- Lignes de données -->
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
   </div>
 </div>
 
-          <!-- Boutons de navigation -->
           <div class="flex justify-center gap-4 mt-4">
             <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
               <span class="textForm">Retour</span>
@@ -216,23 +157,6 @@
           </div>
         </form>
       </mat-step>
-
-      <mat-step label="Normes" [completed]="initForm.get('normes')?.valid">
-        <div class="flex gap-2">
-          <textarea name="" id="" [rows]="7" formControlName="normes" class="typeTitle w-full"
-            placeholder="norme de l'organisation" matInput appearance="outline"
-            style="border: 1px solid black; padding: 10px; border-radius: 5px;"></textarea>
-        </div>
-        <div class="flex justify-center gap-4 mt-3">
-          <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
-            <span class="textForm">Retour</span>
-          </button>&nbsp;
-          <button matStepperNext mat-raised-button class="submit-button">
-            <span class="textForm">Suivant</span>
-          </button>
-        </div>
-      </mat-step>
-
       <mat-step label="Récapitulatif">
         <mat-accordion>
           <div class="flex flex-col w-full p-8">
@@ -283,36 +207,30 @@
 
               <hr class="w-full border-t my-6">
 
-              <!-- Tableau des contacts -->
-          <!-- Dans la section Récapitulatif -->
+           
 <div class="mt-2 contact-table">
   <mat-table [dataSource]="contacts" style="width: 100%;">
     
-    <!-- Colonne Nom -->
     <ng-container matColumnDef="nom">
       <th mat-header-cell *matHeaderCellDef>Nom</th>
       <td mat-cell *matCellDef="let contact">{{ contact.nomContactPrincipal }}</td>
     </ng-container>
 
-    <!-- Colonne Prénom -->
     <ng-container matColumnDef="prenom">
       <th mat-header-cell *matHeaderCellDef>Prénom</th>
       <td mat-cell *matCellDef="let contact">{{ contact.prenomContactPrincipal }}</td>
     </ng-container>
 
-    <!-- Colonne Email -->
     <ng-container matColumnDef="email">
       <th mat-header-cell *matHeaderCellDef>Email</th>
       <td mat-cell *matCellDef="let contact">{{ contact.emailContactPrincipal }}</td>
     </ng-container>
 
-    <!-- Colonne Téléphone -->
     <ng-container matColumnDef="telephone">
       <th mat-header-cell *matHeaderCellDef>Téléphone</th>
       <td mat-cell *matCellDef="let contact">{{ contact.telephoneContactPrincipal }}</td>
     </ng-container>
 
-    <!-- Colonne Actions -->
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Actions</th>
       <td mat-cell *matCellDef="let contact; let i = index">
@@ -332,27 +250,6 @@
             </mat-expansion-panel>
 
 
-            <mat-expansion-panel class="" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-              <mat-expansion-panel-header class="w-full">
-                <div class="w-full flex rec">
-                  <div class="titleRecap">Normes</div>
-                  <button class="butSearchs" mat-icon-button>
-                    <i class="bx bx-edit icon-size-4 collapseButton c_colorIcom" (click)="goToStep(2)"></i>
-                  </button>
-                </div>
-              </mat-expansion-panel-header>
-              <hr class="w-full border-t my-6">
-              <div class="flex flex-auto w-full mt-2 cSize">
-                <div class="flex flex-col w-full">
-                  <div class="flex items-center recapCss">
-                    <span class="">Normes: </span>
-                    <span class="leading-none font-bold">
-                      {{ (initForm?.get('normes')?.value) }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </mat-expansion-panel>
           </div>
         </mat-accordion>
         <div class="">
@@ -369,6 +266,264 @@
           </button>
         </div>
       </mat-step>
+    </mat-stepper>
+  </form>
+</div> -->
+
+<mat-toolbar class="mat-accent m-0 backToolbar">
+  <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
+    <span class="c_title dialog-title">{{ dialogTitle }}</span>
+    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<div class="flex flex-col flex-auto min-w-10-0 p-2 md:p-4">
+  <form [formGroup]="initForm" class="event-form w-100-p">
+    <mat-stepper #stepper linear (selectionChange)="onStepChange($event)">
+      
+      <!-- Étape 1: Informations -->
+      <mat-step label="Informations" [completed]="firstStep()">
+        <div class="flex gap-2">
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label>Libelle</mat-label>
+            <input matInput type="text" formControlName="libelle" />
+            <mat-icon matSuffix>business</mat-icon>
+            <mat-error>Le champ est obligatoire</mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label>Statut</mat-label>
+            <input matInput type="text" formControlName="statut" />
+            <mat-icon matSuffix>flag</mat-icon>
+            <mat-error>Le champ est obligatoire</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="flex gap-2">
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label>Courriel Principal</mat-label>
+            <input matInput type="email" formControlName="courrielPrincipal" />
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error>Email valide requis</mat-error>
+          </mat-form-field>
+          
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label>Adresse</mat-label>
+            <input matInput type="text" formControlName="adresse" />
+            <mat-icon matSuffix>home</mat-icon>
+            <mat-error>Le champ est obligatoire</mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="flex gap-2">
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label>Localisation</mat-label>
+            <input matInput type="text" formControlName="localisation" />
+            <mat-icon matSuffix>place</mat-icon>
+            <mat-error>Le champ est obligatoire</mat-error>
+          </mat-form-field>
+
+          <!-- Champ Catégorie avec gestion d'erreur -->
+          <mat-form-field class="w-1/2 mt-2" appearance="outline">
+            <mat-label>Catégorie</mat-label>
+            
+            <!-- Loader pendant le chargement -->
+            <mat-select formControlName="categorie" [disabled]="isLoadingCategories">
+              <mat-option *ngIf="isLoadingCategories" disabled>
+                Chargement des catégories...
+              </mat-option>
+              <mat-option *ngFor="let cat of categories" [value]="cat.id">
+                {{ cat.libelle }}
+              </mat-option>
+            </mat-select>
+            
+            <mat-icon matSuffix>category</mat-icon>
+            
+            <!-- Message d'erreur si chargement échoué -->
+            <mat-hint *ngIf="categoriesLoadError" class="error-hint">
+              ⚠️ Utilisation des catégories par défaut
+            </mat-hint>
+            
+            <mat-error>La catégorie est obligatoire</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Bouton rafraîchir les catégories (optionnel) -->
+        <div class="flex justify-end mb-2" *ngIf="categoriesLoadError">
+          <button type="button" mat-button (click)="refreshCategories()" class="text-primary">
+            <mat-icon>refresh</mat-icon>
+            Rafraîchir les catégories
+          </button>
+        </div>
+
+        <div class="flex justify-center gap-4 mt-4">
+          <button mat-raised-button matDialogClose class="submit-buttonRed" type="button">
+            <span>Annuler</span>
+          </button>
+          <button mat-raised-button class="submit-button" matStepperNext type="button">
+            <span>Suivant</span>
+          </button>
+        </div>
+      </mat-step>
+
+      <!-- Étape 2: Contacts -->
+      <mat-step label="Contacts" [completed]="contacts.data.length > 0">
+        <div class="contact-section">
+          <h4 class="mb-3">Ajouter un représentant</h4>
+          
+          <form [formGroup]="contactForm">
+            <div class="flex gap-2">
+              <mat-form-field class="w-1/2" appearance="outline">
+                <mat-label>Nom</mat-label>
+                <input matInput formControlName="nomContactPrincipal" />
+                <mat-error>Obligatoire</mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="w-1/2" appearance="outline">
+                <mat-label>Prénom</mat-label>
+                <input matInput formControlName="prenomContactPrincipal" />
+                <mat-error>Obligatoire</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="flex gap-2">
+              <mat-form-field class="w-1/2" appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" formControlName="emailContactPrincipal" />
+                <mat-error>Email valide requis</mat-error>
+              </mat-form-field>
+
+              <mat-form-field class="w-1/2" appearance="outline">
+                <mat-label>Téléphone</mat-label>
+                <input matInput type="tel" formControlName="telephoneContactPrincipal" />
+                <mat-error>Obligatoire</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="flex justify-center gap-4 mt-2">
+              <button mat-raised-button type="button" (click)="addContact()" class="submit-button">
+                <mat-icon>add</mat-icon>
+                {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
+              </button>
+              <button *ngIf="isEditing" mat-raised-button type="button" (click)="cancelEdit()" class="submit-buttonRed">
+                Annuler modification
+              </button>
+            </div>
+          </form>
+
+          <!-- Liste des contacts -->
+          <div class="mt-4" *ngIf="contacts.data.length > 0">
+            <h4 class="mb-2">Représentants ({{ contacts.data.length }})</h4>
+            <div class="contact-table" style="max-height: 250px; overflow-y: auto">
+              <table mat-table [dataSource]="contacts" class="w-full">
+                <ng-container matColumnDef="nom">
+                  <th mat-header-cell *matHeaderCellDef>Nom</th>
+                  <td mat-cell *matCellDef="let contact">{{ contact.nomContactPrincipal }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="prenom">
+                  <th mat-header-cell *matHeaderCellDef>Prénom</th>
+                  <td mat-cell *matCellDef="let contact">{{ contact.prenomContactPrincipal }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="email">
+                  <th mat-header-cell *matHeaderCellDef>Email</th>
+                  <td mat-cell *matCellDef="let contact">{{ contact.emailContactPrincipal }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="telephone">
+                  <th mat-header-cell *matHeaderCellDef>Téléphone</th>
+                  <td mat-cell *matCellDef="let contact">{{ contact.telephoneContactPrincipal }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Actions</th>
+                  <td mat-cell *matCellDef="let contact; let i = index">
+                    <button mat-icon-button (click)="editContact(contact, i)" matTooltip="Modifier">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="deleteContact(i)" matTooltip="Supprimer" color="warn">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="flex justify-center gap-4 mt-4">
+            <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
+              Retour
+            </button>
+            <button mat-raised-button class="submit-button" matStepperNext type="button">
+              Suivant
+            </button>
+          </div>
+        </div>
+      </mat-step>
+
+      <!-- Étape 3: Récapitulatif -->
+      <mat-step label="Récapitulatif">
+        <mat-accordion>
+          <mat-expansion-panel expanded>
+            <mat-expansion-panel-header>
+              <div class="flex justify-between items-center w-full">
+                <span class="font-bold">Informations générales</span>
+                <button mat-icon-button (click)="goToStep(0)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            </mat-expansion-panel-header>
+            
+            <div class="grid grid-cols-2 gap-4 p-4">
+              <div><strong>Libelle:</strong> {{ initForm?.get('libelle')?.value }}</div>
+              <div><strong>Statut:</strong> {{ initForm?.get('statut')?.value }}</div>
+              <div><strong>Email:</strong> {{ initForm?.get('courrielPrincipal')?.value }}</div>
+              <div><strong>Adresse:</strong> {{ initForm?.get('adresse')?.value }}</div>
+              <div><strong>Localisation:</strong> {{ initForm?.get('localisation')?.value }}</div>
+              <div><strong>Catégorie:</strong> {{ getCategorieLabel(initForm?.get('categorie')?.value) }}</div>
+            </div>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <div class="flex justify-between items-center w-full">
+                <span class="font-bold">Contacts ({{ contacts.data.length }})</span>
+                <button mat-icon-button (click)="goToStep(1)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            </mat-expansion-panel-header>
+            
+            <div class="p-4">
+              <div *ngFor="let contact of contacts.data; let i = index" class="contact-item mb-3 p-2 border rounded">
+                <div><strong>{{ contact.nomContactPrincipal }} {{ contact.prenomContactPrincipal }}</strong></div>
+                <div>✉️ {{ contact.emailContactPrincipal }}</div>
+                <div>📞 {{ contact.telephoneContactPrincipal }}</div>
+              </div>
+              <div *ngIf="contacts.data.length === 0" class="text-center text-muted">
+                Aucun contact ajouté
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+
+        <div class="flex justify-center gap-4 mt-4">
+          <button mat-raised-button class="submit-buttonRed" matStepperPrevious type="button">
+            Retour
+          </button>
+          <button mat-raised-button class="submit-button" [disabled]="loader" (click)="checkRecap(action)">
+            <mat-spinner *ngIf="loader" diameter="20" class="inline-block mr-2"></mat-spinner>
+            {{ labelButton }}
+          </button>
+        </div>
+      </mat-step>
+      
     </mat-stepper>
   </form>
 </div>
