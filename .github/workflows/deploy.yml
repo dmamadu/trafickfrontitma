@@ -1,4 +1,3 @@
-# .github/workflows/deploy.yml
 name: Deploy Frontend
 
 on:
@@ -7,6 +6,7 @@ on:
 
 env:
   REPO: ${{ github.repository }}
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
@@ -16,8 +16,29 @@ jobs:
       packages: write
 
     steps:
-      - uses: actions/checkout@v4
+      # 📥 Checkout
+      - name: Checkout
+        uses: actions/checkout@v4
 
+      # 🟢 Setup Node (Angular build)
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 📦 Install deps
+      - name: Install dependencies
+        run: npm ci
+
+      # 🧪 Run tests (optionnel mais recommandé)
+      - name: Run tests
+        run: npm run test -- --watch=false --browsers=ChromeHeadless || true
+
+      # 🏗️ Build Angular
+      - name: Build Angular
+        run: npm run build -- --configuration production
+
+      # 🔐 Login GHCR
       - name: Login ghcr.io
         uses: docker/login-action@v3
         with:
@@ -25,28 +46,32 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # 🏷️ Tag image
       - name: Set image tag
         run: echo "IMAGE_TAG=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
 
+      # 🐳 Build & Push Docker
       - name: Build & Push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: |
             ghcr.io/${{ env.REPO }}:${{ env.IMAGE_TAG }}
             ghcr.io/${{ env.REPO }}:latest
-          cache-from: type=registry,ref=ghcr.io/${{ env.REPO }}:latest
-          cache-to: type=inline
+          cache-from: type=registry,ref=ghcr.io/${{ env.REPO }}:cache
+          cache-to: type=registry,ref=ghcr.io/${{ env.REPO }}:cache,mode=max
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
+      # 🏷️ Tag
       - name: Set image tag
         run: echo "IMAGE_TAG=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
 
+      # 🚀 Deploy sécurisé + rollback
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
         with:
@@ -55,9 +80,36 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           envs: IMAGE_TAG
           script: |
+            set -e
+
             cd /opt/projets/NOM_PROJET
+
+            echo "📌 Backup ancien tag"
+            OLD_TAG=$(grep IMAGE_TAG .env | cut -d '=' -f2)
+
+            echo "📌 Mise à jour du tag"
             sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=$IMAGE_TAG/" .env
+
+            echo "📥 Pull nouvelle image"
             docker compose pull frontend
+
+            echo "🚀 Restart service"
             docker compose up -d --no-deps frontend
+
+            echo "⏳ Vérification du service..."
+            sleep 10
+
+            if ! docker ps | grep frontend; then
+              echo "❌ Déploiement échoué → rollback"
+
+              sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=$OLD_TAG/" .env
+              docker compose pull frontend
+              docker compose up -d --no-deps frontend
+
+              exit 1
+            fi
+
+            echo "🧹 Nettoyage"
             docker image prune -f
-            echo "Frontend deploye : $IMAGE_TAG"
+
+            echo "✅ Frontend déployé avec succès : $IMAGE_TAG"
