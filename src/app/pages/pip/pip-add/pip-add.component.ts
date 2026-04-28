@@ -658,16 +658,7 @@ export class PipAddComponent implements OnInit {
     this.isLoadingCategories = false;
     this.categoriesLoadError = true;
     
-    // this.categories = [
-    //   { id: 1, libelle: "🏭 Agricole" },
-    //   { id: 2, libelle: "⛏️ Minière" },
-    //   { id: 3, libelle: "🏭 Industrielle" },
-    //   { id: 4, libelle: "🏪 Commerciale" },
-    //   { id: 5, libelle: "💼 Services" },
-    //   { id: 6, libelle: "🏗️ BTP" },
-    //   { id: 7, libelle: "🚚 Transport" },
-    //   { id: 8, libelle: "💻 Technologie" },
-    // ];
+  
     this.categories = [
   { id: 1, libelle: "🏢 Entreprise" },
   { id: 2, libelle: "📰 Média" },

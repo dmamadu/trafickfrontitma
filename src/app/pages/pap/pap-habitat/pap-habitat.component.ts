@@ -21,6 +21,8 @@ import {
 } from "@angular/material/dialog";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { Pap } from "../pap.model";
 import { PapService } from "../pap.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
@@ -126,18 +128,16 @@ export class PapHabitatComponent implements OnInit, OnDestroy {
       type: "primary",
     },
     {
-      label: "Exporter PDF",
-      icon: "file-pdf",
-      action: "export-pdf",
-      type: "secondary",
-      visible: false,
-    },
-    {
       label: "Exporter Excel",
       icon: "table-chart",
       action: "export-excel",
-      type: "secondary",
-      visible: false,
+      type: "success",
+    },
+    {
+      label: "Exporter PDF",
+      icon: "file-pdf",
+      action: "export-pdf",
+      type: "danger",
     },
   ];
 
@@ -292,11 +292,11 @@ export class PapHabitatComponent implements OnInit, OnDestroy {
       case "import":
         this.triggerFileUpload();
         break;
-      case "export-pdf":
-        this.exportAs("pdf");
-        break;
       case "export-excel":
-        this.exportAs("excel");
+        this.exportToExcel();
+        break;
+      case "export-pdf":
+        this.exportToPdf();
         break;
     }
   }
@@ -489,8 +489,67 @@ export class PapHabitatComponent implements OnInit, OnDestroy {
     );
   }
 
-  private exportAs(format: string): void {
-    console.log(`Exporting as ${format}`);
-    // TODO: Implement export logic
+  exportToExcel(): void {
+    if (!this.datas.length) {
+      this.toastr.warning("La liste est vide.");
+      return;
+    }
+    const rows = this.datas.map((item: any) => ({
+      "Code PAP":               item.codePap              || "",
+      "Code Habitat":           item.codeHabitat          || "",
+      "Prénom":                 item.prenom               || "",
+      "Nom":                    item.nom                  || "",
+      "Sexe":                   item.sexe                 || "",
+      "Téléphone":              item.numeroTelephone      || "",
+      "Commune":                item.commune              || "",
+      "Département":            item.departement          || "",
+      "Nationalité":            item.nationalite          || "",
+      "Situation Matrimoniale": item.situationMatrimoniale || "",
+      "Statut PAP":             item.statutPap            || "",
+      "Vulnérabilité":          item.vulnerabilite        || "",
+      "Perte Totale (FCFA)":    item.perteTotale          ?? "",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook  = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "PAP Habitat");
+    worksheet["!cols"] = [15,15,15,15,8,15,15,15,12,20,12,15,16].map(w => ({ wch: w }));
+    XLSX.writeFile(workbook, "pap-habitat.xlsx");
+    this.toastr.success("Export Excel réussi.");
+  }
+
+  exportToPdf(): void {
+    if (!this.datas.length) {
+      this.toastr.warning("La liste est vide.");
+      return;
+    }
+    const doc = new jsPDF({ orientation: "landscape" });
+    doc.setFontSize(13);
+    doc.text("Liste des PAP – Habitat", 14, 14);
+    doc.setFontSize(8);
+    doc.text(`Généré le ${new Date().toLocaleDateString("fr-FR")} — Total : ${this.datas.length} enregistrement(s)`, 14, 20);
+
+    autoTable(doc, {
+      startY: 25,
+      head: [["Code PAP", "Code Habitat", "Prénom", "Nom", "Sexe", "Téléphone", "Commune", "Statut", "Vulnérabilité", "Perte (FCFA)"]],
+      body: this.datas.map((item: any) => [
+        item.codePap         || "",
+        item.codeHabitat     || "",
+        item.prenom          || "",
+        item.nom             || "",
+        item.sexe            || "",
+        item.numeroTelephone || "",
+        item.commune         || "",
+        item.statutPap       || "",
+        item.vulnerabilite   || "",
+        item.perteTotale != null ? item.perteTotale.toLocaleString("fr-FR") : "",
+      ]),
+      styles:             { fontSize: 7, cellPadding: 2 },
+      headStyles:         { fillColor: [39, 174, 96], textColor: 255, fontStyle: "bold" },
+      alternateRowStyles: { fillColor: [245, 245, 245] },
+    });
+
+    doc.save("pap-habitat.pdf");
+    this.toastr.success("Export PDF réussi.");
   }
 }

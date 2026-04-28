@@ -487,27 +487,42 @@ ngOnDestroy() {
       );
   }
 
-  roles: string[] = [];
+  roles: any[] = [];
 
+  private readonly DEFAULT_FONCTIONS: any[] = [
+    { id: 'Chef de Mission',             libelle: 'Chef de Mission' },
+    { id: 'Consultant Principal',        libelle: 'Consultant Principal' },
+    { id: 'Expert Social',               libelle: 'Expert Social' },
+    { id: 'Expert Environnemental',      libelle: 'Expert Environnemental' },
+    { id: 'Expert Foncier',              libelle: 'Expert Foncier' },
+    { id: 'Expert Juridique',            libelle: 'Expert Juridique' },
+    { id: 'Expert en Genre',             libelle: 'Expert en Genre' },
+    { id: 'Sociologue',                  libelle: 'Sociologue' },
+    { id: 'Topographe',                  libelle: 'Topographe' },
+    { id: 'Coordinateur de Terrain',     libelle: 'Coordinateur de Terrain' },
+    { id: 'Chargé de Communication',     libelle: 'Chargé de Communication' },
+    { id: 'Chargé de Suivi-Évaluation',  libelle: 'Chargé de Suivi-Évaluation' },
+  ];
 
-    getFonctions() {
-      return this.parentService
-        .list('fonctions', 1000, 0)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(
-          (data: any) => {
-            if (data["responseCode"] == 200) {
-              console.log(data);
-              this.roles = data["data"];
-              this._changeDetectorRef.markForCheck();
-            } else {
-            }
-          },
-          (err) => {
-            console.log(err);
+  getFonctions(): void {
+    this.parentService
+      .list('fonctions', 1000, 0)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        (data: any) => {
+          if (data['responseCode'] === 200 && data['data']?.length > 0) {
+            this.roles = data['data'];
+          } else {
+            this.roles = this.DEFAULT_FONCTIONS;
           }
-        );
-    }
+          this._changeDetectorRef.markForCheck();
+        },
+        () => {
+          this.roles = this.DEFAULT_FONCTIONS;
+          this._changeDetectorRef.markForCheck();
+        }
+      );
+  }
 
 
 

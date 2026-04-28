@@ -594,6 +594,8 @@ import {
 } from "@angular/material/dialog";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { Pap } from "../pap.model";
 import { PapService } from "../pap.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
@@ -700,18 +702,16 @@ export class PapPlaceAffaireComponent implements OnInit, OnDestroy {
       type: "success",
     },
     {
-      label: "Exporter PDF",
-      icon: "picture_as_pdf",
-      action: "export-pdf",
-      type: "secondary",
-      visible: false,
-    },
-    {
       label: "Exporter Excel",
       icon: "table_chart",
       action: "export-excel",
-      type: "secondary",
-      visible: false,
+      type: "success",
+    },
+    {
+      label: "Exporter PDF",
+      icon: "picture_as_pdf",
+      action: "export-pdf",
+      type: "danger",
     },
   ];
 
@@ -1026,11 +1026,11 @@ export class PapPlaceAffaireComponent implements OnInit, OnDestroy {
       case "import":
         this.triggerFileUpload();
         break;
-      case "export-pdf":
-        this.exportAs("pdf");
-        break;
       case "export-excel":
-        this.exportAs("excel");
+        this.exportToExcel();
+        break;
+      case "export-pdf":
+        this.exportToPdf();
         break;
     }
   }
@@ -1049,9 +1049,68 @@ export class PapPlaceAffaireComponent implements OnInit, OnDestroy {
     );
   }
 
-  // Note: exportAs method needs to be implemented based on your requirements
-  private exportAs(format: string): void {
-    console.log(`Exporting as ${format}`);
-    // Implement export logic
+  exportToExcel(): void {
+    if (!this.datas.length) {
+      this.toastr.warning("La liste est vide.");
+      return;
+    }
+    const rows = this.datas.map((item: any) => ({
+      "Code PAP":             item.codePap            || "",
+      "Code Place Affaire":   item.codePlaceAffaire   || "",
+      "Prénom":               item.prenom             || "",
+      "Nom":                  item.nom                || "",
+      "Sexe":                 item.sexe               || "",
+      "Téléphone":            item.numeroTelephone    || "",
+      "Commune":              item.commune            || "",
+      "Département":          item.departement        || "",
+      "Nationalité":          item.nationalite        || "",
+      "Activité Principale":  item.activitePrincipale || "",
+      "Situation Matrimoniale": item.situationMatrimoniale || "",
+      "Statut PAP":           item.statutPap          || "",
+      "Vulnérabilité":        item.vulnerabilite      || "",
+      "Perte Totale (FCFA)":  item.perteTotale        ?? "",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook  = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "PAP Places Affaires");
+    worksheet["!cols"] = [20,20,15,15,8,15,15,15,12,20,20,12,15,16].map(w => ({ wch: w }));
+    XLSX.writeFile(workbook, "pap-places-affaires.xlsx");
+    this.toastr.success("Export Excel réussi.");
+  }
+
+  exportToPdf(): void {
+    if (!this.datas.length) {
+      this.toastr.warning("La liste est vide.");
+      return;
+    }
+    const doc = new jsPDF({ orientation: "landscape" });
+    doc.setFontSize(13);
+    doc.text("Liste des PAP – Places Affaires / Économiques", 14, 14);
+    doc.setFontSize(8);
+    doc.text(`Généré le ${new Date().toLocaleDateString("fr-FR")} — Total : ${this.datas.length} enregistrement(s)`, 14, 20);
+
+    autoTable(doc, {
+      startY: 25,
+      head: [["Code PAP", "Code PA", "Prénom", "Nom", "Sexe", "Téléphone", "Commune", "Statut", "Vulnérabilité", "Perte (FCFA)"]],
+      body: this.datas.map((item: any) => [
+        item.codePap            || "",
+        item.codePlaceAffaire   || "",
+        item.prenom             || "",
+        item.nom                || "",
+        item.sexe               || "",
+        item.numeroTelephone    || "",
+        item.commune            || "",
+        item.statutPap          || "",
+        item.vulnerabilite      || "",
+        item.perteTotale != null ? item.perteTotale.toLocaleString("fr-FR") : "",
+      ]),
+      styles:          { fontSize: 7, cellPadding: 2 },
+      headStyles:      { fillColor: [41, 128, 185], textColor: 255, fontStyle: "bold" },
+      alternateRowStyles: { fillColor: [245, 245, 245] },
+    });
+
+    doc.save("pap-places-affaires.pdf");
+    this.toastr.success("Export PDF réussi.");
   }
 }

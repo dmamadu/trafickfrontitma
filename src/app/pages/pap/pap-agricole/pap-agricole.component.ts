@@ -296,11 +296,11 @@ export class PapAgricoleComponent implements OnInit,OnDestroy {
       case "import":
         this.triggerFileUpload();
         break;
-      case "export-pdf":
-        this.exportAs("pdf");
-        break;
       case "export-excel":
-        this.exportAs("excel");
+        this.exportToExcel();
+        break;
+      case "export-pdf":
+        this.exportToPdf();
         break;
     }
   }
@@ -321,7 +321,19 @@ private destroy$ = new Subject<void>();
       icon: "file-excel",
       action: "import",
       type: "primary",
-    }
+    },
+    {
+      label: "Exporter Excel",
+      icon: "file-excel",
+      action: "export-excel",
+      type: "success",
+    },
+    {
+      label: "Exporter PDF",
+      icon: "file-pdf",
+      action: "export-pdf",
+      type: "danger",
+    },
   ];
 
 
@@ -512,6 +524,74 @@ private destroy$ = new Subject<void>();
           console.log(err);
         }
       );
+  }
+
+  exportToExcel(): void {
+    if (!this.datas.length) {
+      this.snackbar.openSnackBar("La liste est vide.", "OK", ["mycssSnackbarRed"]);
+      return;
+    }
+    const rows = this.datas.map((item: any) => ({
+      "Code PAP":               item.codePap              || "",
+      "Code Parcelle":          item.codeParcelle         || "",
+      "Prénom":                 item.prenom               || "",
+      "Nom":                    item.nom                  || "",
+      "Sexe":                   item.sexe                 || "",
+      "Téléphone":              item.numeroTelephone      || "",
+      "Commune":                item.commune              || "",
+      "Département":            item.departement          || "",
+      "Nationalité":            item.nationalite          || "",
+      "Situation Matrimoniale": item.situationMatrimoniale || "",
+      "Activité Principale":    item.activitePrincipale   || "",
+      "Statut PAP":             item.statutPap            || "",
+      "Vulnérabilité":          item.vulnerabilite        || "",
+      "Perte Arbre Jeune":      item.perteArbreJeune      ?? "",
+      "Perte Arbre Adulte":     item.perteArbreAdulte     ?? "",
+      "Perte Revenue":          item.perteRevenue         ?? "",
+      "Perte Totale (FCFA)":    item.perteTotale          ?? "",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook  = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "PAP Agricoles");
+    worksheet["!cols"] = [15,15,15,15,8,15,15,15,12,20,20,12,15,14,14,14,16].map(w => ({ wch: w }));
+    XLSX.writeFile(workbook, "pap-agricoles.xlsx");
+    this.snackbar.openSnackBar("Export Excel réussi.", "OK", ["mycssSnackbarGreen"]);
+  }
+
+  exportToPdf(): void {
+    if (!this.datas.length) {
+      this.snackbar.openSnackBar("La liste est vide.", "OK", ["mycssSnackbarRed"]);
+      return;
+    }
+    const doc = new jsPDF({ orientation: "landscape" });
+    doc.setFontSize(13);
+    doc.text("Liste des PAP – Agricoles / Exploitants", 14, 14);
+    doc.setFontSize(8);
+    doc.text(`Généré le ${new Date().toLocaleDateString("fr-FR")} — Total : ${this.datas.length} enregistrement(s)`, 14, 20);
+
+    autoTable(doc, {
+      startY: 25,
+      head: [["Code PAP", "Code Parcelle", "Prénom", "Nom", "Sexe", "Téléphone", "Commune", "Statut", "Vulnérabilité", "Perte (FCFA)"]],
+      body: this.datas.map((item: any) => [
+        item.codePap         || "",
+        item.codeParcelle    || "",
+        item.prenom          || "",
+        item.nom             || "",
+        item.sexe            || "",
+        item.numeroTelephone || "",
+        item.commune         || "",
+        item.statutPap       || "",
+        item.vulnerabilite   || "",
+        item.perteTotale != null ? item.perteTotale.toLocaleString("fr-FR") : "",
+      ]),
+      styles:             { fontSize: 7, cellPadding: 2 },
+      headStyles:         { fillColor: [142, 68, 173], textColor: 255, fontStyle: "bold" },
+      alternateRowStyles: { fillColor: [245, 245, 245] },
+    });
+
+    doc.save("pap-agricoles.pdf");
+    this.snackbar.openSnackBar("Export PDF réussi.", "OK", ["mycssSnackbarGreen"]);
   }
 
   //cette fonction permet d'exporter la liste sous format excel ou pdf

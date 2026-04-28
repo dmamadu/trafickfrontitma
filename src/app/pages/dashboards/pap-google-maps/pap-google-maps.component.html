@@ -5,20 +5,23 @@
   </div>
 
   <!-- Google Map -->
-  <google-map 
-    [center]="center" 
+  <google-map
+    *ngIf="mapsReady"
+    [center]="center"
     [zoom]="zoom"
     width="100%"
     height="600px">
     
     <!-- Markers pour chaque PAP -->
-    <map-marker
-      #mapMarker="mapMarker"
-      *ngFor="let pap of paps"
-      [position]="getPosition(pap)"
-      [options]="getMarkerOptions(pap)"
-      (mapClick)="openMapInfo(pap, mapMarker)">
-    </map-marker>
+    <ng-container *ngFor="let pap of paps">
+      <map-marker
+        #mapMarker="mapMarker"
+        *ngIf="getPosition(pap) as pos"
+        [position]="pos"
+        [options]="getMarkerOptions(pap)"
+        (mapClick)="openMapInfo(pap, mapMarker)">
+      </map-marker>
+    </ng-container>
     
     <!-- Info Window unique (en dehors de la boucle) -->
     <map-info-window>

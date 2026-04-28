@@ -32,7 +32,7 @@ export class PapGoogleMapsComponent implements OnInit, OnDestroy {
   // Propriété pour stocker le PAP sélectionné
   selectedPap: any = null;
   
-  @Input() paps: any[];
+  @Input() paps: any[] = [];
   currentProjectId: any;
   @Input() isLoading: boolean = false;
   center: google.maps.LatLngLiteral = { lat: 14.716677, lng: -17.467686 };
@@ -44,13 +44,34 @@ export class PapGoogleMapsComponent implements OnInit, OnDestroy {
     this.currentProjectId = this.localService.getData("ProjectId");
   }
 
+  mapsReady = false;
+
   ngOnInit() {
-    const validPaps = this.paps.filter(pap => this.getPosition(pap) !== null);
-    if (validPaps.length > 0) {
-      const positions = validPaps.map(pap => this.getPosition(pap));
-      this.center = this.calculateCenter(positions);
-    }
-    this.addPolyline();
+    this.waitForGoogle().then(() => {
+      this.mapsReady = true;
+      const validPaps = this.paps.filter(pap => this.getPosition(pap) !== null);
+      if (validPaps.length > 0) {
+        const positions = validPaps
+          .map(pap => this.getPosition(pap))
+          .filter((p): p is google.maps.LatLngLiteral => p !== null);
+        this.center = this.calculateCenter(positions);
+      }
+    });
+  }
+
+  private waitForGoogle(): Promise<void> {
+    return new Promise((resolve) => {
+      if (typeof google !== 'undefined' && google.maps) {
+        resolve();
+        return;
+      }
+      const interval = setInterval(() => {
+        if (typeof google !== 'undefined' && google.maps) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
   }
 
   private destroy$ = new Subject<void>();
