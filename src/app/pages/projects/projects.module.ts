@@ -42,6 +42,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { MatPaginatorIntl } from "@angular/material/paginator";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { ExportService } from "src/app/shared/core/export.service";
+import { PageActionsComponent } from "src/app/shared/refactore/page-actions/page-actions.component";
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -82,7 +83,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     BsDropdownModule,
     LoaderComponent,
     ColorPickerModule,
-  ],
+    PageActionsComponent
+],
 
   providers: [
     {

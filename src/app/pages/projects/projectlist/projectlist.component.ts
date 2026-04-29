@@ -13,6 +13,7 @@ import { ButtonAction } from "src/app/shared/tableau/tableau.component";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { AddComponent } from "../add/add.component";
 import { Subject, takeUntil } from "rxjs";
+import { ActionButton } from "src/app/shared/refactore/page-actions/page-actions.component";
 
 @Component({
   selector: "app-projectlist",
@@ -64,7 +65,20 @@ export class ProjectlistComponent implements OnInit,OnDestroy {
     ];
   }
 
+      pageActions: ActionButton[] = [
+    {
+      label: "Ajouter un projet",
+      icon: "mdi mdi-plus me-1",
+      action: "add",
+      type: "primary",
+    },
+  ];
+
   private destroy$ = new Subject<void>();
+
+    handleAction(action: string): void {
+    if (action === "add") this.addItems();
+  }
 
 ngOnDestroy() {
    this.destroy$.next();

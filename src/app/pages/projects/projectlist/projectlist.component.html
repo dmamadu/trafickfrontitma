@@ -1,6 +1,6 @@
 <div class="container-fluid">
 
-  <div class="row">
+  <!-- <div class="row">
     <app-page-title title="Liste des projets" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 
     <div class="col-lg-12">
@@ -9,29 +9,29 @@
           <div class=" row mb-2">
             <div class="col-sm">
               <div class="search-box d-inline-block">
-                <!-- <div class="position-relative">
-                  <input type="text" class="form-control" autocomplete="off" id="searchTableList"
-                    placeholder="Search..." (input)="filterTable($event)">
-                  <i class="bx bx-search-alt search-icon"></i>
-                </div> -->
               </div>
             </div>
-            <!-- end col -->
             <div class="col-sm-auto">
               <div class="text-sm-end">
-                <!-- <a routerLink="/projects/create" class="btn bgPrimaire " id="addProject-btn"><i
-                    class="mdi mdi-plus me-1"></i> Créer un project</a> -->
 
                 <button class="btn bgPrimaire " id="addProject-btn" (click)="addItems()"><i
                     class="mdi mdi-plus me-1"></i> Créer un project</button>
               </div>
             </div>
-            <!-- end col -->
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
+
+<app-page-actions
+  title="Liste des projets"
+  [breadcrumbItems]="breadCrumbItems"
+  searchPlaceholder="Rechercher un consultant..."
+  [actions]="pageActions"
+  (onSearch)="filterTable($event)"
+  (onAction)="handleAction($event)">
+</app-page-actions>
 
   <app-loader-custom *ngIf="isLoading"></app-loader-custom>
 
@@ -42,6 +42,8 @@
   </div>
 
 </div>
+
+
 
 <!-- removeItemModal -->
 <div bsModal #removeItemModal="bs-modal" class="modal fade" id="removeItemModal" tabindex="-1" aria-hidden="true">
