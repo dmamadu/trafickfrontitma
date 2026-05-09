@@ -1,0 +1,116 @@
+<div class="container-fluid">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h4 class="mb-1">Normes du projet</h4>
+      <p class="text-muted mb-0">Normes nationales et internationales applicables au projet</p>
+    </div>
+    <button class="btn btn-primary" (click)="openAddModal()">
+      <i class="bx bx-plus me-1"></i> Ajouter une norme
+    </button>
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!isLoading && normes.length === 0" class="text-center py-5">
+    <i class="bx bx-book-open display-4 text-muted"></i>
+    <p class="text-muted mt-2">Aucune norme définie pour ce projet.</p>
+    <button class="btn btn-outline-primary btn-sm" (click)="openAddModal()">
+      Ajouter la première norme
+    </button>
+  </div>
+
+  <!-- Table -->
+  <div class="card" *ngIf="!isLoading && normes.length > 0">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 40px;">#</th>
+              <th>Titre</th>
+              <th>Description</th>
+              <th style="width: 120px;" class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let norme of normes; let i = index">
+              <td class="text-muted">{{ i + 1 }}</td>
+              <td>
+                <span class="fw-semibold">{{ norme.titre }}</span>
+              </td>
+              <td class="text-muted">{{ norme.description }}</td>
+              <td class="text-center">
+                <button class="btn btn-sm btn-soft-primary me-1"
+                  title="Modifier" (click)="openEditModal(norme)">
+                  <i class="bx bx-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-soft-danger"
+                  title="Supprimer" (click)="delete(norme)">
+                  <i class="bx bx-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal Ajout / Édition -->
+<div bsModal #normeModal="bs-modal" class="modal fade" tabindex="-1"
+     [config]="{ backdrop: 'static', keyboard: false }">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bx bx-book-open me-2 text-primary"></i>
+          {{ isEditing ? 'Modifier la norme' : 'Ajouter une norme' }}
+        </h5>
+        <button type="button" class="btn-close" (click)="normeModal.hide()"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="normeForm">
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Titre <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" formControlName="titre"
+              placeholder="Ex: NES 5 Acquisition des terres, IFC PS 5, Décret n°2011-..."
+              [ngClass]="{ 'is-invalid': f.titre.invalid && f.titre.touched }">
+            <div class="invalid-feedback" *ngIf="f.titre.errors?.required">Le titre est obligatoire.</div>
+            <div class="invalid-feedback" *ngIf="f.titre.errors?.minlength">Minimum 2 caractères.</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Description <span class="text-danger">*</span></label>
+            <textarea class="form-control" formControlName="description" rows="4"
+              placeholder="Décrivez le contenu ou l'exigence de cette norme..."
+              [ngClass]="{ 'is-invalid': f.description.invalid && f.description.touched }"></textarea>
+            <div class="invalid-feedback" *ngIf="f.description.errors?.required">La description est obligatoire.</div>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="normeModal.hide()">Annuler</button>
+        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="isSaving">
+          <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-1"></span>
+          {{ isEditing ? 'Mettre à jour' : 'Enregistrer' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

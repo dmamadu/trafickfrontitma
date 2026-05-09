@@ -38,6 +38,16 @@ export class ProjectService extends RootService {
     return this.http.put<any>(url, normeProjet);
   }
 
+  getNormesByProjectId(projectId: number): Observable<any> {
+    const url = `${this.url}normes/project/${projectId}`;
+    return this.http.get<any>(url);
+  }
+
+  deleteNorme(normeId: number): Observable<any> {
+    const url = `${this.url}normes/${normeId}`;
+    return this.http.delete<any>(url);
+  }
+
   uploadFiles(
     files: File[],
     filenames: string[],

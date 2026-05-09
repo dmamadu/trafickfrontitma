@@ -33,6 +33,7 @@ import { CreateComponent } from "./create/create.component";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { ModalModule } from "ngx-bootstrap/modal";
 import { UpdateComponent } from "./update/update.component";
+import { NormesListComponent } from "./normes/normes-list.component";
 import { NgxPaginationModule } from "ngx-pagination";
 import { NgxDocViewerModule } from "ngx-doc-viewer";
 import { TableauComponent } from "src/app/shared/tableau/tableau.component";
@@ -57,6 +58,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     OverviewComponent,
     CreateComponent,
     UpdateComponent,
+    NormesListComponent,
   ],
   imports: [
     FlatpickrModule,

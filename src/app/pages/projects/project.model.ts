@@ -52,9 +52,10 @@ export interface Role {
 }
 
 export interface NormeProject {
+  id?: number;
   titre: string;
   description: string;
-  project: Project;
+  project?: Project;
 }
 
 export interface Mo {

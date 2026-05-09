@@ -1,0 +1,21 @@
+.btn-soft-primary {
+  background-color: rgba(85, 110, 230, 0.1);
+  color: #556ee6;
+  border: none;
+
+  &:hover {
+    background-color: #556ee6;
+    color: #fff;
+  }
+}
+
+.btn-soft-danger {
+  background-color: rgba(244, 106, 106, 0.1);
+  color: #f46a6a;
+  border: none;
+
+  &:hover {
+    background-color: #f46a6a;
+    color: #fff;
+  }
+}

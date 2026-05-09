@@ -6,6 +6,7 @@ import { OverviewComponent } from "./overview/overview.component";
 import { CreateComponent } from "./create/create.component";
 import { AuthGuard } from "src/app/core/guards/auth.guard";
 import { UpdateComponent } from "./update/update.component";
+import { NormesListComponent } from "./normes/normes-list.component";
 
 const routes: Routes = [
   {
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path: "update",
     component: UpdateComponent,
+  },
+  {
+    path: "normes",
+    component: NormesListComponent,
   },
 ];
 

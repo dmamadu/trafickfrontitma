@@ -317,6 +317,13 @@ export const MENU: MenuItem[] = [
         link: "/projects/list",
         parentId: 5,
       },
+      {
+        id: 200,
+        label: "Normes",
+        icon: "bx-book-open",
+        link: "/projects/normes",
+        parentId: 5,
+      },
     ],
   },
   {

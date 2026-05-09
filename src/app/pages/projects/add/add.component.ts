@@ -19,7 +19,7 @@ import {
 } from "@angular/forms";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { ProjectService } from "src/app/core/services/project.service";
-import { Mo, NormeProject, Project } from "src/app/shared/models/Projet.model";
+import { Mo, Project } from "src/app/shared/models/Projet.model";
 import { ResponseData } from "src/app/shared/models/Projet.model";
 import { ToastrService } from "ngx-toastr";
 import { Image } from "src/app/shared/models/image.model";
@@ -176,9 +176,6 @@ console.log(this.userId);
       accentColor: ["#4CAF50", [Validators.required]],
     });
 
-    this.form = this.fb.group({
-      members: this.fb.array([]),
-    });
   }
 
   private populateForm(project: any): void {
@@ -225,14 +222,6 @@ console.log(this.userId);
       }
     }
 
-    setTimeout(() => {
-      if (project.normes && project.normes.length > 0) {
-        this.members.clear(); // Nettoyer avant de remplir
-        project.normes.forEach((norme) => {
-          this.addMember(norme);
-        });
-      }
-    });
     if (project.imageUrl) {
       this.imageProjet = project.imageUrl;
     }
@@ -248,14 +237,10 @@ console.log(this.userId);
   assignMember: any;
   projectForm: FormGroup;
 
-  form: FormGroup;
   dropdownSettings = {};
   ngOnInit() {
     this.fetchMo();
     this.assignMember = this.listMo;
-    this.form = this.fb.group({
-      members: this.fb.array([]),
-    });
   }
   isSelected(user: any): boolean {
     return this.assignList.some((u) => u.id === user.id);
@@ -326,15 +311,6 @@ console.log(this.userId);
   newProject: Project;
   newIdCat!: number;
 
-  get members(): FormArray {
-    if (!this.form) {
-      this.form = this.fb.group({
-        members: this.fb.array([]),
-      });
-    }
-    return this.form.get("members") as FormArray;
-  }
-
   save() {
     if (this.projectForm.invalid) {
       this.toastr.error("Veuillez remplir tous les champs obligatoires");
@@ -361,9 +337,6 @@ console.log(this.userId);
         secondary: this.projectForm.value.secondaryColor,
         accent: this.projectForm.value.accentColor,
       };
-      const normeProject: NormeProject[] = this.members.value;
-      projectRequest.normes = normeProject;
-
       projectRequest.colors = JSON.stringify(colors);
       delete projectRequest.primaryColor;
       delete projectRequest.secondaryColor;
@@ -409,32 +382,6 @@ console.log(this.userId);
     }
   }
 
-  addMember(memberData?: any): void {
-    // S'assurer que le formulaire existe
-    if (!this.form) {
-      this.form = this.fb.group({
-        members: this.fb.array([]),
-      });
-    }
-
-    // Vérifier la validité du dernier membre
-    if (this.members.length > 0) {
-      const lastMember = this.members.at(this.members.length - 1);
-      if (lastMember.invalid) {
-        console.warn(
-          "Le dernier membre est invalide. Impossible d'ajouter un nouveau membre."
-        );
-        return;
-      }
-    }
-
-    const memberForm = this.fb.group({
-      titre: [memberData?.titre || "", Validators.required],
-      description: [memberData?.description || "", Validators.required],
-    });
-
-    this.members.push(memberForm);
-  }
   lengthMo!: number;
 
   listMo: any[] = [];
@@ -473,8 +420,6 @@ console.log(this.userId);
       secondary: this.projectForm.value.secondaryColor,
       accent: this.projectForm.value.accentColor,
     };
-    const normeProject: NormeProject[] = this.members.value;
-    projectRequest.normes = normeProject;
     projectRequest.colors = JSON.stringify(colors);
 
     delete projectRequest.primaryColor;
@@ -608,24 +553,4 @@ console.log(this.userId);
   // Dans votre classe component, assurez-vous d'avoir :
   // presetColors = ['#245363', '#93C5AF', '#FF9800', '#000000', '#FFFFFF', '#0C8439', '#D55E00'];
 
-  async deleteMember(index: number): Promise<void> {
-    // Demander confirmation
-    const confirm = await this.snackbar.showConfirmation(
-      "Voulez-vous vraiment supprimer cette norme ?"
-    );
-    if (!confirm.value) {
-      return;
-    }
-    try {
-      this.members.removeAt(index);
-      this.snackbar.openSnackBar("Norme supprimée avec succès", "OK", [
-        "mycssSnackbarGreen",
-      ]);
-    } catch (error) {
-      console.error("Erreur lors de la suppression", error);
-      this.snackbar.openSnackBar("Échec de la suppression", "OK", [
-        "mycssSnackbarRed",
-      ]);
-    }
-  }
 }

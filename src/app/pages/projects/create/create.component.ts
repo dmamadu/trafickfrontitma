@@ -12,7 +12,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
 import { Observable, debounceTime, of, switchMap } from "rxjs";
 import { ProjectService } from "src/app/core/services/project.service";
-import { Mo, NormeProject, Project } from "src/app/shared/models/Projet.model";
+import { Mo, Project } from "src/app/shared/models/Projet.model";
 import { ResponseData } from "src/app/shared/models/Projet.model";
 import { ToastrService } from "ngx-toastr";
 import { Image } from "src/app/shared/models/image.model";
@@ -122,7 +122,6 @@ console.log(this.userId);
 
   membersData: any[] = [];
 
-  form: FormGroup;
   dropdownSettings = {};
   ngOnInit() {
     this.breadCrumbItems = [
@@ -133,10 +132,6 @@ console.log(this.userId);
     this.hidden = true;
     this.assignMember = this.listMo;
     this.loadProject();
-
-    this.form = this.fb.group({
-      members: this.fb.array([]),
-    });
   }
 
   // File Upload
@@ -221,9 +216,6 @@ console.log(this.userId);
         secondary: this.projectForm.value.secondaryColor,
         accent: this.projectForm.value.accentColor,
       };
-      const normeProject: NormeProject[] = this.members.value;
-      projectRequest.normes = normeProject;
-
       projectRequest.colors = JSON.stringify(colors);
       delete projectRequest.primaryColor;
       delete projectRequest.secondaryColor;
@@ -292,29 +284,6 @@ console.log(this.userId);
     });
   }
 
-  get members(): FormArray {
-    return this.form.get("members") as FormArray;
-  }
-
-  addMember(memberData?: any) {
-    if (this.members.length > 0) {
-      const lastMember = this.members.at(this.members.length - 1);
-      if (!lastMember.valid) {
-        console.log("The last member is invalid. Cannot add a new member.");
-        return;
-      }
-    }
-    const memberForm = this.fb.group({
-      titre: [memberData ? memberData.titre : "", [Validators.required]],
-      description: [
-        memberData ? memberData.description : "",
-        [Validators.required],
-      ],
-    });
-
-    this.members.push(memberForm);
-  }
-
   lengthMo!: number;
 
   listMo: Mo[] = [];
@@ -357,8 +326,6 @@ console.log(this.userId);
   }
 
   updateProject(projectRequest: any): void {
-    const normeProjects: NormeProject[] = this.members.value;
-    projectRequest.normes = normeProjects;
     this.projectService
       .update<ResponseData<Project>, Project>(
         `projects/updateProject`,
@@ -484,27 +451,4 @@ console.log(this.userId);
   // Dans votre classe component, assurez-vous d'avoir :
   // presetColors = ['#245363', '#93C5AF', '#FF9800', '#000000', '#FFFFFF', '#0C8439', '#D55E00'];
 
-  deleteMember(index: number): void {
-    // Vérifier que le formulaire et le tableau des membres existent
-    if (!this.form || !this.members) {
-      console.error(
-        "Le formulaire ou le tableau des membres n'est pas initialisé"
-      );
-      return;
-    }
-
-    // Vérifier que l'index est valide
-    if (index < 0 || index >= this.members.length) {
-      console.error("Index invalide pour la suppression");
-      return;
-    }
-
-    // Supprimer le membre à l'index spécifié
-    this.members.removeAt(index);
-
-    // Optionnel : afficher un message de confirmation
-    this.snackbar.openSnackBar("Norme supprimée avec succès", "OK", [
-      "mycssSnackbarGreen",
-    ]);
-  }
 }

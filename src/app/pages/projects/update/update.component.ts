@@ -14,7 +14,7 @@ import { ToastrService } from "ngx-toastr";
 import { Observable, debounceTime, switchMap, of } from "rxjs";
 import { ProjectService } from "src/app/core/services/project.service";
 import { dateValidator } from "src/app/shared/validator/datevalidator";
-import { Project, ResponseData, NormeProject, Mo } from "../project.model";
+import { Project, ResponseData, Mo } from "../project.model";
 import { SharedService } from "../shared.service";
 import { Image } from "src/app/shared/models/image.model";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
@@ -111,9 +111,6 @@ export class UpdateComponent {
   dropdownList = [];
   selectedItems = [];
 
-  membersData: any[] = [];
-
-  form: FormGroup;
   dropdownSettings = {};
   ngOnInit() {
     this.projectForm.reset();
@@ -125,14 +122,7 @@ export class UpdateComponent {
     this.assignMember = this.listMo;
     this.loadProject();
 
-    this.form = this.fb.group({
-      members: this.fb.array([]),
-    });
-
     this.sharedService.selectedItem$.subscribe((item) => {
-      console.log("====================================");
-      console.log(item);
-      console.log("====================================");
       if (item) {
         this.projectForm.patchValue({
           id: item.id,
@@ -142,13 +132,6 @@ export class UpdateComponent {
           description: item.description,
           datedebut: item.datedebut,
           datefin: item.datefin,
-        });
-        //this.members.patchValue(item.)
-        //this.listMo = item.users;
-
-        this.membersData = item.normeProjets;
-        item.normeProjets.forEach((member) => {
-          this.addMember(member);
         });
 
         this.listMo = item.users.map((user) => {
@@ -276,34 +259,6 @@ export class UpdateComponent {
     });
   }
 
-  get members(): FormArray {
-    return this.form.get("members") as FormArray;
-  }
-
-  addMember(memberData?: any) {
-    if (this.members.length > 0) {
-      const lastMember = this.members.at(this.members.length - 1);
-      if (!lastMember.valid) {
-        console.log("The last member is invalid. Cannot add a new member.");
-        return;
-      }
-    }
-
-    const memberForm = this.fb.group({
-      titre: [memberData ? memberData.titre : "", [Validators.required]],
-      description: [
-        memberData ? memberData.description : "",
-        [Validators.required],
-      ],
-    });
-
-    this.members.push(memberForm);
-  }
-
-  deleteMember(i: number) {
-    this.members.removeAt(i);
-  }
-
   listMo: Mo[] = [];
 
   fetchMo() {
@@ -348,51 +303,17 @@ export class UpdateComponent {
 
   updateProject(projectRequest: any): void {
     this.projectService
-      .update<ResponseData<Project>, Project>(
-        `projects/updateProject`,
-        projectRequest
-      )
+      .update<ResponseData<Project>, Project>(`projects/updateProject`, projectRequest)
       .subscribe(
         (data: ResponseData<Project>) => {
-          console.log("Project updated successfully:", data);
           this.toastr.success(`${data.message}`);
-          const attachedFiles: File[] =
-            this.projectForm.get("attachedFiles").value;
-          if (data) {
-            const normeProjects: NormeProject[] = this.members.value;
-            normeProjects.forEach((normeProject: any) => {
-              normeProject.project = data.data;
-            });
-            this.projectService
-              .saveNormeProjet1(normeProjects, data.data.id)
-              .subscribe(
-                (response: NormeProject[]) => {
-                  console.log(response);
-                  this.router.navigate(["/projects/list"]);
-                  this.projectForm.reset();
-                },
-                (err) => {
-                  console.log(err);
-                }
-              );
-          }
+          this.router.navigate(["/projects/list"]);
+          this.projectForm.reset();
         },
         (error) => {
           console.error("Error updating project:", error);
+          this.toastr.error("Une erreur s'est produite lors de la mise à jour du projet.");
         }
       );
-  }
-  updateNormeProjects(projectId: number, normeProjects: NormeProject[]): void {
-    normeProjects.forEach((normeProject: any) => {
-      normeProject.project = { id: projectId };
-      this.projectService.saveNormeProjet(normeProject, projectId).subscribe(
-        (data) => {
-          console.log("Norme updated successfully:", data);
-        },
-        (err) => {
-          console.error("Error updating norme:", err);
-        }
-      );
-    });
   }
 }

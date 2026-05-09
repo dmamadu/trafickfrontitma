@@ -130,40 +130,6 @@
             </div>
 
 
-            <div class="inner-repeater mb-4">
-              <form [formGroup]="form">
-                <div class="inner mb-0 row" formArrayName="members">
-                  <label class="col-form-label col-lg-2">Normes : </label>
-                  @for(data of members.controls;track $index){
-                  <div class="inner col-lg-10 ms-md-auto" [formGroupName]="$index">
-                    <div class="mb-3 row align-items-center">
-                      <div class="col-md-4">
-                        <input type="text" formControlName="titre" class="inner form-control" placeholder="Titre..." />
-                      </div>
-                      <div class="col-md-6">
-                        <div class="mt-4 mt-md-0">
-                          <textarea type="text" formControlName="description" class="inner form-control"
-                            placeholder="Valeur..."></textarea>
-                        </div>
-                      </div>
-                      <div class="col-md-2">
-                        <div class="mt-2 mt-md-0 d-grid">
-                          <input type="button" class="btn btn-primary inner" value="Delete"
-                            (click)="deleteMember($index)" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  }
-                </div>
-              </form>
-              <div class="row justify-content-end">
-                <div class="col-lg-10">
-                  <input data-repeater-create type="button" class="btn btn-success inner" value="Ajouter une norme"
-                    (click)="addMember()" [disabled]="form.invalid" />
-                </div>
-              </div>
-            </div>
 
           </div>
         </div>

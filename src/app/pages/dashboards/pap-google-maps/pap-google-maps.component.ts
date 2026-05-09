@@ -40,6 +40,7 @@ export class PapGoogleMapsComponent implements OnInit, OnDestroy {
 
   constructor(
     private localService: LocalService,
+    private cdr: ChangeDetectorRef,
   ) {
     this.currentProjectId = this.localService.getData("ProjectId");
   }
@@ -49,6 +50,7 @@ export class PapGoogleMapsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.waitForGoogle().then(() => {
       this.mapsReady = true;
+      this.cdr.detectChanges();
       const validPaps = this.paps.filter(pap => this.getPosition(pap) !== null);
       if (validPaps.length > 0) {
         const positions = validPaps

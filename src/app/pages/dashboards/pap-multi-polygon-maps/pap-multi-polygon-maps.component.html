@@ -5,9 +5,10 @@
   </div>
 
   <!-- Google Map -->
-  <google-map 
+  <google-map
+    *ngIf="mapsReady"
     #googleMap
-    [center]="center" 
+    [center]="center"
     [zoom]="zoom"
     width="100%"
     height="600px">

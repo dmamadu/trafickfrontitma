@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { GoogleMapsModule, MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps';
 import { CommonModule } from '@angular/common';
 
@@ -259,38 +259,45 @@ export class PapMultiPolygonMapsComponent implements OnInit, OnChanges {
   @Input() paps: PapMultiPolygon[] = [];
   @Input() isLoading: boolean = false;
 
-  // Propriété pour stocker le PAP sélectionné (comme dans l'autre composant)
   selectedPap: PapMultiPolygon | null = null;
+  mapsReady = false;
 
   center: google.maps.LatLngLiteral = { lat: 14.716677, lng: -17.467686 };
   zoom = 13;
   polygons: (google.maps.PolygonOptions & { papData: PapMultiPolygon })[] = [];
 
-  ngOnInit() {
-    console.log('ngOnInit - PAPs reçus:', this.paps);
-    console.log('ngOnInit - Nombre de PAPs:', this.paps.length);
-    
-    // Ne charger les polygones que si on a des données
-    if (this.paps && this.paps.length > 0) {
-      this.loadPolygons();
-      setTimeout(() => {
-        this.adjustMapCenter();
+  constructor(private cdr: ChangeDetectorRef) {}
+
+  private waitForGoogle(): Promise<void> {
+    return new Promise((resolve) => {
+      if (typeof (window as any).google !== 'undefined' && (window as any).google.maps) {
+        resolve();
+        return;
+      }
+      const interval = setInterval(() => {
+        if (typeof (window as any).google !== 'undefined' && (window as any).google.maps) {
+          clearInterval(interval);
+          resolve();
+        }
       }, 100);
-    } else {
-      console.log('Aucun PAP disponible dans ngOnInit, attente des données...');
-    }
+    });
   }
 
-  // Ajouter cette méthode pour être appelée quand les données changent
+  ngOnInit() {
+    this.waitForGoogle().then(() => {
+      this.mapsReady = true;
+      this.cdr.detectChanges();
+      if (this.paps && this.paps.length > 0) {
+        this.loadPolygons();
+        setTimeout(() => this.adjustMapCenter(), 100);
+      }
+    });
+  }
+
   ngOnChanges(changes: any) {
-    if (changes.paps && changes.paps.currentValue) {
-      console.log('ngOnChanges - Nouvelles données PAPs:', changes.paps.currentValue);
-      console.log('ngOnChanges - Nombre de PAPs:', changes.paps.currentValue.length);
-      
+    if (changes.paps && changes.paps.currentValue && this.mapsReady) {
       this.loadPolygons();
-      setTimeout(() => {
-        this.adjustMapCenter();
-      }, 100);
+      setTimeout(() => this.adjustMapCenter(), 100);
     }
   }
 
