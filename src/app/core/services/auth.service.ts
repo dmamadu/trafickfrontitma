@@ -1,23 +1,19 @@
-import { Injectable, inject } from "@angular/core";
-
-import { getFirebaseBackend } from "../../authUtils";
+import { Injectable, inject, OnDestroy } from "@angular/core";
 import { Auth, User } from "src/app/store/Authentication/auth.models";
-import { catchError, from, map, Observable, throwError } from "rxjs";
+import { catchError, map, Observable, throwError } from "rxjs";
 import { environment } from "src/environments/environment";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { T } from "@fullcalendar/core/internal-common";
 import { LocalService } from "./local.service";
-import { TokenStorageService } from "./token-storage.service";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { Router } from "@angular/router";
+
 @Injectable({ providedIn: "root" })
-export class AuthenticationService {
+export class AuthenticationService implements OnDestroy {
   user: User;
   url: string = environment.apiUrl;
 
-  private tokenCheckInterval: any;
-
+  private tokenCheckInterval: ReturnType<typeof setInterval>;
   private jwtHelper = new JwtHelperService();
 
   private httpOptions = {
@@ -29,32 +25,23 @@ export class AuthenticationService {
 
   private http = inject(HttpClient);
   private localService = inject(LocalService);
+
   constructor(private _snackbar: SnackBarService, private router: Router) {}
 
-  /**
-   * Returns the current user
-   */
-  public currentUser(): Auth | null {
-    const userJSON = localStorage.getItem("currentUser");
-    if (userJSON) {
-      return JSON.parse(userJSON);
-    } else {
-      return null;
+  ngOnDestroy(): void {
+    if (this.tokenCheckInterval) {
+      clearInterval(this.tokenCheckInterval);
     }
   }
 
-  /**
-   * Performs the auth
-   * @param email email of user
-   * @param password password of user
-   */
+  public currentUser(): Auth | null {
+    const userJSON = localStorage.getItem("currentUser");
+    return userJSON ? JSON.parse(userJSON) : null;
+  }
+
   login(email: string, password: string): Observable<any> {
     return this.http
-      .post<Auth>(
-        `${this.url}users/login`,
-        { email, password },
-        this.httpOptions
-      )
+      .post<Auth>(`${this.url}users/login`, { email, password }, this.httpOptions)
       .pipe(
         map((user: Auth) => {
           if (user?.token) {
@@ -72,7 +59,7 @@ export class AuthenticationService {
   private storeUserData(user: any): void {
     try {
       localStorage.setItem("currentUser", JSON.stringify(user));
-      this.localService.saveItem("token", user.token);
+      localStorage.setItem("token", user.token);
       this.localService.saveDataJson("user", user.user);
     } catch (e) {
       console.error("LocalStorage error:", e);
@@ -84,71 +71,44 @@ export class AuthenticationService {
       return "Accès refusé - Problème CORS. Contactez l'administrateur.";
     } else if (error.status === 401) {
       return "Email ou mot de passe incorrect";
-    } else {
-      return "Erreur de connexion au serveur";
     }
+    return "Erreur de connexion au serveur";
   }
-  /**
-   * Performs the register
-   * @param email email
-   * @param password password
-   */
 
-  /**
-   * Reset password
-   * @param email email
-   */
   resetPassword(email: string) {
     return this.http.post(`${this.url}users/reset`, { email }).pipe(
-      map((response: any) => {
-        return response;
-      })
+      map((response: any) => response)
     );
   }
 
   changePassword(newPassword: string, token: string) {
     return this.http
       .post(`${this.url}users/reset-password`, { newPassword, token })
-      .pipe(
-        map((response: any) => {
-          return response;
-        })
-      );
+      .pipe(map((response: any) => response));
   }
 
   changementDuPassword(newPassword: any) {
-    return this.http.post(`${this.url}users/change-password`, newPassword).pipe(
-      map((response: any) => {
-        return response;
-      })
-    );
+    return this.http
+      .post(`${this.url}users/change-password`, newPassword)
+      .pipe(map((response: any) => response));
   }
-  /**
-   * Logout the user
-   */
+
   logout() {
-    // logout the user
     localStorage.removeItem("currentUser");
     localStorage.removeItem("token");
     localStorage.removeItem("ProjectId");
-    localStorage.clear();
   }
 
-  /**
-   * Ce service checker le token par intervalle de 30 minutes
-   *
-   */
   startTokenExpirationCheck() {
+    if (this.tokenCheckInterval) {
+      clearInterval(this.tokenCheckInterval);
+    }
     this.tokenCheckInterval = setInterval(() => {
       this.checkTokenExpiration();
     }, 5 * 60 * 1000);
   }
-  q;
 
-  /**
-   * Ce service savoir si le token est valide
-   *
-   */
+  // Appelé par le check périodique uniquement (session active) → affiche le modal
   checkTokenExpiration() {
     const accessToken = localStorage.getItem("token");
     if (accessToken && this.jwtHelper.isTokenExpired(accessToken)) {
@@ -156,61 +116,33 @@ export class AuthenticationService {
     }
   }
 
-  // isAuthenticated(): boolean {
-  //   const accessToken: any = localStorage.getItem("token");
-  //   return !!(accessToken && !this.jwtHelper.isTokenExpired(accessToken));
-  // }
-
-  // /**
-  //  * Fonction pour gérer l'expiration du token
-  //  */
-
-  // private handleTokenExpired() {
-  //   const sessionExpireTitre = "Session expirée";
-  //   const sessionExpireDescription =
-  //     "Votre session a expiré, veuillez vous reconnecter.";
-  //   this._snackbar
-  //     .showSimpleNotification(sessionExpireTitre, sessionExpireDescription)
-  //     .then(() => {
-  //       this.logout();
-  //       this.router.navigate(["/auth/login"]);
-  //     });
-  // }
+  // Appelé par AuthGuard → silencieux, pas de modal (token peut être expiré depuis la veille)
   isAuthenticated(): boolean {
     try {
       const accessToken = localStorage.getItem("token");
-
-      // Vérification basique du token
       if (!accessToken || typeof accessToken !== "string") {
         return false;
       }
-
-      // Vérification de l'expiration
-      const isExpired = this.jwtHelper.isTokenExpired(accessToken);
-
-      // Si le token est expiré, on déclenche le handler
-      if (isExpired) {
-        this.handleTokenExpired();
+      if (this.jwtHelper.isTokenExpired(accessToken)) {
+        this.logout();
         return false;
       }
-
       return true;
-    } catch (error) {
-      console.error("Erreur lors de la vérification du token:", error);
-      this.handleTokenExpired();
+    } catch {
+      this.logout();
       return false;
     }
   }
 
+  // Modal "session expirée" + logout : uniquement pour expiration en cours de session active
   private async handleTokenExpired(): Promise<void> {
-    const sessionExpireTitre = "Session expirée";
-    const sessionExpireDescription =
-      "Votre session a expiré, veuillez vous reconnecter.";
-
+    if (this.tokenCheckInterval) {
+      clearInterval(this.tokenCheckInterval);
+    }
     try {
       await this._snackbar.showSimpleNotification(
-        sessionExpireTitre,
-        sessionExpireDescription
+        "Session expirée",
+        "Votre session a expiré, veuillez vous reconnecter."
       );
     } finally {
       this.logout();

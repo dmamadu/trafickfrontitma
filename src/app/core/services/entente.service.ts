@@ -12,7 +12,7 @@ export class EntenteService {
   constructor(private http: HttpClient) {}
 
   getEntenteDetails(ententeId: number): Observable<any> {
-    return this.http.get(`${this.url}${ententeId}/${this.apiUrl}`);
+    return this.http.get(`${this.url}${this.apiUrl}/${ententeId}`);
   }
 
   synchroniserEntente(ententeId: number): Observable<any> {
@@ -24,7 +24,7 @@ export class EntenteService {
   }
 
   getEntentesByProject(projectId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}/${this.apiUrl}/project/${projectId}`);
+    return this.http.get<any[]>(`${this.url}${this.apiUrl}`, { params: { projectId } });
   }
 
 }

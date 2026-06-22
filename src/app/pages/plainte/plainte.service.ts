@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { Plainte, PlainteImportResult } from "./plainte.model";
 
@@ -14,11 +15,11 @@ export class PlainteService extends ServiceParent {
     super(http);
   }
 
-  getByProject(projectId: number, page = 0, size = 20): Observable<any> {
+  getByProject(projectId: number, offset = 0, max = 20): Observable<any> {
     const params = new HttpParams()
       .set("projectId", projectId.toString())
-      .set("page", page.toString())
-      .set("size", size.toString());
+      .set("offset", offset.toString())
+      .set("max", max.toString());
     return this.http.get<any>(`${this.url}${BASE_URL}`, { params });
   }
 
@@ -35,7 +36,9 @@ export class PlainteService extends ServiceParent {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("projectId", projectId.toString());
-    return this.http.post<PlainteImportResult>(`${this.url}${BASE_URL}/import`, formData);
+    return this.http.post<any>(`${this.url}${BASE_URL}/import`, formData).pipe(
+      map((resp: any) => resp?.data?.[0] ?? resp)
+    );
   }
 
   deletePlainte(id: number): Observable<any> {

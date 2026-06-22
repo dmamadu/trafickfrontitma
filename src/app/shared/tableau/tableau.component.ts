@@ -300,6 +300,18 @@ getDisplayedColumns(): string[] {
     return item.id || index;
   }
 
+  resolveIcon(action: ButtonAction, element: any): string {
+    return typeof action.icon === 'function' ? action.icon(element) : action.icon;
+  }
+
+  resolveColor(action: ButtonAction, element: any): string {
+    return typeof action.couleur === 'function' ? action.couleur(element) : action.couleur;
+  }
+
+  resolveTitle(action: ButtonAction, element: any): string {
+    return typeof action.title === 'function' ? action.title(element) : action.title;
+  }
+
   sortTable(array) {
     array.sort(function (a, b) {
       return +new Date(b.createdAt) - +new Date(a.createdAt);
@@ -357,10 +369,10 @@ getDisplayedColumns(): string[] {
 }
 
 export type ButtonAction = {
-  icon: string;
-  couleur: string;
+  icon: string | ((element: any) => string);
+  couleur: string | ((element: any) => string);
+  title: string | ((element: any) => string);
   size: string;
-  title: string;
   isDisabled: boolean;
   action: Function;
   constraint?: Function;

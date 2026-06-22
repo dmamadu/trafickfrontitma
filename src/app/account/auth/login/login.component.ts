@@ -15,6 +15,7 @@ import { TokenStorageService } from "src/app/core/services/token-storage.service
 import { SelectProjectAdminComponent } from "../select-project-admin/select-project-admin.component";
 import { ResponseData } from "src/app/pages/projects/project.model";
 import { Project } from "src/app/store/ProjectsData/project.model";
+import { ChangePasswordComponent } from "../change-password/change-password.component";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
@@ -226,71 +227,81 @@ export class LoginComponent implements OnInit {
 
 
   async onSubmit() {
-  this.submitted = true;
-  this.loader = true;
-
-  try {
-    const user: Auth = await this.authenticationService
-      .login(this.f.email.value, this.f.password.value)
-      .toPromise();
-
-    console.log(user);
-    this.handleSuccessfulLogin(user);
-
-  } catch (error) {
-    this.handleLoginError(error);
-  } finally {
-    this.submitted = false;
-    this.loader = false;
-  }
-}
-
-private handleSuccessfulLogin(user: Auth) {
-  // Stockage du token
-  localStorage.setItem("token", user.token);
-
-  // Gestion de la redirection selon le rôle et les projets
-  if (this.isAdmin(user) && this.hasMultipleProjects(user)) {
-    this.choicePeojectADmin();
-  } else {
-     this.navigateToDefaultProject(user);
+    this.submitted = true;
+    this.loader = true;
+    try {
+      const user: Auth = await this.authenticationService
+        .login(this.f.email.value, this.f.password.value)
+        .toPromise();
+      this.handleSuccessfulLogin(user);
+    } catch (error) {
+      this.handleLoginError(error);
+    } finally {
+      this.submitted = false;
+      this.loader = false;
+    }
   }
 
-  if (!this.isAdmin(user)) {
-    this.choicePeoject();
+  private handleSuccessfulLogin(user: Auth) {
+    localStorage.setItem("token", user.token);
+    this.localService.saveDataJson("user", user.user);
+    this.authenticationService.startTokenExpirationCheck();
+    this.showWelcomeToast(user);
+
+    if (user.user?.mustChangePassword === true) {
+      const dialogRef = this._matDialog.open(ChangePasswordComponent, {
+        disableClose: true,
+        data: { isForced: true },
+      });
+      dialogRef.afterClosed().subscribe(() => {
+        this.proceedAfterLogin(user);
+      });
+      return;
+    }
+
+    this.proceedAfterLogin(user);
   }
 
+  private proceedAfterLogin(user: Auth): void {
+    if (this.isSuperAdmin(user)) {
+      this.choicePeojectADmin();
+      return;
+    }
 
-  //   if (this.hasMultipleProjects(user)) {
-  //   this.choicePeoject();
-  // } else {
-   
-  // }
+    if (!this.hasAnyProject(user)) {
+      this.toastr.warning("Aucun projet n'est associé à votre compte.");
+      return;
+    }
 
-  // Affichage du message de bienvenue
-  this.showWelcomeToast(user);
-}
+    if (this.hasMultipleProjects(user)) {
+      this.choicePeoject();
+    } else {
+      this.navigateToDefaultProject(user);
+    }
+  }
 
-private isAdmin(user: Auth): boolean {
-  const roleName = user.user?.role[0]?.name;
-  return roleName === "Super Admin" || roleName === "Admin";
-}
+  private isSuperAdmin(user: Auth): boolean {
+    return user.user?.role?.[0]?.name === "Super Admin";
+  }
 
-private hasMultipleProjects(user: Auth): boolean {
-  return user.user.projects?.length > 1;
-}
+  private isAdmin(user: Auth): boolean {
+    return user.user?.role?.[0]?.name === "Admin";
+  }
 
-private navigateToDefaultProject(user: Auth) {
-  const projectId = user.user.projects[0]?.id.toString();
-  const projectLogo = user.user.projects[0]?.imageUrl || "default-logo.png";
+  private hasAnyProject(user: Auth): boolean {
+    return (user.user?.projects?.length ?? 0) > 0;
+  }
 
-  console.log('project',user);
-  
-  
-  this.localService.saveData("ProjectId", projectId);
-  this.localService.saveData("ProjectLogo", projectLogo.toString());
-  this.router.navigate(["/dashboards/jobs"]);
-}
+  private hasMultipleProjects(user: Auth): boolean {
+    return (user.user?.projects?.length ?? 0) > 1;
+  }
+
+  private navigateToDefaultProject(user: Auth) {
+    const project = user.user.projects[0];
+    this.localService.saveData("ProjectId", project?.id?.toString() ?? "");
+    this.localService.saveData("ProjectLogo", project?.imageUrl ?? "default-logo.png");
+    this.router.navigate(["/dashboards/jobs"]);
+  }
 
 private showWelcomeToast(user: Auth) {
   const welcomeMessage = `Bienvenue ${user.user.firstname} ${

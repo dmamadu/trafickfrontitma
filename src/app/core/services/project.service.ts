@@ -11,7 +11,7 @@ export class ProjectService extends RootService {
   uploadFile(file: File, filename: string, idProd: number): Observable<any> {
     const imageFormData = new FormData();
     imageFormData.append("file", file, filename);
-    const url = `${this.url + "/file/uplaodFilesProd/" + `${idProd}`}`;
+    const url = `${this.url + "/file/uploadFilesProd/" + `${idProd}`}`;
     return this.http.post<any>(url, imageFormData);
   }
 
@@ -79,6 +79,12 @@ getStatsByProjectId(uri: string, projectId: number): Observable<any> {
 }
 getStatsCombineByProjectId(projectId: number): Observable<any> {
     const url = `${this.url}stats/combine`;
+    const params = new HttpParams().set('projectId', projectId.toString());
+    return this.http.get<any>(url, { params });
+}
+
+getAvancementByProjectId(projectId: number): Observable<any> {
+    const url = `${this.url}stats/avancement`;
     const params = new HttpParams().set('projectId', projectId.toString());
     return this.http.get<any>(url, { params });
 }

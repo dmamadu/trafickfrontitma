@@ -1,5 +1,6 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-// import { TOPBAR } from "../layouts.model";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { EventService } from '../../core/services/event.service';
 
 @Component({
@@ -7,21 +8,16 @@ import { EventService } from '../../core/services/event.service';
   templateUrl: './horizontal.component.html',
   styleUrls: ['./horizontal.component.scss']
 })
-
-/**
- * Horizontal-layout component
- */
-export class HorizontalComponent implements OnInit, AfterViewInit {
+export class HorizontalComponent implements OnInit, OnDestroy {
 
   topbar: string;
   isCondensed: boolean;
 
-  constructor(private eventService: EventService) { }
+  private destroy$ = new Subject<void>();
+
+  constructor(private eventService: EventService) {}
 
   ngOnInit() {
-
-    // this.topbar = TOPBAR;
-
     this.eventService.subscribe('changeTopbar', (topbar) => {
       this.topbar = topbar;
       this.changeTopbar(this.topbar);
@@ -36,44 +32,26 @@ export class HorizontalComponent implements OnInit, AfterViewInit {
     this.changeTopbar(this.topbar);
   }
 
-  ngAfterViewInit() {
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  /**
-   * on settings button clicked from topbar
-   */
   onSettingsButtonClicked() {
     document.body.classList.toggle('right-bar-enabled');
   }
 
   changeTopbar(topbar: string) {
-    switch (topbar) {
-      case "light":
-        document.body.setAttribute("data-topbar", "light");
-        break;
-      case "dark":
-        document.body.setAttribute("data-topbar", "dark");
-        break;
-      case "colored":
-        document.body.setAttribute("data-topbar", "colored");
-        break;
-      default:
-        document.body.setAttribute("data-topbar", "dark");
-        break;
-    }
+    const value = ['light', 'dark', 'colored'].includes(topbar) ? topbar : 'dark';
+    document.body.setAttribute("data-topbar", value);
   }
 
-  /**
- * On mobile toggle button clicked
- */
   onToggleMobileMenu() {
     this.isCondensed = !this.isCondensed;
     document.body.classList.toggle('sidebar-enable');
     document.body.classList.toggle('vertical-collpsed');
-
     if (window.screen.width <= 768) {
       document.body.classList.remove('vertical-collpsed');
     }
   }
-
 }

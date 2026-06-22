@@ -45,18 +45,25 @@
         </button> -->
       </div>
       <div class="dropdown d-inline-block" dropdown>
-        <button type="button" class="btn header-item " dropdownToggle id="page-header-user-dropdown" style="cursor: pointer;">
-          <img [src]="myImage" class="rounded-circle header-profile-user me-2 " alt="Header Avatar" />
-          <!-- <span class="d-inline-flex align-items-center">
-            {{user.user.firstname}}
-            <i class="mdi mdi-chevron-down ms-1"></i>
-          </span> -->
+        <button type="button" class="btn header-item d-flex align-items-center gap-2"
+                dropdownToggle id="page-header-user-dropdown" style="cursor: pointer;">
+          <img [src]="myImage" class="rounded-circle header-profile-user" alt="Header Avatar" />
+          <div class="d-none d-lg-flex flex-column align-items-start" style="line-height: 1.2;">
+            <span class="fw-semibold" style="font-size: 0.82rem;">{{ userName }}</span>
+            <span class="text-muted" style="font-size: 0.72rem;">{{ userRole }}</span>
+          </div>
+          <i class="mdi mdi-chevron-down ms-1 d-none d-lg-inline"></i>
         </button>
         <div class="dropdown-menu dropdown-menu-end" *dropdownMenu>
-          <button class="dropdown-item"  (click)="changePassword()">
+          <button class="dropdown-item" (click)="openProfile()">
+            <i class="bx bx-user-circle font-size-16 align-middle me-1"></i>
+            Mon profil
+          </button>
+          <button class="dropdown-item" (click)="changePassword()">
             <i class="bx bx-lock-alt font-size-16 align-middle me-1"></i>
             Changer le mot de passe
           </button>
+          <div class="dropdown-divider"></div>
           <a class="dropdown-item text-danger" href="javascript:void(0);" (click)="logout()">
             <i class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i>
             Se déconnecter

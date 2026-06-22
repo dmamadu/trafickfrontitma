@@ -1,59 +1,45 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 import { EventService } from '../../core/services/event.service';
-
-// import { SIDEBAR_TYPE } from "../layouts.model";
 
 @Component({
   selector: 'app-vertical',
   templateUrl: './vertical.component.html',
   styleUrls: ['./vertical.component.scss']
 })
+export class VerticalComponent implements OnInit, OnDestroy {
 
-/**
- * Vertical component
- */
-export class VerticalComponent implements OnInit, AfterViewInit {
+  isCondensed = false;
+  private destroy$ = new Subject<void>();
 
-  isCondensed: any = false;
-  sidebartype: string;
-
-  constructor(private router: Router, private eventService: EventService) {
-    this.router.events.forEach((event) => {
-      if (event instanceof NavigationEnd) {
-        document.body.classList.remove('sidebar-enable');
-      }
-    });
-  }
+  constructor(private router: Router, private eventService: EventService) {}
 
   ngOnInit() {
     document.body.setAttribute('data-layout', 'vertical');
+
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      document.body.classList.remove('sidebar-enable');
+    });
   }
 
-  isMobile() {
-    const ua = navigator.userAgent;
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua);
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  ngAfterViewInit() {
-  }
-
-  /**
-   * on settings button clicked from topbar
-   */
   onSettingsButtonClicked() {
     document.body.classList.toggle('right-bar-enabled');
   }
 
-  /**
-   * On mobile toggle button clicked
-   */
   onToggleMobileMenu() {
     this.isCondensed = !this.isCondensed;
     document.body.classList.toggle('sidebar-enable');
     document.body.classList.toggle('vertical-collpsed');
-
     if (window.screen.width <= 768) {
       document.body.classList.remove('vertical-collpsed');
     }

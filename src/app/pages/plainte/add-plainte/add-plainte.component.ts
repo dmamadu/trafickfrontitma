@@ -161,7 +161,7 @@ export class AddPlainteComponent implements OnInit {
       if (result?.value !== true) return;
       this.isLoading = true;
       this.cdr.markForCheck();
-      this.coreService.addItem(this.initForm.value, "plainte").subscribe({
+      this.coreService.addItem(this.initForm.value, "plaintes").subscribe({
         next: (resp: any) => {
           if (resp?.responseCode == 201) {
             this.snackbar.openSnackBar("Plainte ajoutée avec succès", "OK", ["mycssSnackbarGreen"]);
@@ -190,13 +190,13 @@ export class AddPlainteComponent implements OnInit {
       if (result?.value !== true) return;
       this.isLoading = true;
       this.cdr.markForCheck();
-      this.coreService.updateItem(this.initForm.value, this.id, "plainte").subscribe({
+      this.coreService.updateItem(this.initForm.value, this.id, "plaintes").subscribe({
         next: (resp: any) => {
-          if (resp) {
+          if (resp?.responseCode == 200) {
             this.snackbar.openSnackBar("Plainte modifiée avec succès", "OK", ["mycssSnackbarGreen"]);
-            this.matDialogRef.close(resp);
+            this.matDialogRef.close(resp.data?.[0] ?? resp);
           } else {
-            this.toastr.error("Erreur lors de la modification");
+            this.toastr.error(resp?.message ?? "Erreur lors de la modification");
           }
           this.isLoading = false;
           this.cdr.markForCheck();

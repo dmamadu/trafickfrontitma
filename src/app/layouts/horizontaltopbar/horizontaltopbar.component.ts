@@ -1,41 +1,38 @@
-import { Component, OnInit, AfterViewInit, Inject, ViewChild, Input, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, Inject, ViewChild, Input, ElementRef } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import MetisMenu from 'metismenujs';
 import { CookieService } from 'ngx-cookie-service';
 import { LanguageService } from '../../core/services/language.service';
-
 import { EventService } from '../../core/services/event.service';
 import { AuthenticationService } from '../../core/services/auth.service';
-import { AuthfakeauthenticationService } from '../../core/services/authfake.service';
-
 import { DOCUMENT } from '@angular/common';
-
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 import { MENU } from './menu';
 import { MenuItem } from './menu.model';
-import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-horizontaltopbar',
   templateUrl: './horizontaltopbar.component.html',
   styleUrls: ['./horizontaltopbar.component.scss']
 })
-
-/**
- * Horizontal Topbar and navbar specified
- */
-export class HorizontaltopbarComponent implements OnInit, AfterViewInit {
-  menu: any
+export class HorizontaltopbarComponent implements OnInit, OnDestroy, AfterViewInit {
+  menu: any;
   element: any;
-  cookieValue: any;
-  flagvalue: any;
-  countryName: any;
-  valueset: any;
+  cookieValue: string;
+  flagvalue: string;
+  countryName: string;
+  valueset: string;
+
   @ViewChild('componentRef') scrollRef;
   @Input() isCondensed = false;
   @ViewChild('sideMenu') sideMenu: ElementRef;
+
   menuItems: MenuItem[] = [];
 
-  listLang: any = [
+  private destroy$ = new Subject<void>();
+
+  listLang = [
     { text: 'English', flag: 'assets/images/flags/us.jpg', lang: 'en' },
     { text: 'Spanish', flag: 'assets/images/flags/spain.jpg', lang: 'es' },
     { text: 'German', flag: 'assets/images/flags/germany.jpg', lang: 'de' },
@@ -43,78 +40,45 @@ export class HorizontaltopbarComponent implements OnInit, AfterViewInit {
     { text: 'Russian', flag: 'assets/images/flags/russia.jpg', lang: 'ru' },
   ];
 
-  // tslint:disable-next-line: max-line-length
-  constructor(@Inject(DOCUMENT) private document: any, private router: Router, private eventService: EventService, private authService: AuthenticationService,
-    private authFackservice: AuthfakeauthenticationService,
+  constructor(
+    @Inject(DOCUMENT) private document: any,
+    private router: Router,
+    private eventService: EventService,
+    private authService: AuthenticationService,
     public languageService: LanguageService,
-    // tslint:disable-next-line: variable-name
-    public _cookiesService: CookieService) {
-    router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.activateMenu();
-        this.menuItems.forEach((element) => {
-          element.isCollapsed = false
-        })
-      }
-    });
-  }
+    public _cookiesService: CookieService
+  ) {}
 
   ngOnInit(): void {
     this.element = document.documentElement;
-
     this.initialize();
 
     this.cookieValue = this._cookiesService.get('lang');
     const val = this.listLang.filter(x => x.lang === this.cookieValue);
-    this.countryName = val.map(element => element.text);
+    this.countryName = val.map(element => element.text)[0];
     if (val.length === 0) {
-      if (this.flagvalue === undefined) { this.valueset = 'assets/images/flags/us.jpg'; }
+      this.valueset = 'assets/images/flags/us.jpg';
     } else {
-      this.flagvalue = val.map(element => element.flag);
+      this.flagvalue = val.map(element => element.flag)[0];
     }
-  }
 
-  setLanguage(text: string, lang: string, flag: string) {
-    this.countryName = text;
-    this.flagvalue = flag;
-    this.cookieValue = lang;
-    this.languageService.setLanguage(lang);
-  }
-
-  /**
-   * Logout the user
-   */
-  logout() {
-    if (environment.defaultauth === 'firebase') {
-      this.authService.logout();
-    } else {
-      this.authFackservice.logout();
-    }
-    this.router.navigate(['/auth/login']);
-  }
-
-  /**
-   * On menu click
-   */
-  onMenuClick(parentIndex: number, item: any) {
-    if (!parentIndex) {
-      this.menuItems.forEach((element) => {
-        if (item == element) {
-          // Toggle the clicked item
-          element.isCollapsed = !element.isCollapsed;
-        } else {
-          // Close all other items of other parent items
-          element.isCollapsed = false
-        }
-      })
-    }
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.activateMenu();
+      this.menuItems.forEach(element => element.isCollapsed = false);
+    });
   }
 
   ngAfterViewInit() {
-    // this.menu = new MetisMenu(this.sideMenu.nativeElement);
     this._activateMenuDropdown();
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   ngOnChanges() {
     if (!this.isCondensed && this.sideMenu || this.isCondensed) {
@@ -125,214 +89,141 @@ export class HorizontaltopbarComponent implements OnInit, AfterViewInit {
       this.menu.dispose();
     }
   }
-  /**
-   * remove active and mm-active class
-   */
-  _removeAllClass(className) {
+
+  setLanguage(text: string, lang: string, flag: string) {
+    this.countryName = text;
+    this.flagvalue = flag;
+    this.cookieValue = lang;
+    this.languageService.setLanguage(lang);
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/auth/login']);
+  }
+
+  onMenuClick(parentIndex: number, item: any) {
+    if (!parentIndex) {
+      this.menuItems.forEach((element) => {
+        element.isCollapsed = item === element ? !element.isCollapsed : false;
+      });
+    }
+  }
+
+  toggleMenubar() {
+    const element = document.getElementById('topnav-menu-content');
+    element?.classList.toggle('show');
+  }
+
+  onSettingsButtonClicked() {
+    document.body.classList.toggle('right-bar-enabled');
+  }
+
+  initialize(): void {
+    this.menuItems = MENU;
+  }
+
+  hasItems(item: MenuItem) {
+    return item.subItems !== undefined ? item.subItems.length > 0 : false;
+  }
+
+  private _removeAllClass(className: string) {
     const els = document.getElementsByClassName(className);
     while (els[0]) {
       els[0].classList.remove(className);
     }
   }
 
-  /**
-   * Togglemenu bar
-   */
-  toggleMenubar() {
-    const element = document.getElementById('topnav-menu-content');
-    element.classList.toggle('show');
-  }
-
-  /**
-   * Activates the menu
-   */
   private activateMenu() {
-
-    const resetParent = (el: any) => {
-      const parent = el.parentElement;
-      if (parent) {
-        parent.classList.remove('active');
-        const parent2 = parent.parentElement;
-        this._removeAllClass('mm-active');
-        this._removeAllClass('mm-show');
-        if (parent2) {
-          parent2.classList.remove('active');
-          const parent3 = parent2.parentElement;
-          if (parent3) {
-            parent3.classList.remove('active');
-            const parent4 = parent3.parentElement;
-            if (parent4) {
-              parent4.classList.remove('active');
-              const parent5 = parent4.parentElement;
-              if (parent5) {
-                parent5.classList.remove('active');
-                const menuelement = document.getElementById("topnav-menu-content")
-                if (menuelement !== null) {
-                  if (menuelement.classList.contains('show'))
-                    document
-                      .getElementById("topnav-menu-content")
-                      .classList.remove("show");
-                }
-              }
-            }
-          }
-        }
-      }
-    };
-
-    // activate menu item based on location
     const links = document.getElementsByClassName('side-nav-link-ref');
-    let matchingMenuItem = null;
-    // tslint:disable-next-line: prefer-for-of
+
     for (let i = 0; i < links.length; i++) {
-      // reset menu
-      resetParent(links[i]);
+      this._resetParent(links[i] as Element);
     }
-    // tslint:disable-next-line: prefer-for-of
+
     for (let i = 0; i < links.length; i++) {
-      // tslint:disable-next-line: no-string-literal
-      if (location.pathname === links[i]['pathname']) {
-        matchingMenuItem = links[i];
+      if (location.pathname === (links[i] as any)['pathname']) {
+        this._activateParentChain(links[i] as Element);
         break;
       }
     }
+  }
 
-    if (matchingMenuItem) {
-      const parent = matchingMenuItem.parentElement;
-      /**
-       * TODO: This is hard coded way of expading/activating parent menu dropdown and working till level 3.
-       * We should come up with non hard coded approach
-       */
-      if (parent) {
-        parent.classList.add('active');
-        const parent2 = parent.parentElement;
-        if (parent2) {
-          parent2.classList.add('active');
-          const parent3 = parent2.parentElement;
-          if (parent3) {
-            parent3.classList.add('active');
-            const parent4 = parent3.parentElement;
-            if (parent4) {
-              parent4.classList.add('active');
-              const parent5 = parent4.parentElement;
-              if (parent5) {
-                parent5.classList.add('active');
-                const parent6 = parent5.parentElement;
-                if (parent6) {
-                  parent6.classList.add('active');
-                }
-              }
-            }
-          }
-        }
-      }
+  private _resetParent(el: Element) {
+    let current: Element | null = el.parentElement;
+    this._removeAllClass('mm-active');
+    this._removeAllClass('mm-show');
+    while (current) {
+      current.classList.remove('active');
+      current = current.parentElement;
+    }
+    const menu = document.getElementById("topnav-menu-content");
+    if (menu?.classList.contains('show')) {
+      menu.classList.remove("show");
     }
   }
 
-  /**
-   * on settings button clicked from topbar
-   */
-  onSettingsButtonClicked() {
-    document.body.classList.toggle('right-bar-enabled');
+  private _activateParentChain(el: Element) {
+    let current: Element | null = el.parentElement;
+    while (current) {
+      current.classList.add('active');
+      current = current.parentElement;
+    }
   }
 
-  /**
-   * Fullscreen method
-   */
+  _activateMenuDropdown() {
+    this._removeAllClass('mm-active');
+    this._removeAllClass('mm-show');
+    const links = document.getElementsByClassName('side-nav-link-ref');
+    const paths: string[] = [];
+
+    for (let i = 0; i < links.length; i++) {
+      paths.push((links[i] as any)['pathname']);
+    }
+
+    let itemIndex = paths.indexOf(window.location.pathname);
+    let menuItemEl: Element | null = null;
+
+    if (itemIndex === -1) {
+      const strIndex = window.location.pathname.lastIndexOf('/');
+      const item = window.location.pathname.substr(0, strIndex);
+      menuItemEl = links[paths.indexOf(item)] as Element;
+    } else {
+      menuItemEl = links[itemIndex] as Element;
+    }
+
+    if (menuItemEl) {
+      menuItemEl.classList.add('active');
+      this._activateParentChain(menuItemEl);
+    }
+  }
+
   fullscreen() {
     document.body.classList.toggle('fullscreen-enable');
     if (
-      !document.fullscreenElement && !this.element.mozFullScreenElement &&
-      !this.element.webkitFullscreenElement) {
+      !document.fullscreenElement &&
+      !this.element.mozFullScreenElement &&
+      !this.element.webkitFullscreenElement
+    ) {
       if (this.element.requestFullscreen) {
         this.element.requestFullscreen();
       } else if (this.element.mozRequestFullScreen) {
-        /* Firefox */
         this.element.mozRequestFullScreen();
       } else if (this.element.webkitRequestFullscreen) {
-        /* Chrome, Safari and Opera */
         this.element.webkitRequestFullscreen();
       } else if (this.element.msRequestFullscreen) {
-        /* IE/Edge */
         this.element.msRequestFullscreen();
       }
     } else {
       if (this.document.exitFullscreen) {
         this.document.exitFullscreen();
       } else if (this.document.mozCancelFullScreen) {
-        /* Firefox */
         this.document.mozCancelFullScreen();
       } else if (this.document.webkitExitFullscreen) {
-        /* Chrome, Safari and Opera */
         this.document.webkitExitFullscreen();
       } else if (this.document.msExitFullscreen) {
-        /* IE/Edge */
         this.document.msExitFullscreen();
       }
     }
-  }
-
-  /**
-   * Initialize
-   */
-  initialize(): void {
-    this.menuItems = MENU;
-  }
-
-  /**
-   * Returns true or false if given menu item has child or not
-   * @param item menuItem
-   */
-  hasItems(item: MenuItem) {
-    return item.subItems !== undefined ? item.subItems.length > 0 : false;
-  }
-  _activateMenuDropdown() {
-    this._removeAllClass('mm-active');
-    this._removeAllClass('mm-show');
-    const links = document.getElementsByClassName('side-nav-link-ref');
-    let menuItemEl = null;
-    // tslint:disable-next-line: prefer-for-of
-    const paths = [];
-    for (let i = 0; i < links.length; i++) {
-      paths.push(links[i]['pathname']);
-    }
-    var itemIndex = paths.indexOf(window.location.pathname);
-    if (itemIndex === -1) {
-      const strIndex = window.location.pathname.lastIndexOf('/');
-      const item = window.location.pathname.substr(0, strIndex).toString();
-      menuItemEl = links[paths.indexOf(item)];
-    } else {
-      menuItemEl = links[itemIndex];
-    }
-    if (menuItemEl) {
-      menuItemEl.classList.add('active');
-      const parentEl = menuItemEl.parentElement;
-      if (parentEl) {
-        parentEl.classList.add('mm-active');
-        const parent2El = parentEl.parentElement.closest('ul');
-        if (parent2El && parent2El.id !== 'side-menu') {
-          parent2El.classList.add('mm-show');
-          const parent3El = parent2El.parentElement;
-          if (parent3El && parent3El.id !== 'side-menu') {
-            parent3El.classList.add('mm-active');
-            const childAnchor = parent3El.querySelector('.has-arrow');
-            const childDropdown = parent3El.querySelector('.has-dropdown');
-            if (childAnchor) { childAnchor.classList.add('mm-active'); }
-            if (childDropdown) { childDropdown.classList.add('mm-active'); }
-            const parent4El = parent3El.parentElement;
-            if (parent4El && parent4El.id !== 'side-menu') {
-              parent4El.classList.add('mm-show');
-              const parent5El = parent4El.parentElement;
-              if (parent5El && parent5El.id !== 'side-menu') {
-                parent5El.classList.add('mm-active');
-                const childanchor = parent5El.querySelector('.is-parent');
-                if (childanchor && parent5El.id !== 'side-menu') { childanchor.classList.add('mm-active'); }
-              }
-            }
-          }
-        }
-      }
-    }
-
   }
 }

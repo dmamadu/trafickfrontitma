@@ -179,21 +179,17 @@ throw new Error('Method not implemented.');
 
   createHeader() {
     return [
+      { th: "Nom", td: "lastname" },
+      { th: "Prénom", td: "firstname" },
+      { th: "Email", td: "email" },
+      { th: "Téléphone", td: "contact" },
       {
-        th: "Nom",
-        td: "lastname",
-      },
-      {
-        th: "PRENOM",
-        td: "firstname",
-      },
-      {
-        th: "Email",
-        td: "email",
-      },
-      {
-        th: "Numéro téléphone ",
-        td: "contact",
+        th: "Statut",
+        td: "enabled",
+        badgeClass: [
+          { name: "true",  value: "badge badge-success" },
+          { name: "false", value: "badge badge-danger" },
+        ],
       },
     ];
   }
@@ -209,6 +205,14 @@ throw new Error('Method not implemented.');
         action: (element?) => this.updateItems(element),
       },
       {
+        icon: (el) => el.enabled ? "bxs-toggle-right" : "bxs-toggle-left",
+        couleur: (el) => el.enabled ? "#22c55e" : "#9ca3af",
+        size: "icon-size-4",
+        title: (el) => el.enabled ? "Désactiver" : "Activer",
+        isDisabled: false,
+        action: (element?) => this.toggleEnabled(element),
+      },
+      {
         icon: "bxs-trash-alt",
         couleur: "#D55E00",
         size: "icon-size-4",
@@ -218,9 +222,9 @@ throw new Error('Method not implemented.');
       },
       {
         icon: "bxs-info-circle",
-        couleur: "black	",
+        couleur: "black",
         size: "icon-size-4",
-        title: "détail",
+        title: "Détail",
         isDisabled: this.hasDelete,
         action: (element?) => this.detailItems(element),
       },
@@ -258,6 +262,32 @@ throw new Error('Method not implemented.');
          this.getUsers();
       }
     );
+  }
+
+  toggleEnabled(element: any): void {
+    const action = element.enabled ? "désactiver" : "activer";
+    this.snackbar
+      .showConfirmation(`Voulez-vous vraiment ${action} cet utilisateur ?`)
+      .then((result) => {
+        if (result["value"] === true) {
+          this.parentService
+            .patch(`users/${element.id}/enabled`)
+            .subscribe(
+              (resp: any) => {
+                if (resp?.responseCode === 200) {
+                  element.enabled = !element.enabled;
+                  this._changeDetectorRef.markForCheck();
+                  this.snackbar.openSnackBar(
+                    `Utilisateur ${action === "activer" ? "activé" : "désactivé"} avec succès`,
+                    "OK",
+                    ["mycssSnackbarGreen"]
+                  );
+                }
+              },
+              (error) => this.snackbar.showErrors(error)
+            );
+        }
+      });
   }
 
   //cette fonction permet de supprimer

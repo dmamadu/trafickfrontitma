@@ -1,35 +1,30 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 
 import { EventService } from '../core/services/event.service';
 import { RootReducerState } from '../store';
 import { Store } from '@ngrx/store';
-import { LayoutState } from '../store/layouts/layouts.reducer';
-import { Observable, map } from 'rxjs';
 
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss']
 })
+export class LayoutComponent implements OnInit, OnDestroy {
 
-export class LayoutComponent implements OnInit, AfterViewInit {
-
-  // layout related config
-  layoutType: string;
-  layoutwidth: string;
-  topbar: string;
-  mode: string;
-  sidebartype: string;
-  layoutData: LayoutState;
   dataLayout$: Observable<string>;
+  private destroy$ = new Subject<void>();
 
-  constructor(private eventService: EventService, private store: Store<{ layout: { DATA_LAYOUT: string } }>, private stores: Store<RootReducerState>) {
-    this.dataLayout$ = store.select('layout').pipe(map(data => data.DATA_LAYOUT));
+  constructor(
+    private eventService: EventService,
+    private stores: Store<RootReducerState>
+  ) {
+    this.dataLayout$ = this.stores.select('layout').pipe(map(data => data.DATA_LAYOUT));
   }
 
   ngOnInit() {
-    // default settings
-    this.stores.select('layout').subscribe((data) => {
+    this.stores.select('layout').pipe(takeUntil(this.destroy$)).subscribe((data) => {
       document.body.setAttribute('data-bs-theme', data.LAYOUT_MODE);
       document.body.setAttribute('data-layout-size', data.LAYOUT_WIDTH);
       document.body.setAttribute('data-sidebar', data.SIDEBAR_MODE);
@@ -87,6 +82,7 @@ export class LayoutComponent implements OnInit, AfterViewInit {
           document.body.setAttribute('data-sidebar', 'dark');
           break;
       }
+
       switch (data.LAYOUT_WIDTH) {
         case "fluid":
           document.body.setAttribute("data-layout-size", "fluid");
@@ -103,23 +99,16 @@ export class LayoutComponent implements OnInit, AfterViewInit {
           document.body.setAttribute("data-layout-scrollable", "true");
           document.body.setAttribute("data-layout-size", "fluid");
           document.body.classList.remove("right-bar-enabled", "vertical-collpsed");
+          break;
         default:
           document.body.setAttribute("data-layout-size", "fluid");
           break;
       }
-
-    })
-  }
-  ngAfterViewInit() {
-  }
-
-  /**
-   * Check if the vertical layout is requested
-   */
-  isVerticalLayoutRequested() {
-    this.dataLayout$.subscribe(dataLayout => {
-      document.body.setAttribute('data-layout', dataLayout);
     });
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

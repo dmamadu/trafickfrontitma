@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Inject } from "@angular/core";
+import { Component, OnInit, OnDestroy, Output, EventEmitter, Inject } from "@angular/core";
 import { Router } from "@angular/router";
 import { DOCUMENT } from "@angular/common";
 import { AuthenticationService } from "../../core/services/auth.service";
@@ -6,13 +6,16 @@ import { CookieService } from "ngx-cookie-service";
 import { LanguageService } from "../../core/services/language.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
-import { Observable } from "rxjs";
+import { Subject } from "rxjs";
+import { takeUntil, take } from "rxjs/operators";
 import { changesLayout } from "src/app/store/layouts/layout.actions";
 import { getLayoutMode } from "src/app/store/layouts/layout.selector";
 import { RootReducerState } from "src/app/store";
-import { Auth, User } from "src/app/store/Authentication/auth.models";
+import { Auth } from "src/app/store/Authentication/auth.models";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { ChangePasswordComponent } from "src/app/account/auth/change-password/change-password.component";
+import { MyProfileComponent } from "src/app/account/auth/my-profile/my-profile.component";
+import { LocalService } from "src/app/core/services/local.service";
 import { MatDialog } from "@angular/material/dialog";
 
 @Component({
@@ -20,23 +23,31 @@ import { MatDialog } from "@angular/material/dialog";
   templateUrl: "./topbar.component.html",
   styleUrls: ["./topbar.component.scss"],
 })
-
-/**
- * Topbar component
- */
-export class TopbarComponent implements OnInit {
-  mode: any;
+export class TopbarComponent implements OnInit, OnDestroy {
   element: any;
-  cookieValue: any;
-  flagvalue: any;
-  countryName: any;
-  valueset: any;
-  theme: any;
-  layout: string;
-  dataLayout$: Observable<string>;
+  cookieValue: string;
+  flagvalue: string;
+  countryName: string;
+  valueset: string;
+  theme: string;
   user: Auth;
-  myImage!: string;
-  // Define layoutMode as a property
+  userName: string = "";
+  userRole: string = "";
+  myImage: string;
+  openMobileMenu: boolean;
+
+  @Output() settingsButtonClicked = new EventEmitter();
+  @Output() mobileMenuButtonClicked = new EventEmitter();
+
+  private destroy$ = new Subject<void>();
+
+  listLang = [
+    { text: "English", flag: "assets/images/flags/us.jpg", lang: "en" },
+    { text: "Spanish", flag: "assets/images/flags/spain.jpg", lang: "es" },
+    { text: "German", flag: "assets/images/flags/germany.jpg", lang: "de" },
+    { text: "Italian", flag: "assets/images/flags/italy.jpg", lang: "it" },
+    { text: "Russian", flag: "assets/images/flags/russia.jpg", lang: "ru" },
+  ];
 
   constructor(
     @Inject(DOCUMENT) private document: any,
@@ -47,56 +58,46 @@ export class TopbarComponent implements OnInit {
     public translate: TranslateService,
     public _cookiesService: CookieService,
     private _matDialog: MatDialog,
+    private localService: LocalService,
     public store: Store<RootReducerState>
   ) {}
-
-  listLang: any = [
-    { text: "English", flag: "assets/images/flags/us.jpg", lang: "en" },
-    { text: "Spanish", flag: "assets/images/flags/spain.jpg", lang: "es" },
-    { text: "German", flag: "assets/images/flags/germany.jpg", lang: "de" },
-    { text: "Italian", flag: "assets/images/flags/italy.jpg", lang: "it" },
-    { text: "Russian", flag: "assets/images/flags/russia.jpg", lang: "ru" },
-  ];
-
-  openMobileMenu: boolean;
-
-  @Output() settingsButtonClicked = new EventEmitter();
-  @Output() mobileMenuButtonClicked = new EventEmitter();
-
-  getImageFromBase64(imageType: string, imageName: number[]): string {
-    const base64Representation = "data:" + imageType + ";base64," + imageName;
-    return base64Representation;
-  }
 
   ngOnInit() {
     if (this.authService.currentUser()) {
       this.user = this.authService.currentUser();
-      if (this.user.user.image) {
-        this.myImage = this.getImageFromBase64(
-          this.user.user.image.type,
-          this.user.user.image.image
-        );
+      if (this.user?.user?.image) {
+        this.myImage = `data:${this.user.user.image.type};base64,${this.user.user.image.image}`;
       } else {
         this.myImage = "assets/images/user.png";
       }
     }
 
-    this.store.select("layout").subscribe((data) => {
+    const storedUser = this.localService.getDataJson("user");
+    if (storedUser) {
+      this.userName = `${storedUser.firstname || ""} ${storedUser.lastname || ""}`.trim();
+      this.userRole = storedUser.role?.[0]?.name || "";
+    }
+
+    this.store.select("layout").pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.theme = data.DATA_LAYOUT;
     });
+
     this.openMobileMenu = false;
     this.element = document.documentElement;
 
     this.cookieValue = this._cookiesService.get("lang");
     const val = this.listLang.filter((x) => x.lang === this.cookieValue);
-    this.countryName = val.map((element) => element.text);
+    this.countryName = val.map((element) => element.text)[0];
     if (val.length === 0) {
-      if (this.flagvalue === undefined) {
-        this.valueset = "assets/images/flags/us.jpg";
-      }
+      this.valueset = "assets/images/flags/us.jpg";
     } else {
-      this.flagvalue = val.map((element) => element.flag);
+      this.flagvalue = val.map((element) => element.flag)[0];
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   setLanguage(text: string, lang: string, flag: string) {
@@ -106,24 +107,14 @@ export class TopbarComponent implements OnInit {
     this.languageService.setLanguage(lang);
   }
 
-  /**
-   * Toggles the right sidebar
-   */
   toggleRightSidebar() {
     this.settingsButtonClicked.emit();
   }
 
-  /**
-   * Toggle the menu bar when having mobile screen
-   */
   toggleMobileMenu(event: any) {
     event.preventDefault();
     this.mobileMenuButtonClicked.emit();
   }
-
-  /**
-   * Logout the user
-   */
 
   logout() {
     this.snackbar
@@ -140,9 +131,17 @@ export class TopbarComponent implements OnInit {
     this._matDialog.open(ChangePasswordComponent, {});
   }
 
-  /**
-   * Fullscreen method
-   */
+  openProfile(): void {
+    this._matDialog.open(MyProfileComponent, { width: "400px" });
+  }
+
+  changeLayout(layoutMode: string) {
+    this.store.dispatch(changesLayout({ layoutMode }));
+    this.store.select(getLayoutMode).pipe(take(1)).subscribe((layout) => {
+      document.documentElement.setAttribute("data-layout", layout);
+    });
+  }
+
   fullscreen() {
     document.body.classList.toggle("fullscreen-enable");
     if (
@@ -153,36 +152,22 @@ export class TopbarComponent implements OnInit {
       if (this.element.requestFullscreen) {
         this.element.requestFullscreen();
       } else if (this.element.mozRequestFullScreen) {
-        /* Firefox */
         this.element.mozRequestFullScreen();
       } else if (this.element.webkitRequestFullscreen) {
-        /* Chrome, Safari and Opera */
         this.element.webkitRequestFullscreen();
       } else if (this.element.msRequestFullscreen) {
-        /* IE/Edge */
         this.element.msRequestFullscreen();
       }
     } else {
       if (this.document.exitFullscreen) {
         this.document.exitFullscreen();
       } else if (this.document.mozCancelFullScreen) {
-        /* Firefox */
         this.document.mozCancelFullScreen();
       } else if (this.document.webkitExitFullscreen) {
-        /* Chrome, Safari and Opera */
         this.document.webkitExitFullscreen();
       } else if (this.document.msExitFullscreen) {
-        /* IE/Edge */
         this.document.msExitFullscreen();
       }
     }
-  }
-
-  changeLayout(layoutMode: string) {
-    this.theme = layoutMode;
-    this.store.dispatch(changesLayout({ layoutMode }));
-    this.store.select(getLayoutMode).subscribe((layout) => {
-      document.documentElement.setAttribute("data-layout", layout);
-    });
   }
 }

@@ -13,6 +13,11 @@ import { UtilisateurComponent } from "./parametrages/utilisateur/utilisateur.com
 import { GestionDossierComponent } from "./parametrages/dossier/gestion-dossier/gestion-dossier.component";
 import { CategorieDossierComponent } from "./parametrages/dossier/categorie-dossier/categorie-dossier.component";
 import { RencontreComponent } from "./elaboration/rencontre/rencontre.component";
+import { QuartierComponent } from "./geolocalisation/quartier/quartier.component";
+import { PointRepereComponent } from "./geolocalisation/point-repere/point-repere.component";
+import { RoleGuard } from "../core/guards/role.guard";
+
+const ADMIN_ROLES = ["Super Admin", "Admin"];
 
 const routes: Routes = [
   // { path: '', redirectTo: 'dashboard' },
@@ -23,6 +28,8 @@ const routes: Routes = [
   },
   {
     path: "projects",
+    canActivate: [RoleGuard],
+    data: { roles: ADMIN_ROLES },
     loadChildren: () =>
       import("./projects/projects.module").then((m) => m.ProjectsModule),
   },
@@ -67,6 +74,8 @@ const routes: Routes = [
   },
   {
     path: "maitrouvrages",
+    canActivate: [RoleGuard],
+    data: { roles: ADMIN_ROLES },
     loadChildren: () =>
       import("./maitrouvrages/maitrouvrages.module").then(
         (m) => m.MaitrouvragesModule
@@ -77,7 +86,7 @@ const routes: Routes = [
     loadChildren: () =>
       import("./pap/pap-routing.module").then((m) => m.PapRoutingModule),
   },
-    {
+  {
     path: "ficheIdentification",
     loadChildren: () =>
       import("./ficheIdentificationPap/ficheIdentification-routing.module").then((m) => m.FicheIdentificationRoutingModule),
@@ -89,6 +98,8 @@ const routes: Routes = [
   },
   {
     path: "consultant",
+    canActivate: [RoleGuard],
+    data: { roles: ADMIN_ROLES },
     loadChildren: () =>
       import("./consultant/consulant-routing.module").then(
         (m) => m.ConsultantRoutingModule
@@ -114,15 +125,47 @@ const routes: Routes = [
 
   { path: "juristApp", component: JuristAppComponent },
 
-  { path: "fonctions", component: FonctionUtilisateurComponent },
-  { path: "roles", component: RoleComponent },
-  { path: "categories", component: CategorieUtilisateurComponent },
-
-  { path: "utilisateurs", component: UtilisateurComponent },
+  {
+    path: "fonctions",
+    component: FonctionUtilisateurComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ADMIN_ROLES },
+  },
+  {
+    path: "roles",
+    component: RoleComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ADMIN_ROLES },
+  },
+  {
+    path: "categories",
+    component: CategorieUtilisateurComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ADMIN_ROLES },
+  },
+  {
+    path: "utilisateurs",
+    component: UtilisateurComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ADMIN_ROLES },
+  },
 
   { path: "dossiers", component: GestionDossierComponent },
   { path: "catégorie-dossier", component: CategorieDossierComponent },
   { path: "rencontres", component: RencontreComponent },
+
+  {
+    path: "geolocalisation/quartiers",
+    component: QuartierComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ADMIN_ROLES },
+  },
+  {
+    path: "geolocalisation/points-de-repere",
+    component: PointRepereComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ADMIN_ROLES },
+  },
 
   {
     path: "baremes",

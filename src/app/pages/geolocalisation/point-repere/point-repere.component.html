@@ -1,0 +1,23 @@
+<div style="z-index: 0" class="pt-3 d-flex justify-content-between">
+  <div>
+    <app-page-title title="Liste des points de repère"></app-page-title>
+  </div>
+  <button class="btn bgPrimaire mb-3" (click)="addItems()">Ajouter un point de repère</button>
+</div>
+
+<app-loader-custom *ngIf="loadData"></app-loader-custom>
+
+<div style="z-index: 0" class="pt-3">
+  <tableau
+    *ngIf="!loadData"
+    [entete]="headers"
+    [coleurEntete]="headers"
+    [data]="datas"
+    [actions]="btnActions"
+    [total]="length"
+    [pageSize]="pageSize"
+    [pageIndex]="offset"
+    [pageSizeOptions]="pageSizeOptions"
+    (changePage)="pageChanged($event)"
+  ></tableau>
+</div>

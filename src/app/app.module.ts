@@ -47,11 +47,6 @@ import { OrdersEffects } from './store/Crypto/crypto.effects';
 import { CustomerEffects } from './store/customer/customer.effects';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { DetailPlainteComponent } from './detail-plainte/detail-plainte.component';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatProgressBar, MatProgressBarModule } from '@angular/material/progress-bar';
-import { ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
 import { AngularMaterialModule } from './shared/angular-materiel-module/angular-materiel-module';
 import { HeroCarouselComponent } from "./cyptolanding/hero-carousel/hero-carousel.component";
 import { FonctionnalitesComponent } from "./cyptolanding/compnents/fonctionnalites";
@@ -74,7 +69,6 @@ export function createTranslateLoader(http: HttpClient): any {
     DetailPlainteComponent,
   ],
   imports: [
-    CommonModule, ReactiveFormsModule, BrowserModule, MatProgressBarModule, MatProgressBar, MatProgressSpinnerModule,
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
@@ -115,10 +109,8 @@ export function createTranslateLoader(http: HttpClient): any {
         tasklistEffects,
         OrdersEffects,
         CustomerEffects,
-        MatIconModule, AngularMaterialModule,
-        MatIconModule,
-        AccordionModule
     ]),
+    AngularMaterialModule,
     HeroCarouselComponent,
     FonctionnalitesComponent,
     SuccesStatsComponent,

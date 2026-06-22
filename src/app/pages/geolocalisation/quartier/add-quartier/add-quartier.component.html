@@ -1,0 +1,52 @@
+<mat-toolbar class="mat-accent m-0 backToolbar">
+  <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
+    <span class="c_title dialog-title">{{ dialogTitle }}</span>
+    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<div class="flex flex-col flex-auto p-4">
+  <form [formGroup]="initForm" class="w-100">
+
+    <div class="row">
+      <div class="col-12">
+        <mat-form-field class="w-100 mt-2" appearance="outline">
+          <mat-label>Nom du quartier</mat-label>
+          <input matInput type="text" formControlName="nom" />
+          <mat-icon matSuffix>location_city</mat-icon>
+          <mat-error>Le nom est obligatoire (min. 2 caractères)</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field class="w-100 mt-2" appearance="outline">
+          <mat-label>Latitude</mat-label>
+          <input matInput type="number" formControlName="latitudeCentre" step="0.000001" />
+          <mat-icon matSuffix>my_location</mat-icon>
+          <mat-error>La latitude est obligatoire</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6">
+        <mat-form-field class="w-100 mt-2" appearance="outline">
+          <mat-label>Longitude</mat-label>
+          <input matInput type="number" formControlName="longitudeCentre" step="0.000001" />
+          <mat-icon matSuffix>my_location</mat-icon>
+          <mat-error>La longitude est obligatoire</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="flex justify-center gap-4 mt-4">
+      <button mat-raised-button class="submit-buttonRed" type="button" (click)="matDialogRef.close()">
+        <span class="textForm">Annuler</span>
+      </button>
+      <button mat-raised-button class="submit-button" type="button" [disabled]="loader" (click)="checkRecap()">
+        <span class="textForm">{{ labelButton }}</span>
+      </button>
+    </div>
+
+  </form>
+</div>

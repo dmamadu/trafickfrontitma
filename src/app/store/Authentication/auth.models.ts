@@ -16,6 +16,12 @@ export interface User {
   image?: Image;
   role?: Role[];
   projects?: any[];
+  mustChangePassword?: boolean;
+  contact?: string;
+  locality?: string;
+  imageUrl?: string;
+  fonction?: any;
+  categorie?: any;
 }
 
 export interface Image {

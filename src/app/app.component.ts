@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -7,6 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
 
+  constructor(private authService: AuthenticationService) {}
+
   ngOnInit() {
+    if (this.authService.isAuthenticated()) {
+      this.authService.startTokenExpirationCheck();
+    }
   }
 }

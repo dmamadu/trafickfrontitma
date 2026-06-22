@@ -89,6 +89,10 @@ export class ServiceParent implements Resolve<any> {
     );
   }
 
+  patch<T>(url: string, body: any = {}): Observable<T> {
+    return this.http.patch<T>(`${this.url}${url}`, body);
+  }
+
   listeByProject(url, max, offset, projectId): Observable<any[]> {
     return this.http.get<any[]>(
       this.url +

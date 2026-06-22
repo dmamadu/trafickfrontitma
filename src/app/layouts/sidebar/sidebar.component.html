@@ -1,15 +1,14 @@
 <!-- ========== Left Sidebar Start ========== -->
 
 <ng-template #contentTemplate>
-  <!--- Sidemenu -->
   <div id="sidebar-menu">
-    <!-- Left Menu Start -->
     <ul class="metismenu list-unstyled" id="side-menu" #sideMenu>
-      <!-- {{menuItems}} -->
       <ng-container *ngFor="let item of menuItems; trackBy: trackByFn">
         <li *ngIf="item.isTitle" class="menu-title">{{ item.label | translate }}</li>
-        <li *ngIf="!item.isTitle && !item.isLayout">
-          <a href="javascript:void(0);" class="is-parent" [ngClass]="{'has-arrow': !item.badge, 'has-dropdown': item.badge}" *ngIf="hasItems(item)">
+        <li *ngIf="!item.isTitle && !item.isLayout" routerLinkActive="mm-active">
+          <a href="javascript:void(0);" class="is-parent"
+             [ngClass]="{'has-arrow': !item.badge, 'has-dropdown': item.badge}"
+             *ngIf="hasItems(item)">
             <i class="bx {{item.icon}}" *ngIf="item.icon"></i>
             <span> {{ item.label | translate }}</span>
             <span class="badge rounded-pill float-end bg-{{item.badge.variant}}" *ngIf="item.badge">{{item.badge.text | translate}}</span>
@@ -19,24 +18,28 @@
             <span> {{ item.label | translate }}</span>
             <span class="badge rounded-pill bg-{{item.badge.variant}} float-end" *ngIf="item.badge">{{item.badge.text | translate}}</span>
           </a>
-          <ul class="sub-menu" aria-expanded="false" *ngIf="hasItems(item)">
+          <ul class="sub-menu" aria-expanded="false" *ngIf="hasItems(item)" routerLinkActive="mm-show">
             <ng-container *ngFor="let subitem of item.subItems; trackBy: trackByFn">
-              <li>
-                <a class="side-nav-link-a-ref has-arrow" href="javascript:void(0);" [attr.data-parent]="subitem.parentId" *ngIf="hasItems(subitem)">
+              <li routerLinkActive="mm-active">
+                <a class="side-nav-link-a-ref has-arrow" href="javascript:void(0);"
+                   [attr.data-parent]="subitem.parentId" *ngIf="hasItems(subitem)">
                   <i class="bx {{ subitem.icon }}" *ngIf="subitem.icon"></i>
                   {{ subitem.label | translate}}
                 </a>
-                <ul class="sub-menu mm-collapse" aria-expanded="false" *ngIf="hasItems(subitem)">
+                <ul class="sub-menu mm-collapse" aria-expanded="false" *ngIf="hasItems(subitem)" routerLinkActive="mm-show">
                   <ng-container *ngFor="let subSubitem of subitem.subItems; trackBy: trackByFn">
-                    <li>
-                      <a [attr.data-parent]="subSubitem.parentId" routerLink="{{subSubitem.link}}" routerLinkActive="active" class="side-nav-link-ref">
+                    <li routerLinkActive="mm-active">
+                      <a [attr.data-parent]="subSubitem.parentId" routerLink="{{subSubitem.link}}"
+                         routerLinkActive="active" class="side-nav-link-ref">
                         <i class="bx {{ subSubitem.icon }}" *ngIf="subSubitem.icon"></i>
                         {{ subSubitem.label | translate }}
                       </a>
                     </li>
                   </ng-container>
                 </ul>
-                <a routerLink="{{subitem.link}}" class="side-nav-link-ref" [attr.data-parent]="subitem.parentId" routerLinkActive="active" *ngIf="!hasItems(subitem)">
+                <a routerLink="{{subitem.link}}" class="side-nav-link-ref"
+                   [attr.data-parent]="subitem.parentId" routerLinkActive="active"
+                   *ngIf="!hasItems(subitem)">
                   <i class="bx {{ subitem.icon }}" *ngIf="subitem.icon"></i>
                   {{ subitem.label | translate}}
                   <span class="badge rounded-pill bg-{{subitem.badge.variant}} float-end" *ngIf="subitem.badge">{{subitem.badge.text | translate}}</span>
@@ -49,8 +52,6 @@
     </ul>
   </div>
 </ng-template>
-
-<!-- Sidebar -->
 
 <div class="vertical-menu">
   <ngx-simplebar class="h-100" #componentRef>
