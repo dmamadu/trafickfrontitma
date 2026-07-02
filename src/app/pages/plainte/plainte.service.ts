@@ -44,4 +44,14 @@ export class PlainteService extends ServiceParent {
   deletePlainte(id: number): Observable<any> {
     return this.http.delete<any>(`${this.url}${BASE_URL}/${id}`);
   }
+
+  deleteMultipleByIds(ids: number[]): Observable<any> {
+    if (!ids || ids.length === 0) {
+      throw new Error('La liste des IDs ne peut pas être vide');
+    }
+    return this.http.request<any>('DELETE', `${this.url}${BASE_URL}/batch`, {
+      body: ids,
+      headers: this.httpOptions.headers,
+    });
+  }
 }

@@ -10,7 +10,7 @@ export const MENU: MenuItem[] = [
   },
   {
     id: 2,
-    label: "DASHBOARDS",
+    label: "Dashboards",
     icon: "bx-home-circle",
     subItems: [
       {
@@ -31,7 +31,7 @@ export const MENU: MenuItem[] = [
   },
   {
     id: 5,
-    label: "PROJETS",
+    label: "Projets",
     icon: "bx-briefcase-alt-2",
     roles: ADMIN_ROLES,
     subItems: [
@@ -53,7 +53,7 @@ export const MENU: MenuItem[] = [
   },
   {
     id: 8,
-    label: "MAITRES D'OUVRAGES",
+    label: "Maîtres d'ouvrages",
     icon: "bxs-buildings",
     roles: ADMIN_ROLES,
     subItems: [
@@ -135,7 +135,7 @@ export const MENU: MenuItem[] = [
   },
   {
     id: 19,
-    label: "MISE EN ŒUVRE DU PAR",
+    label: "Mise en œuvre du PAR",
     icon: "bx-task",
     subItems: [
       {
@@ -310,7 +310,7 @@ export const MENU: MenuItem[] = [
   },
   {
     id: 43,
-    label: "PARAMÉTRAGE",
+    label: "Paramétrage",
     isTitle: true,
     roles: ADMIN_ROLES,
   },
@@ -346,6 +346,13 @@ export const MENU: MenuItem[] = [
         label: "Catégories utilisateurs",
         icon: "bxs-label",
         link: "/categories",
+        parentId: 44,
+      },
+      {
+        id: 49,
+        label: "Journal d'audit",
+        icon: "bxs-history",
+        link: "/audit",
         parentId: 44,
       },
     ],

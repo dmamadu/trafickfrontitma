@@ -1,0 +1,34 @@
+<div>
+  <app-page-title title="Journal d'audit" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+</div>
+
+<div class="d-flex flex-row flex-wrap gap-2 mb-3">
+  <input
+    type="text"
+    class="form-control"
+    style="max-width: 260px;"
+    placeholder="Filtrer par utilisateur..."
+    [(ngModel)]="utilisateurFiltre"
+    (keyup.enter)="applyFilters()"
+  />
+  <select class="form-control" style="max-width: 320px;" [(ngModel)]="typeActionFiltre" (change)="applyFilters()">
+    <option value="">Tous les types d'action</option>
+    <option *ngFor="let type of typeActions" [value]="type">{{ type }}</option>
+  </select>
+  <button type="button" class="btn bgPrimaire" (click)="applyFilters()">Filtrer</button>
+</div>
+
+<app-loader-custom *ngIf="loadData"></app-loader-custom>
+
+<div style="z-index: 0" class="pt-2">
+  <tableau
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="pageSizeOptions"
+    [pageSize]="pageSize"
+    [total]="length"
+    [entete]="headers"
+    [coleurEntete]="headers"
+    [data]="datas"
+    (changePage)="pageChanged($event)">
+  </tableau>
+</div>

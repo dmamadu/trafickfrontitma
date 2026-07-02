@@ -103,6 +103,7 @@ export class ListPlainteComponent implements OnInit, OnDestroy {
   pageSizeOptions = [5, 10, 25, 100, 500, 1000];
 
   currentProjectId: any;
+  canBulkDelete = false;
 
   headings: string[] = [];
   dataExcel: any[] = [];
@@ -128,6 +129,8 @@ export class ListPlainteComponent implements OnInit, OnDestroy {
       { label: "Plainte" },
       { label: "Liste des plaintes", active: true },
     ];
+    const user = this.localService.getDataJson("user");
+    this.canBulkDelete = ["Super Admin", "Admin"].includes(user?.role?.[0]?.name);
   }
 
   ngOnDestroy(): void {
@@ -256,6 +259,26 @@ export class ListPlainteComponent implements OnInit, OnDestroy {
         error: (err) => this.snackbar.showErrors(err),
       });
     });
+  }
+
+  handleBulkDelete(selectedIds: number[]): void {
+    this.snackbar
+      .showConfirmation(
+        `Voulez-vous vraiment supprimer ces ${selectedIds.length} plainte(s) ? Cette action est définitive.`
+      )
+      .then((result) => {
+        if (result?.value !== true) return;
+        this.plainteService
+          .deleteMultipleByIds(selectedIds)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: () => {
+              this.loadPlaintes();
+              this.snackbar.openSnackBar("Plaintes supprimées avec succès", "OK", ["mycssSnackbarGreen"]);
+            },
+            error: (err) => this.snackbar.showErrors(err),
+          });
+      });
   }
 
   detailItems(element: any): void {

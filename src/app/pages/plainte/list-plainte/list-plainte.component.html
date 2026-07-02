@@ -50,6 +50,9 @@
     [coleurEntete]="headers"
     [data]="datas"
     [actions]="btnActions"
+    [enableSelection]="canBulkDelete"
+    [enableBulkDelete]="canBulkDelete"
+    (bulkDelete)="handleBulkDelete($event)"
     (changePage)="pageChanged($event)">
 
     <!-- Badge Statut -->

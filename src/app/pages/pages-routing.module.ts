@@ -15,6 +15,7 @@ import { CategorieDossierComponent } from "./parametrages/dossier/categorie-doss
 import { RencontreComponent } from "./elaboration/rencontre/rencontre.component";
 import { QuartierComponent } from "./geolocalisation/quartier/quartier.component";
 import { PointRepereComponent } from "./geolocalisation/point-repere/point-repere.component";
+import { AuditComponent } from "./audit/audit.component";
 import { RoleGuard } from "../core/guards/role.guard";
 
 const ADMIN_ROLES = ["Super Admin", "Admin"];
@@ -146,6 +147,12 @@ const routes: Routes = [
   {
     path: "utilisateurs",
     component: UtilisateurComponent,
+    canActivate: [RoleGuard],
+    data: { roles: ADMIN_ROLES },
+  },
+  {
+    path: "audit",
+    component: AuditComponent,
     canActivate: [RoleGuard],
     data: { roles: ADMIN_ROLES },
   },
