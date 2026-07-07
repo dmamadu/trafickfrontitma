@@ -390,6 +390,10 @@ private destroy$ = new Subject<void>();
         th: "NUMERO TELEPHONE",
         td: "numeroTelephone",
       },
+      {
+        th: "VULNÉRABLE",
+        td: "vulne",
+      },
     ];
   }
 

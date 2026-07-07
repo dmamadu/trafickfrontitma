@@ -366,15 +366,28 @@
             </mat-form-field>
 
             <mat-form-field class="w-full mt-2" appearance="outline">
-              <mat-label class="enteteccColor">Nombre de membre familial handicapé</mat-label>
-              <input class="typeTitle" matInput type="text" name="membreFoyerHandicape"
-                formControlName="membreFoyerHandicape" />
+              <mat-label class="enteteccColor">Membre du foyer handicapé</mat-label>
+              <mat-select formControlName="membreFoyerHandicape">
+                <mat-option value="">Non renseigné</mat-option>
+                <mat-option value="Oui">Oui</mat-option>
+                <mat-option value="Non">Non</mat-option>
+              </mat-select>
               <mat-error *ngIf="initForm.get('membreFoyerHandicape')?.hasError('required')">
                 Le champ est obligatoire
               </mat-error>
             </mat-form-field>
           </div>
 
+          <div class="flex gap-2">
+            <mat-form-field class="w-full mt-2" appearance="outline">
+              <mat-label class="enteteccColor">Vulnérable</mat-label>
+              <mat-select formControlName="vulne">
+                <mat-option value="">Non renseigné</mat-option>
+                <mat-option value="Oui">Oui</mat-option>
+                <mat-option value="Non">Non</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
 
         </div>
 
@@ -619,8 +632,9 @@
                 <div><strong>Surnom :</strong> {{ initForm.get('surnom')?.value }}</div>
                 <div><strong>Numéro de téléphone :</strong> {{ initForm.get('numeroTelephone')?.value }}</div>
                 <div><strong>Nombre de membres familiaux :</strong> {{ initForm.get('membreFoyer')?.value }}</div>
-                <div><strong>Nombre de membres familiaux handicapés :</strong> {{
-                  initForm.get('membreFoyerHandicape')?.value }}</div>
+                <div><strong>Membre du foyer handicapé :</strong> {{
+                  initForm.get('membreFoyerHandicape')?.value || 'Non renseigné' }}</div>
+                <div><strong>Vulnérable :</strong> {{ initForm.get('vulne')?.value || 'Non renseigné' }}</div>
               </div>
             </div>
           </mat-expansion-panel>

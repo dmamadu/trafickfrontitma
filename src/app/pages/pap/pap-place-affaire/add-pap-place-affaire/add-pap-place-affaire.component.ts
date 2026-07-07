@@ -748,6 +748,7 @@ export class AddPapPlaceAffaireComponent implements OnInit, OnDestroy {
       numeroTelephone: [donnees?.numeroTelephone || ""],
       membreFoyer: [donnees?.membreFoyer || ""],
       membreFoyerHandicape: [donnees?.membreFoyerHandicape || ""],
+      vulne: [donnees?.vulne || ""],
       perteEquipement: [donnees?.perteEquipement || 0],
       perteBatiment: [donnees?.perteBatiment || 0],
       perteTotale: [donnees?.perteTotale || 0],

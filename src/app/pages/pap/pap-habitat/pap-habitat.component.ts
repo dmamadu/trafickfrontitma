@@ -183,6 +183,7 @@ export class PapHabitatComponent implements OnInit, OnDestroy {
       { th: "PRENOM", td: "prenom" },
       { th: "NOM", td: "nom" },
       { th: "NUMERO TELEPHONE", td: "numeroTelephone" },
+      { th: "VULNÉRABLE", td: "vulne" },
     ];
   }
 

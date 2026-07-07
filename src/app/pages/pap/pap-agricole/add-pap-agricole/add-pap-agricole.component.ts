@@ -198,6 +198,7 @@ export class AddPapAgricoleComponent implements OnInit,OnDestroy {
       numeroTelephone: [donnees?.numeroTelephone || "", Validators.required],
       membreFoyer: [donnees?.membreFoyer || "", Validators.required],
       membreFoyerHandicape: [donnees?.membreFoyerHandicape || "", Validators.required],
+      vulne: [donnees?.vulne || ""],
 
       // Étape 4 : Bâtiments / Équipements
       perteEquipement: [donnees?.perteEquipement || 0 ],
