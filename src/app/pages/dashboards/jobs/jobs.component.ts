@@ -87,6 +87,7 @@ export class JobsComponent implements OnInit, OnDestroy {
     { key: 'Personne âgée sans soutien',      label: 'Personne âgée'         },
     { key: 'Ménage nombreux',                 label: 'Ménage nombreux'       },
     { key: 'Analphabétisme',                  label: 'Analphabétisme'        },
+    { key: 'Vulnérabilité déclarée',           label: 'Déclarée (sans détail)' },
   ];
 
   constructor(
