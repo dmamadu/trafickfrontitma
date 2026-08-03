@@ -8,7 +8,7 @@ import { MENU } from './menu';
 import { MenuItem } from './menu.model';
 import { TranslateService } from '@ngx-translate/core';
 import { ServiceParent } from 'src/app/core/services/serviceParent';
-import { LocalService } from 'src/app/core/services/local.service';
+import { PermissionService } from 'src/app/core/services/permission.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -30,7 +30,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     private router: Router,
     public translate: TranslateService,
     private parentService: ServiceParent,
-    private localService: LocalService
+    private permissionService: PermissionService
   ) {}
 
   ngOnInit() {
@@ -81,18 +81,29 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges, OnDes
   }
 
   initialize(): void {
-    const user = this.localService.getDataJson("user");
-    const userRole: string = user?.role?.[0]?.name;
-    this.menuItems = this.filterMenuByRole(MENU, userRole);
+    this.menuItems = this.filterMenuByPermission(MENU);
   }
 
-  private filterMenuByRole(items: MenuItem[], role: string): MenuItem[] {
-    return items
-      .filter(item => !item.roles || item.roles.includes(role))
-      .map(item => ({
-        ...item,
-        subItems: item.subItems ? this.filterMenuByRole(item.subItems, role) : undefined,
-      }));
+  /**
+   * Un item sans `subItems` est gardé si sa `permission` est accordée (ou absente = visible par tous).
+   * Un item avec `subItems` est gardé si au moins un de ses enfants reste visible après filtrage —
+   * sa propre visibilité se déduit de celle de ses enfants, pas d'une permission qui lui serait propre.
+   * Voir GESTION_PERMISSIONS_DOC.md §6.2.
+   */
+  private filterMenuByPermission(items: MenuItem[]): MenuItem[] {
+    return items.reduce<MenuItem[]>((kept, item) => {
+      if (item.subItems) {
+        const keptChildren = this.filterMenuByPermission(item.subItems);
+        if (keptChildren.length > 0) {
+          kept.push({ ...item, subItems: keptChildren });
+        }
+        return kept;
+      }
+      if (!item.permission || this.permissionService.hasPermission(item.permission)) {
+        kept.push(item);
+      }
+      return kept;
+    }, []);
   }
 
   hasItems(item: MenuItem) {

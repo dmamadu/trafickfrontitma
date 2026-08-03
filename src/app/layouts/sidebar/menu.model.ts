@@ -9,5 +9,5 @@ export interface MenuItem {
     parentId?: number;
     isExpanded?: boolean;
     isLayout?: boolean;
-    roles?: string[];
+    permission?: string;
 }

@@ -18,6 +18,8 @@ import { environment } from 'src/environments/environment';
 import { DetailUserComponent } from '../../maitrouvrages/detail-user/detail-user.component';
 import { LocalService } from 'src/app/core/services/local.service';
 import { ServiceParent } from 'src/app/core/services/serviceParent';
+import { HasPermissionDirective } from 'src/app/shared/directives/has-permission.directive';
+import { UserProjectRolesComponent } from './user-project-roles/user-project-roles.component';
 
 @Component({
   selector: 'app-utilisateur',
@@ -35,7 +37,7 @@ import { ServiceParent } from 'src/app/core/services/serviceParent';
       useValue: { appearance: "outline" },
     },
   ],
-  imports: [TableauComponent, UIModule, AngularMaterialModule],
+  imports: [TableauComponent, UIModule, AngularMaterialModule, HasPermissionDirective],
   templateUrl: './utilisateur.component.html',
   styleUrl: './utilisateur.component.css'
 })
@@ -203,6 +205,7 @@ throw new Error('Method not implemented.');
         title: "Modifier",
         isDisabled: this.hasUpdate,
         action: (element?) => this.updateItems(element),
+        permission: "UTILISATEURS_MODIFIER",
       },
       {
         icon: (el) => el.enabled ? "bxs-toggle-right" : "bxs-toggle-left",
@@ -211,6 +214,7 @@ throw new Error('Method not implemented.');
         title: (el) => el.enabled ? "Désactiver" : "Activer",
         isDisabled: false,
         action: (element?) => this.toggleEnabled(element),
+        permission: "UTILISATEURS_ACTIVER_DESACTIVER",
       },
       {
         icon: "bxs-trash-alt",
@@ -219,6 +223,7 @@ throw new Error('Method not implemented.');
         title: "Supprimer",
         isDisabled: this.hasDelete,
         action: (element?) => this.supprimerItems(element.id, element),
+        permission: "UTILISATEURS_SUPPRIMER",
       },
       {
         icon: "bxs-info-circle",
@@ -227,8 +232,30 @@ throw new Error('Method not implemented.');
         title: "Détail",
         isDisabled: this.hasDelete,
         action: (element?) => this.detailItems(element),
+        permission: "UTILISATEURS_VOIR",
+      },
+      {
+        icon: "bxs-briefcase",
+        couleur: "#556EE6",
+        size: "icon-size-4",
+        title: "Rôles par projet",
+        isDisabled: false,
+        action: (element?) => this.manageProjectRoles(element),
+        permission: "UTILISATEURS_MODIFIER",
       },
     ];
+  }
+
+  manageProjectRoles(user: any): void {
+    this.snackbar.openModal(
+      UserProjectRolesComponent,
+      "45rem",
+      "edit",
+      "",
+      user,
+      "",
+      () => {}
+    );
   }
   // detailItems(id: any, element: any) {
   //   throw new Error('Method not implemented.');

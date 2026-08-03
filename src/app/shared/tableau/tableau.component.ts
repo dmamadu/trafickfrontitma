@@ -18,6 +18,7 @@ import { MatTableDataSource } from "@angular/material/table";
 import { Subject } from "rxjs";
 import { AngularMaterialModule } from "../angular-materiel-module/angular-materiel-module";
 import { SelectionModel } from "@angular/cdk/collections";
+import { PermissionService } from "src/app/core/services/permission.service";
 //import {CoreService} from "../../core/core/core.service";
 
 @Component({
@@ -91,9 +92,15 @@ export class TableauComponent implements OnInit {
    * Constructor
    */
   constructor(
-    private _changeDetectorRef: ChangeDetectorRef
+    private _changeDetectorRef: ChangeDetectorRef,
+    private permissionService: PermissionService
   ) //private coreService: CoreService
   {}
+
+  /** Un bouton d'action sans `permission` reste visible par tous (comportement existant inchangé). */
+  isActionVisible(action: ButtonAction): boolean {
+    return !action.permission || this.permissionService.hasPermission(action.permission);
+  }
 
   /**
    * On init
@@ -376,4 +383,6 @@ export type ButtonAction = {
   isDisabled: boolean;
   action: Function;
   constraint?: Function;
+  /** Code de permission requis pour voir ce bouton (ex. "UTILISATEURS_SUPPRIMER"). Absent = visible par tous. */
+  permission?: string;
 };

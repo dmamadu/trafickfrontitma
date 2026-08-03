@@ -1,0 +1,59 @@
+<mat-toolbar class="mat-accent m-0 backToolbar">
+  <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
+    <span class="c_title dialog-title">Rôles par projet — {{ user?.firstname }} {{ user?.lastname }}</span>
+    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<div class="flex flex-col flex-auto min-w-10-0 p-2 md:p-4">
+  <div *ngIf="isLoading" class="d-flex justify-content-center p-4">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+
+  <table *ngIf="!isLoading" class="w-100-p mb-3">
+    <thead>
+      <tr>
+        <th class="text-left">Projet</th>
+        <th class="text-left">Rôle</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let assignment of assignments">
+        <td>{{ assignment.projectId ? assignment.projectLibelle : "Tous les projets" }}</td>
+        <td>{{ assignment.roleName }}</td>
+        <td class="text-right">
+          <button mat-icon-button (click)="removeAssignment(assignment)" title="Retirer">
+            <i class="bx bxs-trash-alt" style="color:#D45C00"></i>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="assignments.length === 0">
+        <td colspan="3" class="text-center text-muted py-2">Aucune affectation pour le moment.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="d-flex align-items-end gap-3 flex-wrap add-assignment-row">
+    <mat-form-field appearance="outline" class="flex-grow-1">
+      <mat-label>Projet</mat-label>
+      <mat-select [(ngModel)]="selectedProjectId">
+        <mat-option value="GLOBAL">Tous les projets</mat-option>
+        <mat-option *ngFor="let project of userProjects" [value]="project.id">{{ project.libelle }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="flex-grow-1">
+      <mat-label>Rôle</mat-label>
+      <mat-select [(ngModel)]="selectedRoleId">
+        <mat-option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-raised-button class="submit-button" [disabled]="!selectedRoleId || isSaving" (click)="addAssignment()">
+      <span class="textForm">Affecter</span>
+    </button>
+  </div>
+</div>
