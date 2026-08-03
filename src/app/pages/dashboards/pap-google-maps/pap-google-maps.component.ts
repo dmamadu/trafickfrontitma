@@ -85,13 +85,15 @@ export class PapGoogleMapsComponent implements OnInit, OnDestroy {
 
   getPosition(pap: any): google.maps.LatLngLiteral | null {
     if (!pap.pointGeometriques) return null;
-    const match = pap.pointGeometriques.match(/Point \(([-\d.]+) ([-\d.]+)\)/);
-    if (match && match.length === 3) {
+    // Tolère "Point (...)", "Point(...)", "POINT(...)" et un séparateur espace ou virgule
+    const match = pap.pointGeometriques.match(/point\s*\(\s*(-?[\d.]+)[\s,]+(-?[\d.]+)\s*\)/i);
+    if (match) {
       return {
         lng: parseFloat(match[1]),
         lat: parseFloat(match[2])
       };
     }
+    console.warn(`pointGeometriques illisible pour le PAP ${pap.codePap ?? pap.id}:`, pap.pointGeometriques);
     return null;
   }
 

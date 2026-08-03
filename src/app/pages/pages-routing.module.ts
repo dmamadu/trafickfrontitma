@@ -16,9 +16,7 @@ import { RencontreComponent } from "./elaboration/rencontre/rencontre.component"
 import { QuartierComponent } from "./geolocalisation/quartier/quartier.component";
 import { PointRepereComponent } from "./geolocalisation/point-repere/point-repere.component";
 import { AuditComponent } from "./audit/audit.component";
-import { RoleGuard } from "../core/guards/role.guard";
-
-const ADMIN_ROLES = ["Super Admin", "Admin"];
+import { PermissionGuard } from "../core/guards/permission.guard";
 
 const routes: Routes = [
   // { path: '', redirectTo: 'dashboard' },
@@ -29,8 +27,8 @@ const routes: Routes = [
   },
   {
     path: "projects",
-    canActivate: [RoleGuard],
-    data: { roles: ADMIN_ROLES },
+    canActivate: [PermissionGuard],
+    data: { permission: "PROJETS_VOIR" },
     loadChildren: () =>
       import("./projects/projects.module").then((m) => m.ProjectsModule),
   },
@@ -75,8 +73,8 @@ const routes: Routes = [
   },
   {
     path: "maitrouvrages",
-    canActivate: [RoleGuard],
-    data: { roles: ADMIN_ROLES },
+    canActivate: [PermissionGuard],
+    data: { permission: "MAITRES_OUVRAGE_VOIR" },
     loadChildren: () =>
       import("./maitrouvrages/maitrouvrages.module").then(
         (m) => m.MaitrouvragesModule
@@ -99,8 +97,8 @@ const routes: Routes = [
   },
   {
     path: "consultant",
-    canActivate: [RoleGuard],
-    data: { roles: ADMIN_ROLES },
+    canActivate: [PermissionGuard],
+    data: { permission: "CONSULTANTS_VOIR" },
     loadChildren: () =>
       import("./consultant/consulant-routing.module").then(
         (m) => m.ConsultantRoutingModule
@@ -129,32 +127,32 @@ const routes: Routes = [
   {
     path: "fonctions",
     component: FonctionUtilisateurComponent,
-    canActivate: [RoleGuard],
-    data: { roles: ADMIN_ROLES },
+    canActivate: [PermissionGuard],
+    data: { permission: "FONCTIONS_VOIR" },
   },
   {
     path: "roles",
     component: RoleComponent,
-    canActivate: [RoleGuard],
-    data: { roles: ADMIN_ROLES },
+    canActivate: [PermissionGuard],
+    data: { permission: "ROLES_VOIR" },
   },
   {
     path: "categories",
     component: CategorieUtilisateurComponent,
-    canActivate: [RoleGuard],
-    data: { roles: ADMIN_ROLES },
+    canActivate: [PermissionGuard],
+    data: { permission: "CATEGORIES_UTILISATEURS_VOIR" },
   },
   {
     path: "utilisateurs",
     component: UtilisateurComponent,
-    canActivate: [RoleGuard],
-    data: { roles: ADMIN_ROLES },
+    canActivate: [PermissionGuard],
+    data: { permission: "UTILISATEURS_VOIR" },
   },
   {
     path: "audit",
     component: AuditComponent,
-    canActivate: [RoleGuard],
-    data: { roles: ADMIN_ROLES },
+    canActivate: [PermissionGuard],
+    data: { permission: "AUDIT_VOIR" },
   },
 
   { path: "dossiers", component: GestionDossierComponent },
@@ -164,14 +162,14 @@ const routes: Routes = [
   {
     path: "geolocalisation/quartiers",
     component: QuartierComponent,
-    canActivate: [RoleGuard],
-    data: { roles: ADMIN_ROLES },
+    canActivate: [PermissionGuard],
+    data: { permission: "GEOLOCALISATION_QUARTIERS_VOIR" },
   },
   {
     path: "geolocalisation/points-de-repere",
     component: PointRepereComponent,
-    canActivate: [RoleGuard],
-    data: { roles: ADMIN_ROLES },
+    canActivate: [PermissionGuard],
+    data: { permission: "GEOLOCALISATION_POINTS_VOIR" },
   },
 
   {

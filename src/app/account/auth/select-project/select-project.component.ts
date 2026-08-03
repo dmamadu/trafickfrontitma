@@ -7,6 +7,7 @@ import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { ColorService } from "src/app/core/services/color.service";
 import { LocalService } from "src/app/core/services/local.service";
+import { PermissionService } from "src/app/core/services/permission.service";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 
 @Component({
@@ -36,13 +37,28 @@ export class SelectProjectComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private _matDialog: MatDialog,
-    private colorService: ColorService
+    private colorService: ColorService,
+    private permissionService: PermissionService
   ) {}
 
   ngOnInit(): void {
     const user = this.localService.getDataJson("user");
     this.projects = user.projects || [];
      console.log('user',this.projects);
+  }
+
+  createProject(): void {
+    // Pas encore de projet sélectionné : on charge les permissions "globales" (Super Admin,
+    // ou rôle affecté hors projet) avant de naviguer, sinon PermissionGuard bloque tout.
+    this.permissionService.load().subscribe({
+      next: () => this.goToCreateProject(),
+      error: () => this.goToCreateProject(),
+    });
+  }
+
+  private goToCreateProject(): void {
+    this.closeModal();
+    this.router.navigate(["/projects/create"]);
   }
 
   onProjectSelect(projectId: number) {
@@ -58,11 +74,17 @@ export class SelectProjectComponent implements OnInit {
       this.localService.saveData("libelleProject", selectedProject.libelle);
       const projectLogo = selectedProject.imageUrl || "default-logo.png";
       this.localService.saveData("ProjectLogo", projectLogo.toString());
-      console.log('logo',projectLogo);
-      
-      this.router.navigate(["/dashboards/jobs"]);
-      this.toastr.success("Projet sélectionné avec succès");
-      this.closeModal();
+
+      this.permissionService.load(projectId).subscribe({
+        next: () => this.finishProjectSelection(),
+        error: () => this.finishProjectSelection(),
+      });
     }
+  }
+
+  private finishProjectSelection(): void {
+    this.router.navigate(["/dashboards/jobs"]);
+    this.toastr.success("Projet sélectionné avec succès");
+    this.closeModal();
   }
 }

@@ -16,6 +16,7 @@ import { SelectProjectAdminComponent } from "../select-project-admin/select-proj
 import { ResponseData } from "src/app/pages/projects/project.model";
 import { Project } from "src/app/store/ProjectsData/project.model";
 import { ChangePasswordComponent } from "../change-password/change-password.component";
+import { PermissionService } from "src/app/core/services/permission.service";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
@@ -47,7 +48,8 @@ export class LoginComponent implements OnInit {
     private tokenStorage: TokenStorageService,
     private localService: LocalService,
     private snackbar: SnackBarService,
-    private _matDialog: MatDialog
+    private _matDialog: MatDialog,
+    private permissionService: PermissionService
   ) {}
 
   ngOnInit() {
@@ -270,6 +272,9 @@ export class LoginComponent implements OnInit {
 
     if (!this.hasAnyProject(user)) {
       this.toastr.warning("Aucun projet n'est associé à votre compte.");
+      // Ouvre quand même l'écran de sélection (état vide, avec le bouton "Nouveau projet")
+      // plutôt que de laisser l'utilisateur bloqué sur le formulaire de connexion.
+      this.choicePeoject();
       return;
     }
 
@@ -300,7 +305,12 @@ export class LoginComponent implements OnInit {
     const project = user.user.projects[0];
     this.localService.saveData("ProjectId", project?.id?.toString() ?? "");
     this.localService.saveData("ProjectLogo", project?.imageUrl ?? "default-logo.png");
-    this.router.navigate(["/dashboards/jobs"]);
+    // Charge les permissions du projet actif avant de naviguer, pour que le menu et les
+    // guards les trouvent déjà en cache dès le premier rendu du dashboard.
+    this.permissionService.load(project?.id).subscribe({
+      next: () => this.router.navigate(["/dashboards/jobs"]),
+      error: () => this.router.navigate(["/dashboards/jobs"]),
+    });
   }
 
 private showWelcomeToast(user: Auth) {
