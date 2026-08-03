@@ -5,6 +5,53 @@
     <ul class="metismenu list-unstyled" id="side-menu" #sideMenu>
       <ng-container *ngFor="let item of menuItems; trackBy: trackByFn">
         <li *ngIf="item.isTitle" class="menu-title">{{ item.label | translate }}</li>
+        <ng-container *ngIf="item.isTitle && item.subItems">
+          <ng-container *ngFor="let child of item.subItems; trackBy: trackByFn">
+            <li routerLinkActive="mm-active">
+              <a href="javascript:void(0);" class="is-parent"
+                 [ngClass]="{'has-arrow': !child.badge, 'has-dropdown': child.badge}"
+                 *ngIf="hasItems(child)">
+                <i class="bx {{child.icon}}" *ngIf="child.icon"></i>
+                <span> {{ child.label | translate }}</span>
+                <span class="badge rounded-pill float-end bg-{{child.badge.variant}}" *ngIf="child.badge">{{child.badge.text | translate}}</span>
+              </a>
+              <a routerLink="{{child.link}}" class="side-nav-link-ref" routerLinkActive="active" *ngIf="!hasItems(child)">
+                <i class="bx {{ child.icon }}" *ngIf="child.icon"></i>
+                <span> {{ child.label | translate }}</span>
+                <span class="badge rounded-pill bg-{{child.badge.variant}} float-end" *ngIf="child.badge">{{child.badge.text | translate}}</span>
+              </a>
+              <ul class="sub-menu" aria-expanded="false" *ngIf="hasItems(child)" routerLinkActive="mm-show">
+                <ng-container *ngFor="let subitem of child.subItems; trackBy: trackByFn">
+                  <li routerLinkActive="mm-active">
+                    <a class="side-nav-link-a-ref has-arrow" href="javascript:void(0);"
+                       [attr.data-parent]="subitem.parentId" *ngIf="hasItems(subitem)">
+                      <i class="bx {{ subitem.icon }}" *ngIf="subitem.icon"></i>
+                      {{ subitem.label | translate}}
+                    </a>
+                    <ul class="sub-menu mm-collapse" aria-expanded="false" *ngIf="hasItems(subitem)" routerLinkActive="mm-show">
+                      <ng-container *ngFor="let subSubitem of subitem.subItems; trackBy: trackByFn">
+                        <li routerLinkActive="mm-active">
+                          <a [attr.data-parent]="subSubitem.parentId" routerLink="{{subSubitem.link}}"
+                             routerLinkActive="active" class="side-nav-link-ref">
+                            <i class="bx {{ subSubitem.icon }}" *ngIf="subSubitem.icon"></i>
+                            {{ subSubitem.label | translate }}
+                          </a>
+                        </li>
+                      </ng-container>
+                    </ul>
+                    <a routerLink="{{subitem.link}}" class="side-nav-link-ref"
+                       [attr.data-parent]="subitem.parentId" routerLinkActive="active"
+                       *ngIf="!hasItems(subitem)">
+                      <i class="bx {{ subitem.icon }}" *ngIf="subitem.icon"></i>
+                      {{ subitem.label | translate}}
+                      <span class="badge rounded-pill bg-{{subitem.badge.variant}} float-end" *ngIf="subitem.badge">{{subitem.badge.text | translate}}</span>
+                    </a>
+                  </li>
+                </ng-container>
+              </ul>
+            </li>
+          </ng-container>
+        </ng-container>
         <li *ngIf="!item.isTitle && !item.isLayout" routerLinkActive="mm-active">
           <a href="javascript:void(0);" class="is-parent"
              [ngClass]="{'has-arrow': !item.badge, 'has-dropdown': item.badge}"
