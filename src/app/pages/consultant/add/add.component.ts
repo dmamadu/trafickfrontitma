@@ -160,7 +160,7 @@ ngOnDestroy() {
         Validators.required,
       ]),
 
-      project_id: this.fb.control(
+      projectId: this.fb.control(
         this.currentProjectId ? this.currentProjectId : null,
         [Validators.required]
       ),
@@ -366,7 +366,7 @@ ngOnDestroy() {
   }
 
   addItems(image?: Image) {
-    //this.initForm.get("project_id").setValue(1);
+    //this.initForm.get("projectId").setValue(1);
    // console.log(this.initForm.value);
 
 
