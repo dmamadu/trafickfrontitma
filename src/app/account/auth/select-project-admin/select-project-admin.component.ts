@@ -7,6 +7,7 @@ import { ToastrService } from "ngx-toastr";
 import { Subject, takeUntil } from "rxjs";
 import { ColorService } from "src/app/core/services/color.service";
 import { LocalService } from "src/app/core/services/local.service";
+import { PermissionService } from "src/app/core/services/permission.service";
 import { ProjectService } from "src/app/core/services/project.service";
 import { ResponseData } from "src/app/pages/projects/project.model";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
@@ -69,7 +70,8 @@ export class SelectProjectAdminComponent implements OnInit,OnDestroy {
       private toastr: ToastrService,
       private _matDialog: MatDialog,
       private colorService: ColorService,
-          private projectService: ProjectService
+          private projectService: ProjectService,
+          private permissionService: PermissionService
 
     ) {}
 
@@ -106,6 +108,20 @@ ngOnDestroy() {
 }
 
 
+    createProject(): void {
+      // Pas encore de projet sélectionné : on charge les permissions "globales" (Super Admin,
+      // ou rôle affecté hors projet) avant de naviguer, sinon PermissionGuard bloque tout.
+      this.permissionService.load().subscribe({
+        next: () => this.goToCreateProject(),
+        error: () => this.goToCreateProject(),
+      });
+    }
+
+    private goToCreateProject(): void {
+      this.closeModal();
+      this.router.navigate(["/projects/create"]);
+    }
+
     onProjectSelect(projectId: number) {
       const selectedProject = this.projects.find(
         (project) => project.id === projectId
@@ -119,11 +135,18 @@ ngOnDestroy() {
         this.localService.saveData("libelleProject", selectedProject.libelle);
         const projectLogo = selectedProject.image || "default-logo.png";
        this.localService.saveData("ProjectLogo", projectLogo.toString());
-        console.log('logo',projectLogo);
-        this.router.navigate(["/dashboards/jobs"]);
-        this.toastr.success("Projet sélectionné avec succès");
-        this.closeModal();
+
+        this.permissionService.load(projectId).subscribe({
+          next: () => this.finishProjectSelection(),
+          error: () => this.finishProjectSelection(),
+        });
       }
+    }
+
+    private finishProjectSelection(): void {
+      this.router.navigate(["/dashboards/jobs"]);
+      this.toastr.success("Projet sélectionné avec succès");
+      this.closeModal();
     }
 
 }

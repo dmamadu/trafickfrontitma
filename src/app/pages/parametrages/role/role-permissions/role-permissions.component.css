@@ -1,0 +1,14 @@
+.permissions-matrix {
+  max-height: 55vh;
+  overflow-y: auto;
+}
+
+.permission-module {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.module-header {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 4px;
+}

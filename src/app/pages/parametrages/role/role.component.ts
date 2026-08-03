@@ -18,6 +18,7 @@ import { ToastrService } from "ngx-toastr";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { AddRoleComponent } from "./add-role/add-role.component";
+import { RolePermissionsComponent } from "./role-permissions/role-permissions.component";
 import { CoreService } from "src/app/shared/core/core.service";
 import {
   ButtonAction,
@@ -106,6 +107,15 @@ export class RoleComponent implements OnInit {
         action: (element?) => this.updateItems(element),
       },
       {
+        icon: "bxs-lock-alt",
+        couleur: "#556EE6",
+        size: "icon-size-4",
+        title: "Gérer les permissions",
+        isDisabled: false,
+        action: (element?) => this.managePermissions(element),
+        permission: "ROLES_GERER_PERMISSIONS",
+      },
+      {
         icon: "bxs-trash-alt",
         couleur: "#D45C00",
         size: "icon-size-4",
@@ -114,6 +124,20 @@ export class RoleComponent implements OnInit {
         action: (element?) => this.supprimerItems(element.id, element),
       },
     ];
+  }
+
+  managePermissions(role: any): void {
+    this.snackbar.openModal(
+      RolePermissionsComponent,
+      "45rem",
+      "edit",
+      "",
+      role,
+      "",
+      () => {
+        this.getRole();
+      }
+    );
   }
 
   constructor(

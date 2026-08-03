@@ -1,0 +1,43 @@
+<mat-toolbar class="mat-accent m-0 backToolbar">
+  <mat-toolbar-row fxFlex fxLayout="row" fxLayoutAlign="space-between center" class="c_formulaire">
+    <span class="c_title dialog-title">Permissions du rôle « {{ role?.name }} »</span>
+    <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog" class="closeButton">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<div class="flex flex-col flex-auto min-w-10-0 p-2 md:p-4">
+  <div *ngIf="isLoading" class="d-flex justify-content-center p-4">
+    <mat-spinner diameter="32"></mat-spinner>
+  </div>
+
+  <div *ngIf="!isLoading" class="permissions-matrix">
+    <div *ngFor="let group of groups" class="permission-module mb-3 p-2">
+      <div class="d-flex align-items-center justify-content-between module-header">
+        <strong>{{ group.label }}</strong>
+        <button mat-button type="button" (click)="toggleModule(group)">
+          {{ isModuleFullyChecked(group) ? "Tout décocher" : "Tout cocher" }}
+        </button>
+      </div>
+      <div class="d-flex flex-wrap gap-3 mt-1">
+        <mat-checkbox
+          *ngFor="let permission of group.permissions"
+          [checked]="isChecked(permission.code)"
+          (change)="toggle(permission.code)"
+        >
+          {{ permission.libelle }}
+        </mat-checkbox>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex justify-center gap-4 mt-4">
+    <button mat-raised-button class="submit-buttonRed" type="button" (click)="matDialogRef.close()">
+      <span class="textForm">Annuler</span>
+    </button>
+    <button [disabled]="isLoading || isSaving" mat-raised-button class="submit-button" (click)="save()">
+      <span class="textForm">Enregistrer</span>
+    </button>
+  </div>
+</div>

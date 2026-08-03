@@ -1,7 +1,5 @@
 import { MenuItem } from "./menu.model";
 
-const ADMIN_ROLES = ["Super Admin", "Admin"];
-
 export const MENU: MenuItem[] = [
   {
     id: 1,
@@ -19,6 +17,7 @@ export const MENU: MenuItem[] = [
         link: "/dashboards/jobs",
         parentId: 2,
         icon: "bx-line-chart",
+        permission: "DASHBOARD_BASELINE_VOIR",
       },
       {
         id: 4,
@@ -26,6 +25,7 @@ export const MENU: MenuItem[] = [
         link: "/dashboards/miseEnOeuvre",
         parentId: 2,
         icon: "bx-wrench",
+        permission: "DASHBOARD_MISE_EN_OEUVRE_VOIR",
       },
     ],
   },
@@ -33,7 +33,6 @@ export const MENU: MenuItem[] = [
     id: 5,
     label: "Projets",
     icon: "bx-briefcase-alt-2",
-    roles: ADMIN_ROLES,
     subItems: [
       {
         id: 6,
@@ -41,6 +40,7 @@ export const MENU: MenuItem[] = [
         icon: "bx-list-ul",
         link: "/projects/list",
         parentId: 5,
+        permission: "PROJETS_VOIR",
       },
       {
         id: 7,
@@ -48,6 +48,7 @@ export const MENU: MenuItem[] = [
         icon: "bx-book-open",
         link: "/projects/normes",
         parentId: 5,
+        permission: "PROJETS_VOIR",
       },
     ],
   },
@@ -55,7 +56,6 @@ export const MENU: MenuItem[] = [
     id: 8,
     label: "Maîtres d'ouvrages",
     icon: "bxs-buildings",
-    roles: ADMIN_ROLES,
     subItems: [
       {
         id: 9,
@@ -63,6 +63,7 @@ export const MENU: MenuItem[] = [
         icon: "bx-list-ul",
         link: "/maitrouvrages/list",
         parentId: 8,
+        permission: "MAITRES_OUVRAGE_VOIR",
       },
     ],
   },
@@ -77,6 +78,8 @@ export const MENU: MenuItem[] = [
         icon: "bxs-user-minus",
         link: "/pap/list",
         parentId: 10,
+        // Pas de `permission` propre : la visibilité de ce nœud (lien + enfants) est déduite
+        // de ses enfants, tous gated sur PAP_VOIR — voir l'algorithme de filtrage §6.2.
         subItems: [
           {
             id: 12,
@@ -84,6 +87,7 @@ export const MENU: MenuItem[] = [
             icon: "bxs-tree",
             link: "/pap/papAgricole",
             parentId: 11,
+            permission: "PAP_VOIR",
           },
           {
             id: 13,
@@ -91,6 +95,7 @@ export const MENU: MenuItem[] = [
             icon: "bxs-store",
             link: "/pap/papPlaceAffaire",
             parentId: 11,
+            permission: "PAP_VOIR",
           },
           {
             id: 14,
@@ -98,6 +103,7 @@ export const MENU: MenuItem[] = [
             icon: "bxs-home",
             link: "/pap/papHabitat",
             parentId: 11,
+            permission: "PAP_VOIR",
           },
         ],
       },
@@ -113,6 +119,7 @@ export const MENU: MenuItem[] = [
             icon: "bx-list-ul",
             link: "/pip/",
             parentId: 15,
+            permission: "PIP_VOIR",
           },
         ],
       },
@@ -122,7 +129,6 @@ export const MENU: MenuItem[] = [
     id: 17,
     label: "Consultants",
     icon: "bxs-id-card",
-    roles: ADMIN_ROLES,
     subItems: [
       {
         id: 18,
@@ -130,6 +136,7 @@ export const MENU: MenuItem[] = [
         icon: "bx-list-ul",
         link: "/consultant/chef-de-mission",
         parentId: 17,
+        permission: "CONSULTANTS_VOIR",
       },
     ],
   },
@@ -144,6 +151,7 @@ export const MENU: MenuItem[] = [
         icon: "bx-list-check",
         link: "/tasks/liste",
         parentId: 19,
+        permission: "TACHES_VOIR",
       },
       {
         id: 21,
@@ -151,6 +159,7 @@ export const MENU: MenuItem[] = [
         icon: "bx-handshake",
         link: "/ententeCompensation/list",
         parentId: 19,
+        permission: "ENTENTE_COMPENSATION_VOIR",
       },
       {
         id: 22,
@@ -164,6 +173,7 @@ export const MENU: MenuItem[] = [
             icon: "bx-list-ul",
             link: "/plainte/list",
             parentId: 22,
+            permission: "PLAINTES_VOIR",
           },
           {
             id: 24,
@@ -171,6 +181,7 @@ export const MENU: MenuItem[] = [
             icon: "bx-list-ul",
             link: "/plainte/miseEnOeuvrePlainte",
             parentId: 22,
+            permission: "PLAINTES_VOIR",
           },
         ],
       },
@@ -186,6 +197,7 @@ export const MENU: MenuItem[] = [
             icon: "bx-list-ul",
             link: "/accompagnement/list",
             parentId: 25,
+            permission: "ACCOMPAGNEMENT_SOCIAL_VOIR",
           },
         ],
       },
@@ -201,6 +213,7 @@ export const MENU: MenuItem[] = [
             icon: "bx-list-ul",
             link: "/restauration/list",
             parentId: 27,
+            permission: "RESTAURATION_SUBSISTANCE_VOIR",
           },
         ],
       },
@@ -216,6 +229,7 @@ export const MENU: MenuItem[] = [
             icon: "bx-list-ul",
             link: "/negociation/list",
             parentId: 29,
+            permission: "NEGOCIATION_CONCILIATION_VOIR",
           },
         ],
       },
@@ -231,6 +245,7 @@ export const MENU: MenuItem[] = [
             icon: "bx-list-ul",
             link: "/paiement/list",
             parentId: 31,
+            permission: "PAIEMENT_COMPENSATIONS_VOIR",
           },
         ],
       },
@@ -246,6 +261,7 @@ export const MENU: MenuItem[] = [
             icon: "bx-list-ul",
             link: "/engagements/list",
             parentId: 33,
+            permission: "ENGAGEMENTS_PARTIES_VOIR",
           },
         ],
       },
@@ -262,6 +278,7 @@ export const MENU: MenuItem[] = [
         icon: "bxs-file",
         link: "/dossiers",
         parentId: 35,
+        permission: "DOCUMENTS_VOIR",
       },
       {
         id: 37,
@@ -269,6 +286,7 @@ export const MENU: MenuItem[] = [
         icon: "bxs-category",
         link: "/catégorie-dossier",
         parentId: 35,
+        permission: "CATEGORIES_DOCUMENTS_VOIR",
       },
     ],
   },
@@ -283,6 +301,7 @@ export const MENU: MenuItem[] = [
         icon: "bx-list-ul",
         link: "/rencontres",
         parentId: 38,
+        permission: "ELABORATION_PAR_VOIR",
       },
     ],
   },
@@ -290,7 +309,6 @@ export const MENU: MenuItem[] = [
     id: 40,
     label: "Géolocalisation",
     icon: "bxs-map",
-    roles: ADMIN_ROLES,
     subItems: [
       {
         id: 41,
@@ -298,6 +316,7 @@ export const MENU: MenuItem[] = [
         icon: "bx-buildings",
         link: "/geolocalisation/quartiers",
         parentId: 40,
+        permission: "GEOLOCALISATION_QUARTIERS_VOIR",
       },
       {
         id: 42,
@@ -305,6 +324,7 @@ export const MENU: MenuItem[] = [
         icon: "bx-map-pin",
         link: "/geolocalisation/points-de-repere",
         parentId: 40,
+        permission: "GEOLOCALISATION_POINTS_VOIR",
       },
     ],
   },
@@ -312,48 +332,56 @@ export const MENU: MenuItem[] = [
     id: 43,
     label: "Paramétrage",
     isTitle: true,
-    roles: ADMIN_ROLES,
-  },
-  {
-    id: 44,
-    label: "Administration",
-    icon: "bxs-cog",
-    roles: ADMIN_ROLES,
+    // Titre = parent réel d'Administration (voir GESTION_PERMISSIONS_DOC.md §6.3) :
+    // masqué automatiquement si aucun enfant n'est visible, plus besoin de rôle en dur ici.
     subItems: [
       {
-        id: 45,
-        label: "Utilisateurs",
-        icon: "bxs-user-detail",
-        link: "/utilisateurs",
-        parentId: 44,
-      },
-      {
-        id: 46,
-        label: "Rôles",
-        icon: "bxs-shield",
-        link: "/roles",
-        parentId: 44,
-      },
-      {
-        id: 47,
-        label: "Fonctions",
-        icon: "bxs-briefcase",
-        link: "/fonctions",
-        parentId: 44,
-      },
-      {
-        id: 48,
-        label: "Catégories utilisateurs",
-        icon: "bxs-label",
-        link: "/categories",
-        parentId: 44,
-      },
-      {
-        id: 49,
-        label: "Journal d'audit",
-        icon: "bxs-history",
-        link: "/audit",
-        parentId: 44,
+        id: 44,
+        label: "Administration",
+        icon: "bxs-cog",
+        parentId: 43,
+        subItems: [
+          {
+            id: 45,
+            label: "Utilisateurs",
+            icon: "bxs-user-detail",
+            link: "/utilisateurs",
+            parentId: 44,
+            permission: "UTILISATEURS_VOIR",
+          },
+          {
+            id: 46,
+            label: "Rôles",
+            icon: "bxs-shield",
+            link: "/roles",
+            parentId: 44,
+            permission: "ROLES_VOIR",
+          },
+          {
+            id: 47,
+            label: "Fonctions",
+            icon: "bxs-briefcase",
+            link: "/fonctions",
+            parentId: 44,
+            permission: "FONCTIONS_VOIR",
+          },
+          {
+            id: 48,
+            label: "Catégories utilisateurs",
+            icon: "bxs-label",
+            link: "/categories",
+            parentId: 44,
+            permission: "CATEGORIES_UTILISATEURS_VOIR",
+          },
+          {
+            id: 49,
+            label: "Journal d'audit",
+            icon: "bxs-history",
+            link: "/audit",
+            parentId: 44,
+            permission: "AUDIT_VOIR",
+          },
+        ],
       },
     ],
   },

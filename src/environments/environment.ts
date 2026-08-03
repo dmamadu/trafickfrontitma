@@ -1,7 +1,8 @@
 export const environment = {
   production: false,
   defaultauth: "fakebackend",
-  apiUrl: "https://api.invodis.com/",
+  // apiUrl: "https://api.invodis.com/",
+  apiUrl: "http://localhost:8081/",
   batchApiURL: 'https://sfp.suntelecoms.com/batchapi/',
   apicomURL: 'https://api.suntelecoms.com/comapi/',
   max: 100000,
