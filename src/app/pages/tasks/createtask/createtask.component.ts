@@ -263,7 +263,7 @@ export class CreatetaskComponent implements OnInit {
         if (result?.value) {
           this.loader = true;
           this.coreService
-            .updateItem(this.initForm.value, this.id, this.url)
+            .updateItemWithProject(this.initForm.value, this.id, this.url, +this.currentProjectId)
             .subscribe({
               next: (resp: any) => {
                 this.loader = false;

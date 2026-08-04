@@ -319,7 +319,7 @@ ngOnDestroy() {
 
   organes:any[]=[]
   getPip() {
-    this.parentService.list("partie-interesse", 10000, 0)
+    this.parentService.list("partie-interesse", 10000, 0, this.currentProjectId)
     .pipe(takeUntil(this.destroy$))
     .subscribe(
         (data: any) => {

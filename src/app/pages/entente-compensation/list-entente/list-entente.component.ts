@@ -267,7 +267,7 @@ chargerEntente(): void {
         if (result["value"] == true) {
           this.currentIndex = information;
           this.showLoader = "isShow";
-          this.coreService.deleteItem(id, "ententes").subscribe(
+          this.coreService.deleteItemWithProject(id, "ententes", this.currentProjectId).subscribe(
             (resp: any) => {
               if (resp && resp["responseCode"] == "200") {
                 this.getEntente();

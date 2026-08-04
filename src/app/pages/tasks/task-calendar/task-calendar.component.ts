@@ -265,7 +265,7 @@ export class TaskCalendarComponent implements OnInit, OnDestroy {
       dateDebut: arg.event.startStr,
       dateFin: arg.event.endStr ?? arg.event.startStr,
     };
-    this.coreService.updateItem(updatedTask, task.id, this.url).subscribe({
+    this.coreService.updateItemWithProject(updatedTask, task.id, this.url, this.currentProjectId).subscribe({
       next: () => {
         this.toastr.success('Tâche déplacée avec succès', '', { timeOut: 2000 });
         this.loadTasks();
@@ -308,7 +308,7 @@ export class TaskCalendarComponent implements OnInit, OnDestroy {
   deleteTask(task: any): void {
     this.snackbar.showConfirmation('Voulez-vous vraiment supprimer cette tâche ?').then((result) => {
       if (result?.value) {
-        this.coreService.deleteItem(task.id, this.url).subscribe({
+        this.coreService.deleteItemWithProject(task.id, this.url, this.currentProjectId).subscribe({
           next: () => {
             this.toastr.success('Tâche supprimée avec succès');
             this.loadTasks();

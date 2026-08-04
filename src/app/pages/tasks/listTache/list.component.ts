@@ -272,7 +272,7 @@ private destroy$ = new Subject<void>();
       .then((result) => {
         if (result["value"] == true) {
           const message = "tache  supprimé";
-          this.coreService.deleteItem(id, this.url).subscribe(
+          this.coreService.deleteItemWithProject(id, this.url, this.currentProjectId).subscribe(
             (resp) => {
               this.snackbar.openSnackBar(message + " avec succès", "OK", [
                 "mycssSnackbarGreen",

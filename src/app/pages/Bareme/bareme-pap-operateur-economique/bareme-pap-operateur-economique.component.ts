@@ -109,6 +109,7 @@ export class BaremePapOperateurEconomiqueComponent {
   headers: any = [];
   btnActions: any = [];
   currentUser: any;
+  currentProjectId: any;
 
   constructor(
     private changeDetectorRefs: ChangeDetectorRef,
@@ -124,6 +125,7 @@ export class BaremePapOperateurEconomiqueComponent {
     private coreService: CoreService
   ) {
     this.currentUser = this.localService.getDataJson("user");
+    this.currentProjectId = this.localService.getData("ProjectId");
 
     console.log("user connecter", this.currentUser);
 
@@ -188,7 +190,7 @@ export class BaremePapOperateurEconomiqueComponent {
   getBaremeEquipement() {
     this.loadData = true;
     return this.parentService
-      .list(this.url, this.pageSize, this.offset)
+      .list(this.url, this.pageSize, this.offset, this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -249,11 +251,11 @@ export class BaremePapOperateurEconomiqueComponent {
           this.currentIndex = information;
           this.showLoader = "isShow";
           const message = "Bareme  supprimé";
-          this.coreService.deleteItem(id, this.url).subscribe(
+          this.coreService.deleteItemWithProject(id, this.url, this.currentProjectId).subscribe(
             (resp) => {
               this.showLoader = "isNotShow";
               this.coreService
-                .list(this.url, this.offset, this.pageSize)
+                .listWithProject(this.url, this.offset, this.pageSize, this.currentProjectId)
                 .subscribe((resp: any) => {
                   const data = resp["data"] || resp;
                   this.dataSource = new MatTableDataSource(data);
@@ -311,7 +313,7 @@ export class BaremePapOperateurEconomiqueComponent {
     }));
 
     console.log(dataToSend);
-    return this.papService.add(this.url, dataToSend).subscribe(
+    return this.papService.add(`${this.url}?projectId=${this.currentUser.projects[0]?.id}`, dataToSend).subscribe(
       (data: any) => {
         console.log(data);
         this.toastr.success(data.message);

@@ -18,6 +18,7 @@ import * as moment from 'moment/moment';
 import { AngularMaterialModule } from 'src/app/shared/angular-materiel-module/angular-materiel-module';
 import { CoreService } from 'src/app/shared/core/core.service';
 import { SnackBarService } from 'src/app/shared/core/snackBar.service';
+import { LocalService } from 'src/app/core/services/local.service';
 //import {CoreService} from 'app/core/core/core.service';
 
 @Component({
@@ -83,6 +84,7 @@ export class AjoutPersonnePhysiqueComponent implements OnInit {
         private fb: UntypedFormBuilder,
         private coreService: CoreService,
         private snackbar: SnackBarService,
+        private localService: LocalService,
         private changeDetectorRefs: ChangeDetectorRef
       )
          {
@@ -326,7 +328,7 @@ export class AjoutPersonnePhysiqueComponent implements OnInit {
     }
 
     getListSituationsMatrimoniales() {
-        this.coreService.list('situation-matrimoniale', 0, 10000)
+        this.coreService.listWithProject('situation-matrimoniale', 0, 10000, this.localService.getData("ProjectId"))
             .subscribe((response) => {
                 if (response['responseCode'] === 200) {
                     this.situationsMatrimoniales = response['data'];

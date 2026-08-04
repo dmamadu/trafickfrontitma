@@ -23,8 +23,9 @@ export class PlainteService extends ServiceParent {
     return this.http.get<any>(`${this.url}${BASE_URL}`, { params });
   }
 
-  getById(id: number): Observable<Plainte> {
-    return this.http.get<Plainte>(`${this.url}${BASE_URL}/${id}`);
+  getById(id: number, projectId: number): Observable<Plainte> {
+    const params = new HttpParams().set("projectId", projectId.toString());
+    return this.http.get<Plainte>(`${this.url}${BASE_URL}/${id}`, { params });
   }
 
   getByStatut(projectId: number, statut: string): Observable<Plainte[]> {
@@ -41,8 +42,9 @@ export class PlainteService extends ServiceParent {
     );
   }
 
-  deletePlainte(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.url}${BASE_URL}/${id}`);
+  deletePlainte(id: number, projectId: number): Observable<any> {
+    const params = new HttpParams().set("projectId", projectId.toString());
+    return this.http.delete<any>(`${this.url}${BASE_URL}/${id}`, { params });
   }
 
   deleteMultipleByIds(ids: number[]): Observable<any> {

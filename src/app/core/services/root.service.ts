@@ -51,16 +51,22 @@ export class RootService {
     return this.http.put<Image>(`${this.url}image/update/${id}`, imageFormData);
   }
 
-  getByCodePap<T>(url: string, codePap: string, offset: number = 0, max: number = 100): Observable<T> {
-    const params = new HttpParams()
+  getByCodePap<T>(url: string, codePap: string, offset: number = 0, max: number = 100, projectId?: number | string): Observable<T> {
+    let params = new HttpParams()
       .set('codePap', codePap)
       .set('offset', offset.toString())
       .set('max', max.toString());
+    if (projectId !== undefined && projectId !== null) {
+      params = params.set('projectId', projectId.toString());
+    }
     return this.http.get<T>(`${this.url}${url}/by-codePap`, { params });
   }
 
-  getPlaintEntenteByCodePap<T>(url: string, codePap: string): Observable<T> {
-    const params = new HttpParams().set('codePap', codePap);
+  getPlaintEntenteByCodePap<T>(url: string, codePap: string, projectId?: number | string): Observable<T> {
+    let params = new HttpParams().set('codePap', codePap);
+    if (projectId !== undefined && projectId !== null) {
+      params = params.set('projectId', projectId.toString());
+    }
     return this.http.get<T>(`${this.url}${url}/byCodePap`, { params });
   }
 

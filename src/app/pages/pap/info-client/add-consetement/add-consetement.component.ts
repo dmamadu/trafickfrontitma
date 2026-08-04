@@ -9,6 +9,7 @@ import {
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ActivatedRoute } from "@angular/router";
 import { CoreService } from "src/app/shared/core/core.service";
+import { LocalService } from "src/app/core/services/local.service";
 import { CONSTANTES } from "src/app/shared/models/constantes";
 import { models } from "src/app/shared/models/model";
 import { TemplateConsentementComponent } from "../template-consentement/template-consentement.component";
@@ -64,6 +65,7 @@ export class AddConsetementComponent implements OnInit {
     private formBuilder: UntypedFormBuilder,
     private route: ActivatedRoute,
     private snackbar: SnackBarService,
+    private localService: LocalService,
     private _changeDetectorRef: ChangeDetectorRef
   ) {
     //@ts-ignore
@@ -100,7 +102,7 @@ export class AddConsetementComponent implements OnInit {
           this.isLoading = true;
           //const data = this.initForm;
           this.coreService
-            .addItem(data, "lettres_consentement")
+            .addItemWithProject(data, "lettres_consentement", this.localService.getData("ProjectId"))
             .subscribe(
               (resp) => {
                 if (

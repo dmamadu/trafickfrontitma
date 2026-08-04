@@ -11,16 +11,16 @@ export class EntenteService {
   url: string = environment.apiUrl;
   constructor(private http: HttpClient) {}
 
-  getEntenteDetails(ententeId: number): Observable<any> {
-    return this.http.get(`${this.url}${this.apiUrl}/${ententeId}`);
+  getEntenteDetails(ententeId: number, projectId: number): Observable<any> {
+    return this.http.get(`${this.url}${this.apiUrl}/${ententeId}`, { params: { projectId } });
   }
 
-  synchroniserEntente(ententeId: number): Observable<any> {
-    return this.http.post(`${this.url}${this.apiUrl}/${ententeId}/synchroniser`, {});
+  synchroniserEntente(ententeId: number, projectId: number): Observable<any> {
+    return this.http.post(`${this.url}${this.apiUrl}/${ententeId}/synchroniser`, {}, { params: { projectId } });
   }
 
-  finaliserEntente(ententeId: number): Observable<any> {
-    return this.http.post(`${this.url}${this.apiUrl}/${ententeId}/finaliser`, {});
+  finaliserEntente(ententeId: number, projectId: number): Observable<any> {
+    return this.http.post(`${this.url}${this.apiUrl}/${ententeId}/finaliser`, {}, { params: { projectId } });
   }
 
   getEntentesByProject(projectId: number): Observable<any[]> {

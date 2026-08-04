@@ -626,7 +626,7 @@ export class PipAddComponent implements OnInit {
     const url = urls[index];
     console.log(`Tentative de chargement des catégories depuis: ${url}`);
     
-    this.coreService.list(url, 0, 1000).subscribe({
+    this.coreService.listWithProject(url, 0, 1000, this.currentProjectId).subscribe({
       next: (response: any) => {
         this.isLoadingCategories = false;
         

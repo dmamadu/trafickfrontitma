@@ -42,6 +42,8 @@ export class TableauComponent implements OnInit {
   @Input() pageIndex: number;
   @Input() pageSizeOptions: number[];
   @Input() actions!: ButtonAction[];
+  /** Nombre d'actions affichées en ligne avant de regrouper le reste dans un menu "⋮". */
+  @Input() maxInlineActions: number = 3;
   @Output() changePage = new EventEmitter<any>();
 
 
@@ -100,6 +102,21 @@ export class TableauComponent implements OnInit {
   /** Un bouton d'action sans `permission` reste visible par tous (comportement existant inchangé). */
   isActionVisible(action: ButtonAction): boolean {
     return !action.permission || this.permissionService.hasPermission(action.permission);
+  }
+
+  /** Actions visibles (filtrées par permission), dans l'ordre fourni par l'écran appelant. */
+  get visibleActions(): ButtonAction[] {
+    return (this.actions || []).filter((a) => this.isActionVisible(a));
+  }
+
+  /** Les premières `maxInlineActions` restent en icônes inline dans la colonne. */
+  get inlineActions(): ButtonAction[] {
+    return this.visibleActions.slice(0, this.maxInlineActions);
+  }
+
+  /** Au-delà du seuil, regroupées dans le menu "⋮" pour ne pas déborder la colonne. */
+  get overflowActions(): ButtonAction[] {
+    return this.visibleActions.slice(this.maxInlineActions);
   }
 
   /**

@@ -4,6 +4,7 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { ServiceParent } from "src/app/core/services/serviceParent";
+import { LocalService } from "src/app/core/services/local.service";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { CoreService } from "src/app/shared/core/core.service";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
@@ -55,15 +56,18 @@ export class CategorieDossierComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   private readonly url = "categorieDocuments";
+  currentProjectId: any;
 
   constructor(
     private parentService: ServiceParent,
     private coreService: CoreService,
+    private localService: LocalService,
     private snackbar: SnackBarService,
     private cd: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
+    this.currentProjectId = this.localService.getData("ProjectId");
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
     this.getCategories();
@@ -72,7 +76,7 @@ export class CategorieDossierComponent implements OnInit {
   // ── Fetch ─────────────────────────────────────────────────────────────────
   getCategories(): void {
     this.loadData = true;
-    this.parentService.list(this.url, this.pageSize, this.pageIndex).subscribe({
+    this.parentService.list(this.url, this.pageSize, this.pageIndex, this.currentProjectId).subscribe({
       next: (data: any) => {
         this.loadData = false;
         if (data?.responseCode === 200) {
@@ -123,7 +127,7 @@ export class CategorieDossierComponent implements OnInit {
   supprimerItems(id: any): void {
     this.snackbar.showConfirmation("Voulez-vous vraiment supprimer cette catégorie?").then((result) => {
       if (result?.value === true) {
-        this.coreService.deleteItem(id, this.url).subscribe({
+        this.coreService.deleteItemWithProject(id, this.url, this.currentProjectId).subscribe({
           next: () => {
             this.getCategories();
             this.snackbar.openSnackBar("Catégorie supprimée avec succès", "OK", ["mycssSnackbarGreen"]);

@@ -510,6 +510,7 @@ export class PipListComponent implements OnInit {
   pageIndex: number = 0;
   offset: number = 0;
   url: string = "partie-interesse";
+  currentProjectId: any;
 
   constructor(
     private changeDetectorRefs: ChangeDetectorRef,
@@ -526,6 +527,7 @@ export class PipListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.currentProjectId = this.localService.getData("ProjectId");
     this.breadCrumbItems = [
       { label: "Pip" },
       { label: "Liste des parties intéressées", active: true },
@@ -615,7 +617,7 @@ export class PipListComponent implements OnInit {
 
   getPip(): void {
     this.loadData = true;
-    this.parentService.list("partie-interesse", 10000, 0).subscribe(
+    this.parentService.list("partie-interesse", 10000, 0, this.currentProjectId).subscribe(
       (data: any) => {
         this.loadData = false;
         if (data["responseCode"] === 200) {
@@ -663,7 +665,7 @@ export class PipListComponent implements OnInit {
           this.deleteUser = true;
           this.currentIndex = information;
           this.showLoader = "isShow";
-          this.coreService.deleteItem(id, this.url).subscribe(
+          this.coreService.deleteItemWithProject(id, this.url, this.currentProjectId).subscribe(
             (_resp: any) => {
               this.showLoader = "isNotShow";
               this.getPip();
@@ -777,7 +779,7 @@ export class PipListComponent implements OnInit {
 
   getCategoriePartieInteresses(): void {
     this.coreService
-      .list("categoriesPip", 0, 10000)
+      .listWithProject("categoriesPip", 0, 10000, this.currentProjectId)
       .subscribe((response: any) => {
         if (response["responseCode"] === 200) {
           this.categoriePartieInteresses = response["data"];

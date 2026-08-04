@@ -891,7 +891,7 @@ export class PapPlaceAffaireComponent implements OnInit, OnDestroy {
 
         this.deleteUser = true;
         
-        this.coreService.deleteItem(id, this.url).subscribe(
+        this.coreService.deleteItemWithProject(id, this.url, this.currentProjectId).subscribe(
           () => {
             this.getPapPlaceAffaire();
             this.deleteUser = false;
@@ -998,7 +998,7 @@ export class PapPlaceAffaireComponent implements OnInit, OnDestroy {
           projectId: +this.currentProjectId,
         }));
 
-        this.papService.add("databasePapPlaceAffaire", dataToSend).subscribe(
+        this.papService.add(`databasePapPlaceAffaire?projectId=${this.currentProjectId}`, dataToSend).subscribe(
           (data: any) => {
             this.toastr.success(data.message);
             this.dataExcel = [];

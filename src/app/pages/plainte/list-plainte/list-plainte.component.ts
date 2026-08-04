@@ -247,7 +247,7 @@ export class ListPlainteComponent implements OnInit, OnDestroy {
   supprimerItems(id: number): void {
     this.snackbar.showConfirmation("Voulez-vous vraiment supprimer cette plainte ?").then((result) => {
       if (result?.value !== true) return;
-      this.plainteService.deletePlainte(id).pipe(takeUntil(this.destroy$)).subscribe({
+      this.plainteService.deletePlainte(id, +this.currentProjectId).pipe(takeUntil(this.destroy$)).subscribe({
         next: (resp: any) => {
           if (resp?.responseCode == "200" || resp?.responseCode == 200) {
             this.loadPlaintes();

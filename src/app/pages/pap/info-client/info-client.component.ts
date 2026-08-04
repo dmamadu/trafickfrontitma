@@ -32,6 +32,7 @@ import { PapAddComponent } from "../pap-add/pap-add.component";
 import { MessageService } from "src/app/shared/core/message.service";
 import { AddConsetementComponent } from "./add-consetement/add-consetement.component";
 import { PapService } from "../pap.service";
+import { LocalService } from "src/app/core/services/local.service";
 
 @Component({
   selector: "info-client",
@@ -87,6 +88,7 @@ parsedBatiments: any[] = [];
   statutJuridiques: any = [];
   countries: any = [];
   listetemplate: any;
+  currentProjectId: any;
 
   /**
    * Constructor
@@ -97,11 +99,13 @@ parsedBatiments: any[] = [];
     private papservice: PapService,
     private _changeDetectorRef: ChangeDetectorRef,
     private _matDialog: MatDialog,
+    private localService: LocalService,
     private messageService: MessageService //  private messageService: MessageService
   ) {
     this.route.params.subscribe((params) => {
       this.paramsId = params["id"];
     });
+    this.currentProjectId = this.localService.getData("ProjectId");
   }
   ngOnInit(): void {
     this.getBatimentByCodePap();
@@ -351,7 +355,7 @@ parsedBatiments: any[] = [];
 
   getBatimentByCodePap() {
     return this.papservice
-      .getByCodePap("batiments", this.infosPap.codePap)
+      .getByCodePap("batiments", this.infosPap.codePap, 0, 100, this.currentProjectId)
       .subscribe((data: any) => {
         this.batiments = data.data[0];
         console.log(data);
@@ -359,7 +363,7 @@ parsedBatiments: any[] = [];
   }
   getCopropriétaireByCodePap() {
     return this.papservice
-      .getByCodePap("coproprietaires", this.infosPap.codePap)
+      .getByCodePap("coproprietaires", this.infosPap.codePap, 0, 100, this.currentProjectId)
       .subscribe((data: any) => {
         this.coProprietaires = data.data[0];
         console.log(data.data);
@@ -368,7 +372,7 @@ parsedBatiments: any[] = [];
 
   getBetailsCodePap() {
     return this.papservice
-      .getByCodePap("betails", this.infosPap.codePap)
+      .getByCodePap("betails", this.infosPap.codePap, 0, 100, this.currentProjectId)
       .subscribe((data: any) => {
         this.betails = data.data[0];
       });
@@ -376,7 +380,7 @@ parsedBatiments: any[] = [];
 
   getCultureCodePap() {
     return this.papservice
-      .getByCodePap("cultures", this.infosPap.codePap)
+      .getByCodePap("cultures", this.infosPap.codePap, 0, 100, this.currentProjectId)
       .subscribe((data: any) => {
         console.log(data.data);
         this.cultures = data.data[0];
@@ -385,7 +389,7 @@ parsedBatiments: any[] = [];
 
   getDescriptionBatimentCodePap() {
     return this.papservice
-      .getByCodePap("equipements", this.infosPap.codePap)
+      .getByCodePap("equipements", this.infosPap.codePap, 0, 100, this.currentProjectId)
       .subscribe((data: any) => {
         this.equipements = data.data[0];
       });
@@ -393,7 +397,7 @@ parsedBatiments: any[] = [];
 
   getCoproprietaireCodePap() {
     return this.papservice
-      .getByCodePap("coproprietaires", this.infosPap.codePap)
+      .getByCodePap("coproprietaires", this.infosPap.codePap, 0, 100, this.currentProjectId)
       .subscribe((data: any) => {
         this.coProprietaires = data.data[0];
       });
@@ -401,7 +405,7 @@ parsedBatiments: any[] = [];
 
   getPolygoneByCodePap() {
     return this.papservice
-      .getByCodePap("geopolys", this.infosPap.codePap)
+      .getByCodePap("geopolys", this.infosPap.codePap, 0, 100, this.currentProjectId)
       .subscribe((data: any) => {
         this.polygones = data.data;
       });
@@ -409,7 +413,7 @@ parsedBatiments: any[] = [];
 
   getEmployeByCodePap() {
     return this.papservice
-      .getByCodePap("employePap", this.infosPap.codePap)
+      .getByCodePap("employePap", this.infosPap.codePap, 0, 100, this.currentProjectId)
       .subscribe((data: any) => {
         this.employes = data.data[0];
       });

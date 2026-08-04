@@ -65,6 +65,7 @@ export class GestionEntenteComponent implements OnInit {
   
   historiqueModifications: any[] = [];
   user: any;
+  currentProjectId: any;
 
   constructor(
     public matDialogRef: MatDialogRef<GestionEntenteComponent>,
@@ -86,6 +87,7 @@ export class GestionEntenteComponent implements OnInit {
     this.ententeDetails = data.data; // Chargement direct depuis les données
     console.log('ententeDetails:', this.ententeDetails);
     this.user = this.localService.getDataJson("user");
+    this.currentProjectId = this.localService.getData("ProjectId");
 
     console.log('Utilisateur courant:', this.user.email);
 
@@ -155,7 +157,7 @@ private executerSynchronisation(): void {
   console.log('Synchronisation de l\'entente ID:', this.ententeDetails.ententeId);
   this.loading = true;
   
-  this.ententeService.synchroniserEntente(this.ententeDetails.ententeId).subscribe({
+  this.ententeService.synchroniserEntente(this.ententeDetails.ententeId, this.currentProjectId).subscribe({
     next: (response: any) => {
       if (response && response.responseCode == 200) {
         this.snackbar.showSuccess('Entente synchronisée avec succès');
@@ -299,7 +301,7 @@ commentairesSuivi: string = '';
 
 private executerFinalisation(): void {
   this.loading = true;
-  this.ententeService.finaliserEntente(this.ententeDetails.ententeId).subscribe({
+  this.ententeService.finaliserEntente(this.ententeDetails.ententeId, this.currentProjectId).subscribe({
     next: (response: any) => {
       if (response && response.responseCode == 200) {
         this.snackbar.showSuccess('Entente finalisée avec succès');
@@ -430,7 +432,7 @@ private executerValidationEtape(etape: string): void {
   
   switch (etape) {
     case 'compensation':
-      this.processusService.etablirCompensation(this.ententeDetails.ententeId).subscribe({
+      this.processusService.etablirCompensation(this.ententeDetails.ententeId, this.currentProjectId).subscribe({
         next: (updatedEntente) => {
           this.ententeDetails = updatedEntente;
           this.loading = false;
@@ -442,9 +444,10 @@ private executerValidationEtape(etape: string): void {
     case 'information':
       const infoData = this.informationForm.value;
       this.processusService.informerPap(
-        this.ententeDetails.ententeId, 
+        this.ententeDetails.ententeId,
         infoData.modeInformation,
-        infoData.detailsInformation
+        infoData.detailsInformation,
+        this.currentProjectId
       ).subscribe({
         next: (updatedEntente) => {
           this.ententeDetails = updatedEntente;
@@ -457,7 +460,7 @@ private executerValidationEtape(etape: string): void {
       break;
     
     case 'accord':
-      this.processusService.obtenirAccordPap(this.ententeDetails.ententeId, this.preuveAccord).subscribe({
+      this.processusService.obtenirAccordPap(this.ententeDetails.ententeId, this.preuveAccord, this.currentProjectId).subscribe({
         next: (updatedEntente) => {
           this.ententeDetails = updatedEntente;
           this.nextStep();
@@ -468,7 +471,7 @@ private executerValidationEtape(etape: string): void {
       break;
     
     case 'paiement':
-      this.processusService.effectuerPaiement(this.ententeDetails.ententeId, this.preuvePaiement).subscribe({
+      this.processusService.effectuerPaiement(this.ententeDetails.ententeId, this.preuvePaiement, this.currentProjectId).subscribe({
         next: (updatedEntente) => {
           this.ententeDetails = updatedEntente;
           this.nextStep();
@@ -480,9 +483,10 @@ private executerValidationEtape(etape: string): void {
     
     case 'formation':
       this.processusService.donnerFormation(
-        this.ententeDetails.ententeId, 
-        this.typeFormation, 
-        this.formateur
+        this.ententeDetails.ententeId,
+        this.typeFormation,
+        this.formateur,
+        this.currentProjectId
       ).subscribe({
         next: (response) => {
           this.ententeDetails = response;
@@ -497,9 +501,10 @@ private executerValidationEtape(etape: string): void {
     
     case 'suivi':
       this.processusService.effectuerSuivi(
-        this.ententeDetails.ententeId, 
-        this.resultatSuivi, 
-        this.commentairesSuivi
+        this.ententeDetails.ententeId,
+        this.resultatSuivi,
+        this.commentairesSuivi,
+        this.currentProjectId
       ).subscribe({
         next: (response) => {
           this.ententeDetails = response;
@@ -565,7 +570,7 @@ private executerModification(formValue: any, modifications: any): void {
   console.log('Modifications à appliquer:', modificationDTO);
   
   this.loading = true;
-  this.modificationService.modifierValeurs(modificationDTO, this.ententeDetails.ententeId).subscribe({
+  this.modificationService.modifierValeurs(modificationDTO, this.ententeDetails.ententeId, this.currentProjectId).subscribe({
     next: (response: any) => {
       console.log('Réponse modification:', response);
       if(response && response.responseCode == 200){

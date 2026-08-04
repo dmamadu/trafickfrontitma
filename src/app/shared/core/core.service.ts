@@ -404,10 +404,64 @@ export class CoreService {
       .put(environment.apiUrl + url + "/" + id, item)
       .pipe(switchMap((response: any) => of(response)));
   }
+
+  // Variantes "avec projet" : le backend vérifie les permissions par projet actif sur ces
+  // modules (voir GESTION_PERMISSIONS_DOC.md) et exige donc explicitement projectId en paramètre.
+  updateItemWithProject(
+    item: any,
+    id: number | string,
+    url: string,
+    projectId: number | string
+  ): Observable<any> {
+    let params = new HttpParams().set("projectId", projectId?.toString());
+    return this._httpClient
+      .put(environment.apiUrl + url + "/" + id, item, { params })
+      .pipe(switchMap((response: any) => of(response)));
+  }
+
+  deleteItemWithProject(
+    id: number | string,
+    url: string,
+    projectId: number | string
+  ): Observable<any> {
+    let params = new HttpParams().set("projectId", projectId?.toString());
+    return this._httpClient
+      .delete(environment.apiUrl + url + "/" + id, { params })
+      .pipe((response) => response);
+  }
+
+  getElementWithProject(
+    id: number | string,
+    url: string,
+    projectId: number | string
+  ): Observable<any> {
+    let params = new HttpParams().set("projectId", projectId?.toString());
+    return this._httpClient
+      .get(environment.apiUrl + url + "/" + id, { params })
+      .pipe((response) => response);
+  }
   updateCompensation(item, url): Observable<any> {
     return this._httpClient
       .get(environment.apiUrl + url + "/", item)
       .pipe(switchMap((response: any) => of(response)));
+  }
+
+  listWithProject(url: string, offset: number, max: number, projectId?: number | string): Observable<any[]> {
+    let params = new HttpParams()
+      .set("max", max.toString())
+      .set("offset", offset.toString())
+      .set("order", "desc")
+      .set("sort", "dateCreated");
+    if (projectId !== undefined && projectId !== null) {
+      params = params.set("projectId", projectId.toString());
+    }
+    return this._httpClient
+      .get<any[]>(environment.apiUrl + url, { params })
+      .pipe(
+        tap((response) => {
+          this._modelLists.next(response);
+        })
+      );
   }
 
   list(url, offset, max, customBaseUrl?): Observable<any[]> {

@@ -793,7 +793,7 @@ export class AddPapPlaceAffaireComponent implements OnInit, OnDestroy {
         const value = this.initForm.value;
         
         this.coreService
-          .addItem([value], this.url)
+          .addItemWithProject([value], this.url, this.currentProjectId)
           .pipe(takeUntil(this.destroy$))
           .subscribe(
             (resp) => {

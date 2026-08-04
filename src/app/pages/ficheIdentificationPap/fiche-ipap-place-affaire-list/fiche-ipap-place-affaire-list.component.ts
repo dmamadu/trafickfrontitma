@@ -353,11 +353,11 @@ export class FicheIPapPlaceAffaireListComponent implements OnInit {
           this.currentIndex = information;
           this.showLoader = "isShow";
           const message = "Parti affecté supprimé";
-          this.coreService.deleteItem(id, this.url).subscribe(
+          this.coreService.deleteItemWithProject(id, this.url, this.currentProjectId).subscribe(
             (resp) => {
               this.showLoader = "isNotShow";
               this.coreService
-                .list(this.url, this.offset, this.pageSize)
+                .listWithProject(this.url, this.offset, this.pageSize, this.currentProjectId)
                 .subscribe((resp: any) => {
                   const data = resp["data"] || resp;
                   this.dataSource = new MatTableDataSource(data);

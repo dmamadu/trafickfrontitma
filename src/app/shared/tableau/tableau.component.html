@@ -85,9 +85,8 @@
       </th>
       <td class="pr-4 px-4 py-3" mat-cell *matCellDef="let element">
         <div class="flex items-center space-x-1">
-          <ng-container *ngFor="let actionBtn of actions">
+          <ng-container *ngFor="let actionBtn of inlineActions">
             <button class="p-1 rounded hover:bg-gray-200 transition-colors"
-                    *ngIf="isActionVisible(actionBtn)"
                     [matTooltip]="resolveTitle(actionBtn, element)"
                     [disabled]="actionBtn.isDisabled || (actionBtn.constraint ? actionBtn.constraint(element) : false)"
                     (click)="actionBtn.action(element)"
@@ -96,6 +95,24 @@
                  [ngStyle]="{'color': resolveColor(actionBtn, element)}"></i>
             </button>
           </ng-container>
+
+          <button *ngIf="overflowActions.length > 0"
+                  class="p-1 rounded hover:bg-gray-200 transition-colors"
+                  matTooltip="Plus d'actions"
+                  [matMenuTriggerFor]="overflowMenu"
+                  mat-icon-button>
+            <i class="bx bx-dots-vertical-rounded text-lg"></i>
+          </button>
+          <mat-menu #overflowMenu="matMenu">
+            <button mat-menu-item
+                    *ngFor="let actionBtn of overflowActions"
+                    [disabled]="actionBtn.isDisabled || (actionBtn.constraint ? actionBtn.constraint(element) : false)"
+                    (click)="actionBtn.action(element)">
+              <i class="bx {{ resolveIcon(actionBtn, element) }} text-lg mr-2"
+                 [ngStyle]="{'color': resolveColor(actionBtn, element)}"></i>
+              <span>{{ resolveTitle(actionBtn, element) }}</span>
+            </button>
+          </mat-menu>
         </div>
       </td>
     </ng-container>

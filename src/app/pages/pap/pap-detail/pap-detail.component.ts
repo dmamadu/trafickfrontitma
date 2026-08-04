@@ -429,7 +429,7 @@ export class PapDetailComponent implements OnInit {
   getEntenteByCodePap() {
     this.datas = [];
     return this.papservice
-      .getPlaintEntenteByCodePap("ententes", this.infosPap.codePap)
+      .getPlaintEntenteByCodePap("ententes", this.infosPap.codePap, this.localService.getData("ProjectId"))
       .subscribe((data: any) => {
         this.loadData = false;
         if (data["responseCode"] == 200) {
@@ -452,7 +452,7 @@ export class PapDetailComponent implements OnInit {
   getPlainteByCodePap() {
     this.datas = [];
     return this.papservice
-      .getByCodePap("plaintes", this.infosPap.codePap)
+      .getByCodePap("plaintes", this.infosPap.codePap, 0, 100, this.localService.getData("ProjectId"))
       .subscribe((data: any) => {
         this.loadData = false;
         if (data["responseCode"] == 200) {
@@ -634,7 +634,7 @@ export class PapDetailComponent implements OnInit {
     });
 
     // Ensuite, envoyer la requête
-    this.papService.add("plaintes/importer", this.dataExcel).subscribe(
+    this.papService.add("plaintes/importer?projectId=" + this.localService.getData("ProjectId"), this.dataExcel).subscribe(
       (response: any) => {
         console.log(response);
         if (response.responseCode === 201) {

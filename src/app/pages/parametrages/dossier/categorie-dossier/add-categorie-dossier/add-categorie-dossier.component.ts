@@ -12,6 +12,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatPaginatorIntl } from "@angular/material/paginator";
 import { ServiceParent } from "src/app/core/services/serviceParent";
+import { LocalService } from "src/app/core/services/local.service";
 import { AddComponent } from "src/app/pages/tasks/add/add.component";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
 import { CoreService } from "src/app/shared/core/core.service";
@@ -54,6 +55,7 @@ export class AddCategorieDossierComponent {
   loaderss = false;
   canAdd: boolean;
   categories: any[] = [];
+  currentProjectId: any;
 
   ngOnInit(): void {
     this.getCatgories();
@@ -64,9 +66,11 @@ export class AddCategorieDossierComponent {
     private fb: UntypedFormBuilder,
     private coreService: CoreService,
     private parentService: ServiceParent,
+    private localService: LocalService,
     private snackbar: SnackBarService,
     private changeDetectorRefs: ChangeDetectorRef
   ) {
+    this.currentProjectId = this.localService.getData("ProjectId");
     if (_data?.action == "new") {
       this.initForms();
       this.labelButton = "Ajouter ";
@@ -112,7 +116,7 @@ export class AddCategorieDossierComponent {
           if (result["value"] == true) {
             this.loader = true;
             const value = this.initForm.value;
-            this.coreService.updateItem(value, this.id, this.url).subscribe(
+            this.coreService.updateItemWithProject(value, this.id, this.url, this.currentProjectId).subscribe(
               (resp) => {
                 if (resp) {
                   this.loader = false;
@@ -166,7 +170,7 @@ export class AddCategorieDossierComponent {
           if (result["value"] == true) {
             this.loader = true;
             const value = this.initForm.value;
-            this.coreService.addItem(value, this.url).subscribe(
+            this.coreService.addItemWithProject(value, this.url, this.currentProjectId).subscribe(
               (resp) => {
                 if (resp["responseCode"] == 201) {
                   this.snackbar.openSnackBar(
@@ -197,7 +201,7 @@ export class AddCategorieDossierComponent {
   }
 
   getCatgories() {
-    return this.parentService.list(this.url, 1000, 0).subscribe(
+    return this.parentService.list(this.url, 1000, 0, this.currentProjectId).subscribe(
       (data: any) => {
         if (data["responseCode"] == 200) {
           console.log(data);

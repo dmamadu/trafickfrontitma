@@ -12,8 +12,8 @@ export class ModificationEntenteService extends RootService {
   url: string = environment.apiUrl;
 
 
-  modifierValeurs(modificationDTO: any,id: number): Observable<any> {
-    return this.http.patch(`${this.url}${this.apiUrl}/${id}/edit-ententes`, modificationDTO);
+  modifierValeurs(modificationDTO: any, id: number, projectId: number): Observable<any> {
+    return this.http.patch(`${this.url}${this.apiUrl}/${id}/edit-ententes`, modificationDTO, { params: { projectId } });
   }
 
   modifierPapSource(modificationDTO: any): Observable<any> {

@@ -148,7 +148,7 @@ export class RencontreComponent implements OnInit {
   supprimerItems(id: any): void {
     this.snackbar.showConfirmation("Voulez-vous vraiment supprimer cette rencontre?").then((result) => {
       if (result?.value === true) {
-        this.coreService.deleteItem(id, this.url).subscribe({
+        this.coreService.deleteItemWithProject(id, this.url, this.currentProjectId).subscribe({
           next: (resp: any) => { if (resp?.responseCode === 200) this.getRencontres(); },
           error: (err) => this.snackbar.showErrors(err),
         });

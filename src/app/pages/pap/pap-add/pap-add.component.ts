@@ -107,6 +107,7 @@ export class PapAddComponent implements OnInit,OnDestroy  {
   idPiece;
   listeNoire: boolean = false;
   currentUser: any;
+  currentProjectId: any;
 
   constructor(
     public matDialogRef: MatDialogRef<PapAddComponent>,
@@ -118,6 +119,7 @@ export class PapAddComponent implements OnInit,OnDestroy  {
     private localService: LocalService
   ) {
     this.currentUser=this.localService.getDataJson("user");
+    this.currentProjectId = this.localService.getData("ProjectId");
 
     if (_data?.action == "new") {
       this.initForms();
@@ -374,7 +376,7 @@ ngOnDestroy() {
         if (result["value"] == true) {
           this.loader = true;
           const value = this.initForm.value;
-          this.coreService.addItem(value, this.url)
+          this.coreService.addItemWithProject(value, this.url, this.currentProjectId)
           .pipe(takeUntil(this.destroy$))
           .subscribe(
             (resp) => {
@@ -414,7 +416,7 @@ ngOnDestroy() {
         if (result["value"] == true) {
           this.loader = true;
           const value = this.initForm.value;
-          this.coreService.updateItem(value, this.id, this.url)
+          this.coreService.updateItemWithProject(value, this.id, this.url, this.currentProjectId)
           .pipe(takeUntil(this.destroy$))
           .subscribe(
             (resp) => {

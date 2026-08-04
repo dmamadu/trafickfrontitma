@@ -149,7 +149,7 @@ export class AddEntenteComponent implements OnInit {
       .then((result) => {
         if (result["value"] == true) {
           this.coreService
-            .addItem(this.initForm.value, "entente_compensations")
+            .addItemWithProject(this.initForm.value, "entente_compensations", this.localService.getData("ProjectId"))
             .subscribe(
               (resp) => {
                 if (resp["responseCode"] == 200) {

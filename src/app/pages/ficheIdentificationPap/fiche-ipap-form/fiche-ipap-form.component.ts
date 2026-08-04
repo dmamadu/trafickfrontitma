@@ -246,7 +246,7 @@ export class FicheIPapFormComponent implements OnInit {
           if (result["value"] == true) {
             this.loader = true;
             const value = this.initForm.value;
-            this.coreService.addItem([value], this.url).subscribe(
+            this.coreService.addItemWithProject([value], this.url, this.currentProjectId).subscribe(
               (resp) => {
                 if (resp["responseCode"] == 201) {
                   this.snackbar.openSnackBar("Pap  ajoutée avec succés", "OK", [

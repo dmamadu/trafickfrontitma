@@ -116,7 +116,7 @@ export class AddDossierComponent {
         donnees ? this.urlImage + donnees?.urlDocument : this.urlImage,
         [Validators.required]
       ),
-      projetId: this.fb.control(
+      projectId: this.fb.control(
         this.currentProjectId ? +this.currentProjectId : null,
         [Validators.required]
       ),
@@ -348,7 +348,7 @@ export class AddDossierComponent {
 
   getCategorieItems() {
     return this.parentService
-      .list("categorieDocuments", this.pageSize, this.pageIndex)
+      .list("categorieDocuments", this.pageSize, this.pageIndex, this.currentProjectId)
       .subscribe(
         (data: any) => {
           if (data["responseCode"] == 200) {

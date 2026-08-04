@@ -179,7 +179,7 @@ export class AddPapFlexibleComponent implements OnInit, OnDestroy {
       if (result["value"] !== true) return;
       this.loader = true;
       const value = this.initForm.value;
-      this.coreService.addItem([value], this.url).pipe(takeUntil(this.destroy$)).subscribe(
+      this.coreService.addItemWithProject([value], this.url, this.currentProjectId).pipe(takeUntil(this.destroy$)).subscribe(
         (resp) => {
           if (resp["responseCode"] == 201) {
             this.snackbar.openSnackBar(MESSAGES.ADD_SUCCESS, "OK", ["mycssSnackbarGreen"]);

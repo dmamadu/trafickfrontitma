@@ -12,52 +12,56 @@ export class ProcessusEntenteService extends RootService {
 
   // constructor(private http: HttpClient) {}
 
-  etablirCompensation(ententeId: number): Observable<any> {
-    return this.http.post(`${this.url}${this.next}/${ententeId}/processus/etablir-compensation`, {});
+  etablirCompensation(ententeId: number, projectId: number): Observable<any> {
+    const params = new HttpParams().set('projectId', projectId?.toString());
+    return this.http.post(`${this.url}${this.next}/${ententeId}/processus/etablir-compensation`, {}, { params });
   }
 
-  informerPap(ententeId: any, modeInformation: string, detailsInformation: string): Observable<any> {
-    return this.http.post(`${this.url}${this.next}/${ententeId}/processus/informer-pap`, { modeInformation, detailsInformation });
+  informerPap(ententeId: any, modeInformation: string, detailsInformation: string, projectId: number): Observable<any> {
+    const params = new HttpParams().set('projectId', projectId?.toString());
+    return this.http.post(`${this.url}${this.next}/${ententeId}/processus/informer-pap`, { modeInformation, detailsInformation }, { params });
   }
 
-  obtenirAccordPap(ententeId: number, preuveAccord: string): Observable<any> {
-    const params = new HttpParams().set('preuveAccord', preuveAccord);
+  obtenirAccordPap(ententeId: number, preuveAccord: string, projectId: number): Observable<any> {
+    const params = new HttpParams().set('preuveAccord', preuveAccord).set('projectId', projectId?.toString());
     return this.http.post(
-        `${this.url}${this.next}/${ententeId}/processus/obtenir-accord`, 
-        null, 
+        `${this.url}${this.next}/${ententeId}/processus/obtenir-accord`,
+        null,
         { params: params }
     );
 }
 
-  effectuerPaiement(ententeId: number, preuvePaiement: string): Observable<any> {
-    const params = new HttpParams().set('referencePaiement', preuvePaiement);
+  effectuerPaiement(ententeId: number, preuvePaiement: string, projectId: number): Observable<any> {
+    const params = new HttpParams().set('referencePaiement', preuvePaiement).set('projectId', projectId?.toString());
     return this.http.post(
-        `${this.url}${this.next}/${ententeId}/processus/effectuer-paiement`, 
-        null, 
+        `${this.url}${this.next}/${ententeId}/processus/effectuer-paiement`,
+        null,
         { params: params }
     );
 }
 
 
 
-donnerFormation(ententeId: number, typeFormation: string, formateur: string): Observable<any> {
+donnerFormation(ententeId: number, typeFormation: string, formateur: string, projectId: number): Observable<any> {
   const params = new HttpParams()
     .set('typeFormation', typeFormation)
-    .set('formateur', formateur);
+    .set('formateur', formateur)
+    .set('projectId', projectId?.toString());
       return this.http.post(
-        `${this.url}${this.next}/${ententeId}/processus/donner-formation`, 
-        null, 
+        `${this.url}${this.next}/${ententeId}/processus/donner-formation`,
+        null,
         { params: params }
     );
 }
 
-effectuerSuivi(ententeId: number, resultatSuivi: string, commentairesSuivi: string): Observable<any> {
+effectuerSuivi(ententeId: number, resultatSuivi: string, commentairesSuivi: string, projectId: number): Observable<any> {
   const params = new HttpParams()
     .set('resultatSuivi', resultatSuivi)
-    .set('commentairesSuivi', commentairesSuivi || '');
+    .set('commentairesSuivi', commentairesSuivi || '')
+    .set('projectId', projectId?.toString());
           return this.http.post(
-        `${this.url}${this.next}/${ententeId}/processus/effectuer-suivi`, 
-        null, 
+        `${this.url}${this.next}/${ententeId}/processus/effectuer-suivi`,
+        null,
         { params: params }
     );
 }

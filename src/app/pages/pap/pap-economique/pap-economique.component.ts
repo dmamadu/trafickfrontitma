@@ -117,7 +117,8 @@ export class PapEconomiqueComponent {
   userConnecter;
   offset: number = 0;
   title: string = "Gestion des partis affectés";
-  url: string = "databasePapPlaceAffaire";
+  url: string = "papEconomique";
+  currentProjectId: any;
   panelOpenState = false;
   img;
 
@@ -147,6 +148,7 @@ export class PapEconomiqueComponent {
     private rechercherService: RechercheService
   ) {
     this.currentUser = this.localService.getDataJson("user");
+    this.currentProjectId = this.localService.getData("ProjectId");
 
     console.log("user connecter", this.currentUser);
     this.informations = {
@@ -263,7 +265,7 @@ export class PapEconomiqueComponent {
   getPapEconomique() {
     this.loadData = true;
     return this.parentService
-      .list("papEconomique", this.pageSize, this.offset)
+      .list("papEconomique", this.pageSize, this.offset, this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -327,11 +329,11 @@ export class PapEconomiqueComponent {
           this.currentIndex = information;
           this.showLoader = "isShow";
           const message = "Parti affecté supprimé";
-          this.coreService.deleteItem(id, this.url).subscribe(
+          this.coreService.deleteItemWithProject(id, this.url, this.currentProjectId).subscribe(
             (resp) => {
               this.showLoader = "isNotShow";
               this.coreService
-                .list(this.url, this.offset, this.pageSize)
+                .listWithProject(this.url, this.offset, this.pageSize, this.currentProjectId)
                 .subscribe((resp: any) => {
                   const data = resp["data"] || resp;
                   this.dataSource = new MatTableDataSource(data);
@@ -365,7 +367,7 @@ export class PapEconomiqueComponent {
   exportAs(format) {
     let nom = this.informations.titleFile;
     let value = [];
-    this.parentService.list("databasePapPlaceAffaire", 1000000000, 0).subscribe(
+    this.parentService.list("papEconomique", 1000000000, 0, this.currentProjectId).subscribe(
       (resp) => {
         if (resp["responseCode"] == 200) {
           value = resp["data"];
@@ -651,7 +653,7 @@ export class PapEconomiqueComponent {
     }));
 
     console.log(dataToSend);
-    return this.papService.add("papEconomique", dataToSend).subscribe(
+    return this.papService.add(`papEconomique?projectId=${this.currentUser.projects[0]?.id}`, dataToSend).subscribe(
       (data: any) => {
         console.log(data);
         this.toastr.success(data.message);

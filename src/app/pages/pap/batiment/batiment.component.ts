@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ServiceParent } from "src/app/core/services/serviceParent";
+import { LocalService } from "src/app/core/services/local.service";
 
 @Component({
   selector: "app-batiment",
@@ -13,17 +14,21 @@ export class BatimentComponent implements OnInit {
   pageSize: number = 10;
   pageIndex: number = 0;
   offset: number = 0;
+  currentProjectId: any;
   constructor(
     private parentService: ServiceParent,
+    private localService: LocalService,
     private _changeDetectorRef: ChangeDetectorRef
-  ) {}
+  ) {
+    this.currentProjectId = this.localService.getData("ProjectId");
+  }
   ngOnInit(): void {
     this.getBatiment();
   }
 
   getBatiment() {
     return this.parentService
-      .list("batiments", this.pageSize, this.offset)
+      .list("batiments", this.pageSize, this.offset, this.currentProjectId)
       .subscribe(
         (data: any) => {
           if (data["responseCode"] == 200) {

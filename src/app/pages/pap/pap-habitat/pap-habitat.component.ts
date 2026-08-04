@@ -341,7 +341,7 @@ export class PapHabitatComponent implements OnInit, OnDestroy {
         this.deleteUser = true;
         
         this.coreService
-          .deleteItem(id, this.url)
+          .deleteItemWithProject(id, this.url, this.currentProjectId)
           .pipe(takeUntil(this.destroy$))
           .subscribe(
             () => {
@@ -458,7 +458,7 @@ export class PapHabitatComponent implements OnInit, OnDestroy {
         }));
 
         this.papService
-          .add(this.url, dataToSend)
+          .add(`${this.url}?projectId=${this.currentProjectId}`, dataToSend)
           .pipe(takeUntil(this.destroy$))
           .subscribe(
             (data: any) => {

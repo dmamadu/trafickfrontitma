@@ -462,7 +462,7 @@ private destroy$ = new Subject<void>();
           this.currentIndex = information;
           this.showLoader = "isShow";
           const message = "Parti affecté supprimé";
-          this.coreService.deleteItem(id, this.url).subscribe(
+          this.coreService.deleteItemWithProject(id, this.url, this.currentProjectId).subscribe(
             (resp) => {
               this.showLoader = "isNotShow";
               this.coreService
@@ -602,7 +602,7 @@ private destroy$ = new Subject<void>();
   exportAs(format) {
     let nom = this.informations.titleFile;
     let value = [];
-    this.parentService.list("papAgricole", 1000000000, 0).subscribe(
+    this.parentService.list("papAgricole", 1000000000, 0, this.currentProjectId).subscribe(
       (resp) => {
         if (resp["responseCode"] == 200) {
           value = resp["data"];
@@ -899,7 +899,7 @@ private destroy$ = new Subject<void>();
           ...item,
           projectId: +this.currentProjectId,
         }));
-        return this.papService.add("papAgricole", dataToSend).subscribe(
+        return this.papService.add(`papAgricole?projectId=${this.currentProjectId}`, dataToSend).subscribe(
           (data: any) => {
             console.log(data);
             this.toastr.success(data.message);

@@ -125,6 +125,7 @@ export class PapListComponent implements OnInit {
   headers: any = [];
   btnActions: any = [];
   currentUser: any;
+  currentProjectId: any;
 
   constructor(
     private changeDetectorRefs: ChangeDetectorRef,
@@ -142,6 +143,7 @@ export class PapListComponent implements OnInit {
     private exportService: ExportService
   ) {
     this.currentUser = this.localService.getDataJson("user");
+    this.currentProjectId = this.localService.getData("ProjectId");
 
     console.log("user connecter", this.currentUser);
     this.informations = {
@@ -259,7 +261,7 @@ export class PapListComponent implements OnInit {
 
   getPap() {
     return this.parentService
-      .list("personneAffectes", this.pageSize, this.offset)
+      .list("personneAffectes", this.pageSize, this.offset, this.currentProjectId)
       .subscribe(
         (data: any) => {
           this.loadData = false;
@@ -323,11 +325,11 @@ export class PapListComponent implements OnInit {
           this.currentIndex = information;
           this.showLoader = "isShow";
           const message = "Parti affecté supprimé";
-          this.coreService.deleteItem(id, this.url).subscribe(
+          this.coreService.deleteItemWithProject(id, this.url, this.currentProjectId).subscribe(
             (resp) => {
               this.showLoader = "isNotShow";
               this.coreService
-                .list(this.url, this.offset, this.pageSize)
+                .listWithProject(this.url, this.offset, this.pageSize, this.currentProjectId)
                 .subscribe((resp: any) => {
                   const data = resp["data"] || resp;
                   this.dataSource = new MatTableDataSource(data);
@@ -361,7 +363,7 @@ export class PapListComponent implements OnInit {
   exportAs(format) {
     let nom = this.informations.titleFile;
     let value = [];
-    this.parentService.list("personneAffectes", 1000000000, 0).subscribe(
+    this.parentService.list("personneAffectes", 1000000000, 0, this.currentProjectId).subscribe(
       (resp) => {
         if (resp["responseCode"] == 200) {
           value = resp["data"];
@@ -666,7 +668,7 @@ export class PapListComponent implements OnInit {
   }
 
   importDatas(params:string) {
-    return this.papService.add(`${params} `, this.dataExcel).subscribe(
+    return this.papService.add(`${params}?projectId=${this.currentProjectId}`, this.dataExcel).subscribe(
       (data:any) => {
         console.log("====================================");
         console.log(data);

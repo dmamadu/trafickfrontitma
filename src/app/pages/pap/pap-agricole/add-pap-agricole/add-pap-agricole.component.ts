@@ -253,7 +253,7 @@ export class AddPapAgricoleComponent implements OnInit,OnDestroy {
         if (result["value"] == true) {
           this.loader = true;
           const value = this.initForm.value;
-          this.coreService.addItem([value], this.url)
+          this.coreService.addItemWithProject([value], this.url, this.currentProjectId)
           .pipe(takeUntil(this.destroy$))
           .subscribe(
             (resp) => {
