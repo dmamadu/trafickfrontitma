@@ -73,7 +73,7 @@ throw new Error('Method not implemented.');
   btnActions: any = [];
   currentProjectId: any;
 
-  urlImage = environment.apiUrl + "fileMinios/upload/";
+  urlImage = environment.apiUrl + "fileMinios/download/";
 
   breadCrumbItems: (
     | { label: string; active?: undefined }

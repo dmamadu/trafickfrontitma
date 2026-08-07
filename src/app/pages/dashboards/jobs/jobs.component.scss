@@ -528,26 +528,59 @@ $col-hab:  $dark;
   }
 }
 
-// Genre H/F
-.gender-row {
-  display: flex !important;
+// Genre H/F/Non renseigné — barre proportionnelle + légende
+.gender-bar {
+  display: flex;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: $gray-100; // piste visible si total = 0 (aucune donnée)
+}
+
+.gender-seg {
+  height: 100%;
+  box-sizing: border-box;
+
+  &--h {
+    background: $green;
+    border-right: 2px solid white;
+  }
+  &--f {
+    background: $orange;
+    border-right: 2px solid white;
+  }
+  &--autre {
+    background: $gray-600;
+  }
+}
+
+.gender-legend {
+  display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 1.1rem !important;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $dark;
+}
 
-  .gender-h {
-    display: flex; align-items: center; gap: 2px;
-    color: $dark; font-weight: 700;
-    mat-icon { font-size: 16px; width: 16px; height: 16px; }
-  }
+.gender-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 
-  .gender-sep { color: $gray-400; font-size: 1.2rem; font-weight: 300; }
+.gender-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
 
-  .gender-f {
-    display: flex; align-items: center; gap: 2px;
-    color: $orange; font-weight: 700;
-    mat-icon { font-size: 16px; width: 16px; height: 16px; }
-  }
+  &--h     { background: $green; }
+  &--f     { background: $orange; }
+  &--autre { background: $gray-600; }
 }
 
 // ── Section blocks ─────────────────────────────────────────

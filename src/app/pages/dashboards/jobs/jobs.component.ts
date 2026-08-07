@@ -38,6 +38,8 @@ interface GlobalSummary {
   totalVulnerables: number;
   percentHommesGlobal: number;
   percentFemmesGlobal: number;
+  totalAutre: number;
+  percentAutreGlobal: number;
   totalCompensations: number;
 }
 

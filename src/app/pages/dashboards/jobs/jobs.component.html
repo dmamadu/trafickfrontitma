@@ -26,18 +26,23 @@
     <div class="kpi-card kpi-green">
       <div class="kpi-icon"><mat-icon>wc</mat-icon></div>
       <div class="kpi-content">
-        <span class="kpi-value gender-row">
-          <span class="gender-h">
-            <mat-icon>male</mat-icon>
-            {{ statsData?.summary?.percentHommesGlobal | number:'1.1-1' }}%
+        <div class="gender-bar">
+          <span class="gender-seg gender-seg--h" [style.width.%]="statsData?.summary?.percentHommesGlobal"></span>
+          <span class="gender-seg gender-seg--f" [style.width.%]="statsData?.summary?.percentFemmesGlobal"></span>
+          <span class="gender-seg gender-seg--autre" [style.width.%]="statsData?.summary?.percentAutreGlobal"></span>
+        </div>
+        <div class="gender-legend">
+          <span class="gender-item">
+            <i class="gender-dot gender-dot--h"></i>H {{ statsData?.summary?.percentHommesGlobal | number:'1.0-1' }}%
           </span>
-          <span class="gender-sep">/</span>
-          <span class="gender-f">
-            <mat-icon>female</mat-icon>
-            {{ statsData?.summary?.percentFemmesGlobal | number:'1.1-1' }}%
+          <span class="gender-item">
+            <i class="gender-dot gender-dot--f"></i>F {{ statsData?.summary?.percentFemmesGlobal | number:'1.0-1' }}%
           </span>
-        </span>
-        <span class="kpi-label">Répartition Hommes / Femmes</span>
+          <span class="gender-item" title="Sexe non renseigné">
+            <i class="gender-dot gender-dot--autre"></i>NR {{ statsData?.summary?.percentAutreGlobal | number:'1.0-1' }}%
+          </span>
+        </div>
+        <span class="kpi-label">Répartition par sexe</span>
       </div>
       <div class="kpi-bar"></div>
     </div>
@@ -77,6 +82,7 @@
             <th>Total PAP</th>
             <th><mat-icon>male</mat-icon> Hommes</th>
             <th><mat-icon>female</mat-icon> Femmes</th>
+            <th><mat-icon>help_outline</mat-icon> Sexe non renseigné</th>
             <th>Vulnérables hommes</th>
             <th>Vulnérables femmes</th>
             <th>Total vulnérables</th>
@@ -88,6 +94,7 @@
             <td class="td-total">{{ statsData.placeAffaireStats.total }}</td>
             <td>{{ statsData.placeAffaireStats.hommes }}</td>
             <td>{{ statsData.placeAffaireStats.femmes }}</td>
+            <td>{{ statsData.placeAffaireStats.autre }}</td>
             <td>{{ statsData.placeAffaireStats.vulnerablesHommes }}</td>
             <td>{{ statsData.placeAffaireStats.vulnerablesFemmes }}</td>
             <td class="td-total">{{ statsData.placeAffaireStats.totalVulnerables }}</td>
@@ -97,6 +104,7 @@
             <td class="td-total">{{ statsData.agricoleStats.total }}</td>
             <td>{{ statsData.agricoleStats.hommes }}</td>
             <td>{{ statsData.agricoleStats.femmes }}</td>
+            <td>{{ statsData.agricoleStats.autre }}</td>
             <td>{{ statsData.agricoleStats.vulnerablesHommes }}</td>
             <td>{{ statsData.agricoleStats.vulnerablesFemmes }}</td>
             <td class="td-total">{{ statsData.agricoleStats.totalVulnerables }}</td>
@@ -106,6 +114,7 @@
             <td class="td-total">{{ statsData.habitatStats.total }}</td>
             <td>{{ statsData.habitatStats.hommes }}</td>
             <td>{{ statsData.habitatStats.femmes }}</td>
+            <td>{{ statsData.habitatStats.autre }}</td>
             <td>{{ statsData.habitatStats.vulnerablesHommes }}</td>
             <td>{{ statsData.habitatStats.vulnerablesFemmes }}</td>
             <td class="td-total">{{ statsData.habitatStats.totalVulnerables }}</td>
@@ -115,6 +124,7 @@
             <td class="td-total"><strong>{{ statsData.totalStats.total }}</strong></td>
             <td><strong>{{ statsData.totalStats.hommes }}</strong></td>
             <td><strong>{{ statsData.totalStats.femmes }}</strong></td>
+            <td><strong>{{ statsData.totalStats.autre }}</strong></td>
             <td><strong>{{ statsData.totalStats.vulnerablesHommes }}</strong></td>
             <td><strong>{{ statsData.totalStats.vulnerablesFemmes }}</strong></td>
             <td class="td-total"><strong>{{ statsData.totalStats.totalVulnerables }}</strong></td>

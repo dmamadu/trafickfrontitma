@@ -77,7 +77,7 @@ export class AddComponent implements OnInit,OnDestroy {
   categoriePartieInteresses: any;
   uploadedImage!: File;
   imageURL: string | undefined;
-  urlImage = environment.apiUrl + "fileMinios/upload/";
+  urlImage = environment.apiUrl + "fileMinios/download/";
   currentProjectId: any;
   constructor(
     public matDialogRef: MatDialogRef<AddComponent>,

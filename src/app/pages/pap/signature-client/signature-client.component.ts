@@ -26,7 +26,7 @@ export class SignatureClientComponent {
     noImage;
     //urlImage=    environment.apiUrl+'image/getFile/';
 
-    urlImage = environment.apiUrl + "fileMinios/upload/";
+    urlImage = environment.apiUrl + "fileMinios/download/";
 
     constructor(
         public matDialogRef: MatDialogRef<SignatureClientComponent>, @Inject(MAT_DIALOG_DATA) _data,
