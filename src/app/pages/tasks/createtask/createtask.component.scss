@@ -74,6 +74,13 @@ $radius-sm:    7px;
   }
 }
 
+// ── Progression ─────────────────────────────────────────────
+.progression-slider {
+  width: 100%;
+  accent-color: $orange;
+  cursor: pointer;
+}
+
 // ── Champs Material ────────────────────────────────────────
 .field-full {
   width: 100%;

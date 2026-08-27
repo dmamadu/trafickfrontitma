@@ -85,6 +85,21 @@
       <div *ngIf="initForm.get('statut')!.invalid && initForm.get('statut')!.touched"
         class="field-error">Veuillez sélectionner un statut</div>
     </div>
+
+    <!-- ── Section : Progression ───────────────────────── -->
+    <div class="form-section">
+      <div class="section-label">
+        <mat-icon>trending_up</mat-icon>
+        <span>Progression</span>
+        <span class="assignee-count">{{ initForm.get('progression')!.value }} %</span>
+      </div>
+      <input
+        type="range"
+        class="progression-slider"
+        min="0" max="100" step="5"
+        formControlName="progression" />
+    </div>
+
     <div class="form-section">
         <mat-form-field class="field-full" appearance="outline">
         <mat-label>Observation</mat-label>

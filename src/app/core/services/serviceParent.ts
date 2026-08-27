@@ -45,13 +45,22 @@ export class ServiceParent implements Resolve<any> {
     url: string,
     max: number,
     offset: number,
-    projectId?: number
+    projectId?: number,
+    filters?: Record<string, string>
   ): Observable<any[]> {
     let params = new HttpParams()
       .set("max", max.toString())
       .set("offset", offset.toString());
     if (projectId != undefined && projectId != null) {
       params = params.set("projectId", projectId.toString());
+    }
+    if (filters) {
+      for (const key of Object.keys(filters)) {
+        const value = filters[key];
+        if (value != undefined && value !== null && value !== "") {
+          params = params.set(key, value);
+        }
+      }
     }
     return this.http.get<any[]>(`${this.url}${url}`, { params });
   }

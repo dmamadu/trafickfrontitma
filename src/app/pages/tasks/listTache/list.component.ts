@@ -24,7 +24,6 @@ import {
   TableauComponent,
 } from "src/app/shared/tableau/tableau.component";
 import { UIModule } from "src/app/shared/ui/ui.module";
-import { PapService } from "../../pap/pap.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { PapAddComponent } from "../../pap/pap-add/pap-add.component";
 import { ToastrService } from "ngx-toastr";
@@ -42,7 +41,8 @@ import { NgApexchartsModule } from "ng-apexcharts";
 import { DndModule } from "ngx-drag-drop";
 import { DetailComponent } from "../detail/detail.component";
 import { LocalService } from "src/app/core/services/local.service";
-import { Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil, debounceTime, distinctUntilChanged } from "rxjs";
+import { STATUT_OPTIONS } from "../tasks.constants";
 
 @Component({
   selector: "app-list",
@@ -86,8 +86,21 @@ import { Subject, takeUntil } from "rxjs";
   ],
 })
 export class ListTacheComponent implements OnInit ,OnDestroy{
-  filterTable($event: any) {
-    throw new Error("Method not implemented.");
+  readonly statutOptions = STATUT_OPTIONS;
+  searchTerm = "";
+  selectedStatut = "";
+  private search$ = new Subject<string>();
+
+  filterTable($event: Event): void {
+    const value = ($event.target as HTMLInputElement).value;
+    this.search$.next(value);
+  }
+
+  filterByStatut(statut: string): void {
+    this.selectedStatut = statut;
+    this.offset = 0;
+    this.pageIndex = 0;
+    this.getTaches();
   }
 
   breadCrumbItems: (
@@ -142,7 +155,6 @@ export class ListTacheComponent implements OnInit ,OnDestroy{
   currentProjectId: any;
   constructor(
     private snackbar: SnackBarService,
-    private papService: PapService,
     private parentService: ServiceParent,
     public matDialogRef: MatDialogRef<PapAddComponent>,
     private _changeDetectorRef: ChangeDetectorRef,
@@ -154,6 +166,18 @@ export class ListTacheComponent implements OnInit ,OnDestroy{
   }
 
   ngOnInit(): void {
+    this.search$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((term) => {
+        this.searchTerm = term;
+        this.offset = 0;
+        this.pageIndex = 0;
+        this.getTaches();
+      });
     this.getTaches();
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
@@ -184,6 +208,11 @@ private destroy$ = new Subject<void>();
       {
         th: "Etat",
         td: "statut",
+      },
+      {
+        th: "Progression (%)",
+        td: "progression",
+        type: "n",
       },
     ];
   }
@@ -220,7 +249,10 @@ private destroy$ = new Subject<void>();
   getTaches() {
     this.loadData = true;
     return this.parentService
-      .list(this.url, this.pageSize, this.offset, this.currentProjectId)
+      .list(this.url, this.pageSize, this.offset, this.currentProjectId, {
+        search: this.searchTerm,
+        statut: this.selectedStatut,
+      })
         .pipe(takeUntil(this.destroy$))
       .subscribe(
         (data: any) => {
@@ -257,13 +289,6 @@ private destroy$ = new Subject<void>();
     this.offset = this.pageIndex;
     this.getTaches();
   }
-
-  // updateItems(information): void {
-  //   console.log(information);
-
-  //   this.localService.saveDataJson("tacheToUpdate", information);
-  //   this._router.navigate(["tasks/create"]);
-  // }
 
   //cette fonction permet de supprimer
   supprimerItems(id, information) {
@@ -333,49 +358,6 @@ private destroy$ = new Subject<void>();
     );
   }
 
-  convertedJson: string;
-
-  headings = [];
-  dataExcel = [];
-
-  resetDataFromExcel() {
-    this.headings = [];
-    this.dataExcel = [];
-    this.convertedJson = "";
-  }
-
-  triggerFileUpload() {
-    const fileUploadElement = document.getElementById(
-      "file-upload"
-    ) as HTMLInputElement;
-    if (fileUploadElement) {
-      fileUploadElement.click();
-    }
-  }
-
-  importData() {
-    return this.papService
-      .add("personneAffectes/importer", this.dataExcel)
-      .subscribe(
-        (data: any) => {
-          console.log(data);
-          this.toastr.success(data.message);
-          this.dataExcel = [];
-          this.getTaches();
-        },
-        (err) => {
-          this.toastr.error(err);
-        }
-      );
-  }
-
-  // detailItems(id, information) {
-  //   console.log(information);
-  //   this.localService.saveDataJson("task", information);
-  //   this.sharedService.setSelectedItem(information);
-  //   this._router.navigate(["tasks/list"]);
-  // }
-
   detailItems(information): void {
     console.log(information);
     this.snackbar.openModal(
@@ -387,31 +369,6 @@ private destroy$ = new Subject<void>();
       "",
       () => {
         this.getTaches();
-      }
-    );
-  }
-
-  getConsultant() {
-    return this.papService.all("users/by_role?roleName=Consultant").subscribe(
-      (data: any) => {
-        this.loadData = false;
-        if (data["status"] == 200) {
-          this.loadData = false;
-          console.log(data);
-          this.dataSource = new MatTableDataSource(data["data"]);
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-          this.datas = data["data"];
-          this.length = data["length"];
-          console.log("length", this.length);
-          this._changeDetectorRef.markForCheck();
-        } else {
-          this.loadData = false;
-          this.dataSource = new MatTableDataSource();
-        }
-      },
-      (err) => {
-        console.log(err);
       }
     );
   }

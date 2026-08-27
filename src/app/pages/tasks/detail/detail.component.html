@@ -46,6 +46,21 @@
         <p class="info-text">{{ tache.observation || '—' }}</p>
       </div>
 
+      <!-- Progression -->
+      <div class="info-block">
+        <div class="info-block-header">
+          <mat-icon>trending_up</mat-icon>
+          <span>Progression</span>
+        </div>
+        <div class="progress-row">
+          <div class="progress-track">
+            <div class="progress-fill" [ngClass]="'fill-' + tache.statut"
+              [style.width.%]="tache.progression || 0"></div>
+          </div>
+          <span class="progress-value">{{ tache.progression || 0 }}%</span>
+        </div>
+      </div>
+
       <!-- Dates -->
       <div class="dates-row">
         <div class="date-card">

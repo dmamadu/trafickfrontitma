@@ -42,7 +42,6 @@ import { userslistEffects } from './store/UserList/userlist.effect';
 import { JoblistEffects } from './store/Job/job.effects';
 import { CandidateEffects } from './store/Candidate/candidate.effects';
 import { InvoiceDataEffects } from './store/Invoices/invoice.effects';
-import { tasklistEffects } from './store/Tasks/tasks.effect';
 import { OrdersEffects } from './store/Crypto/crypto.effects';
 import { CustomerEffects } from './store/customer/customer.effects';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -106,7 +105,6 @@ export function createTranslateLoader(http: HttpClient): any {
         JoblistEffects,
         CandidateEffects,
         InvoiceDataEffects,
-        tasklistEffects,
         OrdersEffects,
         CustomerEffects,
     ]),

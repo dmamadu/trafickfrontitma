@@ -7,10 +7,16 @@
   <div class="col-sm">
     <div class="search-box me-2 d-inline-block">
       <div class="position-relative">
-        <input type="text" class="form-control" autocomplete="off" id="searchTableList" placeholder="Search..."
+        <input type="text" class="form-control" autocomplete="off" id="searchTableList" placeholder="Rechercher une tâche..."
           (input)="filterTable($event)">
         <i class="bx bx-search-alt search-icon"></i>
       </div>
+    </div>
+    <div class="d-inline-block">
+      <select class="form-select" [(ngModel)]="selectedStatut" (ngModelChange)="filterByStatut($event)">
+        <option value="">Tous les statuts</option>
+        <option *ngFor="let s of statutOptions" [value]="s.value">{{ s.label }}</option>
+      </select>
     </div>
   </div>
   <div class="col-sm-auto">

@@ -32,15 +32,7 @@ import { LocalService } from "src/app/core/services/local.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
 import { UIModule } from "src/app/shared/ui/ui.module";
-
-export interface StatutOption {
-  value: string;
-  label: string;
-  icon: string;
-  bg: string;
-  border: string;
-  color: string;
-}
+import { STATUT_OPTIONS } from "../tasks.constants";
 
 @Component({
   selector: "app-createtask",
@@ -91,17 +83,13 @@ export class CreatetaskComponent implements OnInit {
     dateDebut:    this.fb.control<string | null>(null, Validators.required),
     dateFin:      this.fb.control<string | null>(null, Validators.required),
     statut:       this.fb.control<string | null>(null, Validators.required),
+    progression:  this.fb.control<number>(0, [Validators.min(0), Validators.max(100)]),
     utilisateurs: this.fb.array([]),
     observation:  this.fb.control<string | null>(null),
   });
 
   // Options statut avec couleurs Jibili
-  readonly statutOptions: StatutOption[] = [
-    { value: 'en-attente', label: 'En attente', icon: 'hourglass_empty', bg: '#FFF3CD', border: '#F59E0B', color: '#92400E' },
-    { value: 'en-cours',   label: 'En cours',   icon: 'sync',            bg: '#DBEAFE', border: '#2563EB', color: '#1E3A8A' },
-    { value: 'approuve',   label: 'Approuvé',   icon: 'verified',        bg: '#E8F5E9', border: '#2E7D32', color: '#1B5E20' },
-    { value: 'complete',   label: 'Complété',   icon: 'check_circle',    bg: '#EDE9FE', border: '#7C3AED', color: '#4C1D95' },
-  ];
+  readonly statutOptions = STATUT_OPTIONS;
 
   constructor(
     public matDialogRef: MatDialogRef<CreatetaskComponent>,
@@ -146,6 +134,7 @@ export class CreatetaskComponent implements OnInit {
       dateDebut:   data.dateDebut,
       dateFin:     data.dateFin,
       statut:      data.statut,
+      progression: data.progression ?? 0,
       observation: data.observation,
 
     });

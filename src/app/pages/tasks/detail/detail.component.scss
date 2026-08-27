@@ -109,6 +109,41 @@ $radius-sm:     8px;
   &.badge-complete   { background: $purple-light; color: darken($purple, 5%);  border: 1.5px solid $purple; }
 }
 
+// ── Progression ────────────────────────────────────────────
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.progress-track {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: $orange-light;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: $orange;
+  transition: width .3s ease;
+
+  &.fill-en-attente { background: $amber; }
+  &.fill-en-cours   { background: $blue; }
+  &.fill-approuve   { background: $green; }
+  &.fill-complete   { background: $purple; }
+}
+
+.progress-value {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: $gray-400;
+  min-width: 36px;
+  text-align: right;
+}
+
 // ── Corps ──────────────────────────────────────────────────
 .detail-body {
   display: grid;
