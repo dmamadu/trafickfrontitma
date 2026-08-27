@@ -405,6 +405,7 @@ $radius-sm:     8px;
 .detail-footer {
   display: flex;
   justify-content: flex-end;
+  gap: 10px;
   padding: 12px 20px;
   border-top: 1px solid $gray-100;
   background: white;
@@ -423,6 +424,19 @@ $radius-sm:     8px;
       background: $gray-50 !important;
       border-color: $gray-400 !important;
     }
+  }
+
+  .edit-btn {
+    font-size: 0.82rem;
+    font-weight: 700;
+    background: $orange !important;
+    color: white !important;
+    border-radius: $radius-sm !important;
+    gap: 4px;
+
+    mat-icon { font-size: 16px; width: 16px; height: 16px; }
+
+    &:hover { background: darken($orange, 8%) !important; }
   }
 }
 

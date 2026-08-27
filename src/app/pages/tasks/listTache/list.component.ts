@@ -226,6 +226,7 @@ private destroy$ = new Subject<void>();
         title: "Modifier",
         isDisabled: this.hasUpdate,
         action: (element?) => this.updateItems(element),
+        permission: "TACHES_MODIFIER",
       },
       {
         icon: "bxs-trash-alt",
@@ -234,6 +235,7 @@ private destroy$ = new Subject<void>();
         title: "Supprimer",
         isDisabled: this.hasDelete,
         action: (element?) => this.supprimerItems(element.id, element),
+        permission: "TACHES_SUPPRIMER",
       },
       {
         icon: "bxs-info-circle",
@@ -242,6 +244,7 @@ private destroy$ = new Subject<void>();
         title: "détail",
         isDisabled: this.hasDelete,
         action: (element?) => this.detailItems(element),
+        permission: "TACHES_VOIR",
       },
     ];
   }
