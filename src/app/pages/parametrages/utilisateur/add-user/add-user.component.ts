@@ -109,14 +109,18 @@ export class AddUserComponent {
       locality: this.fb.control(donnees?.locality ?? null, [
         Validators.required,
       ]),
-      project_id: this.fb.control(this.currentProjectId ?? null, [
+      projectId: this.fb.control(this.currentProjectId ?? null, [
         Validators.required,
       ]),
       role_id: this.fb.control(donnees?.roles?.[0]?.id ?? null, [
         Validators.required,
       ]),
       imageUrl: this.fb.control(
-        donnees?.imageUrl ? this.urlImage + donnees.imageUrl : null,
+        donnees?.imageUrl
+          ? donnees.imageUrl.startsWith("http")
+            ? donnees.imageUrl
+            : this.urlImage + donnees.imageUrl
+          : null,
         []
       ),
       contact: this.fb.control(donnees?.contact ?? null, [Validators.required]),
@@ -149,9 +153,9 @@ export class AddUserComponent {
         if (result["value"] == true) {
           this.loader = true;
           const value = this.initForm.value;
-          this.coreService.updateItem(value, this.id, "users").subscribe(
+          this.coreService.updateItem(value, this.id, "users/updateUser").subscribe(
             (resp) => {
-              if (resp) {
+              if (resp?.["responseCode"] == 200) {
                 this.loader = false;
                 this.matDialogRef.close(resp);
                 this.snackbar.openSnackBar("User  modifié avec succés", "OK", [
@@ -235,7 +239,16 @@ export class AddUserComponent {
 
 
 
-    console.log(this.initForm.value);
+    if (this.initForm.invalid) {
+      this.checkValidity(this.initForm);
+      this.snackbar.openSnackBar(
+        "Veuillez remplir tous les champs obligatoires",
+        "OK",
+        ["mycssSnackbarRed"]
+      );
+      return;
+    }
+
     if (this.initForm.valid) {
       this.snackbar
         .showConfirmation(`Voulez-vous vraiment ajouter cet utilisateur `)
@@ -245,7 +258,8 @@ export class AddUserComponent {
             const value = this.initForm.value;
             this.coreService.addItem(value, "users/createUser").subscribe(
               (resp) => {
-                if (resp["status"] == 200) {
+                // Le back renvoie { responseCode, message, data }
+                if (resp?.["responseCode"] == 200) {
                   this.snackbar.openSnackBar(
                     "Utilisateur  ajouté avec succés",
                     "OK",
@@ -256,18 +270,19 @@ export class AddUserComponent {
                   this.changeDetectorRefs.markForCheck();
                 } else {
                   this.loader = false;
+                  this.snackbar.openSnackBar(
+                    resp?.["message"] || "Une erreur s'est produite, veuillez réessayer",
+                    "OK",
+                    ["mycssSnackbarRed"]
+                  );
                   this.changeDetectorRefs.markForCheck();
                 }
               },
               (error) => {
                 this.loader = false;
                 this.changeDetectorRefs.markForCheck();
-                this.snackbar.openSnackBar(
-                  "Une erreur s'est produite , veillez réessayez",
-                  "OK",
-                  ["mycssSnackbarRed"]
-                );
-                //  this.snackbar.showErrors(error);
+                // Affiche la cause renvoyée par le back (email ou contact déjà existant…)
+                this.snackbar.showErrors(error);
               }
             );
           }

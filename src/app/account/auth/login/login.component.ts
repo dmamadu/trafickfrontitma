@@ -245,6 +245,9 @@ export class LoginComponent implements OnInit {
   }
 
   private handleSuccessfulLogin(user: Auth) {
+    // Le jeton est nécessaire au dialogue : /users/change-password exige un JWT.
+    // Tant que mustChangePassword reste vrai dans "user", AuthGuard renvoie à la connexion
+    // et le back refuse toute autre requête : recharger la page ne permet plus d'y échapper.
     localStorage.setItem("token", user.token);
     this.localService.saveDataJson("user", user.user);
     this.authenticationService.startTokenExpirationCheck();
@@ -255,7 +258,13 @@ export class LoginComponent implements OnInit {
         disableClose: true,
         data: { isForced: true },
       });
-      dialogRef.afterClosed().subscribe(() => {
+      dialogRef.afterClosed().subscribe((changed) => {
+        if (changed !== true) {
+          this.authenticationService.logout();
+          return;
+        }
+        user.user.mustChangePassword = false;
+        this.localService.saveDataJson("user", user.user);
         this.proceedAfterLogin(user);
       });
       return;
