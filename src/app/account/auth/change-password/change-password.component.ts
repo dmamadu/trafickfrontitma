@@ -68,7 +68,9 @@ export class ChangePasswordComponent implements OnInit {
           [
             Validators.required,
             Validators.minLength(8),
-            Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/),
+            // Majuscule, minuscule, chiffre et un caractère spécial quelconque (# . - _ … acceptés).
+            // L'ancienne règle refusait tout caractère hors de @$!%*?&, sans le dire.
+            Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d\s]).+$/),
           ],
         ],
         confirmPassword: ["", Validators.required],
@@ -165,7 +167,7 @@ export class ChangePasswordComponent implements OnInit {
     if (controlName === "newPassword") {
       if (control.hasError("minlength")) return "Minimum 8 caractères";
       if (control.hasError("pattern"))
-        return "Doit contenir majuscule, minuscule, chiffre et caractère spécial (@$!%*?&)";
+        return "Doit contenir majuscule, minuscule, chiffre et caractère spécial (ex. @ # ! . -)";
     }
     if (controlName === "confirmPassword" && this.passwordForm?.hasError("notSame")) {
       return "Les mots de passe ne correspondent pas";
