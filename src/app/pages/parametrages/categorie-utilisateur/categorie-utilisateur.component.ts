@@ -184,7 +184,7 @@ export class CategorieUtilisateurComponent implements OnInit {
           this.currentIndex = information;
           this.showLoader = "isShow";
           const message = "Consultant  supprimé";
-          this.coreService.deleteItem(id, "users/deleteMo").subscribe(
+          this.coreService.deleteItem(id, "users/deleteMaitreOuvrage").subscribe(
             (resp) => {
               this.showLoader = "isNotShow";
               if (resp["responseCode"] == 200) {

@@ -208,7 +208,7 @@
 //         if (result["value"] == true) {
 //           this.deleteUser = true;
 //           const message = "Consultant  supprimé";
-//           this.coreService.deleteItem(id, "users/deleteMo")
+//           this.coreService.deleteItem(id, "users/deleteMaitreOuvrage")
 //           .pipe(takeUntil(this.destroy$))
 //           .subscribe(
 //             (resp) => {
@@ -546,11 +546,11 @@ export class ListComponent implements OnInit, OnDestroy {
       .then((result) => {
         if (result?.value === true) {
           this.coreService
-            .deleteItem(id, "users/deleteMo")
+            .deleteItem(id, "users/deleteMaitreOuvrage")
             .pipe(takeUntil(this.destroy$))
             .subscribe({
               next: (resp: any) => {
-                if (resp?.["200"]) this.getConsultants();
+                if (resp?.responseCode === 200) this.getConsultants();
               },
               error: (error) => this.snackbar.showErrors(error),
             });

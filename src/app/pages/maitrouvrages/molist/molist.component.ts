@@ -149,7 +149,7 @@ export class MolistComponent implements OnInit, OnDestroy {
   supprimerItems(id: any): void {
     this.snackbar.showConfirmation("Voulez-vous vraiment supprimer ce utilisateur?").then((result) => {
       if (result?.value === true) {
-        this.coreService.deleteItem(id, "users/deleteMo").subscribe({
+        this.coreService.deleteItem(id, "users/deleteMaitreOuvrage").subscribe({
           next: (resp: any) => { if (resp?.responseCode === 200) this.fetchMo(); },
           error: (err) => this.snackbar.showErrors(err),
         });
