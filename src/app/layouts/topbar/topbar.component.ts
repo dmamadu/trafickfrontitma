@@ -13,8 +13,6 @@ import { getLayoutMode } from "src/app/store/layouts/layout.selector";
 import { RootReducerState } from "src/app/store";
 import { Auth } from "src/app/store/Authentication/auth.models";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
-import { ChangePasswordComponent } from "src/app/account/auth/change-password/change-password.component";
-import { MyProfileComponent } from "src/app/account/auth/my-profile/my-profile.component";
 import { LocalService } from "src/app/core/services/local.service";
 import { MatDialog } from "@angular/material/dialog";
 
@@ -128,11 +126,16 @@ export class TopbarComponent implements OnInit, OnDestroy {
   }
 
   changePassword(): void {
-    this._matDialog.open(ChangePasswordComponent, {});
+    // Chargé au clic pour ne pas embarquer Angular Material dans le bundle initial
+    import("src/app/account/auth/change-password/change-password.component").then(({ ChangePasswordComponent }) =>
+      this._matDialog.open(ChangePasswordComponent, {})
+    );
   }
 
   openProfile(): void {
-    this._matDialog.open(MyProfileComponent, { width: "400px" });
+    import("src/app/account/auth/my-profile/my-profile.component").then(({ MyProfileComponent }) =>
+      this._matDialog.open(MyProfileComponent, { width: "400px" })
+    );
   }
 
   changeLayout(layoutMode: string) {

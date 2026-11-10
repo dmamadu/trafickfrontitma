@@ -219,7 +219,7 @@ ngOnDestroy() {
   }
 
   redirectToOverview(id: number): void {
-    this.router.navigate(["/overview", id]);
+    this.router.navigate(["/projects/overview", id]);
   }
 
   datas = [];

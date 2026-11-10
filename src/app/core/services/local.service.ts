@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import * as CryptoJS from 'crypto-js';
+import AES from 'crypto-js/aes';
+import Utf8 from 'crypto-js/enc-utf8';
+const CryptoJS = { AES, enc: { Utf8 } };
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { User } from 'src/app/store/Authentication/auth.models';
