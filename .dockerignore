@@ -1,0 +1,11 @@
+.git
+.github
+.angular
+.vscode
+node_modules
+dist
+design
+cypress
+*.md
+.env
+.env.*

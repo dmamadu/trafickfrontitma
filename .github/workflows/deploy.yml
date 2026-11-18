@@ -1,127 +1,44 @@
-name: Deploy Frontend
+# Déploiement en production, lancé à la main : Actions → Deploy frontend → Run workflow.
+# La version est un tag d'image déjà publié par build.yml (ex. 1.4.0 ou sha-a1b2c3d).
+# Pour revenir en arrière : relancer avec l'ancienne version.
+name: Deploy frontend
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version à déployer (ex. 1.4.0 ou sha-a1b2c3d)"
+        required: true
+        type: string
 
-env:
-  REPO: ${{ github.repository }}
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+concurrency:
+  group: deploy-frontend
+  cancel-in-progress: false
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      # 📥 Checkout
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      # 🟢 Setup Node (Angular build)
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      # 📦 Install deps
-      - name: Install dependencies
-        run: npm ci
-
-      # 🧪 Run tests (optionnel mais recommandé)
-      - name: Run tests
-        run: npm run test -- --watch=false --browsers=ChromeHeadless || true
-
-      # 🏗️ Build Angular
-      - name: Build Angular
-        run: npm run build -- --configuration production
-
-      # 🔐 Login GHCR
-      - name: Login ghcr.io
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      # 🏷️ Tag image
-      - name: Set image tag
-        run: echo "IMAGE_TAG=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
-
-      # 🐳 Build & Push Docker
-      # - name: Build & Push
-      #   uses: docker/build-push-action@v6
-      #   with:
-      #     context: .
-      #     push: true
-      #     tags: |
-      #       ghcr.io/${{ env.REPO }}:${{ env.IMAGE_TAG }}
-      #       ghcr.io/${{ env.REPO }}:latest
-      #     cache-from: type=registry,ref=ghcr.io/${{ env.REPO }}:cache
-      #     cache-to: type=registry,ref=ghcr.io/${{ env.REPO }}:cache,mode=max
-
-
-# - name: Build & Push
-#   uses: docker/build-push-action@v6
-#   with:
-#     context: .
-#     push: true
-#     tags: |
-#       ghcr.io/${{ env.REPO }}:${{ env.IMAGE_TAG }}
-#       ghcr.io/${{ env.REPO }}:latest
-#     cache-from: type=gha
-#     cache-to: type=gha,mode=max  
-
   deploy:
-    needs: build
     runs-on: ubuntu-latest
-
     steps:
-      # 🏷️ Tag
-      - name: Set image tag
-        run: echo "IMAGE_TAG=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+      - name: Vérification de la version
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          if ! [[ "$VERSION" =~ ^[A-Za-z0-9._-]{1,64}$ ]]; then
+            echo "::error::Version invalide : lettres, chiffres, . _ - uniquement"
+            exit 1
+          fi
 
-      # 🚀 Deploy sécurisé + rollback
-      - name: Deploy via SSH
+      - name: Déploiement sur le VPS
         uses: appleboy/ssh-action@v1
+        env:
+          VERSION: ${{ inputs.version }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          envs: IMAGE_TAG
-          script: |
-            set -e
+          port: ${{ secrets.VPS_PORT || 22 }}
+          envs: VERSION
+          script: /opt/invodis/deploy.sh frontend "$VERSION"
 
-            cd /opt/projets/NOM_PROJET
-
-            echo "📌 Backup ancien tag"
-            OLD_TAG=$(grep IMAGE_TAG .env | cut -d '=' -f2)
-
-            echo "📌 Mise à jour du tag"
-            sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=$IMAGE_TAG/" .env
-
-            echo "📥 Pull nouvelle image"
-            docker compose pull frontend
-
-            echo "🚀 Restart service"
-            docker compose up -d --no-deps frontend
-
-            echo "⏳ Vérification du service..."
-            sleep 10
-
-            if ! docker ps | grep frontend; then
-              echo "❌ Déploiement échoué → rollback"
-
-              sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=$OLD_TAG/" .env
-              docker compose pull frontend
-              docker compose up -d --no-deps frontend
-
-              exit 1
-            fi
-
-            echo "🧹 Nettoyage"
-            docker image prune -f
-
-            echo "✅ Frontend déployé avec succès : $IMAGE_TAG"
+      - name: Résumé
+        run: echo "### Frontend ${{ inputs.version }} déployé par ${{ github.actor }}" >> "$GITHUB_STEP_SUMMARY"
