@@ -1,3 +1,6 @@
+import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
+import { isExtensionAccepted } from "src/app/shared/utils/file-extension";
 // import {
 //   CUSTOM_ELEMENTS_SCHEMA,
 //   ChangeDetectionStrategy,
@@ -329,7 +332,7 @@
 //       const index = file.name.lastIndexOf(".");
 //       const strsubstring = file.name.substring(index, file.name.length);
 //       const ext = strsubstring;
-//       if (accept.indexOf(strsubstring) === -1) {
+//       if (!isExtensionAccepted(accept, strsubstring)) {
 //         this.snackbar.openSnackBar(
 //           "Ce fichier " + file.name + " n'est " + extension,
 //           "OK",
@@ -629,6 +632,7 @@ const MESSAGES = {
   templateUrl: "./add-pap-place-affaire.component.html",
   styleUrl: "./add-pap-place-affaire.component.css",
   imports: [
+    DialogHeaderComponent,
     MatFormFieldModule,
     MatInputModule,
     MatStepperModule,
@@ -641,7 +645,7 @@ const MESSAGES = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
-    { provide: MatPaginatorIntl },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     SnackBarService,
     MatDatepickerModule,
   ],
@@ -708,7 +712,7 @@ export class AddPapPlaceAffaireComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.dialogTitle = this.labelButton + " une personne affectée";
+    this.dialogTitle = `${this.labelButton.trim()} une PAP — places d'affaires`;
     this.createCoProprietaire();
   }
 
@@ -873,7 +877,7 @@ export class AddPapPlaceAffaireComponent implements OnInit, OnDestroy {
       const index = file.name.lastIndexOf(".");
       const strsubstring = file.name.substring(index, file.name.length);
 
-      if (accept.indexOf(strsubstring) === -1) {
+      if (!isExtensionAccepted(accept, strsubstring)) {
         this.snackbar.openSnackBar(
           MESSAGES.FILE_ERROR + file.name + " n'est " + extension,
           "OK",

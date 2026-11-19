@@ -1,3 +1,4 @@
+import { isExtensionAccepted } from "src/app/shared/utils/file-extension";
 import {
   ChangeDetectorRef,
   Component,
@@ -204,7 +205,7 @@ export class UpdateComponent {
       const index = file.name.lastIndexOf(".");
       const strsubstring = file.name.substring(index, file.name.length);
       const ext = strsubstring;
-      if (accept.indexOf(strsubstring) === -1) {
+      if (!isExtensionAccepted(accept, strsubstring)) {
         this.snackbar.openSnackBar(
           "Ce fichier " + file.name + " n'est " + extension,
           "OK",

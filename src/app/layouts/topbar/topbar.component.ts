@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Output, EventEmitter, Inject } from "@angular/core";
-import { Router } from "@angular/router";
+import { NavigationEnd, Router } from "@angular/router";
 import { DOCUMENT } from "@angular/common";
 import { AuthenticationService } from "../../core/services/auth.service";
 import { CookieService } from "ngx-cookie-service";
@@ -7,7 +7,7 @@ import { LanguageService } from "../../core/services/language.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
 import { Subject } from "rxjs";
-import { takeUntil, take } from "rxjs/operators";
+import { takeUntil, take, filter } from "rxjs/operators";
 import { changesLayout } from "src/app/store/layouts/layout.actions";
 import { getLayoutMode } from "src/app/store/layouts/layout.selector";
 import { RootReducerState } from "src/app/store";
@@ -15,6 +15,8 @@ import { Auth } from "src/app/store/Authentication/auth.models";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { LocalService } from "src/app/core/services/local.service";
 import { MatDialog } from "@angular/material/dialog";
+import { ProjectService } from "src/app/core/services/project.service";
+import { USER_PROFILE_UPDATED_EVENT, resolveUserImageUrl } from "src/app/shared/utils/user-image";
 
 @Component({
   selector: "app-topbar",
@@ -57,24 +59,26 @@ export class TopbarComponent implements OnInit, OnDestroy {
     public _cookiesService: CookieService,
     private _matDialog: MatDialog,
     private localService: LocalService,
-    public store: Store<RootReducerState>
+    public store: Store<RootReducerState>,
+    private projectService: ProjectService
   ) {}
 
   ngOnInit() {
     if (this.authService.currentUser()) {
       this.user = this.authService.currentUser();
-      if (this.user?.user?.image) {
-        this.myImage = `data:${this.user.user.image.type};base64,${this.user.user.image.image}`;
-      } else {
-        this.myImage = "assets/images/user.png";
-      }
     }
-
-    const storedUser = this.localService.getDataJson("user");
-    if (storedUser) {
-      this.userName = `${storedUser.firstname || ""} ${storedUser.lastname || ""}`.trim();
-      this.userRole = storedUser.role?.[0]?.name || "";
-    }
+    this.refreshUserHeader();
+    this.refreshProjectSwitch();
+    // La page « Mon profil » prévient quand la photo ou les coordonnées changent
+    window.addEventListener(USER_PROFILE_UPDATED_EVENT, this.onProfileUpdated);
+    // Le changement de projet redirige vers le tableau de bord : on rafraîchit alors la pastille projet
+    this.router.events
+      .pipe(filter((e) => e instanceof NavigationEnd), takeUntil(this.destroy$))
+      .subscribe((e: NavigationEnd) => {
+        this.refreshUserHeader();
+        // Après création ou suppression d'un projet, le nombre de projets a pu changer
+        if (e.urlAfterRedirects.startsWith("/projects")) this.refreshProjectSwitch();
+      });
 
     this.store.select("layout").pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.theme = data.DATA_LAYOUT;
@@ -94,6 +98,7 @@ export class TopbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    window.removeEventListener(USER_PROFILE_UPDATED_EVENT, this.onProfileUpdated);
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -133,9 +138,69 @@ export class TopbarComponent implements OnInit, OnDestroy {
   }
 
   openProfile(): void {
-    import("src/app/account/auth/my-profile/my-profile.component").then(({ MyProfileComponent }) =>
-      this._matDialog.open(MyProfileComponent, { width: "400px" })
-    );
+    this.router.navigate(["/profil"]);
+  }
+
+  private readonly onProfileUpdated = () => this.refreshUserHeader();
+
+  /** Nom du projet actif, affiché dans la pastille de la barre du haut. */
+  projectLabel = "";
+
+  /**
+   * Faux tant qu'il n'y a qu'un seul projet accessible : la pastille devient alors une simple
+   * étiquette, sans menu de sélection (même règle qu'à la connexion).
+   */
+  canSwitchProject = false;
+
+  private isAdminUser(): boolean {
+    const roles: string[] = (this.localService.getDataJson("user")?.role ?? []).map((r: any) => r?.name);
+    return roles.some((r) => r === "Super Admin" || r === "Admin");
+  }
+
+  /** Admin : tous les projets de la plateforme (projects/all). Autres : projets affectés au compte. */
+  private refreshProjectSwitch(): void {
+    if (!this.isAdminUser()) {
+      this.canSwitchProject = (this.localService.getDataJson("user")?.projects?.length ?? 0) > 1;
+      return;
+    }
+    this.projectService
+      .all<any>("projects/all")
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe({
+        next: (resp) => (this.canSwitchProject = (resp?.data?.length ?? 0) > 1),
+        // En cas d'échec, on laisse la sélection accessible plutôt que de bloquer l'utilisateur
+        error: () => (this.canSwitchProject = true),
+      });
+  }
+
+  openProjectSwitcher(): void {
+    if (!this.canSwitchProject) return;
+    if (this.isAdminUser()) {
+      import("src/app/account/auth/select-project-admin/select-project-admin.component").then(
+        ({ SelectProjectAdminComponent }) => this._matDialog.open(SelectProjectAdminComponent)
+      );
+    } else {
+      import("src/app/account/auth/select-project/select-project.component").then(({ SelectProjectComponent }) =>
+        this._matDialog.open(SelectProjectComponent)
+      );
+    }
+  }
+
+  /** Nom, rôle et photo affichés dans la barre du haut (photo MinIO, puis ancienne image base64, puis défaut). */
+  private refreshUserHeader(): void {
+    this.projectLabel = this.localService.getData("libelleProject") || "";
+    const storedUser = this.localService.getDataJson("user");
+    if (storedUser) {
+      this.userName = `${storedUser.firstname || ""} ${storedUser.lastname || ""}`.trim();
+      this.userRole = storedUser.role?.[0]?.name || "";
+    }
+    if (storedUser?.imageUrl) {
+      this.myImage = resolveUserImageUrl(storedUser.imageUrl);
+    } else if (this.user?.user?.image) {
+      this.myImage = `data:${this.user.user.image.type};base64,${this.user.user.image.image}`;
+    } else {
+      this.myImage = "assets/images/user.png";
+    }
   }
 
   changeLayout(layoutMode: string) {

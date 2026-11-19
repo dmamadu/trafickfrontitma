@@ -21,6 +21,8 @@ export class JwtInterceptor implements HttpInterceptor {
     // API de connexion : une 401 (mauvais identifiants) ne doit pas déclencher logout + redirection,
     // sinon le paramètre returnUrl de la page de connexion est perdu
     "users/login",
+    // Réinitialisation du mot de passe (appels publics) : un ancien jeton expiré ne doit pas renvoyer à la connexion
+    "users/reset",
     "/auth/refresh-token",
   ];
 

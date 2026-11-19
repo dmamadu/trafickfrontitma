@@ -1,3 +1,4 @@
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 import { ChangeDetectorRef, Component, Inject } from "@angular/core";
 import {
   UntypedFormGroup,
@@ -35,7 +36,7 @@ import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/di
 ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
-    { provide: MatPaginatorIntl },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     SnackBarService,
     MatDatepickerModule,
   ],

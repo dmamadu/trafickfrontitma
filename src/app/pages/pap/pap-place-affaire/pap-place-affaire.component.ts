@@ -1,3 +1,4 @@
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 // import {
 //   ChangeDetectorRef,
 //   Component,
@@ -238,23 +239,23 @@
 //   createHeader() {
 //     return [
 //       {
-//         th: "CODE PAP",
+//         th: "Code PAP",
 //         td: "codePap",
 //       },
 //       {
-//         th: "CODE Place Affaire",
+//         th: "Code place d'affaires",
 //         td: "codePlaceAffaire",
 //       },
 //       {
-//         th: "PRENOM",
+//         th: "Prénom",
 //         td: "prenom",
 //       },
 //       {
-//         th: "NOM",
+//         th: "Nom",
 //         td: "nom",
 //       },
 //       {
-//         th: "NUMERO TELEPHONE",
+//         th: "Téléphone",
 //         td: "numeroTelephone",
 //       },
 //     ];
@@ -638,7 +639,7 @@ const MESSAGES = {
       useValue: [],
     },
     { provide: MAT_DIALOG_DATA, useValue: {} },
-    { provide: MatPaginatorIntl },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { appearance: "outline" },
@@ -690,7 +691,7 @@ export class PapPlaceAffaireComponent implements OnInit, OnDestroy {
   // Actions configuration
   actions: ActionButton[] = [
     {
-      label: "Ajouter un pap place affaire",
+      label: "Ajouter une PAP",
       icon: "add",
       action: "add",
       type: "primary",
@@ -699,19 +700,19 @@ export class PapPlaceAffaireComponent implements OnInit, OnDestroy {
       label: "Importer Excel",
       icon: "upload_file",
       action: "import",
-      type: "success",
+      type: "secondary",
     },
     {
       label: "Exporter Excel",
       icon: "table_chart",
       action: "export-excel",
-      type: "success",
+      type: "secondary",
     },
     {
       label: "Exporter PDF",
       icon: "picture_as_pdf",
       action: "export-pdf",
-      type: "danger",
+      type: "secondary",
     },
   ];
 
@@ -736,8 +737,8 @@ export class PapPlaceAffaireComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.breadCrumbItems = [
-      { label: "Pap" },
-      { label: "Pap List", active: true },
+      { label: "Parties affectées" },
+      { label: "Places d'affaires", active: true },
     ];
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
@@ -752,12 +753,12 @@ export class PapPlaceAffaireComponent implements OnInit, OnDestroy {
   // Header configuration
   createHeader() {
     return [
-      { th: "CODE PAP", td: "codePap" },
-      { th: "CODE Place Affaire", td: "codePlaceAffaire" },
-      { th: "PRENOM", td: "prenom" },
-      { th: "NOM", td: "nom" },
-      { th: "NUMERO TELEPHONE", td: "numeroTelephone" },
-      { th: "VULNÉRABLE", td: "vulne" },
+      { th: "Code PAP", td: "codePap" },
+      { th: "Code place d'affaires", td: "codePlaceAffaire" },
+      { th: "Prénom", td: "prenom" },
+      { th: "Nom", td: "nom" },
+      { th: "Téléphone", td: "numeroTelephone" },
+      { th: "Vulnérable", td: "vulne" },
     ];
   }
 
@@ -821,8 +822,16 @@ export class PapPlaceAffaireComponent implements OnInit, OnDestroy {
   }
 
   // Search
-  filterTable(event: Event): void {
-    const searchTerm = (event.target as HTMLInputElement).value.trim();
+  /** Recherche serveur. app-page-actions émet une chaîne ; un ancien champ HTML émettrait un événement. */
+  filterTable(valeur: string | Event): void {
+    const searchTerm = (typeof valeur === "string"
+      ? valeur
+      : (valeur?.target as HTMLInputElement)?.value ?? ""
+    ).trim();
+    if (!searchTerm) {
+      this.getPapPlaceAffaire();
+      return;
+    }
     this.loadData = true;
     this.parentService
       .searchGlobal(
@@ -862,7 +871,7 @@ export class PapPlaceAffaireComponent implements OnInit, OnDestroy {
 
     this.snackbar.openModal(
       AddPapPlaceAffaireComponent,
-      "50rem",
+      "64rem",
       "new",
       "auto",
       this.datas,
@@ -874,7 +883,7 @@ export class PapPlaceAffaireComponent implements OnInit, OnDestroy {
   updateItems(information: any): void {
     this.snackbar.openModal(
       AddPapPlaceAffaireComponent,
-      "50rem",
+      "64rem",
       "edit",
       "auto",
       information,
@@ -934,7 +943,10 @@ export class PapPlaceAffaireComponent implements OnInit, OnDestroy {
   detailItems(id: number, information: any): void {
     this.localService.saveDataJson("pap", information);
     this.sharedService.setSelectedItem(information);
-    this._router.navigate(["pap/detail"]);
+    const categorie = 'place-affaire';
+    this._router.navigate(["pap/detail"], {
+      queryParams: categorie && information?.id ? { categorie, id: information.id } : {},
+    });
   }
 
   // Excel Import
@@ -1016,7 +1028,7 @@ export class PapPlaceAffaireComponent implements OnInit, OnDestroy {
 
   // Action handlers
   handleSearch(searchValue: string): void {
-    console.log("Search:", searchValue);
+    this.filterTable(searchValue);
   }
 
   handleAction(action: string): void {

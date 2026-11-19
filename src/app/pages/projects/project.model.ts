@@ -18,6 +18,8 @@ export interface Project {
   imageUrl?: string;
   users: Mo[];
   normes?:NormeProject[];
+  /** JSON { primary, secondary, accent } : couleurs propres au projet (INV-18) */
+  colors?: string;
 }
 export interface Proj {
   name?: string;

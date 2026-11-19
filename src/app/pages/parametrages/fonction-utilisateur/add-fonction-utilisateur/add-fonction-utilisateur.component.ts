@@ -1,3 +1,5 @@
+import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 import { ChangeDetectorRef, Component, Inject } from "@angular/core";
 import {
   UntypedFormGroup,
@@ -21,6 +23,7 @@ import { SnackBarService } from "src/app/shared/core/snackBar.service";
   selector: "app-add-fonction-utilisateur",
   standalone: true,
   imports: [
+    DialogHeaderComponent,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
@@ -32,7 +35,7 @@ import { SnackBarService } from "src/app/shared/core/snackBar.service";
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
-    { provide: MatPaginatorIntl },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     SnackBarService,
     MatDatepickerModule,
   ],
@@ -44,7 +47,7 @@ export class AddFonctionUtilisateurComponent {
   id: string;
   initForm: UntypedFormGroup;
   labelButton: string;
-  suffixe: string = " une fonction";
+  suffixe: string = "une fonction";
   loader: boolean;
   action: string;
   loaderss = false;
@@ -74,7 +77,7 @@ export class AddFonctionUtilisateurComponent {
 
     this.action = _data?.action;
     this.canAdd = _data.canAdd;
-    this.dialogTitle = this.labelButton + this.suffixe;
+    this.dialogTitle = `${this.labelButton.trim()} ${this.suffixe}`;
   }
 
   currentUser: any;
@@ -116,7 +119,7 @@ export class AddFonctionUtilisateurComponent {
                   this.loader = false;
                   this.matDialogRef.close(resp);
                   this.snackbar.openSnackBar(
-                    "Role  modifié avec succés",
+                    "Fonction modifiée avec succès.",
                     "OK",
                     ["mycssSnackbarGreen"]
                   );
@@ -168,7 +171,7 @@ export class AddFonctionUtilisateurComponent {
               (resp) => {
                 if (resp["responseCode"] == 201) {
                   this.snackbar.openSnackBar(
-                    "Fonction  ajoutée avec succés",
+                    "Fonction ajoutée avec succès.",
                     "OK",
                     ["mycssSnackbarGreen"]
                   );

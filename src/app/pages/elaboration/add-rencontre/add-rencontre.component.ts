@@ -1,3 +1,4 @@
+import { isExtensionAccepted } from "src/app/shared/utils/file-extension";
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, ViewChild } from "@angular/core";
 import {
   UntypedFormGroup,
@@ -254,7 +255,7 @@ export class AddRencontreComponent {
       const fileExtension = strsubstring.toLowerCase();
 
       if (
-        accept.indexOf(fileExtension) === -1 &&
+        !isExtensionAccepted(accept, fileExtension) &&
         acceptDocuments.indexOf(fileExtension) === -1
       ) {
         this.snackbar.openSnackBar(

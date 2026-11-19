@@ -1,3 +1,4 @@
+import { isExtensionAccepted } from "src/app/shared/utils/file-extension";
 import {ChangeDetectorRef, Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {SnackBarService} from 'app/core/auth/snackBar.service';
@@ -47,7 +48,7 @@ export class SignatureClientComponent {
             const strsubstring = file.name.substring(index, file.name.length);
             const ext = strsubstring;
             // Verification de l'extension du fichier est valide
-            if (accept.indexOf(strsubstring) === -1) {
+            if (!isExtensionAccepted(accept, strsubstring)) {
 
                 this.snackbar.openSnackBar('Ce fichier ' + file.name + ' n\'est ' + extension, 'OK', ['mycssSnackbarRed']);
                 return;

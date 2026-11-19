@@ -1,3 +1,4 @@
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 import { ChangeDetectorRef, Component, ViewChild } from "@angular/core";
 import {
   ButtonAction,
@@ -36,7 +37,7 @@ import { AddBaremeOperateurEconomiqueComponent } from "../bareme-pap-operateur-e
       },
       DatePipe,
       { provide: MAT_DIALOG_DATA, useValue: {} },
-      { provide: MatPaginatorIntl },
+      { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
       {
         provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
         useValue: { appearance: "outline" },

@@ -5,9 +5,9 @@ import { Injectable } from '@angular/core';
 })
 export class ColorService {
   private colors: { primary: string, secondary: string, accent: string } = {
-    primary: '#3F51B5', // Couleur par défaut
-    secondary: '#FF4081', // Couleur par défaut
-    accent: '#4CAF50' // Couleur par défaut
+    primary: '#245363', // Couleur par défaut : charte INVODIS
+    secondary: '#D45C00', // Couleur par défaut : charte INVODIS
+    accent: '#2F7184' // Couleur par défaut
   };
 
   constructor() {

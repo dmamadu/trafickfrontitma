@@ -1,7 +1,8 @@
 <div class="container-fluid">
 
   <!-- <div class="row">
-    <app-page-title title="Liste des projets" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+    <app-page-title title="Projets"
+  icon="bx-briefcase" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 
     <div class="col-lg-12">
       <div class="card bg-transparent">
@@ -25,9 +26,10 @@
   </div> -->
 
 <app-page-actions
-  title="Liste des projets"
+  title="Projets"
+  icon="bx-briefcase"
   [breadcrumbItems]="breadCrumbItems"
-  searchPlaceholder="Rechercher un consultant..."
+  searchPlaceholder="Rechercher un projet…"
   [actions]="pageActions"
   (onSearch)="filterTable($event)"
   (onAction)="handleAction($event)">

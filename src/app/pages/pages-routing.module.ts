@@ -149,6 +149,11 @@ const routes: Routes = [
     data: { permission: "UTILISATEURS_VOIR" },
   },
   {
+    // Page « Mon profil » : accessible à tout utilisateur connecté (AuthGuard sur le layout parent)
+    path: "profil",
+    loadComponent: () => import("./profil/profil.component").then((m) => m.ProfilComponent),
+  },
+  {
     path: "audit",
     component: AuditComponent,
     canActivate: [PermissionGuard],

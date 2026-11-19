@@ -1,0 +1,453 @@
+<!--
+  Page « Mon profil ». Boutons et champs en Tailwind uniquement : ne pas ajouter la classe Bootstrap .btn,
+  dont la couleur de fond écrase celle de Tailwind (bouton blanc sur blanc).
+-->
+<div class="pb-8 text-gray-800">
+
+  @if (loadingUser) {
+    <!-- Squelette de chargement -->
+    <div class="animate-pulse">
+      <div class="h-48 rounded-2xl bg-gray-200"></div>
+      <div class="mt-[1rem] flex flex-col gap-[1rem] lg:flex-row">
+        <div class="h-56 w-full rounded-2xl bg-gray-200 lg:w-64"></div>
+        <div class="h-80 flex-1 rounded-2xl bg-gray-200"></div>
+      </div>
+    </div>
+  } @else if (loadError) {
+    <div class="flex items-center justify-between gap-[0.75rem] rounded-2xl border border-red-200 bg-red-50 p-[1.25rem] text-red-700">
+      <div class="flex items-center gap-[0.75rem]">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ loadError }}</span>
+      </div>
+      <button type="button" (click)="chargerProfil()"
+              class="inline-flex items-center gap-2 rounded-lg border border-red-300 bg-white px-[1rem] py-2 text-sm font-medium text-red-700 transition hover:bg-red-50">
+        Réessayer
+      </button>
+    </div>
+  } @else if (user) {
+
+    <!-- ===================== En-tête ===================== -->
+    <header class="overflow-hidden rounded-2xl border border-gray-200/70 bg-white shadow-sm">
+      <div class="relative h-28 bg-gradient-to-r from-[#1b404c] via-[#245363] to-[#2f7184] sm:h-32">
+        <!-- motif discret -->
+        <svg class="absolute inset-0 h-full w-full opacity-[0.08]" aria-hidden="true">
+          <defs>
+            <pattern id="profil-motif" width="24" height="24" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="1.5" fill="white" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#profil-motif)" />
+        </svg>
+      </div>
+
+      <div class="px-[1.25rem] pb-[1.25rem] sm:px-8">
+        <div class="flex flex-col gap-[1rem] sm:flex-row sm:items-end sm:justify-between">
+          <div class="flex flex-col gap-[1rem] sm:flex-row sm:items-end">
+            <!-- Avatar + changement de photo -->
+            <div class="relative -mt-14 w-fit sm:-mt-16">
+              @if (user.imageUrl) {
+                <img [src]="photoUrl" alt="Photo de profil"
+                     class="h-28 w-28 rounded-full border-4 border-white bg-white object-cover shadow-md sm:h-32 sm:w-32" />
+              } @else {
+                <div class="flex h-28 w-28 items-center justify-center rounded-full border-4 border-white bg-gradient-to-br from-[#2f7184] to-[#1b404c] text-3xl font-semibold text-white shadow-md sm:h-32 sm:w-32">
+                  {{ initiales || '?' }}
+                </div>
+              }
+              @if (uploadingPhoto) {
+                <div class="absolute inset-0 flex items-center justify-center rounded-full bg-white/70">
+                  <span class="spinner-border spinner-border-sm text-[#245363]"></span>
+                </div>
+              }
+              <label title="Changer la photo"
+                     class="absolute bottom-1 right-1 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border-2 border-white bg-[#245363] text-white shadow transition hover:bg-[#1b404c]"
+                     [class.pointer-events-none]="uploadingPhoto">
+                <input type="file" class="sr-only" accept="image/png, image/jpeg"
+                       [disabled]="uploadingPhoto" (change)="choisirPhoto($event)" aria-label="Changer la photo de profil" />
+                <mat-icon class="!h-[18px] !w-[18px] !text-[18px] !leading-[18px]">photo_camera</mat-icon>
+              </label>
+            </div>
+
+            <div class="min-w-0 pb-1">
+              <h1 class="m-0 truncate text-xl font-bold text-gray-900 sm:text-2xl">{{ user.firstname }} {{ user.lastname }}</h1>
+              <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500">
+                <span class="inline-flex items-center gap-1 rounded-full bg-[#245363]/10 px-2.5 py-0.5 text-xs font-semibold text-[#245363]">
+                  <mat-icon class="!h-[14px] !w-[14px] !text-[14px] !leading-[14px]">verified_user</mat-icon>
+                  {{ roleLabel }}
+                </span>
+                <span class="inline-flex min-w-0 items-center gap-1">
+                  <mat-icon class="!h-4 !w-4 !text-[16px] !leading-4">mail_outline</mat-icon>
+                  <span class="truncate">{{ user.email }}</span>
+                </span>
+                @if (user.locality) {
+                  <span class="inline-flex items-center gap-1">
+                    <mat-icon class="!h-4 !w-4 !text-[16px] !leading-4">place</mat-icon>{{ user.locality }}
+                  </span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Indicateurs -->
+          <dl class="m-0 grid grid-cols-3 divide-x divide-gray-100 rounded-xl border border-gray-100 bg-gray-50/60 text-center">
+            <div class="px-[1rem] py-2.5">
+              <dt class="text-[11px] font-medium uppercase tracking-wide text-gray-500">Projets</dt>
+              <dd class="m-0 mt-0.5 text-lg font-bold text-gray-900">{{ isAdmin && projets.length === 0 ? 'Tous' : projets.length }}</dd>
+            </div>
+            <div class="px-[1rem] py-2.5">
+              <dt class="text-[11px] font-medium uppercase tracking-wide text-gray-500">Connexion préc.</dt>
+              <dd class="m-0 mt-0.5 text-sm font-semibold text-gray-900">
+                {{ connexionPrecedente ? (connexionPrecedente | date: 'dd/MM HH:mm') : '—' }}
+              </dd>
+            </div>
+            <div class="px-[1rem] py-2.5">
+              <dt class="text-[11px] font-medium uppercase tracking-wide text-gray-500">Échecs</dt>
+              <dd class="m-0 mt-0.5 text-lg font-bold" [ngClass]="echecsRecents > 0 ? 'text-red-600' : 'text-gray-900'">
+                {{ echecsRecents }}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </header>
+
+    <div class="mt-[1.25rem] flex flex-col items-start gap-[1.25rem] lg:flex-row">
+
+      <!-- ===================== Navigation ===================== -->
+      <aside class="w-full shrink-0 lg:sticky lg:top-24 lg:w-64">
+        <nav class="flex gap-1 overflow-x-auto rounded-2xl border border-gray-200/70 bg-white p-2 shadow-sm lg:flex-col"
+             aria-label="Sections du profil">
+          @for (o of onglets; track o.id) {
+            <button type="button" (click)="choisirOnglet(o.id)"
+                    [attr.aria-current]="onglet === o.id ? 'page' : null"
+                    class="group flex flex-1 shrink-0 items-center justify-center gap-[0.75rem] whitespace-nowrap rounded-xl border-0 px-[0.75rem] py-2.5 text-left transition lg:w-full lg:flex-none lg:justify-start"
+                    [ngClass]="onglet === o.id ? 'bg-[#245363] text-white shadow-sm' : 'bg-transparent text-gray-600 hover:bg-gray-100'">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition"
+                    [ngClass]="onglet === o.id ? 'bg-white/15' : 'bg-gray-100 text-gray-500 group-hover:bg-white'">
+                <mat-icon class="!h-5 !w-5 !text-[20px] !leading-5">{{ o.icon }}</mat-icon>
+              </span>
+              <span class="flex min-w-0 flex-col">
+                <span class="text-sm font-semibold">{{ o.label }}</span>
+                <span class="hidden truncate text-xs lg:inline" [ngClass]="onglet === o.id ? 'text-white/70' : 'text-gray-400'">
+                  {{ o.description }}
+                </span>
+              </span>
+            </button>
+          }
+        </nav>
+      </aside>
+
+      <!-- ===================== Contenu ===================== -->
+      <section class="flex w-full min-w-0 flex-1 flex-col gap-[1.25rem]">
+        @switch (onglet) {
+
+          <!-- ---------- Informations ---------- -->
+          @case ('informations') {
+            <div class="rounded-2xl border border-gray-200/70 bg-white shadow-sm">
+              <div class="flex items-start gap-[0.75rem] [border-bottom:1px_solid_rgb(243_244_246)] px-[1.25rem] py-[1rem] sm:px-6">
+                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#245363]/10 text-[#245363]">
+                  <mat-icon class="!h-5 !w-5 !text-[20px] !leading-5">contact_phone</mat-icon>
+                </span>
+                <div>
+                  <h2 class="m-0 text-base font-semibold text-gray-900">Coordonnées</h2>
+                  <p class="m-0 text-sm text-gray-500">Ces informations sont visibles par les membres de vos projets.</p>
+                </div>
+              </div>
+              <form [formGroup]="form" (ngSubmit)="enregistrer()" class="px-[1.25rem] py-[1.25rem] sm:px-6">
+                <div class="grid grid-cols-1 gap-[1.25rem] md:grid-cols-2">
+                  <div>
+                    <label for="profil-contact" class="mb-1.5 block text-sm font-medium text-gray-700">Téléphone</label>
+                    <div class="relative">
+                      <mat-icon class="pointer-events-none absolute left-3 top-1/2 !h-5 !w-5 -translate-y-1/2 !text-[20px] !leading-5 text-gray-400">phone</mat-icon>
+                      <input id="profil-contact" type="tel" formControlName="contact" placeholder="77 123 45 67" autocomplete="tel"
+                             class="w-full rounded-lg border bg-white py-2.5 pl-10 pr-3 text-sm outline-none transition focus:ring-4"
+                             [ngClass]="form.get('contact')?.touched && form.get('contact')?.invalid
+                               ? 'border-red-400 focus:border-red-500 focus:ring-red-100'
+                               : 'border-gray-300 focus:border-[#245363] focus:ring-[#245363]/15'" />
+                    </div>
+                    @if (form.get('contact')?.touched && form.get('contact')?.invalid) {
+                      <p class="m-0 mt-1 text-xs text-red-600">
+                        @if (form.get('contact')?.errors?.['maxlength']) { 30 caractères maximum. }
+                        @else { Chiffres, espaces et + ( ) - . uniquement. }
+                      </p>
+                    }
+                  </div>
+                  <div>
+                    <label for="profil-localite" class="mb-1.5 block text-sm font-medium text-gray-700">Localité</label>
+                    <div class="relative">
+                      <mat-icon class="pointer-events-none absolute left-3 top-1/2 !h-5 !w-5 -translate-y-1/2 !text-[20px] !leading-5 text-gray-400">place</mat-icon>
+                      <input id="profil-localite" type="text" formControlName="locality" placeholder="Dakar" autocomplete="address-level2"
+                             class="w-full rounded-lg border bg-white py-2.5 pl-10 pr-3 text-sm outline-none transition focus:ring-4"
+                             [ngClass]="form.get('locality')?.touched && form.get('locality')?.invalid
+                               ? 'border-red-400 focus:border-red-500 focus:ring-red-100'
+                               : 'border-gray-300 focus:border-[#245363] focus:ring-[#245363]/15'" />
+                    </div>
+                    @if (form.get('locality')?.touched && form.get('locality')?.invalid) {
+                      <p class="m-0 mt-1 text-xs text-red-600">100 caractères maximum.</p>
+                    }
+                  </div>
+                </div>
+
+                <div class="mt-[1.25rem] flex flex-col-reverse gap-2 [border-top:1px_solid_rgb(243_244_246)] pt-[1rem] sm:flex-row sm:items-center sm:justify-between">
+                  <div class="flex items-center gap-2">
+                    @if (user.imageUrl) {
+                      <button type="button" (click)="retirerPhoto()" [disabled]="uploadingPhoto"
+                              class="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-medium text-gray-500 transition hover:bg-red-50 hover:text-red-600 disabled:opacity-50">
+                        <mat-icon class="!h-[18px] !w-[18px] !text-[18px] !leading-[18px]">no_photography</mat-icon>
+                        Retirer la photo
+                      </button>
+                    } @else {
+                      <span class="text-xs text-gray-400">Photo : PNG, JPG ou JPEG — 10 Mo max. (bouton sur l'avatar)</span>
+                    }
+                  </div>
+                  <div class="flex gap-2 sm:justify-end">
+                    <button type="button" (click)="resetForm()" [disabled]="saving || form.pristine"
+                            class="inline-flex flex-1 items-center justify-center rounded-lg border border-gray-300 bg-white px-[1rem] py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 sm:flex-none">
+                      Annuler
+                    </button>
+                    <button type="submit" [disabled]="saving || form.pristine || form.invalid"
+                            class="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#245363] px-[1rem] py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#1b404c] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#245363]/25 disabled:cursor-not-allowed disabled:opacity-50 sm:flex-none">
+                      @if (saving) { <span class="spinner-border spinner-border-sm"></span> }
+                      Enregistrer
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div class="rounded-2xl border border-gray-200/70 bg-white shadow-sm">
+              <div class="flex flex-col gap-2 [border-bottom:1px_solid_rgb(243_244_246)] px-[1.25rem] py-[1rem] sm:flex-row sm:items-start sm:justify-between sm:px-6">
+                <div class="flex items-start gap-[0.75rem]">
+                  <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#245363]/10 text-[#245363]">
+                    <mat-icon class="!h-5 !w-5 !text-[20px] !leading-5">badge</mat-icon>
+                  </span>
+                  <div>
+                    <h2 class="m-0 text-base font-semibold text-gray-900">Compte</h2>
+                    <p class="m-0 text-sm text-gray-500">Informations gérées par l'administration.</p>
+                  </div>
+                </div>
+                <span class="inline-flex w-fit items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700">
+                  <mat-icon class="!h-[14px] !w-[14px] !text-[14px] !leading-[14px]">lock</mat-icon>
+                  Lecture seule
+                </span>
+              </div>
+              <dl class="m-0 grid grid-cols-1 sm:grid-cols-2">
+                @for (champ of [
+                  { label: 'Prénom', valeur: user.firstname, icon: 'person_outline' },
+                  { label: 'Nom', valeur: user.lastname, icon: 'person_outline' },
+                  { label: 'E-mail', valeur: user.email, icon: 'mail_outline' },
+                  { label: 'Rôle', valeur: roleLabel, icon: 'verified_user' },
+                  { label: 'Fonction', valeur: user.fonction?.libelle, icon: 'work_outline' },
+                  { label: 'Catégorie', valeur: user.categorie?.libelle, icon: 'category' }
+                ]; track champ.label) {
+                  <div class="flex items-center gap-[0.75rem] [border-bottom:1px_solid_rgb(243_244_246)] px-[1.25rem] py-3.5 sm:px-6 sm:[&:nth-last-child(-n+2)]:[border-bottom:0] [&:last-child]:[border-bottom:0]">
+                    <mat-icon class="!h-5 !w-5 shrink-0 !text-[20px] !leading-5 text-gray-400">{{ champ.icon }}</mat-icon>
+                    <div class="min-w-0">
+                      <dt class="text-xs text-gray-500">{{ champ.label }}</dt>
+                      <dd class="m-0 truncate text-sm font-medium text-gray-900" [title]="champ.valeur || ''">{{ champ.valeur || '—' }}</dd>
+                    </div>
+                  </div>
+                }
+              </dl>
+            </div>
+          }
+
+          <!-- ---------- Sécurité ---------- -->
+          @case ('securite') {
+            <div class="rounded-2xl border border-gray-200/70 bg-white shadow-sm">
+              <div class="flex flex-col gap-[1rem] px-[1.25rem] py-[1.25rem] sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                <div class="flex items-start gap-[0.75rem]">
+                  <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#245363]/10 text-[#245363]">
+                    <mat-icon>key</mat-icon>
+                  </span>
+                  <div>
+                    <h2 class="m-0 text-base font-semibold text-gray-900">Mot de passe</h2>
+                    <p class="m-0 text-sm text-gray-500">Utilisez un mot de passe que vous n'utilisez nulle part ailleurs.</p>
+                  </div>
+                </div>
+                <button type="button" (click)="changerMotDePasse()"
+                        class="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-[#245363] px-[1rem] py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#1b404c] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#245363]/25">
+                  <mat-icon class="!h-[18px] !w-[18px] !text-[18px] !leading-[18px]">lock_reset</mat-icon>
+                  Changer le mot de passe
+                </button>
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-gray-200/70 bg-white shadow-sm">
+              <div class="flex items-start justify-between gap-[0.75rem] [border-bottom:1px_solid_rgb(243_244_246)] px-[1.25rem] py-[1rem] sm:px-6">
+                <div class="flex items-start gap-[0.75rem]">
+                  <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#245363]/10 text-[#245363]">
+                    <mat-icon class="!h-5 !w-5 !text-[20px] !leading-5">history</mat-icon>
+                  </span>
+                  <div>
+                    <h2 class="m-0 text-base font-semibold text-gray-900">Historique des connexions</h2>
+                    <p class="m-0 text-sm text-gray-500">{{ connexionsTotal }} connexion{{ connexionsTotal > 1 ? 's' : '' }} enregistrée{{ connexionsTotal > 1 ? 's' : '' }}</p>
+                  </div>
+                </div>
+                <button type="button" (click)="chargerConnexions(connexionsPage)" [disabled]="loadingConnexions"
+                        title="Actualiser" aria-label="Actualiser l'historique"
+                        class="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 transition hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50">
+                  <mat-icon class="!h-5 !w-5 !text-[20px] !leading-5" [class.animate-spin]="loadingConnexions">refresh</mat-icon>
+                </button>
+              </div>
+
+              @if (echecsRecents > 0 && connexionsPage === 0) {
+                <div class="mx-[1.25rem] mt-[1rem] flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-[0.75rem] py-2.5 text-sm text-amber-800 sm:mx-6">
+                  <mat-icon class="!h-5 !w-5 shrink-0 !text-[20px] !leading-5">warning_amber</mat-icon>
+                  <span>
+                    {{ echecsRecents }} tentative{{ echecsRecents > 1 ? 's' : '' }} échouée{{ echecsRecents > 1 ? 's' : '' }} récemment.
+                    Si ce n'était pas vous, changez votre mot de passe et prévenez un administrateur.
+                  </span>
+                </div>
+              }
+
+              @if (loadingConnexions && connexions.length === 0) {
+                <div class="space-y-3 px-[1.25rem] py-[1.25rem] sm:px-6">
+                  @for (i of [1, 2, 3]; track i) {
+                    <div class="h-10 animate-pulse rounded-lg bg-gray-100"></div>
+                  }
+                </div>
+              } @else if (connexions.length === 0) {
+                <div class="px-6 py-10 text-center text-sm text-gray-500">Aucune connexion enregistrée.</div>
+              } @else {
+                <ul class="m-0 list-none px-[1.25rem] py-2 sm:px-6" [class.opacity-50]="loadingConnexions">
+                  @for (c of connexions; track c.id; let premier = $first) {
+                    <li class="flex items-center gap-[0.75rem] [border-bottom:1px_solid_rgb(243_244_246)] py-[0.75rem] last:[border-bottom:0]">
+                      <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+                            [ngClass]="c.type === 'CONNEXION_REUSSIE' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'">
+                        <mat-icon class="!h-5 !w-5 !text-[20px] !leading-5">{{ c.type === 'CONNEXION_REUSSIE' ? 'login' : 'gpp_maybe' }}</mat-icon>
+                      </span>
+                      <div class="min-w-0 flex-1">
+                        <div class="flex flex-wrap items-center gap-2">
+                          <span class="text-sm font-medium text-gray-900">
+                            {{ c.type === 'CONNEXION_REUSSIE' ? 'Connexion réussie' : 'Tentative échouée' }}
+                          </span>
+                          @if (premier && connexionsPage === 0 && c.type === 'CONNEXION_REUSSIE') {
+                            <span class="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">Session actuelle</span>
+                          }
+                        </div>
+                        @if (c.type !== 'CONNEXION_REUSSIE') {
+                          <div class="truncate text-xs text-gray-500" [title]="c.details">{{ c.details }}</div>
+                        }
+                      </div>
+                      <div class="shrink-0 text-right">
+                        <div class="text-sm text-gray-700">{{ c.date | date: 'dd/MM/yyyy' }}</div>
+                        <div class="text-xs text-gray-400">{{ c.date | date: 'HH:mm' }}</div>
+                      </div>
+                    </li>
+                  }
+                </ul>
+                @if (connexionsPages > 1) {
+                  <div class="flex items-center justify-between gap-2 [border-top:1px_solid_rgb(243_244_246)] px-[1.25rem] py-[0.75rem] sm:px-6">
+                    <button type="button" (click)="chargerConnexions(connexionsPage - 1)"
+                            [disabled]="connexionsPage === 0 || loadingConnexions"
+                            class="inline-flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-[0.75rem] py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40">
+                      <mat-icon class="!h-[18px] !w-[18px] !text-[18px] !leading-[18px]">chevron_left</mat-icon> Précédent
+                    </button>
+                    <span class="text-sm text-gray-500">Page {{ connexionsPage + 1 }} sur {{ connexionsPages }}</span>
+                    <button type="button" (click)="chargerConnexions(connexionsPage + 1)"
+                            [disabled]="connexionsPage + 1 >= connexionsPages || loadingConnexions"
+                            class="inline-flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-[0.75rem] py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40">
+                      Suivant <mat-icon class="!h-[18px] !w-[18px] !text-[18px] !leading-[18px]">chevron_right</mat-icon>
+                    </button>
+                  </div>
+                }
+              }
+            </div>
+          }
+
+          <!-- ---------- Mes projets ---------- -->
+          @case ('projets') {
+            @if (isAdmin) {
+              <div class="flex flex-col gap-[0.75rem] rounded-2xl border border-[#245363]/20 bg-gradient-to-r from-[#245363]/[0.06] to-transparent p-[1.25rem] sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex items-start gap-[0.75rem]">
+                  <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#245363] text-white">
+                    <mat-icon class="!h-5 !w-5 !text-[20px] !leading-5">admin_panel_settings</mat-icon>
+                  </span>
+                  <div>
+                    <div class="text-sm font-semibold text-gray-900">Accès administrateur</div>
+                    <div class="text-sm text-gray-600">En tant que {{ roleLabel }}, vous pouvez ouvrir n'importe quel projet de la plateforme.</div>
+                  </div>
+                </div>
+                <button type="button" (click)="ouvrirSelectionAdmin()"
+                        class="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-[#245363] px-[1rem] py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#1b404c]">
+                  <mat-icon class="!h-[18px] !w-[18px] !text-[18px] !leading-[18px]">swap_horiz</mat-icon>
+                  Choisir un projet
+                </button>
+              </div>
+            }
+
+            @if (loadingProjets) {
+              <div class="grid grid-cols-1 gap-[1rem] md:grid-cols-2 xl:grid-cols-3">
+                @for (i of [1, 2, 3]; track i) {
+                  <div class="h-48 animate-pulse rounded-2xl bg-gray-200"></div>
+                }
+              </div>
+            } @else if (projets.length === 0) {
+              <div class="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-12 text-center">
+                <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+                  <mat-icon class="!h-7 !w-7 !text-[28px] !leading-7">folder_off</mat-icon>
+                </span>
+                <p class="m-0 mt-[0.75rem] font-medium text-gray-900">Aucun projet affecté</p>
+                <p class="m-0 mt-1 text-sm text-gray-500">
+                  @if (isAdmin) { Utilisez « Choisir un projet » pour ouvrir un projet de la plateforme. }
+                  @else { Contactez un administrateur pour être ajouté à un projet. }
+                </p>
+              </div>
+            } @else {
+              <div class="grid grid-cols-1 gap-[1rem] md:grid-cols-2 xl:grid-cols-3">
+                @for (p of projets; track p.id) {
+                  <article class="flex flex-col overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-md"
+                           [ngClass]="estProjetActif(p) ? 'border-[#245363] ring-2 ring-[#245363]/20' : 'border-gray-200/70'">
+                    <div class="h-1.5" [style.background]="projetCouleur(p)"></div>
+                    <div class="flex flex-1 flex-col gap-[0.75rem] p-[1rem]">
+                      <div class="flex items-start gap-[0.75rem]">
+                        @if (projetImage(p); as img) {
+                          <img [src]="img" alt="" class="h-12 w-12 shrink-0 rounded-xl border border-gray-200 object-cover" />
+                        } @else {
+                          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-white"
+                                [style.background]="projetCouleur(p)">
+                            <mat-icon>folder</mat-icon>
+                          </span>
+                        }
+                        <div class="min-w-0 flex-1">
+                          <h3 class="m-0 truncate text-sm font-semibold text-gray-900" [title]="p.libelle">{{ p.libelle }}</h3>
+                          @if (p.status) { <div class="mt-0.5 text-xs text-gray-500">{{ p.status }}</div> }
+                        </div>
+                        @if (estProjetActif(p)) {
+                          <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Actif
+                          </span>
+                        }
+                      </div>
+                      @if (p.description) {
+                        <p class="m-0 line-clamp-2 text-sm text-gray-600">{{ p.description }}</p>
+                      }
+                      <div class="flex flex-wrap gap-1.5">
+                        @for (r of p.roles; track r) {
+                          <span class="rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700">{{ r }}</span>
+                        }
+                      </div>
+                      <div class="mt-auto pt-1">
+                        @if (estProjetActif(p)) {
+                          <div class="flex items-center justify-center gap-1.5 rounded-lg bg-gray-50 py-2 text-sm font-medium text-gray-500">
+                            <mat-icon class="!h-[18px] !w-[18px] !text-[18px] !leading-[18px]">check</mat-icon> Projet en cours
+                          </div>
+                        } @else {
+                          <button type="button" (click)="basculerVers(p)"
+                                  class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[#245363] bg-white px-[1rem] py-2 text-sm font-medium text-[#245363] transition hover:bg-[#245363] hover:text-white">
+                            <mat-icon class="!h-[18px] !w-[18px] !text-[18px] !leading-[18px]">swap_horiz</mat-icon>
+                            Basculer vers ce projet
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  </article>
+                }
+              </div>
+            }
+          }
+        }
+      </section>
+    </div>
+  }
+</div>

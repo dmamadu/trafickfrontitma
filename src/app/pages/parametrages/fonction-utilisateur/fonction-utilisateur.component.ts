@@ -156,7 +156,7 @@ export class FonctionUtilisateurComponent implements OnInit {
       AddFonctionUtilisateurComponent,
       "45rem",
       "edit",
-      "20rem",
+      "auto",
       information,
       "",
       () => {
@@ -171,13 +171,13 @@ export class FonctionUtilisateurComponent implements OnInit {
     console.log(id);
     console.log("====================================");
     this.snackbar
-      .showConfirmation("Voulez-vous vraiment supprimer cette fonction?")
+      .showConfirmation("Voulez-vous vraiment supprimer cette fonction ?")
       .then((result) => {
         if (result["value"] == true) {
           this.deleteUser = true;
           this.currentIndex = information;
           this.showLoader = "isShow";
-          const message = "fonction  supprimée";
+          const message = "Fonction supprimée.";
           this.coreService.deleteItem(id, "fonctions").subscribe(
             (resp) => {
               this.showLoader = "isNotShow";
@@ -185,7 +185,7 @@ export class FonctionUtilisateurComponent implements OnInit {
                 this.getFonctions();
               }
               this.snackbar.openSnackBar(
-                "fonction  supprimée avec succés",
+                "Fonction supprimée avec succès.",
                 "OK",
                 ["mycssSnackbarGreen"]
               );
@@ -204,7 +204,7 @@ export class FonctionUtilisateurComponent implements OnInit {
       AddFonctionUtilisateurComponent,
       "45rem",
       "new",
-      "20rem",
+      "auto",
       this.datas,
       "",
       () => {

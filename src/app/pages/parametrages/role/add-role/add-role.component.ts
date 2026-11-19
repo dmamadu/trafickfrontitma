@@ -1,3 +1,5 @@
+import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 import {
   ChangeDetectorRef,
   Component,
@@ -31,6 +33,7 @@ import { SnackBarService } from "src/app/shared/core/snackBar.service";
   selector: "app-add-role",
   standalone: true,
   imports: [
+    DialogHeaderComponent,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
@@ -42,7 +45,7 @@ import { SnackBarService } from "src/app/shared/core/snackBar.service";
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
-    { provide: MatPaginatorIntl },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     SnackBarService,
     MatDatepickerModule,
   ],
@@ -54,7 +57,7 @@ export class AddRoleComponent {
   id: string;
   initForm: UntypedFormGroup;
   labelButton: string;
-  suffixe: string = " un role";
+  suffixe: string = "un rôle";
   loader: boolean;
   action: string;
   loaderss = false;
@@ -80,7 +83,7 @@ export class AddRoleComponent {
 
     this.action = _data?.action;
     this.canAdd = _data.canAdd;
-    this.dialogTitle = this.labelButton + this.suffixe;
+    this.dialogTitle = `${this.labelButton.trim()} ${this.suffixe}`;
   }
 
   currentUser: any;
@@ -121,7 +124,7 @@ export class AddRoleComponent {
                   this.loader = false;
                   this.matDialogRef.close(resp);
                   this.snackbar.openSnackBar(
-                    "Role  modifié avec succés",
+                    "Rôle modifié avec succès.",
                     "OK",
                     ["mycssSnackbarGreen"]
                   );
@@ -172,7 +175,7 @@ export class AddRoleComponent {
               (resp) => {
                 if (resp["responseCode"] == 201) {
                   this.snackbar.openSnackBar(
-                    "Role  ajoutée avec succés",
+                    "Rôle ajouté avec succès.",
                     "OK",
                     ["mycssSnackbarGreen"]
                   );

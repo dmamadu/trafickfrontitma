@@ -1,7 +1,8 @@
 /* ── Variables ───────────────────────────────────────────────────────────── */
 :host {
-  --accent: #D45C00;
-  --accent-light: rgba(212, 92, 0, 0.08);
+  /* Charte INVODIS : couleur principale #245363 (voir src/styles/invodis-ui.scss) */
+  --accent: var(--inv-primary, #245363);
+  --accent-light: var(--inv-primary-50, #eef4f6);
   --text-primary: #1a202c;
   --text-muted: #94a3b8;
   --border: #e9edf3;
@@ -40,7 +41,7 @@
   height: 42px;
   border-radius: 12px;
   background: var(--accent-light);
-  border: 1.5px solid rgba(212, 92, 0, 0.18);
+  border: 1px solid var(--inv-primary-100, #dce8ec);
   flex-shrink: 0;
 }
 
@@ -56,7 +57,7 @@
 }
 
 .pha-title {
-  font-size: 1rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-primary);
   margin: 0;
@@ -113,8 +114,9 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.45rem 1rem;
-  font-size: 0.82rem;
+  min-height: 40px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
   font-weight: 600;
   border-radius: 9px;
   border: none;
@@ -130,35 +132,35 @@
 .pha-btn--primary {
   background: var(--accent);
   color: #fff;
-  box-shadow: 0 3px 10px rgba(212, 92, 0, 0.25);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
 }
 
 .pha-btn--primary:hover {
-  background: #bf5200;
-  box-shadow: 0 5px 14px rgba(212, 92, 0, 0.35);
-  transform: translateY(-1px);
+  background: var(--inv-primary-700, #1b404c);
 }
 
+/* Action secondaire (import, export…) : bouton à contour */
 .pha-btn--secondary {
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--inv-text, #374151);
+  border: 1px solid #d1d5db;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
 }
 
 .pha-btn--secondary:hover {
-  background: #e2e8f0;
-  transform: translateY(-1px);
+  background: #f9fafb;
+  color: var(--inv-ink, #111827);
 }
 
+/* Pas de vert dans la charte : « success » = action principale */
 .pha-btn--success {
-  background: #059669;
+  background: var(--accent);
   color: #fff;
-  box-shadow: 0 3px 10px rgba(5, 150, 105, 0.25);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
 }
 
 .pha-btn--success:hover {
-  background: #047857;
-  transform: translateY(-1px);
+  background: var(--inv-primary-700, #1b404c);
 }
 
 .pha-btn--danger {
@@ -172,14 +174,15 @@
   transform: translateY(-1px);
 }
 
+/* Orange de la charte */
 .pha-btn--warning {
-  background: #d97706;
+  background: var(--inv-secondary, #d45c00);
   color: #fff;
-  box-shadow: 0 3px 10px rgba(217, 119, 6, 0.25);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
 }
 
 .pha-btn--warning:hover {
-  background: #b45309;
+  background: var(--inv-secondary-700, #a84900);
   transform: translateY(-1px);
 }
 
@@ -217,7 +220,7 @@
 
 .pha-search:focus-within {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(212, 92, 0, 0.1);
+  box-shadow: 0 0 0 4px rgba(36, 83, 99, 0.15);
 }
 
 .pha-search-icon {
@@ -279,4 +282,18 @@
   .pha-search {
     max-width: 100%;
   }
+}
+/* Icône Material dans un bouton */
+.pha-btn .pha-btn-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  line-height: 18px;
+}
+
+/* Sous-titre facultatif */
+.pha-subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--inv-muted, #6b7280);
 }

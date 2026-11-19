@@ -9,6 +9,7 @@
       </div>
       <div class="pha-text">
         <h4 class="pha-title">{{ title }}</h4>
+        <p *ngIf="subtitle" class="pha-subtitle">{{ subtitle }}</p>
         <ol class="pha-breadcrumb">
           <li
             *ngFor="let item of breadcrumbItems; let last = last"
@@ -29,7 +30,10 @@
         [class]="'pha-btn pha-btn--' + (action.type || 'primary')"
         [disabled]="action.disabled"
         (click)="handleAction(action.action)">
-        <i *ngIf="action.icon" [class]="action.icon"></i>
+        <ng-container *ngIf="action.icon">
+          <i *ngIf="estClasseIcone(action.icon); else iconeMaterial" [class]="action.icon"></i>
+          <ng-template #iconeMaterial><mat-icon class="pha-btn-icon">{{ nomIconeMaterial(action.icon) }}</mat-icon></ng-template>
+        </ng-container>
         <span>{{ action.label }}</span>
       </button>
     </div>

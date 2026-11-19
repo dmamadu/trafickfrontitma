@@ -88,4 +88,32 @@ getAvancementByProjectId(projectId: number): Observable<any> {
     const params = new HttpParams().set('projectId', projectId.toString());
     return this.http.get<any>(url, { params });
 }
+
+/** Tableau de bord Baseline. zone = commune ; categorie = placeAffaire | agricole | habitat. */
+getBaselineStats(projectId: number, filtres: { zone?: string; categorie?: string } = {}): Observable<any> {
+    let params = new HttpParams().set('projectId', projectId.toString());
+    if (filtres.zone) params = params.set('zone', filtres.zone);
+    if (filtres.categorie) params = params.set('categorie', filtres.categorie);
+    return this.http.get<any>(`${this.url}stats/baseline`, { params });
+}
+
+/** Tableau de bord M/O. zone = commune ; debut/fin au format yyyy-MM-dd (filtrent paiements et finalisations). */
+getMiseEnOeuvreStats(projectId: number, filtres: { zone?: string; debut?: string; fin?: string } = {}): Observable<any> {
+    let params = new HttpParams().set('projectId', projectId.toString());
+    if (filtres.zone) params = params.set('zone', filtres.zone);
+    if (filtres.debut) params = params.set('debut', filtres.debut);
+    if (filtres.fin) params = params.set('fin', filtres.fin);
+    return this.http.get<any>(`${this.url}stats/mise-en-oeuvre`, { params });
+}
+
+/** Dossiers d'une étape du processus d'entente (paginé, plus anciens dans l'étape en premier). */
+getDossiersEtape(projectId: number, etape: string, zone?: string, page = 0, size = 5): Observable<any> {
+    let params = new HttpParams()
+        .set('projectId', projectId.toString())
+        .set('etape', etape)
+        .set('page', page.toString())
+        .set('size', size.toString());
+    if (zone) params = params.set('zone', zone);
+    return this.http.get<any>(`${this.url}stats/mise-en-oeuvre/dossiers`, { params });
+}
 }

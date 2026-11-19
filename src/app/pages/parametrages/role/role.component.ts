@@ -183,7 +183,7 @@ export class RoleComponent implements OnInit {
       AddRoleComponent,
       "35rem",
       "edit",
-      "20rem",
+      "auto",
       information,
       "",
       () => {
@@ -195,13 +195,13 @@ export class RoleComponent implements OnInit {
   //cette fonction permet de supprimer
   supprimerItems(id, information) {
     this.snackbar
-      .showConfirmation("Voulez-vous vraiment supprimer ce role?")
+      .showConfirmation("Voulez-vous vraiment supprimer ce rôle ?")
       .then((result) => {
         if (result["value"] == true) {
           this.deleteUser = true;
           this.currentIndex = information;
           this.showLoader = "isShow";
-          const message = "role  supprimé";
+          const message = "Rôle supprimé.";
           this.coreService.deleteItem(id, "roles/deleteRole").subscribe(
             (resp) => {
               this.showLoader = "isNotShow";
@@ -209,7 +209,7 @@ export class RoleComponent implements OnInit {
                 this.getRole();
               }
 
-              this.snackbar.openSnackBar("role  supprimé avec succés", "OK", [
+              this.snackbar.openSnackBar("Rôle supprimé avec succès.", "OK", [
                 "mycssSnackbarGreen",
               ]);
             },
@@ -227,7 +227,7 @@ export class RoleComponent implements OnInit {
       AddRoleComponent,
       "35rem",
       "new",
-      "20rem",
+      "auto",
       this.datas,
       "",
       () => {

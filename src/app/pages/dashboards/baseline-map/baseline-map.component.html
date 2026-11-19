@@ -1,0 +1,33 @@
+<div class="bm">
+  <div class="bm-types" role="group" aria-label="Type de carte">
+    <button type="button" [class.is-active]="mapType === 'roadmap'" (click)="setType('roadmap')">Plan</button>
+    <button type="button" [class.is-active]="mapType === 'satellite'" (click)="setType('satellite')">Satellite</button>
+  </div>
+
+  <google-map *ngIf="mapsReady" height="100%" width="100%" [center]="center" [zoom]="zoom" [options]="options" [mapTypeId]="mapType">
+    <map-polygon *ngIf="emprise.length" [paths]="emprise" [options]="empriseOptions"></map-polygon>
+    <map-polyline *ngIf="emprise.length" [path]="empriseFermee" [options]="empriseLigneOptions"></map-polyline>
+    <map-marker
+      #marker="mapMarker"
+      *ngFor="let p of points"
+      [position]="{ lat: p.lat, lng: p.lng }"
+      [options]="icone(p)"
+      (mapClick)="ouvrir(marker, p)"
+    ></map-marker>
+    <map-info-window>
+      <div class="bm-info" *ngIf="selection">
+        <strong>{{ selection.prenom }} {{ selection.nom }}</strong>
+        <span>{{ selection.codePap }} · {{ libellesCategorie[selection.categorie] || selection.categorie }}</span>
+        <span>{{ selection.zone || '—' }} · {{ statutLabel(selection.statut) }}</span>
+      </div>
+    </map-info-window>
+  </google-map>
+
+  <div class="bm-empty" *ngIf="mapsReady && !points.length">Aucune PAP géolocalisée pour ce filtre.</div>
+
+  <div class="bm-legend">
+    <strong>Légende</strong>
+    <span *ngFor="let s of statuts"><i [style.background]="s.color"></i>{{ s.label }}</span>
+    <span><i class="bm-legend__line"></i>Emprise des PAP</span>
+  </div>
+</div>

@@ -1,3 +1,4 @@
+import { isExtensionAccepted } from "src/app/shared/utils/file-extension";
 import { ChangeDetectorRef, Component, Inject, ViewChild } from "@angular/core";
 import {
   UntypedFormBuilder,
@@ -78,7 +79,13 @@ export class AddUserComponent {
       this.labelButton = "Ajouter ";
     } else if (_data?.action == "edit") {
       this.labelButton = "Modifier ";
-      this.imageToff = _data.data.imageUrl;
+      // imageUrl peut être une URL complète (anciens comptes) ou un simple nom de fichier MinIO
+      const imageUrl: string = _data.data.imageUrl;
+      this.imageToff = imageUrl
+        ? imageUrl.startsWith("http")
+          ? imageUrl
+          : this.urlImage + imageUrl
+        : undefined;
        this.id = _data.data.id;
       this.initForms(_data.data);
     }
@@ -301,7 +308,7 @@ export class AddUserComponent {
       const index = file.name.lastIndexOf(".");
       const strsubstring = file.name.substring(index, file.name.length);
       const ext = strsubstring;
-      if (accept.indexOf(strsubstring) === -1) {
+      if (!isExtensionAccepted(accept, strsubstring)) {
         this.snackbar.openSnackBar(
           "Ce fichier " + file.name + " n'est " + extension,
           "OK",
@@ -334,7 +341,8 @@ export class AddUserComponent {
       (resp) => {
         if (resp) {
           console.log(resp);
-          this.imageToff = `${this.urlImage + resp["data"]}`;
+          // /fileMinios/upload renvoie { code, message, fileName } (pas de champ "data")
+          this.imageToff = `${this.urlImage + resp["fileName"]}`;
           this.initForm.get("imageUrl").setValue(this.imageToff);
           this.snackbar.openSnackBar("Image ajoutée avec succés", "OK", [
             "mycssSnackbarGreen",

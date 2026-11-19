@@ -1,170 +1,209 @@
-/* Conteneur principal */
-.table-container {
+// Tableau partagé (<tableau>, utilisé par ~30 listes) — charte INVODIS.
+// Variables du socle : src/styles/invodis-ui.scss (--inv-*).
+
+:host {
+  display: block;
+}
+
+/* ---------- Carte englobante ---------- */
+.inv-table-card {
+  overflow: hidden;
+  border: 1px solid var(--inv-line, #e5e7eb);
+  border-radius: var(--inv-radius-lg, 16px);
+  background: #fff;
+  box-shadow: var(--inv-shadow-sm, 0 1px 2px rgba(16, 24, 40, 0.05));
+}
+
+.inv-table-scroll {
   width: 100%;
   overflow-x: auto;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1rem;
 }
 
-/* Table */
-.mat-table {
+/* ---------- Tableau ---------- */
+.inv-table {
   width: 100%;
+  min-width: 640px;
   border-collapse: separate;
   border-spacing: 0;
-  font-family: inherit;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
-/* En-têtes de colonne */
-.mat-header-cell {
-  background-color: #f8f8f8;
-  color: black !important;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 12px 16px;
-  border-bottom: 3px solid #4CAF50;
-  position: sticky;
-  top: 0;
-  z-index: 2;
+.inv-tr-head {
+  height: 46px !important;
+  background: #f9fafb !important;
 }
 
-/* Cellules */
-.mat-cell {
-  padding: 12px 16px;
-  border-bottom: 1px solid #eaeaea;
-  font-size: 14px;
-  color: #333;
+.inv-th {
+  padding: 0 16px !important;
+  border-bottom: 1px solid var(--inv-line, #e5e7eb) !important;
+  background: #f9fafb !important;
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--inv-muted, #6b7280) !important;
 }
 
-/* Ligne d'en-tête */
-.mat-header-row {
-  height: 48px;
+.inv-tr {
+  height: 56px !important;
+  transition: background-color 0.12s ease;
+
+  &:hover {
+    background: var(--inv-primary-50, #eef4f6) !important;
+  }
+
+  &.is-selected {
+    background: #e6f0f3 !important;
+  }
+
+  &:last-child .inv-td {
+    border-bottom: 0 !important;
+  }
 }
 
-/* Lignes de données */
-.mat-row {
-  height: 52px;
-  transition: background-color 0.2s ease;
+.inv-td {
+  max-width: 280px;
+  padding: 0 16px !important;
+  overflow: hidden;
+  border-bottom: 1px solid var(--inv-line-soft, #f1f3f5) !important;
+  font-size: 0.875rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--inv-text, #374151);
 }
 
-.mat-row:hover {
-  background-color: rgba(212, 92, 0, 0.05) !important;
+.inv-th--select,
+.inv-td--select {
+  width: 52px;
+  padding-right: 0 !important;
 }
 
-/* Colonne Actions */
-.action-cell {
-  padding: 8px 16px !important;
+.inv-th--actions,
+.inv-td--actions {
+  width: 1%;
+  text-align: right;
 }
 
-.action-buttons {
-  display: flex;
-  gap: 8px;
+/* Flèche de tri : couleur principale de la charte */
+:host ::ng-deep .mat-sort-header-arrow {
+  color: var(--inv-primary, #245363) !important;
 }
 
-.action-buttons button {
-  transition: transform 0.2s;
-  width: 32px;
-  height: 32px;
+/* ---------- Boutons d'action ---------- */
+.inv-actions {
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-.action-buttons button:hover:not([disabled]) {
-  transform: scale(1.1);
-  background: rgba(212, 92, 0, 0.1);
-}
-
-/* Contenu des cellules */
-.cell-content {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 250px;
-}
-
-/* Badges */
-.badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
-  display: inline-block;
-}
-
-.badge-green {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.badge-orange {
-  background-color: #D45C00;
-  color: white;
-}
-
-/* Tri */
-.mat-sort-header-arrow {
-  color: #D45C00 !important;
-}
-
-/* Message vide */
-.empty-message {
-  color: #D45C00;
-  text-align: center;
-  padding: 20px;
-  font-weight: 500;
-}
-
-/* Pagination */
-.invodis-paginator {
-  background: transparent;
-  border-top: 1px solid #eaeaea;
-  padding: 12px 16px;
-}
-
-.invodis-paginator .mat-paginator-container {
   justify-content: flex-end;
+  gap: 2px;
 }
 
-.invodis-paginator .mat-paginator-page-size-label,
-.invodis-paginator .mat-paginator-range-label {
-  color: #666;
-}
+.inv-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--inv-muted, #6b7280);
+  cursor: pointer;
+  transition: background-color 0.15s, transform 0.15s;
 
-.invodis-paginator .mat-select-value,
-.invodis-paginator .mat-paginator-navigation-previous,
-.invodis-paginator .mat-paginator-navigation-next {
-  color: black;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .mat-header-cell, .mat-cell {
-    padding: 10px 12px;
-    font-size: 13px;
+  i {
+    font-size: 1.15rem;
+    line-height: 1;
   }
 
-  .cell-content {
-    max-width: 150px;
+  &:hover:not(:disabled) {
+    background: #f3f4f6;
   }
 
-  .action-buttons {
-    gap: 4px;
+  &:focus-visible {
+    outline: 2px solid var(--inv-primary, #245363);
+    outline-offset: 1px;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
   }
 }
-// Styles pour la sélection multiple
+
+.inv-menu-icon {
+  margin-right: 10px;
+  font-size: 1.1rem;
+  vertical-align: middle;
+}
+
+/* ---------- Badges (oui/non, statuts, badgeClass des écrans) ---------- */
+.inv-td span.badge,
+.inv-td span[class*="badge-"] {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.badge-success,
+.badge-green {
+  background: var(--inv-success-bg, #ecfdf3) !important;
+  color: var(--inv-success, #15803d) !important;
+}
+
+.badge-danger {
+  background: var(--inv-danger-bg, #fef2f2) !important;
+  color: var(--inv-danger, #dc2626) !important;
+}
+
+.badge-orange,
+.badge-warning {
+  background: var(--inv-secondary-50, #fdf3eb) !important;
+  color: var(--inv-secondary-700, #a84900) !important;
+}
+
+.badge-blue,
+.badge-info {
+  background: var(--inv-primary-50, #eef4f6) !important;
+  color: var(--inv-primary, #245363) !important;
+}
+
+/* ---------- Barre de sélection multiple ---------- */
 .bulk-action-bar {
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-  border: 1px solid #bfdbfe;
-  animation: slideIn 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--inv-primary-100, #dce8ec);
+  background: var(--inv-primary-50, #eef4f6);
+  animation: slideIn 0.25s ease;
+}
+
+.bulk-action-bar__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--inv-primary, #245363);
+
+  i {
+    font-size: 1.1rem;
+  }
 }
 
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-6px);
   }
   to {
     opacity: 1;
@@ -172,86 +211,31 @@
   }
 }
 
-// Styles pour les lignes sélectionnées
-.bg-blue-50 {
-  background-color: #eff6ff !important;
-  border-left: 3px solid #3b82f6;
+/* ---------- État vide ---------- */
+.inv-empty__icon i {
+  font-size: 1.75rem;
 }
 
-// Styles pour le tableau
-.enteteTable {
-  background-color: #f8fafc;
-  font-weight: 600;
-  color: #374151;
+/* ---------- Pagination ---------- */
+.inv-paginator {
+  border-top: 1px solid var(--inv-line-soft, #f1f3f5);
+  background: transparent !important;
+  color: var(--inv-muted, #6b7280);
 }
 
-.contentTable {
-  color: #4b5563;
+:host ::ng-deep .inv-paginator .mat-mdc-paginator-container {
+  min-height: 52px;
+  padding: 0 12px;
 }
 
-// Styles pour les badges
-.badge-blue {
-  background-color: #dbeafe;
-  color: #1e40af;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.badge-success {
-  background-color: #dcfce7;
-  color: #166534;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-// Styles responsives
-@media (max-width: 768px) {
-  .bulk-action-bar {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
+/* ---------- Petits écrans ---------- */
+@media (max-width: 767.98px) {
+  .inv-th,
+  .inv-td {
+    padding: 0 12px !important;
   }
-  
-  .enteteTable,
-  .contentTable {
-    padding: 0.5rem;
-    font-size: 0.875rem;
-  }
-}
 
-// Animation pour les checkboxes
-mat-checkbox {
-  &.mat-checkbox-checked {
-    ::ng-deep {
-      .mat-checkbox-background {
-        background-color: #3b82f6 !important;
-      }
-      .mat-checkbox-checkmark-path {
-        stroke: #ffffff !important;
-      }
-    }
-  }
-}
-
-// Style pour les lignes sélectionnées
-.bg-blue-50 {
-  background-color: #eff6ff !important;
-}
-
-// Style pour la barre d'actions de suppression multiple
-.bulk-action-bar {
-  transition: all 0.3s ease;
-}
-
-// Animation pour les checkboxes
-mat-checkbox {
-  &.mat-checkbox-checked {
-    ::ng-deep .mat-checkbox-background {
-      background-color: #3b82f6 !important;
-    }
+  .inv-tr {
+    height: 52px !important;
   }
 }

@@ -1,3 +1,4 @@
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 import {
   ChangeDetectorRef,
   Component,
@@ -59,7 +60,7 @@ import { PapFormComponent } from "../app-form/app-form.component";
       },
       DatePipe,
       { provide: MAT_DIALOG_DATA, useValue: {} },
-      { provide: MatPaginatorIntl },
+      { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
       {
         provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
         useValue: { appearance: "outline" },

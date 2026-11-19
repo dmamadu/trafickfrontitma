@@ -68,7 +68,8 @@
               "node_modules/slick-carousel/slick/slick-theme.scss",
               "src/styles/vendors.scss",
               "src/styles/styles.scss",
-              "./node_modules/maplibre-gl/dist/maplibre-gl.css"
+              "./node_modules/maplibre-gl/dist/maplibre-gl.css",
+              "src/styles/invodis-ui.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

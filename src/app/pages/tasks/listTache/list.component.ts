@@ -1,3 +1,4 @@
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 import { CommonModule, DatePipe } from "@angular/common";
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import {
@@ -56,7 +57,7 @@ import { STATUT_OPTIONS } from "../tasks.constants";
       useValue: [],
     },
     { provide: MAT_DIALOG_DATA, useValue: {} },
-    { provide: MatPaginatorIntl },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { appearance: "outline" },

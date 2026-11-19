@@ -1,32 +1,27 @@
-<div>
-  <app-page-title title="Liste des utilisateurs" [breadcrumbItems]="breadCrumbItems"></app-page-title>
-</div>
-<div class=" row mb-2">
-  <div class="col-sm">
-    <div class="search-box me-2 d-inline-block">
-      <div class="position-relative">
-        <input type="text" class="form-control" autocomplete="off" id="searchTableList" placeholder="Search..."
-          (input)="filterTable($event)">
-        <i class="bx bx-search-alt search-icon"></i>
-      </div>
-    </div>
+<header class="inv-page-header">
+  <div>
+    <h1 class="inv-page-header__title">Utilisateurs</h1>
+    <p class="inv-page-header__subtitle">Comptes ayant accès à la plateforme, leurs rôles et leur statut.</p>
   </div>
-  <div class="col-sm-auto">
-    <div class="d-flex flex-wrap gap-2">
-      <button *appHasPermission="'UTILISATEURS_CREER'" type="submit" class="btn bgPrimaire" (click)="addItems()"> <i class="mdi mdi-plus me-1"></i> Ajouter un
-        utilisateur</button>
+  <div class="inv-page-header__actions">
+    <button *appHasPermission="'UTILISATEURS_CREER'" type="button" class="inv-btn inv-btn--primary" (click)="addItems()">
+      <i class="bx bx-plus"></i> Ajouter un utilisateur
+    </button>
+  </div>
+</header>
 
+<div class="inv-toolbar">
+  <div class="search-box">
+    <div class="position-relative">
+      <input type="text" class="form-control" autocomplete="off" id="searchTableList" placeholder="Rechercher un utilisateur…"
+        aria-label="Rechercher un utilisateur" (input)="filterTable($event)">
+      <i class="bx bx-search-alt search-icon"></i>
     </div>
-
   </div>
 </div>
 
 <app-loader-custom *ngIf="loadData"></app-loader-custom>
 
-
-
-<div style="z-index: 0" class="pt-3">
-  <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" [total]="length"
-    [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
-    (changePage)="pageChanged($event)" *ngIf="!loadData"></tableau>
-</div>
+<tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" [total]="length"
+  [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
+  (changePage)="pageChanged($event)" *ngIf="!loadData"></tableau>

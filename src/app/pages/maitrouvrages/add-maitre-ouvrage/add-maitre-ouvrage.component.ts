@@ -1,3 +1,4 @@
+import { isExtensionAccepted } from "src/app/shared/utils/file-extension";
 import { ChangeDetectorRef, Component, Inject, ViewChild } from "@angular/core";
 import {
   UntypedFormBuilder,
@@ -34,7 +35,7 @@ export class AddMaitreOuvrageComponent {
   id: string;
   initForm: UntypedFormGroup;
   labelButton: string;
-  suffixe: string = " un maitre d'ouvrage";
+  suffixe: string = "un maître d'ouvrage";
 
   pageSize: number = 100;
   pageIndex: number = 0;
@@ -83,7 +84,7 @@ export class AddMaitreOuvrageComponent {
     }
 
     this.action = _data?.action;
-    this.dialogTitle = this.labelButton + this.suffixe;
+    this.dialogTitle = `${this.labelButton.trim()} ${this.suffixe}`;
   }
 
 
@@ -167,7 +168,7 @@ export class AddMaitreOuvrageComponent {
                   this.loader = false;
                   this.matDialogRef.close(resp);
                   this.snackbar.openSnackBar(
-                    "Maitre d'ouvrage  modifié avec succés",
+                    "Maître d'ouvrage modifié avec succès.",
                     "OK",
                     ["mycssSnackbarGreen"]
                   );
@@ -282,7 +283,7 @@ export class AddMaitreOuvrageComponent {
             (resp) => {
               if (resp["status"] == 200) {
                 this.snackbar.openSnackBar(
-                  "Maitre d'ouvrage  ajouté avec succés,il recevra par mail ses identifiants de connexion par défaut.",
+                  "Maître d'ouvrage ajouté avec succès. Il recevra ses identifiants de connexion par e-mail.",
                   "OK",
                   ["mycssSnackbarGreen"]
                 );
@@ -324,7 +325,7 @@ export class AddMaitreOuvrageComponent {
       const index = file.name.lastIndexOf(".");
       const strsubstring = file.name.substring(index, file.name.length);
       const ext = strsubstring;
-      if (accept.indexOf(strsubstring) === -1) {
+      if (!isExtensionAccepted(accept, strsubstring)) {
         this.snackbar.openSnackBar(
           "Ce fichier " + file.name + " n'est " + extension,
           "OK",

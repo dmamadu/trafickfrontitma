@@ -1,3 +1,4 @@
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 // import {
 //   CUSTOM_ELEMENTS_SCHEMA,
 //   ChangeDetectionStrategy,
@@ -502,7 +503,7 @@ import { CommonModule } from "@angular/common";
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
     { provide: DateAdapter, useClass: MatNativeDateModule },
-    { provide: MatPaginatorIntl },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     SnackBarService,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -1,3 +1,4 @@
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 import {
   ChangeDetectorRef,
   Component,
@@ -64,7 +65,7 @@ const MESSAGES = {
       useValue: [],
     },
     { provide: MAT_DIALOG_DATA, useValue: {} },
-    { provide: MatPaginatorIntl },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { appearance: "outline" },
@@ -116,7 +117,7 @@ export class PapHabitatComponent implements OnInit, OnDestroy {
   // Actions configuration
   actions: ActionButton[] = [
     {
-      label: "Ajouter un PAP habitat",
+      label: "Ajouter une PAP",
       icon: "plus",
       action: "add",
       type: "primary",
@@ -125,19 +126,19 @@ export class PapHabitatComponent implements OnInit, OnDestroy {
       label: "Importer Excel",
       icon: "file-excel",
       action: "import",
-      type: "primary",
+      type: "secondary",
     },
     {
       label: "Exporter Excel",
       icon: "table-chart",
       action: "export-excel",
-      type: "success",
+      type: "secondary",
     },
     {
       label: "Exporter PDF",
       icon: "file-pdf",
       action: "export-pdf",
-      type: "danger",
+      type: "secondary",
     },
   ];
 
@@ -162,8 +163,8 @@ export class PapHabitatComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.breadCrumbItems = [
-      { label: "PAP Habitat" },
-      { label: "Liste", active: true },
+      { label: "Parties affectées" },
+      { label: "Habitat", active: true },
     ];
     this.headers = this.createHeader();
     this.btnActions = this.createActions();
@@ -178,12 +179,12 @@ export class PapHabitatComponent implements OnInit, OnDestroy {
   // Header configuration
   createHeader() {
     return [
-      { th: "CODE PAP", td: "codePap" },
-      { th: "CODE HABITAT", td: "codeHabitat" },
-      { th: "PRENOM", td: "prenom" },
-      { th: "NOM", td: "nom" },
-      { th: "NUMERO TELEPHONE", td: "numeroTelephone" },
-      { th: "VULNÉRABLE", td: "vulne" },
+      { th: "Code PAP", td: "codePap" },
+      { th: "Code habitat", td: "codeHabitat" },
+      { th: "Prénom", td: "prenom" },
+      { th: "Nom", td: "nom" },
+      { th: "Téléphone", td: "numeroTelephone" },
+      { th: "Vulnérable", td: "vulne" },
     ];
   }
 
@@ -311,7 +312,7 @@ export class PapHabitatComponent implements OnInit, OnDestroy {
 
     this.snackbar.openModal(
       AddPapHabitatComponent,
-      "50rem",
+      "64rem",
       "new",
       "auto",
       this.datas,
@@ -323,7 +324,7 @@ export class PapHabitatComponent implements OnInit, OnDestroy {
   updateItems(information: any): void {
     this.snackbar.openModal(
       AddPapHabitatComponent,
-      "50rem",
+      "64rem",
       "edit",
       "auto",
       information,
@@ -393,7 +394,10 @@ export class PapHabitatComponent implements OnInit, OnDestroy {
   detailItems(id: number, information: any): void {
     this.localService.saveDataJson("pap", information);
     this.sharedService.setSelectedItem(information);
-    this._router.navigate(["pap/detail"]);
+    const categorie = 'habitat';
+    this._router.navigate(["pap/detail"], {
+      queryParams: categorie && information?.id ? { categorie, id: information.id } : {},
+    });
   }
 
   // Excel Import

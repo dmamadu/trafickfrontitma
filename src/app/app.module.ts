@@ -31,6 +31,8 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { ErrorInterceptor } from './core/helpers/error.interceptor';
 import { JwtInterceptor } from './core/helpers/jwt.interceptor';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { PaginatorIntlFr } from './shared/core/paginator-intl-fr';
 import { FilemanagerEffects } from './store/filemanager/filemanager.effects';
 import { rootReducer } from './store';
 import { OrderEffects } from './store/orders/order.effects';
@@ -123,6 +125,8 @@ export function createTranslateLoader(http: HttpClient): any {
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     provideAnimationsAsync(),
+    // Pagination Material en français pour toute l'application
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
   //  { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true },
   ],
 })

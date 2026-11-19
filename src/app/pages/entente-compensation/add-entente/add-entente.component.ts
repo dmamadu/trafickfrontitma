@@ -1,3 +1,4 @@
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 import { CommonModule } from "@angular/common";
 import {
   ChangeDetectorRef,
@@ -28,7 +29,7 @@ import { SignatureComponent } from "../signature/signature.component";
   imports: [CommonModule, AngularMaterialModule],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
-    { provide: MatPaginatorIntl },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     SnackBarService,
     MatDatepickerModule,
   ],

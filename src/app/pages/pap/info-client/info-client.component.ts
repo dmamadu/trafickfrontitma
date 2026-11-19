@@ -1,10 +1,15 @@
+import { registerLocaleData } from "@angular/common";
+import localeFr from "@angular/common/locales/fr";
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Input,
+  OnChanges,
   OnInit,
+  SimpleChanges,
   ViewChild,
   ViewEncapsulation,
 
@@ -34,6 +39,8 @@ import { AddConsetementComponent } from "./add-consetement/add-consetement.compo
 import { PapService } from "../pap.service";
 import { LocalService } from "src/app/core/services/local.service";
 
+registerLocaleData(localeFr, "fr");
+
 @Component({
   selector: "info-client",
   templateUrl: "./info-client.component.html",
@@ -49,16 +56,23 @@ import { LocalService } from "src/app/core/services/local.service";
       useValue: [],
     },
     { provide: MAT_DIALOG_DATA, useValue: {} },
-    { provide: MatPaginatorIntl },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { appearance: "outline" },
     },
   ],
 })
-export class InfoClientComponent implements OnInit {
+export class InfoClientComponent implements OnInit, OnChanges {
   _attributComplementaire = [];
   @Input() infosPap;
+  /** Vue affichée par la fiche PAP : profil ou pertes & compensation. */
+  @Input() vue: "profil" | "pertes" = "profil";
+
+  sections: { titre: string; champs: { label: string; valeur: any }[] }[] = [];
+  textes: { titre: string; contenu: string }[] = [];
+  photoBien = "";
+  lignesPertes: { label: string; montant: number | null; detail: string | null }[] = [];
 
   employes: any[] = [];
   betails: any[] = [];
@@ -107,7 +121,21 @@ parsedBatiments: any[] = [];
     });
     this.currentProjectId = this.localService.getData("ProjectId");
   }
+  /** La fiche recharge la PAP depuis le serveur : on reconstruit les cartes. */
+  ngOnChanges(changes: SimpleChanges): void {
+    const c = changes["infosPap"];
+    if (c && !c.firstChange) {
+      this.construireProfil();
+      this.construirePertes();
+      if (c.previousValue?.codePap !== c.currentValue?.codePap) {
+        this.getCopropriétaireByCodePap();
+      }
+    }
+  }
+
   ngOnInit(): void {
+    this.construireProfil();
+    this.construirePertes();
     this.getBatimentByCodePap();
     this.getDescriptionBatimentCodePap();
     this.getBetailsCodePap();
@@ -223,6 +251,18 @@ parsedBatiments: any[] = [];
     // this.snackbar.openModal( AjoutPersonneMoraleComponent, '50rem', 'edit', '', information, information.id, () => {
     //     this.relod();
     // });
+  }
+
+  /** Libellé lisible de statutPap (valeurs lues par le tableau de bord Baseline). */
+  private libelleStatut(statut: string): string {
+    const libelles: Record<string, string> = {
+      recense: "Recensé",
+      en_etude: "En étude",
+      indemnisation_engagee: "Indemnisation engagée",
+      indemnisation_terminee: "Indemnisation terminée",
+      en_contentieux: "En contentieux",
+    };
+    return libelles[statut] || statut;
   }
 
   updateClient(client): void {
@@ -365,8 +405,8 @@ parsedBatiments: any[] = [];
     return this.papservice
       .getByCodePap("coproprietaires", this.infosPap.codePap, 0, 100, this.currentProjectId)
       .subscribe((data: any) => {
-        this.coProprietaires = data.data[0];
-        console.log(data.data);
+        this.coProprietaires = data?.data?.[0] || [];
+        this._changeDetectorRef.markForCheck();
       });
   }
 
@@ -439,4 +479,144 @@ parsedBatiments: any[] = [];
 
 
 
+
+  // ---------------------------------------------------------------------------
+  // Fiche PAP — contenu des cartes (refonte nov. 2026)
+  // ---------------------------------------------------------------------------
+
+  get estDemission(): boolean {
+    return this.infosPap?.statut === "DEMISSION";
+  }
+
+  get afficheCoproprietaires(): boolean {
+    return (
+      this.coProprietaires?.length > 0 ||
+      ["PAPHABITAT", "PAPPLACEAFFAIRE"].includes(this.infosPap?.type)
+    );
+  }
+
+  /** Champs vides gardés : l'import accepte les données manquantes, la carte affiche « Non renseigné ». */
+  private construireProfil(): void {
+    const p = this.infosPap || {};
+    const c = (label: string, valeur: any) => ({ label, valeur });
+    const estPlaceAffaire = p.type === "PAPPLACEAFFAIRE";
+
+    const bien = estPlaceAffaire
+      ? {
+          titre: "Place d'affaires",
+          champs: [
+            c("Code place d'affaires", p.codePlaceAffaire),
+            c("Nombre de places affectées", p.nombrePlaceAffaire),
+          ],
+        }
+      : {
+          titre: p.type === "PAPHABITAT" ? "Habitat" : "Parcelle",
+          champs: [
+            c("Code parcelle", p.codeParcelle),
+            c("Nombre de parcelles", p.nombreParcelle),
+            c("Superficie", p.superficie),
+          ],
+        };
+
+    this.sections = [
+      {
+        titre: "Identité",
+        champs: [
+          c("Prénom", p.prenom),
+          c("Nom", p.nom),
+          c("Surnom", p.surnom),
+          c("Sexe", p.sexe),
+          c("Âge", p.age),
+          c("Nationalité", p.nationalite),
+          c("Ethnie", p.ethnie),
+          c("Langue parlée", p.langueParlee),
+          c("Situation matrimoniale", p.situationMatrimoniale),
+          c("Niveau d'étude", p.niveauEtude),
+        ],
+      },
+      {
+        titre: "Pièce d'identité et statut",
+        champs: [
+          c("Type de pièce", p.typePni),
+          c("N° de pièce", p.numeroPni),
+          c("Téléphone", p.numeroTelephone),
+          c("Statut d'indemnisation", this.libelleStatut(p.statutPap)),
+          c("Vulnérabilité", p.vulnerabilite),
+        ],
+      },
+      {
+        titre: "Foyer et activité",
+        champs: [
+          c("Rôle dans le foyer", p.roleDansFoyer),
+          c("Activité principale", p.activitePrincipale),
+          c("Membres du foyer", p.membreFoyer),
+          c("Dont en situation de handicap", p.membreFoyerHandicape),
+          c("Type de handicap", p.typeHandicape),
+        ],
+      },
+      bien,
+      {
+        titre: "Localisation",
+        champs: [
+          c("Département", p.departement),
+          c("Commune", p.commune),
+          c("Coordonnées GPS", p.pointGeometriques),
+        ],
+      },
+    ];
+
+    const caracteristiques = estPlaceAffaire
+      ? p.caracteristiquePlaceAffaire
+      : p.caracteristiqueParcelle;
+    this.textes = [
+      {
+        titre: estPlaceAffaire
+          ? "Caractéristiques de la place d'affaires"
+          : "Caractéristiques de la parcelle",
+        contenu: caracteristiques,
+      },
+      {
+        titre: "Informations complémentaires",
+        contenu: p.informationsEtendues || p.infos || p.infosComplemenataires,
+      },
+    ];
+
+    const photo = p.photoHabitat || p.photoPlaceAffaire || "";
+    this.photoBien = /^(https?:\/\/|data:image)/.test(photo) ? photo : "";
+  }
+
+  /** Seules les pertes renseignées sont listées ; le total vient de perteTotale. */
+  private construirePertes(): void {
+    const p = this.infosPap || {};
+    const libelles: [string, string][] = [
+      ["perteTerre", "Perte de terre"],
+      ["perteRecoltes", "Perte de récoltes"],
+      ["perteArbreJeune", "Arbres jeunes"],
+      ["perteArbreAdulte", "Arbres adultes"],
+      ["perteRevenue", "Perte de revenus"],
+      ["perteLoyer", "Perte de loyer"],
+      ["perteCloture", "Perte de clôture"],
+      ["perteBatiment", "Bâtiments"],
+      ["perteEquipement", "Équipements"],
+      ["evaluationPerte", "Évaluation de la perte"],
+      ["fraisDeplacement", "Frais de déplacement"],
+      ["appuieRelocalisation", "Appui à la relocalisation"],
+    ];
+    this.lignesPertes = libelles
+      .filter(([cle]) => {
+        const v = p[cle];
+        return v !== null && v !== undefined && v !== "" && typeof v !== "object";
+      })
+      .map(([cle, label]) => {
+        const v = p[cle];
+        const n = typeof v === "number" ? v : Number(String(v).replace(/\s/g, "").replace(",", "."));
+        return isFinite(n) && String(v).trim() !== ""
+          ? { label, montant: n, detail: null }
+          : { label, montant: null, detail: String(v) };
+      });
+  }
+
+  openImageModal(url: string): void {
+    if (url) window.open(url, "_blank", "noopener");
+  }
 }

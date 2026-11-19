@@ -1,34 +1,37 @@
-<div>
-  <app-page-title title="Journal d'audit" [breadcrumbItems]="breadCrumbItems"></app-page-title>
-</div>
+<header class="inv-page-header">
+  <div>
+    <h1 class="inv-page-header__title">Journal d'audit</h1>
+    <p class="inv-page-header__subtitle">Historique des actions sensibles : connexions, comptes, suppressions et modifications de PAP.</p>
+  </div>
+</header>
 
-<div class="d-flex flex-row flex-wrap gap-2 mb-3">
-  <input
-    type="text"
-    class="form-control"
-    style="max-width: 260px;"
-    placeholder="Filtrer par utilisateur..."
-    [(ngModel)]="utilisateurFiltre"
-    (keyup.enter)="applyFilters()"
-  />
-  <select class="form-control" style="max-width: 320px;" [(ngModel)]="typeActionFiltre" (change)="applyFilters()">
+<form class="inv-toolbar" (ngSubmit)="applyFilters()">
+  <div class="search-box">
+    <div class="position-relative">
+      <input type="text" class="form-control" name="utilisateurFiltre" placeholder="Filtrer par utilisateur…"
+        aria-label="Filtrer par utilisateur" [(ngModel)]="utilisateurFiltre" />
+      <i class="bx bx-user search-icon"></i>
+    </div>
+  </div>
+  <select class="form-select inv-select" name="typeActionFiltre" aria-label="Type d'action"
+    [(ngModel)]="typeActionFiltre" (change)="applyFilters()">
     <option value="">Tous les types d'action</option>
-    <option *ngFor="let type of typeActions" [value]="type">{{ type }}</option>
+    <option *ngFor="let type of typeActions" [value]="type">{{ libelleType(type) }}</option>
   </select>
-  <button type="button" class="btn bgPrimaire" (click)="applyFilters()">Filtrer</button>
-</div>
+  <button type="submit" class="inv-btn inv-btn--primary">
+    <i class="bx bx-filter-alt"></i> Filtrer
+  </button>
+</form>
 
 <app-loader-custom *ngIf="loadData"></app-loader-custom>
 
-<div style="z-index: 0" class="pt-2">
-  <tableau
-    [pageIndex]="pageIndex"
-    [pageSizeOptions]="pageSizeOptions"
-    [pageSize]="pageSize"
-    [total]="length"
-    [entete]="headers"
-    [coleurEntete]="headers"
-    [data]="datas"
-    (changePage)="pageChanged($event)">
-  </tableau>
-</div>
+<tableau
+  [pageIndex]="pageIndex"
+  [pageSizeOptions]="pageSizeOptions"
+  [pageSize]="pageSize"
+  [total]="length"
+  [entete]="headers"
+  [coleurEntete]="headers"
+  [data]="datas"
+  (changePage)="pageChanged($event)">
+</tableau>

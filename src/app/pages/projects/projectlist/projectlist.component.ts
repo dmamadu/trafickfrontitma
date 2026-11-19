@@ -42,7 +42,7 @@ export class ProjectlistComponent implements OnInit,OnDestroy {
   pageIndex: number = 0;
   headers: any = [];
   btnActions: any = [];
-  length = 100;
+  length = 0;
   removeItemModal?: ModalDirective;
   @ViewChild("removeItemModal", { static: false })
   deleteId: any;
@@ -60,8 +60,8 @@ export class ProjectlistComponent implements OnInit,OnDestroy {
     this.btnActions = this.createActions();
     this.loadProject();
     this.breadCrumbItems = [
-      { label: "Projects" },
-      { label: "Projects List", active: true },
+      { label: "Projets" },
+      { label: "Liste", active: true },
     ];
   }
 
@@ -101,6 +101,7 @@ ngOnDestroy() {
       .subscribe((data: ResponseData<Project[]>) => {
         this.projectlist = data.data;
         this.filteredProjects = this.projectlist;
+        this.length = this.projectlist?.length ?? 0;
         this.isLoading = false;
       });
   }
@@ -153,37 +154,36 @@ ngOnDestroy() {
     this.removeItemModal?.show();
   }
 
-  filterTable(event: any) {
-    const searchValue = event.target.value.toLowerCase();
-    if (searchValue) {
-      this.filteredProjects = this.projectlist.filter(
-        (project) =>
-          project.libelle.toLowerCase().includes(searchValue) ||
-          project.categorie.toLowerCase().includes(searchValue) ||
-          project.status.toLowerCase().includes(searchValue) ||
-          project.datedebut.toLowerCase().includes(searchValue)
-      );
-    } else {
-      this.filteredProjects = this.projectlist;
-    }
+  /** app-page-actions émet la saisie sous forme de chaîne (et non d'événement). */
+  filterTable(searchValue: string) {
+    const val = (searchValue ?? "").trim().toLowerCase();
+    this.filteredProjects = !val
+      ? this.projectlist
+      : this.projectlist.filter((project) =>
+          [project.libelle, project.description, project.status, project.datedebut]
+            .some((champ) => String(champ ?? "").toLowerCase().includes(val))
+        );
+    this.length = this.filteredProjects.length;
   }
+
 
   createHeader() {
     return [
       {
-        th: "Libelle",
+        th: "Projet",
         td: "libelle",
       },
       {
-        th: "Date début",
+        th: "Date de début",
         td: "datedebut",
+        type: "d",
       },
        {
         th: "Description",
         td: "description",
       },
        {
-        th: "Status",
+        th: "Statut",
         td: "status",
       },
     ];

@@ -1,12 +1,17 @@
-<div style="z-index: 0" class="pt-3 d-flex justify-content-between">
+<header class="inv-page-header">
   <div>
-    <app-page-title title="Liste des roles"  style="color: green;"></app-page-title>
+    <h1 class="inv-page-header__title">Rôles</h1>
+    <p class="inv-page-header__subtitle">Définissez les rôles et les permissions accordées à chacun.</p>
   </div>
-  <button class="btn bgPrimaire mb-3" (click)="addItems()">Créer un role</button>
-</div>
+  <div class="inv-page-header__actions">
+    <button type="button" class="inv-btn inv-btn--primary" (click)="addItems()">
+      <i class="bx bx-plus"></i> Créer un rôle
+    </button>
+  </div>
+</header>
+
 <app-loader-custom *ngIf="loadData"></app-loader-custom>
-<div style="z-index: 0" class="pt-3">
-  <tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" [total]="length"
-    [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
-    (changePage)="pageChanged($event)" *ngIf="!loadData"></tableau>
-</div>
+
+<tableau [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize" [total]="length"
+  [coleurEntete]="headers" [entete]="headers" [data]="datas" [actions]="btnActions"
+  (changePage)="pageChanged($event)" *ngIf="!loadData"></tableau>
