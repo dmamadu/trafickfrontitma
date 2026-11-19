@@ -162,7 +162,7 @@ export class CategorieUtilisateurComponent implements OnInit {
       AddCategorieComponent,
       "35rem",
       "edit",
-      "20rem",
+      "auto",
       information,
       "",
       () => {
@@ -177,13 +177,13 @@ export class CategorieUtilisateurComponent implements OnInit {
     console.log(id);
     console.log("====================================");
     this.snackbar
-      .showConfirmation("Voulez-vous vraiment supprimer ce consultant?")
+      .showConfirmation("Voulez-vous vraiment supprimer ce niveau de privilège ?")
       .then((result) => {
         if (result["value"] == true) {
           this.deleteUser = true;
           this.currentIndex = information;
           this.showLoader = "isShow";
-          const message = "Consultant  supprimé";
+          const message = "Niveau de privilège supprimé.";
           this.coreService.deleteItem(id, "users/deleteMaitreOuvrage").subscribe(
             (resp) => {
               this.showLoader = "isNotShow";
@@ -205,7 +205,7 @@ export class CategorieUtilisateurComponent implements OnInit {
       AddCategorieComponent,
       "35rem",
       "new",
-      "20rem",
+      "auto",
       this.datas,
       "",
       () => {

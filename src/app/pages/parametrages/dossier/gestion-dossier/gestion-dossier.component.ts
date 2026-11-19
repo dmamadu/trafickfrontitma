@@ -1,3 +1,4 @@
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 import { DatePipe } from "@angular/common";
 import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
@@ -23,7 +24,7 @@ import { ActionButton, PageActionsComponent } from "src/app/shared/refactore/pag
     DatePipe,
     { provide: MatDialogRef, useValue: [] },
     { provide: MAT_DIALOG_DATA, useValue: {} },
-    { provide: MatPaginatorIntl },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: "outline" } },
   ],
   imports: [TableauComponent, UIModule, AngularMaterialModule, PageActionsComponent],

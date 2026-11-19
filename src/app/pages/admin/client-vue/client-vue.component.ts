@@ -1,3 +1,4 @@
+import { isExtensionAccepted } from "src/app/shared/utils/file-extension";
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDrawer } from '@angular/material/sidenav';
@@ -705,7 +706,7 @@ export class ClientVueComponent implements OnInit, OnDestroy
           const strsubstring = file.name.substring(index, file.name.length);
           const ext = strsubstring;
           // Verification de l'extension du ficihier est valide
-          if (accept.indexOf(strsubstring) === -1) {
+          if (!isExtensionAccepted(accept, strsubstring)) {
             this.snackbar.openSnackBar('Ce fichier ' + file.name + ' n\'est ' + extension, 'OK',['mycssSnackbarRed']);
             return;
           } else {

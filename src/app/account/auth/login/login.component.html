@@ -1,84 +1,110 @@
 <div class="login-page">
-  <div class="login-card">
-    <!-- En-tête -->
-    <div class="card-header">
-      <div class="header-left">
-        <a routerLink="/home">
-          <h1 class="app-name">Inv<span class="orange-o">O</span>dis</h1>
-        </a>
-        <p class="app-description">Gestion des parties affectées</p>
-      </div>
-      <a routerLink="/home">
-        <img src="assets/images/logo/Logoinvodis.png" alt="Logo" class="app-logo">
-      </a>
+  <!-- Panneau de marque (écrans larges) -->
+  <aside class="brand-panel" aria-hidden="true">
+    <div class="brand-pattern"></div>
+    <a routerLink="/home" class="brand-logo-link" tabindex="-1">
+      <img src="assets/images/logo/Logoinvodis.png" alt="" class="brand-logo">
+    </a>
+
+    <div class="brand-content">
+      <h2 class="brand-title">Gérer la réinstallation, de la Baseline à la mise en œuvre.</h2>
+      <p class="brand-subtitle">Plans d'Action de Réinstallation : recensement des personnes affectées, compensations et suivi.</p>
+
+      <ul class="brand-features">
+        <li>
+          <span class="feature-icon"><mat-icon>groups</mat-icon></span>
+          <span>Recensement des PAP par catégorie : habitat, agricole, places d'affaires</span>
+        </li>
+        <li>
+          <span class="feature-icon"><mat-icon>payments</mat-icon></span>
+          <span>Vulnérabilité et compensations calculées en monnaie locale</span>
+        </li>
+        <li>
+          <span class="feature-icon"><mat-icon>insights</mat-icon></span>
+          <span>Tableaux de bord Baseline et mise en œuvre, plaintes et tâches</span>
+        </li>
+      </ul>
     </div>
 
-    <!-- Formulaire -->
-    <div class="card-body">
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <p class="brand-footer">© {{ year }} INVODIS — Involuntary Displacement Management System</p>
+  </aside>
+
+  <!-- Formulaire -->
+  <main class="form-panel">
+    <div class="form-wrapper">
+      <a routerLink="/home" class="wordmark">Inv<span class="orange-o">O</span>dis</a>
+
+      <h1 class="form-title">Connexion</h1>
+      <p class="form-subtitle">Accédez à votre espace de gestion des PAR.</p>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
         <!-- Message d'erreur -->
         @if(error) {
-        <div class="error-message">
-          <mat-icon>error</mat-icon>
+        <div class="error-message" role="alert">
+          <mat-icon>error_outline</mat-icon>
           <span>{{ error }}</span>
         </div>
         }
 
-        <!-- Champ Email -->
+        <!-- Email -->
         <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" formControlName="email" placeholder="email@exemple.com"
-            [ngClass]="{ 'input-error': submitted && f.email.errors }">
+          <label for="email">Adresse e-mail</label>
+          <div class="input-wrap">
+            <mat-icon class="input-icon">mail_outline</mat-icon>
+            <input type="email" id="email" formControlName="email" placeholder="nom@organisation.com"
+              autocomplete="username" [ngClass]="{ 'input-error': submitted && f.email.errors }">
+          </div>
           @if(submitted && f.email.errors) {
           <div class="validation-error">
-            @if(f.email.errors.required) {<span>Email requis</span>}
-            @if(f.email.errors.email) {<span>Format invalide</span>}
+            @if(f.email.errors.required) {<span>L'adresse e-mail est requise.</span>}
+            @if(f.email.errors.email) {<span>Format d'adresse invalide.</span>}
           </div>
           }
         </div>
 
-        <!-- Champ Mot de passe -->
+        <!-- Mot de passe -->
         <div class="form-group">
-          <label for="password">Mot de passe</label>
-          <div class="password-group">
+          <div class="label-row">
+            <label for="password">Mot de passe</label>
+            <a routerLink="/auth/reset-password" class="forgot-password">Mot de passe oublié ?</a>
+          </div>
+          <div class="input-wrap">
+            <mat-icon class="input-icon">lock_outline</mat-icon>
             <input [type]="fieldTextType ? 'text' : 'password'" id="password" formControlName="password"
-              placeholder="••••••••" [ngClass]="{ 'input-error': submitted && f.password.errors }">
-            <button type="button" class="toggle-password" (click)="toggleFieldTextType()">
+              placeholder="••••••••" autocomplete="current-password"
+              [ngClass]="{ 'input-error': submitted && f.password.errors }">
+            <button type="button" class="toggle-password" (click)="toggleFieldTextType()"
+              [attr.aria-label]="fieldTextType ? 'Masquer le mot de passe' : 'Afficher le mot de passe'">
               <mat-icon>{{ fieldTextType ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
           </div>
           @if(submitted && f.password.errors) {
           <div class="validation-error">
-            @if(f.password.errors.required) {<span>Mot de passe requis</span>}
+            @if(f.password.errors.required) {<span>Le mot de passe est requis.</span>}
           </div>
           }
         </div>
 
-        <!-- Options -->
-        <div class="form-options">
-          <label class="remember-me">
-            <input type="checkbox" id="remember">
-            <span>Se souvenir de moi</span>
-          </label>
-          <a routerLink="/auth/reset-password" class="forgot-password">Mot de passe oublié ?</a>
-        </div>
+        <label class="remember-me">
+          <input type="checkbox" id="remember">
+          <span>Se souvenir de moi</span>
+        </label>
 
-        <!-- Boutons -->
-        <div class="form-actions">
-          <button type="button" class="btn btn-back" routerLink="/home">
-            <mat-icon>arrow_back</mat-icon>
-            Retour
-          </button>
-          <button type="submit" class="btn btn-login" [disabled]="loginForm.invalid">
-            @if(submitted) {
-            <mat-spinner diameter="20"></mat-spinner>
-            } @else {
-            <mat-icon>login</mat-icon>
-            Connexion
-            }
-          </button>
-        </div>
+        <button type="submit" class="btn-login" [disabled]="loginForm.invalid || loader">
+          @if(loader) {
+          <mat-spinner diameter="20"></mat-spinner>
+          <span>Connexion…</span>
+          } @else {
+          <span>Se connecter</span>
+          <mat-icon>arrow_forward</mat-icon>
+          }
+        </button>
+
+        <a routerLink="/home" class="btn-back">
+          <mat-icon>arrow_back</mat-icon>
+          Retour à l'accueil
+        </a>
       </form>
     </div>
-  </div>
+  </main>
 </div>

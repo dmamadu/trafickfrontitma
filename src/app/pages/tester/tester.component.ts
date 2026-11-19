@@ -1,3 +1,4 @@
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,
@@ -36,7 +37,7 @@ import { MatInputModule } from "@angular/material/input";
       useValue: [],
     },
     { provide: MAT_DIALOG_DATA, useValue: {} },
-    {provide: MatPaginatorIntl},
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   changeDetection: ChangeDetectionStrategy.OnPush,

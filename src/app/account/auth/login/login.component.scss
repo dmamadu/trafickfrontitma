@@ -1,241 +1,393 @@
-/* Structure de base */
+// Écran de connexion — charte INVODIS : #245363 (principale), #D45C00 (secondaire / orange du logo).
+// Classes propres au composant (aucune classe utilitaire Bootstrap/Tailwind : pas de conflit possible).
+
+$primary: #245363;
+$primary-700: #1b404c;
+$primary-400: #2f7184;
+$secondary: #d45c00;
+$ink: #111827;
+$text: #374151;
+$muted: #6b7280;
+$line: #d1d5db;
+$danger: #dc2626;
+
+:host {
+  display: block;
+}
+
 .login-page {
+  display: grid;
+  grid-template-columns: minmax(380px, 46%) 1fr;
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  background-color: #f8f9fa;
+  background: #fff;
+  font-family: inherit;
+
+  @media (max-width: 991.98px) {
+    grid-template-columns: 1fr;
+  }
 }
 
-.login-card {
-  width: 100%;
-  max-width: 550px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-/* En-tête */
-.card-header {
+/* ---------------- Panneau de marque ---------------- */
+.brand-panel {
+  position: relative;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background-color: #000;
-  border-bottom: 3px solid #4CAF50;
+  gap: 40px;
+  padding: 40px 56px;
+  overflow: hidden;
+  color: #fff;
+  background:
+    radial-gradient(circle at 85% 15%, rgba($secondary, 0.22), transparent 42%),
+    linear-gradient(150deg, #000 0%, $primary-700 38%, $primary 72%, $primary-400 100%);
+
+  @media (max-width: 991.98px) {
+    display: none;
+  }
 }
 
-.header-left {
-  flex: 1;
+.brand-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
+  pointer-events: none;
 }
 
-.app-name {
-  font-size: 24px;
-  font-weight: 700;
-  color: white;
-  margin: 0 0 5px 0;
+.brand-logo-link,
+.brand-content,
+.brand-footer {
+  position: relative;
 }
 
-.orange-o {
-  color: #D45C00;
+.brand-logo {
+  height: 64px;
+  width: auto;
 }
 
-.app-description {
-  font-size: 14px;
-  color: white;
+.brand-content {
+  max-width: 480px;
+}
+
+.brand-title {
   margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: #fff;
 }
 
-.app-logo {
+.brand-subtitle {
+  margin: 14px 0 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.brand-features {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 36px 0 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.88);
+  }
+}
+
+.feature-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
   height: 40px;
-  margin-left: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+
+  mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    color: #ffb27a; // orange du logo éclairci pour le contraste sur fond sombre
+  }
 }
 
-/* Corps */
-.card-body {
-  padding: 25px;
+.brand-footer {
+  margin: 0;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
 }
 
-/* Messages d'erreur */
+/* ---------------- Formulaire ---------------- */
+.form-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background: #f5f7f8;
+
+  @media (min-width: 992px) {
+    background: #fff;
+  }
+}
+
+.form-wrapper {
+  width: 100%;
+  max-width: 400px;
+}
+
+.wordmark {
+  display: inline-block;
+  margin-bottom: 32px;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: $ink;
+  text-decoration: none;
+
+  .orange-o {
+    color: $secondary;
+  }
+
+  @media (min-width: 992px) {
+    display: none; // le logo est déjà dans le panneau de marque
+  }
+}
+
+.form-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: $ink;
+}
+
+.form-subtitle {
+  margin: 6px 0 28px;
+  font-size: 0.9375rem;
+  color: $muted;
+}
+
 .error-message {
   display: flex;
   align-items: center;
-  padding: 10px 15px;
+  gap: 10px;
   margin-bottom: 20px;
-  background-color: #fdecea;
-  color: #d32f2f;
-  border-radius: 5px;
-  font-size: 14px;
+  padding: 12px 14px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fef2f2;
+  font-size: 0.875rem;
+  color: #b91c1c;
+
+  mat-icon {
+    flex-shrink: 0;
+  }
 }
 
-.error-message mat-icon {
-  margin-right: 8px;
-  font-size: 18px;
-}
-
-/* Champs formulaire */
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
+
+  label {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: $text;
+  }
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: #333;
-  font-size: 14px;
+.label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+
+  label {
+    margin-bottom: 6px;
+  }
 }
 
-.form-group input {
-  width: 100%;
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 15px;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #4CAF50;
-  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-}
-
-.input-error {
-  border-color: #d32f2f !important;
-}
-
-.validation-error {
-  color: #d32f2f;
-  font-size: 12px;
-  margin-top: 5px;
-}
-
-/* Groupe mot de passe */
-.password-group {
+.input-wrap {
   position: relative;
+
+  input {
+    width: 100%;
+    height: 46px;
+    padding: 0 44px 0 42px;
+    border: 1px solid $line;
+    border-radius: 10px;
+    background: #fff;
+    font-size: 0.9375rem;
+    color: $ink;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &::placeholder {
+      color: #9ca3af;
+    }
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 4px rgba($primary, 0.15);
+    }
+
+    &.input-error {
+      border-color: #f87171;
+
+      &:focus {
+        box-shadow: 0 0 0 4px rgba($danger, 0.12);
+      }
+    }
+  }
+}
+
+.input-icon {
+  position: absolute;
+  top: 50%;
+  left: 13px;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: #9ca3af;
+  transform: translateY(-50%);
+  pointer-events: none;
 }
 
 .toggle-password {
   position: absolute;
-  right: 10px;
   top: 50%;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #9ca3af;
   transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #666;
   cursor: pointer;
-  padding: 5px;
+
+  &:hover {
+    background: #f3f4f6;
+    color: $text;
+  }
+
+  mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
 }
 
-.toggle-password:hover {
-  color: #D45C00;
-}
-
-/* Options */
-.form-options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 20px 0;
-}
-
-.remember-me {
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  color: #666;
-  cursor: pointer;
-}
-
-.remember-me input {
-  margin-right: 8px;
+.validation-error {
+  margin-top: 6px;
+  font-size: 0.8125rem;
+  color: $danger;
 }
 
 .forgot-password {
-  color: #D45C00;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: $secondary;
   text-decoration: none;
-  font-size: 14px;
+
+  &:hover {
+    color: darken($secondary, 8%);
+    text-decoration: underline;
+  }
 }
 
-.forgot-password:hover {
-  text-decoration: underline;
-}
-
-/* Boutons */
-.form-actions {
-  display: flex;
-  justify-content: center;
+.remember-me {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  margin: 2px 0 24px;
+  font-size: 0.875rem;
+  color: $text;
+  cursor: pointer;
+
+  input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: $primary;
+  }
 }
 
-.btn {
+.btn-login {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px;
-  border-radius: 5px;
-  font-weight: 500;
-  font-size: 15px;
+  width: 100%;
+  height: 48px;
+  border: 0;
+  border-radius: 10px;
+  background: $primary;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
   cursor: pointer;
-  flex: 1;
-  transition: all 0.2s;
-}
+  transition: background-color 0.15s, box-shadow 0.15s;
 
-.btn mat-icon {
-  font-size: 18px;
+  &:hover:not(:disabled) {
+    background: $primary-700;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba($primary, 0.25);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+
+  ::ng-deep .mat-mdc-progress-spinner circle,
+  ::ng-deep .mdc-circular-progress__indeterminate-circle-graphic {
+    stroke: #fff !important;
+  }
 }
 
 .btn-back {
-  background: white;
-  border: 1px solid #ddd;
   display: flex;
-  justify-content: center;
   align-items: center;
-  color: #333;
-}
+  justify-content: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 0.875rem;
+  color: $muted;
+  text-decoration: none;
 
-.btn-back:hover {
-  background: #f5f5f5;
-}
-
-.btn-login {
-  background: #4CAF50;
-  border: 1px solid #4CAF50;
-  color: white;
-}
-
-.btn-login:hover {
-  background: #3d8b40;
-}
-
-.btn-login:disabled {
-  background: #a5d6a7;
-  border-color: #a5d6a7;
-  cursor: not-allowed;
-}
-
-/* Responsive */
-@media (max-width: 480px) {
-  .card-header {
-    flex-direction: column;
-    text-align: center;
+  &:hover {
+    color: $ink;
   }
 
-  .app-logo {
-    margin: 15px 0 0 0;
-  }
-
-  .form-options {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .form-actions {
-    flex-direction: column;
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
   }
 }

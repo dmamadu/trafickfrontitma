@@ -329,7 +329,38 @@ getDisplayedColumns(): string[] {
   }
 
   resolveColor(action: ButtonAction, element: any): string {
-    return typeof action.couleur === 'function' ? action.couleur(element) : action.couleur;
+    const couleur = typeof action.couleur === 'function' ? action.couleur(element) : action.couleur;
+    return TableauComponent.couleurCharte(couleur);
+  }
+
+  /**
+   * Ramène les couleurs historiques passées par les écrans (« green », « black », « #D55E00 »…)
+   * à la palette de la charte INVODIS (variables de src/styles/invodis-ui.scss).
+   * Une couleur inconnue est conservée telle quelle.
+   */
+  private static couleurCharte(couleur: string | undefined): string | undefined {
+    if (!couleur) {
+      return undefined;
+    }
+    const c = couleur.trim().toLowerCase();
+    const palette: Record<string, string> = {
+      green: 'var(--inv-primary)',
+      'text-green-400': 'var(--inv-primary)',
+      '#4caf50': 'var(--inv-primary)',
+      '#d45c00': 'var(--inv-secondary)',
+      '#d55e00': 'var(--inv-secondary)',
+      '#22c55e': 'var(--inv-success)', // état « actif »
+      orange: 'var(--inv-secondary)',
+      black: 'var(--inv-text)',
+      dark: 'var(--inv-text)',
+      red: 'var(--inv-danger)',
+      'text-red-400': 'var(--inv-danger)',
+      '#00bfff': 'var(--inv-info)',
+      blue: 'var(--inv-info)',
+      '#556ee6': 'var(--inv-info)',
+      'c-colordetail': 'var(--inv-info)',
+    };
+    return palette[c] ?? couleur.trim();
   }
 
   resolveTitle(action: ButtonAction, element: any): string {
@@ -351,7 +382,8 @@ getDisplayedColumns(): string[] {
   isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
+    // Liste vide : rien n'est sélectionné (sinon la case « tout sélectionner » apparaît cochée)
+    return numRows > 0 && numSelected === numRows;
   }
 
     toggleAllRows(): void {

@@ -1,3 +1,4 @@
+import { MatIconModule } from "@angular/material/icon";
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,12 +21,14 @@ export interface BreadcrumbItem {
 @Component({
   selector: 'app-page-actions',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './page-actions.component.html',
   styleUrls: ['./page-actions.component.css']
 })
 export class PageActionsComponent {
   @Input() title: string = '';
+  /** Phrase d'explication facultative sous le titre. */
+  @Input() subtitle: string = '';
   @Input() icon: string = 'bx-home';         // ← variable, ex: 'bx-user-circle'
   @Input() breadcrumbItems: BreadcrumbItem[] = [];
   @Input() searchPlaceholder: string = 'Rechercher...';
@@ -39,6 +42,24 @@ export class PageActionsComponent {
 
   get visibleActions(): ActionButton[] {
     return this.actions.filter(a => a.visible !== false);
+  }
+
+  /** Classe d'icône (Boxicons, MDI, Font Awesome) plutôt que nom d'icône Material ? */
+  estClasseIcone(icon: string): boolean {
+    return /(^|\s)(bx|bxs|mdi|fa|fas|far)(\s|-|$)/.test(icon ?? '');
+  }
+
+  /** Nom d'icône Material, avec quelques alias utilisés par les écrans (« plus », « file-pdf »…). */
+  nomIconeMaterial(icon: string): string {
+    const alias: Record<string, string> = {
+      plus: 'add',
+      'file-excel': 'upload_file',
+      'table-chart': 'table_chart',
+      'file-pdf': 'picture_as_pdf',
+      download: 'download',
+      upload: 'upload',
+    };
+    return alias[icon] ?? icon;
   }
 
   handleSearchInput(event: any): void {

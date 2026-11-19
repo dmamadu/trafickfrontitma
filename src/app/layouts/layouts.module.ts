@@ -16,7 +16,6 @@ import { VerticalComponent } from './vertical/vertical.component';
 import { HorizontaltopbarComponent } from './horizontaltopbar/horizontaltopbar.component';
 import { LanguageService } from '../core/services/language.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { AngularMaterialModule } from '../shared/angular-materiel-module/angular-materiel-module';
 
 @NgModule({
   // tslint:disable-next-line: max-line-length
@@ -26,7 +25,6 @@ import { AngularMaterialModule } from '../shared/angular-materiel-module/angular
     TranslateModule,
     RouterModule,
     BsDropdownModule.forRoot(),
-    AngularMaterialModule,
     UIModule,
     SimplebarAngularModule
   ],

@@ -1,3 +1,5 @@
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
+import { isExtensionAccepted } from "src/app/shared/utils/file-extension";
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,
@@ -62,7 +64,7 @@ import { LoaderComponent } from "src/app/shared/loader/loader.component";
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
       { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
-      { provide: MatPaginatorIntl },
+      { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
       SnackBarService,
       MatDatepickerModule,
     ],
@@ -333,7 +335,7 @@ export class FicheIPapFormComponent implements OnInit {
         const index = file.name.lastIndexOf(".");
         const strsubstring = file.name.substring(index, file.name.length);
         const ext = strsubstring;
-        if (accept.indexOf(strsubstring) === -1) {
+        if (!isExtensionAccepted(accept, strsubstring)) {
           this.snackbar.openSnackBar(
             "Ce fichier " + file.name + " n'est " + extension,
             "OK",

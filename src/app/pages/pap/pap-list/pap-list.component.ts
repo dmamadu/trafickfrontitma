@@ -1,3 +1,4 @@
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 import {
   ChangeDetectorRef,
   Component,
@@ -55,7 +56,9 @@ import { BatimentComponent } from "../batiment/batiment.component";
       useValue: [],
     },
     { provide: MAT_DIALOG_DATA, useValue: {} },
-    { provide: MatPaginatorIntl },
+    // DatePipe est injecté dans le constructeur mais n'était fourni nulle part (écran blanc : NullInjectorError)
+    DatePipe,
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { appearance: "outline" },
@@ -698,6 +701,9 @@ export class PapListComponent implements OnInit {
     console.log(information);
     this.localService.saveDataJson("pap", information);
     this.sharedService.setSelectedItem(information);
-    this._router.navigate(["pap/detail"]);
+    const categorie = PapService.categorieDe(information);
+    this._router.navigate(["pap/detail"], {
+      queryParams: categorie && information?.id ? { categorie, id: information.id } : {},
+    });
   }
 }

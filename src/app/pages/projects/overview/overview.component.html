@@ -1,140 +1,167 @@
-<div class="container-fluid project-detail-container">
-  <!-- Titre de la page -->
-  <app-page-title title="Détail du projet" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+<!-- Détail d'un projet. Classes propres au composant (ov-*) + socle commun (inv-*). -->
+<div class="ov-page">
 
-  <div class="row">
-    <!-- Colonne principale -->
-    <div class="col-lg-8">
-      <div class="project-card">
-        <div class="card-body">
-          <!-- En-tête du projet -->
-          <div class="project-header">
-            <div class="project-logo">
-              <img [src]="DetailProject?.imageUrl ? DetailProject.imageUrl : 'assets/images/project-default.png'"
-                alt="Logo du projet" class="project-avatar">
-            </div>
-            <div class="project-info">
-              <h1 class="project-title">{{DetailProject.libelle}}</h1>
-              <div class="project-status">
-                <span class="status-label">État :</span>
-                <span class="status-badge" [ngClass]="getStatusClass(DetailProject.status)">
-                  {{DetailProject.status}}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Description du projet -->
-          <div class="project-description">
-            <h2 class="section-title">
-              <mat-icon>description</mat-icon> Détails du projet
-            </h2>
-            <p class="description-text">{{DetailProject.description}}</p>
-          </div>
-
-          <!-- Dates du projet -->
-          <div class="project-dates">
-            <div class="date-item">
-              <div class="date-icon">
-                <mat-icon>event_available</mat-icon>
-              </div>
-              <div>
-                <h3 class="date-label">Date de début</h3>
-                <p class="date-value">{{DetailProject.datedebut | date:'dd/MM/yyyy'}}</p>
-              </div>
-            </div>
-            <div class="date-item">
-              <div class="date-icon">
-                <mat-icon>event_busy</mat-icon>
-              </div>
-              <div>
-                <h3 class="date-label">Date de fin</h3>
-                <p class="date-value">{{DetailProject.datefin | date:'dd/MM/yyyy'}}</p>
-              </div>
-            </div>
-          </div>
+  <!-- ================= En-tête : touche de couleur du projet ================= -->
+  <header class="inv-card ov-hero">
+    <div class="ov-hero__band" [style.background]="bandeau"></div>
+    <div class="ov-hero__body">
+      <div class="ov-hero__identity">
+        <div class="ov-hero__logo">
+          @if (logoUrl && !logoEnErreur) {
+            <img [src]="logoUrl" alt="Logo du projet" (error)="logoEnErreur = true" />
+          } @else {
+            <span class="ov-hero__logo-fallback" [style.background]="couleurProjet">
+              <i class="bx bx-briefcase-alt-2"></i>
+            </span>
+          }
         </div>
-      </div>
-    </div>
-
-    <!-- Colonne latérale - Personnes affectées -->
-    <div class="col-lg-4">
-      <div class="team-card">
-        <div class="card-body">
-          <h2 class="section-title">
-            <mat-icon>people</mat-icon> Personnes Affectées
-          </h2>
-
-          <!-- <div class="team-list">
-            @for (item of DetailProject.users; track $index) {
-            <div class="team-member">
-              <div class="member-avatar">
-                <img [src]="item.imageUrl || 'assets/images/users/avatar-default.png'"
-                     class="avatar-img" alt="{{item.lastname}}">
-              </div>
-              <div class="member-info">
-                <h3 class="member-name">{{item.lastname}}</h3>
-                <p class="member-role">{{item.role || 'Membre'}}</p>
-              </div>
-            </div>
+        <div class="ov-hero__titles">
+          <a routerLink="/projects/list" class="ov-back"><i class="bx bx-chevron-left"></i> Projets</a>
+          <h1 class="ov-hero__name">{{ DetailProject?.libelle || 'Projet' }}</h1>
+          <div class="ov-hero__meta">
+            @if (DetailProject?.status) {
+              <span class="inv-badge" [ngClass]="badgeStatut(DetailProject.status)">
+                <span class="inv-badge__dot"></span>{{ DetailProject.status }}
+              </span>
             }
-          </div> -->
-          <div class="space-y-3">
-            @for (item of  DetailProject.users; track $index) {
-            <div class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition">
-              <div class="relative">
-                @if (item.image) {
-                <img [src]="getImageFromBase64(item.image.type, item.image.image)"
-                  class="w-10 h-10 rounded-full object-cover border-2 border-[#D45C00]">
-                } @else {
-                <div
-                  class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center border-2 border-[#D45C00]">
-                  <span class="text-gray-600 font-medium">{{item.lastname | slice:0:1}}</span>
-                </div>
-                }
-                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
-              </div>
-              <div class="ml-3">
-                <h4 class="text-sm font-medium text-gray-900">{{item.lastname}} {{item.firstname}}</h4>
-                <p class="text-xs text-gray-500">{{item.contact || 'Non spécifié'}}</p>
-              </div>
-            </div>
-            } @empty {
-            <div class="text-center py-4 text-gray-500">
-              <mat-icon class="text-gray-400">group_off</mat-icon>
-              <p>Aucune personne assignée</p>
-            </div>
+            @if (dureeLibelle) {
+              <span class="ov-hero__meta-item"><i class="bx bx-time-five"></i> {{ dureeLibelle }}</span>
             }
           </div>
         </div>
       </div>
+
+      <dl class="ov-stats">
+        <div>
+          <dt>Membres</dt>
+          <dd>{{ DetailProject?.users?.length || 0 }}</dd>
+        </div>
+        <div>
+          <dt>Normes</dt>
+          <dd>{{ DetailProject?.normes?.length || 0 }}</dd>
+        </div>
+      </dl>
     </div>
-  </div>
+  </header>
 
-  <!-- Normes du projet -->
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="standards-card">
-        <div class="card-body">
-          <h2 class="section-title">
-            <mat-icon>rule</mat-icon> Normes du projet
-          </h2>
+  <div class="ov-grid">
+    <!-- ================= Colonne principale ================= -->
+    <div class="ov-main">
+      <section class="inv-card">
+        <div class="inv-card__header">
+          <span class="inv-card__icon"><mat-icon>description</mat-icon></span>
+          <div>
+            <h2 class="inv-card__title">Description</h2>
+            <p class="inv-card__subtitle">Objet du Plan d'Action de Réinstallation.</p>
+          </div>
+        </div>
+        <div class="inv-card__body">
+          <p class="ov-description">{{ DetailProject?.description || 'Aucune description.' }}</p>
+        </div>
+      </section>
 
-          <div class="standards-list">
+      <section class="inv-card">
+        <div class="inv-card__header">
+          <span class="inv-card__icon"><mat-icon>event</mat-icon></span>
+          <div>
+            <h2 class="inv-card__title">Calendrier</h2>
+            <p class="inv-card__subtitle">Période de réalisation du projet.</p>
+          </div>
+        </div>
+        <div class="inv-card__body ov-dates">
+          <div class="ov-date">
+            <span class="ov-date__icon"><mat-icon>event_available</mat-icon></span>
+            <div>
+              <div class="ov-date__label">Date de début</div>
+              <div class="ov-date__value">{{ (DetailProject?.datedebut | date: 'dd/MM/yyyy') || '—' }}</div>
+            </div>
+          </div>
+          <div class="ov-date">
+            <span class="ov-date__icon"><mat-icon>event_busy</mat-icon></span>
+            <div>
+              <div class="ov-date__label">Date de fin prévue</div>
+              <div class="ov-date__value">{{ (DetailProject?.datefin | date: 'dd/MM/yyyy') || '—' }}</div>
+            </div>
+          </div>
+          @if (avancement !== null) {
+            <div class="ov-progress">
+              <div class="ov-progress__label">
+                <span>Temps écoulé</span><strong>{{ avancement }} %</strong>
+              </div>
+              <div class="ov-progress__track">
+                <div class="ov-progress__bar" [style.width.%]="avancement" [style.background]="couleurProjet"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="inv-card">
+        <div class="inv-card__header">
+          <span class="inv-card__icon"><mat-icon>rule</mat-icon></span>
+          <div>
+            <h2 class="inv-card__title">Normes du projet</h2>
+            <p class="inv-card__subtitle">Référentiels applicables (politiques, normes environnementales et sociales…).</p>
+          </div>
+        </div>
+        @if (DetailProject?.normes?.length) {
+          <ul class="ov-list">
             @for (item of DetailProject.normes; track $index) {
-            <div class="standard-item">
-              <div class="standard-icon">
-                <mat-icon>check_circle</mat-icon>
-              </div>
-              <div class="standard-content">
-                <h3 class="standard-title">{{item.titre}}</h3>
-                <p class="standard-description">{{item.description}}</p>
-              </div>
-            </div>
+              <li class="ov-norme">
+                <span class="ov-norme__icon"><mat-icon>verified</mat-icon></span>
+                <div class="ov-norme__text">
+                  <div class="ov-norme__title">{{ item.titre }}</div>
+                  @if (item.description) { <div class="ov-norme__desc">{{ item.description }}</div> }
+                </div>
+              </li>
             }
+          </ul>
+        } @else {
+          <div class="inv-empty">
+            <span class="inv-empty__icon"><mat-icon>rule</mat-icon></span>
+            <p class="inv-empty__title">Aucune norme rattachée</p>
+            <p class="inv-empty__text">Les normes se gèrent depuis le menu Projets &gt; Normes.</p>
+          </div>
+        }
+      </section>
+    </div>
+
+    <!-- ================= Colonne latérale : équipe ================= -->
+    <aside class="ov-side">
+      <section class="inv-card">
+        <div class="inv-card__header">
+          <span class="inv-card__icon"><mat-icon>groups</mat-icon></span>
+          <div>
+            <h2 class="inv-card__title">Membres de l'équipe</h2>
+            <p class="inv-card__subtitle">Comptes ayant accès à ce projet.</p>
           </div>
         </div>
-      </div>
-    </div>
+        @if (DetailProject?.users?.length) {
+          <ul class="ov-list">
+            @for (item of DetailProject.users; track $index) {
+              <li class="ov-member">
+                @if (photoMembre(item); as photo) {
+                  <img [src]="photo" alt="" class="ov-member__avatar" />
+                } @else {
+                  <span class="ov-member__avatar ov-member__avatar--initials">
+                    {{ (item.firstname || '') | slice: 0 : 1 }}{{ (item.lastname || '') | slice: 0 : 1 }}
+                  </span>
+                }
+                <div class="ov-member__text">
+                  <div class="ov-member__name">{{ item.firstname }} {{ item.lastname }}</div>
+                  <div class="ov-member__sub">{{ item.email || item.contact || 'Coordonnées non renseignées' }}</div>
+                </div>
+              </li>
+            }
+          </ul>
+        } @else {
+          <div class="inv-empty">
+            <span class="inv-empty__icon"><mat-icon>group_off</mat-icon></span>
+            <p class="inv-empty__title">Aucun membre</p>
+            <p class="inv-empty__text">Affectez des utilisateurs depuis Administration &gt; Utilisateurs.</p>
+          </div>
+        }
+      </section>
+    </aside>
   </div>
 </div>

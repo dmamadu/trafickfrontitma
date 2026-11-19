@@ -1,3 +1,4 @@
+import { isExtensionAccepted } from "src/app/shared/utils/file-extension";
 import {
   Component,
   OnInit,
@@ -92,9 +93,9 @@ console.log(this.userId);
         // image: ["", Validators.required],
         // attachedFiles: [],
         users: this.fb.array([]),
-        primaryColor: ["#3F51B5", [Validators.required]],
-        secondaryColor: ["#FF4081", [Validators.required]],
-        accentColor: ["#4CAF50", [Validators.required]],
+        primaryColor: ["#245363", [Validators.required]] /* charte INVODIS */,
+        secondaryColor: ["#D45C00", [Validators.required]] /* charte INVODIS */,
+        accentColor: ["#2F7184", [Validators.required]],
       }
       // { validators: dateValidator() }
     );
@@ -370,7 +371,7 @@ console.log(this.userId);
       const index = file.name.lastIndexOf(".");
       const strsubstring = file.name.substring(index, file.name.length);
       const ext = strsubstring;
-      if (accept.indexOf(strsubstring) === -1) {
+      if (!isExtensionAccepted(accept, strsubstring)) {
         this.snackbar.openSnackBar(
           "Ce fichier " + file.name + " n'est " + extension,
           "OK",
@@ -420,6 +421,9 @@ console.log(this.userId);
   }
 
   presetColors: string[] = [
+    "#245363", // Bleu pétrole (charte INVODIS)
+    "#D45C00", // Orange (charte INVODIS)
+    "#2F7184", // Bleu pétrole clair
     "#3F51B5", // Bleu
     "#FF4081", // Rose
     "#4CAF50", // Vert

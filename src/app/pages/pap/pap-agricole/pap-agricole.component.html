@@ -6,7 +6,7 @@
   <div class="col-sm">
     <div class="search-box me-2 d-inline-block">
       <div class="position-relative">
-        <input type="text" class="form-control" autocomplete="off" id="searchTableList" placeholder="Search..."
+        <input type="text" class="form-control" autocomplete="off" id="searchTableList" placeholder="Rechercher…"
           (change)="filterTable($event)">
         <i class="bx bx-search-alt search-icon"></i>
       </div>
@@ -71,9 +71,11 @@
 </app-page-actions> -->
 
 <app-page-actions
-  title="Liste des Pap habitats affectés par le projet"
+  title="PAP agricoles"
+  subtitle="Exploitants agricoles affectés par le projet (parcelles, cultures, récoltes)."
+  icon="bx-landscape"
   [breadcrumbItems]="breadCrumbItems"
-  searchPlaceholder="Rechercher un PAP habitat..."
+  searchPlaceholder="Rechercher par nom, code PAP, code parcelle…"
   [showSearch]="true"
   [actions]="actions"
   (onSearch)="filterTable($event)"

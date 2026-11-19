@@ -29,7 +29,7 @@ export class MolistComponent implements OnInit, OnDestroy {
 
   // ── Breadcrumb ────────────────────────────────────────────────────────────
   breadCrumbItems = [
-    { label: "Maitres d'ouvrages" },
+    { label: "Maîtres d'ouvrage" },
     { label: "Liste", active: true },
   ];
 
@@ -135,15 +135,15 @@ export class MolistComponent implements OnInit, OnDestroy {
 
   // ── CRUD modals ───────────────────────────────────────────────────────────
   addItems(): void {
-    this.snackbar.openModal(AddMaitreOuvrageComponent, "45rem", "new", "38rem", this.datas, "", () => this.fetchMo());
+    this.snackbar.openModal(AddMaitreOuvrageComponent, "45rem", "new", "auto", this.datas, "", () => this.fetchMo());
   }
 
   updateItems(information: any): void {
-    this.snackbar.openModal(AddUserComponent, "45rem", "edit", "38", information, "", () => this.fetchMo());
+    this.snackbar.openModal(AddUserComponent, "45rem", "edit", "auto", information, "", () => this.fetchMo());
   }
 
   detailItems(information: any): void {
-    this.snackbar.openModal(DetailUserComponent, "45rem", "edit", "38", information, "", () => this.fetchMo());
+    this.snackbar.openModal(DetailUserComponent, "45rem", "edit", "auto", information, "", () => this.fetchMo());
   }
 
   supprimerItems(id: any): void {

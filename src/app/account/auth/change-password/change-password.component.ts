@@ -2,17 +2,14 @@ import { ChangeDetectorRef, Component, Inject, OnInit, Optional } from "@angular
 import { CommonModule } from "@angular/common";
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { MatCardModule } from "@angular/material/card";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatInputModule } from "@angular/material/input";
-import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
-import { MatDivider } from "@angular/material/divider";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { LocalService } from "src/app/core/services/local.service";
 import { User } from "src/app/store/Authentication/auth.models";
 import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { AuthenticationService } from "src/app/core/services/auth.service";
+import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
 
 export interface ChangePasswordDialogData {
   isForced?: boolean;
@@ -24,12 +21,9 @@ export interface ChangePasswordDialogData {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
     MatIconModule,
-    MatDivider,
+    MatProgressSpinnerModule,
+    DialogHeaderComponent,
   ],
   templateUrl: "./change-password.component.html",
   styleUrls: ["./change-password.component.css"],
@@ -158,6 +152,28 @@ export class ChangePasswordComponent implements OnInit {
         },
       });
     });
+  }
+
+  /** Règles affichées sous le nouveau mot de passe (mêmes critères que le Validators.pattern). */
+  get rules(): { label: string; ok: boolean }[] {
+    const v: string = this.passwordForm?.get("newPassword")?.value || "";
+    return [
+      { label: "8 caractères minimum", ok: v.length >= 8 },
+      { label: "Une majuscule", ok: /[A-Z]/.test(v) },
+      { label: "Une minuscule", ok: /[a-z]/.test(v) },
+      { label: "Un chiffre", ok: /\d/.test(v) },
+      { label: "Un caractère spécial (@ # ! . -)", ok: /[^A-Za-z\d\s]/.test(v) },
+    ];
+  }
+
+  /** Les deux nouveaux mots de passe sont saisis mais différents. */
+  get mismatch(): boolean {
+    return !!this.passwordForm?.hasError("notSame") && !!this.passwordForm.get("confirmPassword")?.value;
+  }
+
+  showError(controlName: string): boolean {
+    const control = this.passwordForm?.get(controlName);
+    return !!control && control.invalid && (control.touched || control.dirty);
   }
 
   getErrorMessage(controlName: string): string {

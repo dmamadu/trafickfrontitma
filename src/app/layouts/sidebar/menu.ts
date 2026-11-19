@@ -83,7 +83,7 @@ export const MENU: MenuItem[] = [
         subItems: [
           {
             id: 12,
-            label: "Exploitants/Agricole",
+            label: "Agricole",
             icon: "bxs-tree",
             link: "/pap/papAgricole",
             parentId: 11,
@@ -91,7 +91,7 @@ export const MENU: MenuItem[] = [
           },
           {
             id: 13,
-            label: "Place Affaires/Economiques",
+            label: "Places d'affaires",
             icon: "bxs-store",
             link: "/pap/papPlaceAffaire",
             parentId: 11,
@@ -109,7 +109,7 @@ export const MENU: MenuItem[] = [
       },
       {
         id: 15,
-        label: "Parties intéréssées",
+        label: "Parties intéressées",
         icon: "bxs-user-check",
         parentId: 10,
         subItems: [
@@ -163,7 +163,8 @@ export const MENU: MenuItem[] = [
       },
       {
         id: 22,
-        label: "Mécanisme de gestion des plaintes",
+        // label: "Mécanisme de gestion des plaintes",
+        label: "Plaintes (MGP)",
         icon: "bxs-megaphone",
         parentId: 19,
         subItems: [
@@ -251,7 +252,7 @@ export const MENU: MenuItem[] = [
       },
       {
         id: 33,
-        label: "Engagements des parties prenantes",
+        label: "Engagements des PP",
         icon: "bxs-book-bookmark",
         parentId: 19,
         subItems: [

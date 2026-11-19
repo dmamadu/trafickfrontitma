@@ -112,7 +112,10 @@ export class SnackBarService {
     const dialogRef = this._matDialog.open(composant, {
       autoFocus: true,
       width: width,
-      height: height !== "auto" ? height : `${maxHeight}px`,
+      // « auto » : la fenêtre prend la hauteur de son contenu, plafonnée à 85 % de l'écran (puis défilement).
+      // Avant, « auto » imposait 85 % de l'écran en dur, d'où un grand vide sous les formulaires courts.
+      height: height !== "auto" ? height : undefined,
+      maxHeight: `${maxHeight}px`,
       panelClass: "event-form-dialog",
       disableClose: true,
       data: {

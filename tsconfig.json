@@ -10,6 +10,7 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "module": "es2020",
+    "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",

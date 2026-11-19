@@ -1,49 +1,45 @@
-<div class="flex flex-col overflow-x-auto w-full">
+<div class="inv-table-card">
   <!-- Barre d'actions pour la suppression multiple -->
-  <div *ngIf="enableSelection && enableBulkDelete && selection.hasValue()" 
-       class="bg-blue-50 p-3 mb-4 rounded-md flex items-center justify-between bulk-action-bar">
-    <div class="text-sm text-blue-800 font-medium">
-      <i class="bx bx-check-circle mr-2"></i>
+  <div *ngIf="enableSelection && enableBulkDelete && selection.hasValue()" class="bulk-action-bar">
+    <div class="bulk-action-bar__label">
+      <i class="bx bx-check-circle"></i>
       {{ getSelectedCount() }} élément(s) sélectionné(s)
     </div>
-    <button mat-raised-button color="warn" (click)="deleteSelectedItems()" 
-            class="flex items-center gap-2 px-4 py-2">
-      <i class="bx bx-trash text-lg"></i>
+    <button type="button" class="inv-btn inv-btn--danger inv-btn--sm" (click)="deleteSelectedItems()">
+      <i class="bx bx-trash"></i>
       Supprimer la sélection
     </button>
   </div>
 
-  <table aria-label="client" class="shadow-lg w-full" mat-table matSort
+  <div class="inv-table-scroll">
+  <table aria-label="client" class="inv-table" mat-table matSort
     [matSortActive]="'libelle'" [matSortDisableClear]="true" [matSortDirection]="'asc'" 
     [multiTemplateDataRows]="true" [dataSource]="dataSource" [trackBy]="trackByFn">
 
     <!-- Colonne de sélection -->
     <ng-container *ngIf="enableSelection" matColumnDef="select">
-      <th mat-header-cell *matHeaderCellDef class="w-12">
+      <th mat-header-cell *matHeaderCellDef class="inv-th inv-th--select">
         <mat-checkbox 
           [checked]="isAllSelected()"
           [indeterminate]="selection.hasValue() && !isAllSelected()"
           (change)="toggleAllRows()"
-          aria-label="Select all"
-          class="ml-2">
+          aria-label="Tout sélectionner">
         </mat-checkbox>
       </th>
-      <td mat-cell *matCellDef="let row" class="w-12">
+      <td mat-cell *matCellDef="let row" class="inv-td inv-td--select">
         <mat-checkbox
           [checked]="isRowSelected(row)"
           (change)="toggleRow(row)"
-          aria-label="Select row"
-          class="ml-2">
+          aria-label="Sélectionner la ligne">
         </mat-checkbox>
       </td>
     </ng-container>
 
     <ng-container [matColumnDef]="entete[i]['th']" *ngFor="let item of entete; let i = index">
-      <th class="w-40 enteteTable px-4 py-3 bg-gray-100 text-left text-xs font-medium text-gray-700 uppercase tracking-wider" 
-          mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
+      <th class="inv-th" mat-header-cell *matHeaderCellDef mat-sort-header disableClear>
         {{ item['th'] }}
       </th>
-      <td class="pr-8 truncate contentTable px-4 py-3 text-sm text-gray-900" mat-cell *matCellDef="let element">
+      <td class="inv-td" mat-cell *matCellDef="let element">
         <span
           [matTooltip]="(element[item['td']])?.length > 23 ? element[item['td']] : item['el'] ? element[item['td']] ? element[item['td']][item['el']] : '' : ''"
           class="{{getBadgeClass(element, entete[i]) || getBadgeStatut(element, entete[i])}}">
@@ -79,36 +75,34 @@
 
     <!-- Colonne Action - SEULEMENT si des actions sont définies -->
     <ng-container *ngIf="actions && actions.length > 0" matColumnDef="Action">
-      <th class="w-40 enteteTable px-4 py-3 bg-gray-100 text-left text-xs font-medium text-gray-700 uppercase tracking-wider" 
-          mat-header-cell *matHeaderCellDef>
-        Action
+      <th class="inv-th inv-th--actions" mat-header-cell *matHeaderCellDef>
+        Actions
       </th>
-      <td class="pr-4 px-4 py-3" mat-cell *matCellDef="let element">
-        <div class="flex items-center space-x-1">
+      <td class="inv-td inv-td--actions" mat-cell *matCellDef="let element">
+        <div class="inv-actions">
           <ng-container *ngFor="let actionBtn of inlineActions">
-            <button class="p-1 rounded hover:bg-gray-200 transition-colors"
+            <button type="button" class="inv-action-btn"
                     [matTooltip]="resolveTitle(actionBtn, element)"
+                    [attr.aria-label]="resolveTitle(actionBtn, element)"
                     [disabled]="actionBtn.isDisabled || (actionBtn.constraint ? actionBtn.constraint(element) : false)"
-                    (click)="actionBtn.action(element)"
-                    mat-icon-button>
-              <i class="bx {{ resolveIcon(actionBtn, element) }} text-lg"
+                    (click)="actionBtn.action(element)">
+              <i class="bx {{ resolveIcon(actionBtn, element) }}"
                  [ngStyle]="{'color': resolveColor(actionBtn, element)}"></i>
             </button>
           </ng-container>
 
-          <button *ngIf="overflowActions.length > 0"
-                  class="p-1 rounded hover:bg-gray-200 transition-colors"
-                  matTooltip="Plus d'actions"
-                  [matMenuTriggerFor]="overflowMenu"
-                  mat-icon-button>
-            <i class="bx bx-dots-vertical-rounded text-lg"></i>
+          <button *ngIf="overflowActions.length > 0" type="button"
+                  class="inv-action-btn"
+                  matTooltip="Plus d'actions" aria-label="Plus d'actions"
+                  [matMenuTriggerFor]="overflowMenu">
+            <i class="bx bx-dots-vertical-rounded"></i>
           </button>
           <mat-menu #overflowMenu="matMenu">
             <button mat-menu-item
                     *ngFor="let actionBtn of overflowActions"
                     [disabled]="actionBtn.isDisabled || (actionBtn.constraint ? actionBtn.constraint(element) : false)"
                     (click)="actionBtn.action(element)">
-              <i class="bx {{ resolveIcon(actionBtn, element) }} text-lg mr-2"
+              <i class="bx {{ resolveIcon(actionBtn, element) }} inv-menu-icon"
                  [ngStyle]="{'color': resolveColor(actionBtn, element)}"></i>
               <span>{{ resolveTitle(actionBtn, element) }}</span>
             </button>
@@ -117,23 +111,22 @@
       </td>
     </ng-container>
 
-    <tr class="shadow" mat-header-row *matHeaderRowDef="getDisplayedColumns(); sticky: true"></tr>
-    <tr class="hover:bg-gray-100 dark:hover:bg-hover transition-colors" 
-        mat-row 
+    <tr class="inv-tr-head" mat-header-row *matHeaderRowDef="getDisplayedColumns(); sticky: true"></tr>
+    <tr class="inv-tr" mat-row
         *matRowDef="let role; columns: getDisplayedColumns();"
-        [class.bg-blue-50]="enableSelection && isRowSelected(role)">
+        [class.is-selected]="enableSelection && isRowSelected(role)">
     </tr>
   </table>
-
-  <div *ngIf="dataSource.data?.length === 0" class="w-full text-center py-8 bg-gray-50 rounded-lg">
-    <i class="bx bx-inbox text-4xl text-gray-400 mb-2"></i>
-    <p class="text-gray-500 font-medium">Aucune donnée disponible</p>
-    <p class="text-sm text-gray-400 mt-1">La liste est vide.</p>
   </div>
-</div>
+
+  <div *ngIf="dataSource.data?.length === 0" class="inv-empty">
+    <span class="inv-empty__icon"><i class="bx bx-folder-open"></i></span>
+    <p class="inv-empty__title">Aucune donnée disponible</p>
+    <p class="inv-empty__text">La liste est vide pour le moment.</p>
+  </div>
 
 <mat-paginator *ngIf="dataSource.data?.length !== 0" 
-               class="paginator c-paginator mt-4" 
+               class="inv-paginator" 
                #paginator 
                (page)="pageChanged($event)"
                [length]="total" 
@@ -141,3 +134,4 @@
                [pageSize]="pageSize" 
                [pageSizeOptions]="pageSizeOptions">
 </mat-paginator>
+</div>

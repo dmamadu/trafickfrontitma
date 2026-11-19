@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { environment } from '../environments/environment';
@@ -30,11 +31,12 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { ErrorInterceptor } from './core/helpers/error.interceptor';
 import { JwtInterceptor } from './core/helpers/jwt.interceptor';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { PaginatorIntlFr } from './shared/core/paginator-intl-fr';
 import { FilemanagerEffects } from './store/filemanager/filemanager.effects';
 import { rootReducer } from './store';
 import { OrderEffects } from './store/orders/order.effects';
 import { AuthenticationEffects } from './store/Authentication/authentication.effects';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { CartEffects } from './store/Cart/cart.effects';
 import { ProjectEffects } from './store/ProjectsData/project.effects';
 import { usersEffects } from './store/UserGrid/user.effects';
@@ -46,7 +48,6 @@ import { OrdersEffects } from './store/Crypto/crypto.effects';
 import { CustomerEffects } from './store/customer/customer.effects';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { DetailPlainteComponent } from './detail-plainte/detail-plainte.component';
-import { AngularMaterialModule } from './shared/angular-materiel-module/angular-materiel-module';
 import { HeroCarouselComponent } from "./cyptolanding/hero-carousel/hero-carousel.component";
 import { FonctionnalitesComponent } from "./cyptolanding/compnents/fonctionnalites";
 import { SuccesStatsComponent } from "./cyptolanding/compnents/succes-stats";
@@ -70,8 +71,9 @@ export function createTranslateLoader(http: HttpClient): any {
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
-    AngularFireAuthModule,
     TranslateModule.forRoot({
         loader: {
             provide: TranslateLoader,
@@ -90,10 +92,8 @@ export function createTranslateLoader(http: HttpClient): any {
     SlickCarouselModule,
     ToastrModule.forRoot(),
     StoreModule.forRoot(rootReducer),
-    StoreDevtoolsModule.instrument({
-        maxAge: 25, // Retains last 25 states
-        logOnly: environment.production, // Restrict extension to log-only mode
-    }),
+    // Outil de débogage NgRx : uniquement en développement
+    ...(environment.production ? [] : [StoreDevtoolsModule.instrument({ maxAge: 25 })]),
     EffectsModule.forRoot([
         FilemanagerEffects,
         OrderEffects,
@@ -108,7 +108,6 @@ export function createTranslateLoader(http: HttpClient): any {
         OrdersEffects,
         CustomerEffects,
     ]),
-    AngularMaterialModule,
     HeroCarouselComponent,
     FonctionnalitesComponent,
     SuccesStatsComponent,
@@ -126,6 +125,8 @@ export function createTranslateLoader(http: HttpClient): any {
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     provideAnimationsAsync(),
+    // Pagination Material en français pour toute l'application
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
   //  { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true },
   ],
 })

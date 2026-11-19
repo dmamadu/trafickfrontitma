@@ -1,129 +1,286 @@
-<div class="meo-root" *ngIf="loadData">
-  <div class="page-header">
-    <div class="header-icon"><mat-icon>analytics</mat-icon></div>
+<div class="meo">
+  <!-- ── En-tête ── -->
+  <header class="meo-header">
     <div>
-      <h1 class="page-title">Statistiques dynamiques</h1>
-      <p class="page-subtitle">Mise en œuvre du PAR</p>
-    </div>
-  </div>
-  <app-loader-custom></app-loader-custom>
-</div>
-
-<div class="meo-root" *ngIf="!loadData">
-
-  <div class="page-header">
-    <div class="header-icon"><mat-icon>analytics</mat-icon></div>
-    <div>
-      <h1 class="page-title">Statistiques dynamiques</h1>
-      <p class="page-subtitle">Mise en œuvre du PAR</p>
-    </div>
-  </div>
-
-  <!-- ── Statut des dossiers ── -->
-  <div class="section-block">
-    <div class="section-header">
-      <mat-icon>folder_open</mat-icon>
-      <h2>Statut des dossiers</h2>
+      <p class="meo-crumb">Tableaux de bord / Mise en œuvre</p>
+      <h1 class="meo-title">Mise en œuvre du PAR</h1>
+      <p class="meo-meta" *ngIf="stats">
+        <span class="meo-meta__pill">
+          <i class="meo-dot"></i>{{ stats.totalPap | number:'1.0-0':'fr' }} PAP · {{ stats.totalVulnerables | number:'1.0-0':'fr' }} vulnérables
+        </span>
+        <span>Mis à jour le {{ stats.dateMaj | date:"dd/MM/yyyy 'à' HH:mm" }}</span>
+      </p>
     </div>
 
-    <div class="kpi-grid">
-
-      <div class="kpi-card">
-        <div class="kpi-icon kpi-green">
-          <mat-icon>people</mat-icon>
-        </div>
-        <div class="kpi-content">
-          <span class="kpi-value">{{ statsData?.summary?.totalPersonnesAffectees }}</span>
-          <span class="kpi-label">Personnes affectées</span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-icon kpi-orange">
-          <mat-icon>accessibility_new</mat-icon>
-        </div>
-        <div class="kpi-content">
-          <span class="kpi-value">{{ statsData?.summary?.totalVulnerables }}</span>
-          <span class="kpi-label">PAP vulnérables</span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-icon kpi-orange">
-          <mat-icon>description</mat-icon>
-        </div>
-        <div class="kpi-content">
-          <span class="kpi-value">{{ statsData?.dossiersStats?.ententesSignees }}</span>
-          <span class="kpi-label">Ententes de compensation</span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-icon kpi-green">
-          <mat-icon>send</mat-icon>
-        </div>
-        <div class="kpi-content">
-          <span class="kpi-value">{{ statsData?.dossiersStats?.dossiersTransmis }}</span>
-          <span class="kpi-label">Dossiers transmis</span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-icon kpi-orange">
-          <mat-icon>payments</mat-icon>
-        </div>
-        <div class="kpi-content">
-          <span class="kpi-value">{{ statsData?.dossiersStats?.papPayees }}</span>
-          <span class="kpi-label">PAP payées</span>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-icon kpi-green">
-          <mat-icon>account_balance_wallet</mat-icon>
-        </div>
-        <div class="kpi-content">
-          <span class="kpi-value">{{ statsData?.summary?.totalCompensations | currency:'CFA ':true:'1.0-0' }}</span>
-          <span class="kpi-label">Total compensations</span>
-        </div>
-      </div>
-
+    <div class="meo-filters">
+      <label class="meo-field">
+        <span>Zone</span>
+        <select [(ngModel)]="zone" (ngModelChange)="charger()" [disabled]="!stats">
+          <option value="">Toutes les zones</option>
+          <option *ngFor="let z of stats?.zones" [value]="z">{{ z }}</option>
+        </select>
+      </label>
+      <label class="meo-field">
+        <span>Période</span>
+        <select [(ngModel)]="periode" (ngModelChange)="charger()" [disabled]="!stats">
+          <option *ngFor="let p of periodes" [value]="p.value">{{ p.label }}</option>
+        </select>
+      </label>
+      <button type="button" class="meo-btn" (click)="exporter()" [disabled]="!stats">
+        <mat-icon>download</mat-icon> Exporter le rapport
+      </button>
     </div>
+  </header>
+
+  <app-loader-custom *ngIf="loading"></app-loader-custom>
+
+  <div class="meo-empty" *ngIf="!loading && erreur">
+    <mat-icon>error_outline</mat-icon>
+    <p>Impossible de charger le tableau de bord.</p>
+    <button type="button" class="meo-link" (click)="charger()">Réessayer</button>
   </div>
 
-  <!-- ── Avancement du processus ── -->
-  <div class="section-block">
-    <div class="section-header">
-      <mat-icon>stacked_bar_chart</mat-icon>
-      <h2>Avancement du processus de compensation</h2>
-    </div>
-    <div class="chart-body">
-      <apx-chart
-        [series]="processusChart.series"
-        [chart]="processusChart.chart"
-        [xaxis]="processusChart.xaxis"
-        [colors]="processusChart.colors"
-        [dataLabels]="processusChart.dataLabels"
-        [plotOptions]="processusChart.plotOptions">
-      </apx-chart>
-    </div>
-  </div>
+  <ng-container *ngIf="!loading && stats as s">
+    <p class="meo-note" *ngIf="filtrePeriodeActif">
+      La période s'applique aux paiements et aux ententes finalisées. Les étapes et les points d'attention montrent la situation actuelle.
+    </p>
 
-  <!-- ── Répartition par statut ── -->
-  <div class="section-block">
-    <div class="section-header">
-      <mat-icon>pie_chart</mat-icon>
-      <h2>Répartition des ententes par statut</h2>
-    </div>
-    <div class="chart-body">
-      <apx-chart
-        [series]="statutChart.series"
-        [chart]="statutChart.chart"
-        [labels]="statutChart.labels"
-        [colors]="statutChart.colors"
-        [legend]="statutChart.legend">
-      </apx-chart>
-    </div>
-  </div>
+    <!-- ── Indicateurs ── -->
+    <section class="meo-kpis">
+      <article class="meo-hero">
+        <div class="meo-hero__top">
+          <span>Compensations versées</span>
+          <span class="meo-hero__devise">{{ devise }}</span>
+        </div>
+        <p class="meo-hero__value">
+          {{ montantCourt(s.montantVerse) }}
+          <small>sur {{ montantCourt(s.budgetPrevu) }} {{ devise }}</small>
+        </p>
+        <div class="meo-bar meo-bar--dark">
+          <span class="meo-bar__fill meo-fill--secondary" [style.width.%]="s.tauxDecaissement"></span>
+        </div>
+        <div class="meo-hero__foot">
+          <div>
+            <span>Taux de décaissement</span>
+            <strong class="meo-hero__taux">{{ s.tauxDecaissement | number:'1.1-1':'fr' }} %</strong>
+          </div>
+          <div>
+            <span>Reste à payer</span>
+            <strong>{{ montantCourt(s.resteAPayer) }}</strong>
+          </div>
+        </div>
+      </article>
 
+      <article class="meo-kpi">
+        <span class="meo-kpi__label">Dossiers transmis</span>
+        <p class="meo-kpi__value">{{ s.dossiersTransmis }} <small>/ {{ s.totalDossiers }}</small></p>
+        <div class="meo-bar"><span class="meo-bar__fill meo-fill--primary" [style.width.%]="pct(s.dossiersTransmis, s.totalDossiers)"></span></div>
+        <p class="meo-kpi__hint">
+          {{ pct(s.dossiersTransmis, s.totalDossiers) | number:'1.1-1':'fr' }} % · {{ s.totalDossiers - s.dossiersTransmis }} compensations restent à établir
+        </p>
+      </article>
+
+      <article class="meo-kpi">
+        <span class="meo-kpi__label">Ententes finalisées</span>
+        <p class="meo-kpi__value">{{ s.ententesFinalisees }} <small>/ {{ s.totalDossiers }}</small></p>
+        <div class="meo-bar"><span class="meo-bar__fill meo-fill--secondary" [style.width.%]="pct(s.ententesFinalisees, s.totalDossiers)"></span></div>
+        <p class="meo-kpi__hint">
+          {{ pct(s.ententesFinalisees, s.totalDossiers) | number:'1.1-1':'fr' }} %
+          <ng-container *ngIf="!filtrePeriodeActif"> · {{ s.totalDossiers - s.ententesFinalisees }} ententes encore en cours</ng-container>
+        </p>
+      </article>
+
+      <article class="meo-kpi">
+        <span class="meo-kpi__label">PAP payées</span>
+        <p class="meo-kpi__value">{{ s.papPayees }} <small>/ {{ s.totalDossiers }}</small></p>
+        <div class="meo-bar"><span class="meo-bar__fill meo-fill--success" [style.width.%]="pct(s.papPayees, s.totalDossiers)"></span></div>
+        <p class="meo-kpi__hint">
+          {{ pct(s.papPayees, s.totalDossiers) | number:'1.1-1':'fr' }} %
+          <ng-container *ngIf="!filtrePeriodeActif"> · {{ s.totalDossiers - s.papPayees }} paiements à effectuer</ng-container>
+        </p>
+      </article>
+
+      <article class="meo-kpi">
+        <span class="meo-kpi__label">PAP vulnérables payées</span>
+        <p class="meo-kpi__value">{{ s.vulnerablesPayees }} <small>/ {{ s.vulnerablesDossiers }}</small></p>
+        <div class="meo-bar"><span class="meo-bar__fill meo-fill--success" [style.width.%]="pct(s.vulnerablesPayees, s.vulnerablesDossiers)"></span></div>
+        <p class="meo-kpi__hint">
+          {{ pct(s.vulnerablesPayees, s.vulnerablesDossiers) | number:'1.1-1':'fr' }} %
+          <ng-container *ngIf="!filtrePeriodeActif"> · {{ s.alertes.vulnerablesNonPayees }} vulnérables en attente de paiement</ng-container>
+        </p>
+      </article>
+    </section>
+
+    <!-- ── Avancement du processus ── -->
+    <section class="meo-card" id="meo-processus">
+      <div class="meo-card__head">
+        <div>
+          <h2>Avancement du processus de compensation</h2>
+          <p>Où se trouvent les {{ s.totalDossiers }} dossiers aujourd'hui. Cliquez sur une étape pour voir ses dossiers.</p>
+        </div>
+        <span class="meo-goulot" *ngIf="goulot">
+          <mat-icon>warning_amber</mat-icon> Goulot : {{ goulot.libelle }}
+        </span>
+      </div>
+
+      <div class="meo-steps" *ngIf="s.totalDossiers > 0; else aucunDossier">
+        <button
+          type="button"
+          *ngFor="let e of s.etapes; let i = index; let last = last"
+          class="meo-step"
+          [class.is-selected]="etapeSelectionnee?.code === e.code"
+          [class.is-goulot]="goulot?.code === e.code"
+          [class.is-done]="last"
+          (click)="selectionnerEtape(e)"
+        >
+          <span class="meo-step__top">
+            <span>Étape {{ i + 1 }}</span>
+            <span class="meo-step__tag" *ngIf="goulot?.code === e.code">Goulot</span>
+          </span>
+          <span class="meo-step__chart"><span class="meo-step__bar" [style.height.%]="hauteurEtape(e)"></span></span>
+          <span class="meo-step__count">{{ e.count }}</span>
+          <span class="meo-step__label">{{ e.libelle }}</span>
+          <span class="meo-step__pct">{{ pct(e.count, s.totalDossiers) | number:'1.1-1':'fr' }} % des dossiers</span>
+        </button>
+      </div>
+      <ng-template #aucunDossier>
+        <p class="meo-empty-line">Aucune entente pour ce projet{{ zone ? ' dans cette zone' : '' }}. Les ententes sont générées depuis le module Mise en œuvre du PAR.</p>
+      </ng-template>
+
+      <!-- Dossiers de l'étape -->
+      <div class="meo-dossiers" *ngIf="etapeSelectionnee && s.totalDossiers > 0">
+        <div class="meo-dossiers__head">
+          <h3>Dossiers à l'étape « {{ etapeSelectionnee.libelle }} » <span>· {{ dossiersTotal }}</span></h3>
+          <button type="button" class="meo-link" *ngIf="dossiersTotal > 5" (click)="voirTousLesDossiers()">
+            {{ dossiersTaille === 5 ? 'Voir les ' + dossiersTotal + ' dossiers' : 'Réduire la liste' }}
+          </button>
+        </div>
+
+        <div class="meo-table-wrap">
+          <table class="meo-table" *ngIf="dossiers.length; else pasDeDossier">
+            <thead>
+              <tr>
+                <th>PAP</th>
+                <th>Catégorie</th>
+                <th>Zone</th>
+                <th class="num">Montant ({{ devise }})</th>
+                <th class="num">Jours à l'étape</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody [class.is-loading]="dossiersLoading">
+              <tr *ngFor="let d of dossiers">
+                <td>
+                  <strong>{{ nomPap(d) }}</strong>
+                  <small>{{ d.codePap }}</small>
+                </td>
+                <td>
+                  {{ libellesCategorie[d.categorie] || d.categorie }}
+                  <span class="meo-badge" *ngIf="d.vulnerable">Vulnérable</span>
+                </td>
+                <td>{{ d.zone || '—' }}</td>
+                <td class="num">{{ d.montant != null ? (d.montant | number:'1.0-0':'fr') : '—' }}</td>
+                <td class="num"><span class="meo-jours" [ngClass]="classeJours(d.joursEtape)">{{ d.joursEtape != null ? d.joursEtape + ' j' : '—' }}</span></td>
+                <td class="num"><a class="meo-link" routerLink="/ententeCompensation/list">Ouvrir</a></td>
+              </tr>
+            </tbody>
+          </table>
+          <ng-template #pasDeDossier>
+            <p class="meo-empty-line" *ngIf="!dossiersLoading">Aucun dossier à cette étape.</p>
+          </ng-template>
+        </div>
+
+        <div class="meo-pager" *ngIf="dossiersTaille > 5 && dossiersPages > 1">
+          <button type="button" class="meo-link" (click)="pageDossiers(-1)" [disabled]="dossiersPage === 0">Précédent</button>
+          <span>Page {{ dossiersPage + 1 }} / {{ dossiersPages }}</span>
+          <button type="button" class="meo-link" (click)="pageDossiers(1)" [disabled]="dossiersPage + 1 >= dossiersPages">Suivant</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="meo-grid-2">
+      <!-- ── Ententes par statut ── -->
+      <section class="meo-card">
+        <h2>Ententes par statut</h2>
+        <p class="meo-card__sub">{{ statutsTotal() }} ententes créées</p>
+        <div class="meo-stack" *ngIf="statutsTotal() > 0">
+          <span class="meo-fill--brouillon" [style.width.%]="pct(s.statuts.brouillon, statutsTotal())"></span>
+          <span class="meo-fill--primary" [style.width.%]="pct(s.statuts.synchronisee, statutsTotal())"></span>
+          <span class="meo-fill--success" [style.width.%]="pct(s.statuts.finalisee, statutsTotal())"></span>
+        </div>
+        <ul class="meo-list">
+          <li>
+            <i class="meo-dot meo-fill--brouillon"></i>
+            <div><strong>Brouillon</strong><small>En préparation par le consultant</small></div>
+            <b>{{ s.statuts.brouillon }}</b><span>{{ pct(s.statuts.brouillon, statutsTotal()) | number:'1.1-1':'fr' }} %</span>
+          </li>
+          <li>
+            <i class="meo-dot meo-fill--primary"></i>
+            <div><strong>Synchronisée</strong><small>Remontée du terrain, à valider</small></div>
+            <b>{{ s.statuts.synchronisee }}</b><span>{{ pct(s.statuts.synchronisee, statutsTotal()) | number:'1.1-1':'fr' }} %</span>
+          </li>
+          <li>
+            <i class="meo-dot meo-fill--success"></i>
+            <div><strong>Finalisée</strong><small>Signée par la PAP</small></div>
+            <b>{{ s.statuts.finalisee }}</b><span>{{ pct(s.statuts.finalisee, statutsTotal()) | number:'1.1-1':'fr' }} %</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ── Paiements par catégorie ── -->
+      <section class="meo-card">
+        <div class="meo-card__head">
+          <div>
+            <h2>Paiements par catégorie</h2>
+            <p>Versé / budget prévu, en millions de {{ devise }}</p>
+          </div>
+          <span class="meo-legend">
+            <span><i class="meo-dot meo-fill--success"></i>Versé</span>
+            <span><i class="meo-dot meo-fill--track"></i>Reste</span>
+          </span>
+        </div>
+        <div class="meo-cat" *ngFor="let c of s.categories">
+          <div class="meo-cat__row">
+            <strong>{{ c.libelle }}</strong>
+            <span>
+              <b>{{ c.verse / 1e6 | number:'1.0-1':'fr' }} M</b> / {{ c.budget / 1e6 | number:'1.0-1':'fr' }} M ·
+              <em>{{ pct(c.verse, c.budget) | number:'1.1-1':'fr' }} %</em>
+            </span>
+          </div>
+          <div class="meo-bar"><span class="meo-bar__fill meo-fill--success" [style.width.%]="pct(c.verse, c.budget)"></span></div>
+          <small *ngIf="c.dossiers > 0">{{ c.papPayees }} PAP payées sur {{ c.totalPap }}</small>
+          <small *ngIf="c.dossiers === 0 && c.totalPap > 0">{{ c.totalPap }} PAP · pas encore de processus d'entente pour cette catégorie</small>
+          <small *ngIf="c.totalPap === 0">Aucune PAP</small>
+        </div>
+      </section>
+    </div>
+
+    <!-- ── Points d'attention ── -->
+    <section class="meo-card">
+      <h2>Points d'attention</h2>
+      <div class="meo-alerts">
+        <div class="meo-alert meo-alert--danger" [class.is-zero]="!s.alertes.accordsEnRetard">
+          <b>{{ s.alertes.accordsEnRetard }}</b>
+          <div>
+            <strong>accords en attente depuis plus de {{ seuilRetardJours }} jours</strong>
+            <button type="button" class="meo-link" (click)="voirAccordsEnRetard()">Voir les dossiers</button>
+          </div>
+        </div>
+        <div class="meo-alert meo-alert--warning" [class.is-zero]="!s.alertes.vulnerablesNonPayees">
+          <b>{{ s.alertes.vulnerablesNonPayees }}</b>
+          <div>
+            <strong>PAP vulnérables pas encore payées</strong>
+            <a class="meo-link" routerLink="/ententeCompensation/list">Prioriser les paiements</a>
+          </div>
+        </div>
+        <div class="meo-alert meo-alert--info" [class.is-zero]="!s.alertes.ententesAValider">
+          <b>{{ s.alertes.ententesAValider }}</b>
+          <div>
+            <strong>ententes synchronisées à valider</strong>
+            <a class="meo-link" routerLink="/ententeCompensation/list">Valider les ententes</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </ng-container>
 </div>

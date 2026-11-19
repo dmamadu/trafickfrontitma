@@ -15,6 +15,26 @@
         [ngClass]="{ 'd-none': theme === 'horizontal' }" id="vertical-menu-btn" (click)="toggleMobileMenu($event)">
         <i class="fa fa-fw fa-bars"></i>
       </button>
+      <!-- Projet actif : touche de couleur du projet (charte INVODIS conservée partout ailleurs) -->
+      @if (projectLabel) {
+        <div class="d-none d-md-flex align-items-center ms-2">
+          @if (canSwitchProject) {
+          <button type="button" class="inv-project-chip" (click)="openProjectSwitcher()"
+                  title="Changer de projet" aria-label="Projet actif : {{ projectLabel }}. Changer de projet">
+            <span class="inv-project-chip__dot"></span>
+            <span class="inv-project-chip__label">{{ projectLabel }}</span>
+            <i class="bx bx-chevron-down inv-project-chip__hint"></i>
+          </button>
+          } @else {
+          <!-- Un seul projet accessible : simple étiquette, pas de sélection -->
+          <span class="inv-project-chip inv-project-chip--static" title="Projet actif"
+                aria-label="Projet actif : {{ projectLabel }}">
+            <span class="inv-project-chip__dot"></span>
+            <span class="inv-project-chip__label">{{ projectLabel }}</span>
+          </span>
+          }
+        </div>
+      }
     </div>
     <div class="d-flex">
       <div class="dropdown d-inline-block d-lg-none ms-2" dropdown>

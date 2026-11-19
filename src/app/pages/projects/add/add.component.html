@@ -517,6 +517,7 @@
                   [formControlName]="c.ctrl"
                   [(colorPicker)]="projectForm.value[c.ctrl]"
                   [style.background]="projectForm.value[c.ctrl]"
+                  [style.color]="couleurTexte(projectForm.value[c.ctrl])"
                   [value]="projectForm.value[c.ctrl]"
                   [cpPresetColors]="presetColors" />
                 <mat-icon class="!text-base !w-4 !h-4 text-gray-400">colorize</mat-icon>
@@ -534,7 +535,7 @@
     <app-loader-data *ngIf="isloading"></app-loader-data>
 
     <!-- Actions -->
-    <div class="flex justify-end gap-2 mt-4 pt-3 border-t border-gray-100">
+    <div class="inv-dialog-footer">
       <button mat-stroked-button type="button" (click)="matDialogRef.close()">
         Annuler
       </button>

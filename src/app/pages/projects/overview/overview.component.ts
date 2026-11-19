@@ -1,3 +1,4 @@
+import { resolveUserImageUrl } from "src/app/shared/utils/user-image";
 import { Component, OnInit } from "@angular/core";
 
 import { overviewBarChart } from "./data";
@@ -56,6 +57,74 @@ export class OverviewComponent implements OnInit {
 
     // fetches the data
     //this._fetchData();
+  }
+
+  // ---------- Affichage (refonte charte INVODIS) ----------
+
+  logoEnErreur = false;
+
+  /** Couleur principale propre au projet (touche projet), sinon la charte INVODIS. */
+  get couleurProjet(): string {
+    try {
+      const primary = this.DetailProject?.colors ? JSON.parse(this.DetailProject.colors)?.primary : null;
+      return typeof primary === "string" && /^#[0-9a-f]{3,8}$/i.test(primary) ? primary : "#245363";
+    } catch {
+      return "#245363";
+    }
+  }
+
+  get bandeau(): string {
+    return `linear-gradient(120deg, ${this.couleurProjet} 0%, #1b404c 100%)`;
+  }
+
+  get logoUrl(): string | null {
+    const url = this.DetailProject?.imageUrl;
+    return url ? resolveUserImageUrl(url) : null;
+  }
+
+  /** Durée totale du projet, ex. « 12 mois ». */
+  get dureeLibelle(): string {
+    const debut = this.dateValide(this.DetailProject?.datedebut);
+    const fin = this.dateValide(this.DetailProject?.datefin);
+    if (!debut || !fin || fin <= debut) {
+      return "";
+    }
+    const mois = Math.round((fin.getTime() - debut.getTime()) / (1000 * 60 * 60 * 24 * 30.44));
+    return mois >= 1 ? `${mois} mois` : "moins d'un mois";
+  }
+
+  /** Part du calendrier écoulée (0–100), ou null si les dates manquent. */
+  get avancement(): number | null {
+    const debut = this.dateValide(this.DetailProject?.datedebut);
+    const fin = this.dateValide(this.DetailProject?.datefin);
+    if (!debut || !fin || fin <= debut) {
+      return null;
+    }
+    const ratio = (Date.now() - debut.getTime()) / (fin.getTime() - debut.getTime());
+    return Math.round(Math.min(Math.max(ratio, 0), 1) * 100);
+  }
+
+  badgeStatut(status: string): string {
+    const s = (status ?? "").toLowerCase();
+    if (["actif", "en cours", "inprogress"].includes(s)) return "inv-badge--success";
+    if (["complété", "completed", "terminé", "clôturé"].includes(s)) return "inv-badge--primary";
+    if (["en attente", "pending", "suspendu"].includes(s)) return "inv-badge--warning";
+    return "";
+  }
+
+  photoMembre(membre: any): string | null {
+    if (membre?.imageUrl && !/example\.com/.test(membre.imageUrl)) {
+      return resolveUserImageUrl(membre.imageUrl);
+    }
+    if (membre?.image?.image) {
+      return this.getImageFromBase64(membre.image.type, membre.image.image);
+    }
+    return null;
+  }
+
+  private dateValide(valeur: any): Date | null {
+    const d = valeur ? new Date(valeur) : null;
+    return d && !isNaN(d.getTime()) ? d : null;
   }
 
   getImageFromBase64(imageType: string, imageName: number[]): string {

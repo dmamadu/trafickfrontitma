@@ -1,237 +1,186 @@
-:host {
-  --p:  #D45C00;
-  --pl: #FF8534;
-  --pd: #A84700;
-  --bg: #FBF7F4;
-  --surface: #fff;
-  --text: #1A0A00;
-  --border: rgba(212,92,0,0.14);
-  --r: 10px;
-  --t: all 0.2s cubic-bezier(0.4,0,0.2,1);
-  font-family: 'DM Sans', sans-serif;
-  display: block;
-}
+/* ==========================================================================
+   Fiche PAP — onglets Profil / Pertes (info-client), refonte nov. 2026
+   Couleurs : variables du socle commun (src/styles/invodis-ui.scss).
+   Classes préfixées ic- (encapsulation désactivée).
+   ========================================================================== */
 
-/* ICONS */
-mat-icon { color: var(--p); font-size: 18px; width: 18px; height: 18px; flex-shrink: 0; }
-
-/* CARD WRAPPER */
-.heighContentRight { width: 100%; }
-fuse-card { border-radius: 14px !important; box-shadow: 0 4px 24px rgba(26,10,0,0.08) !important; border: 1px solid var(--border); overflow: hidden; }
-
-/* SECTION HEADER */
-.section-header {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 14px 0 10px;
-}
-
-.c_title_header {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--p);
-  position: relative;
-  padding-left: 10px;
-}
-
-.c_title_header::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 50%;
-  transform: translateY(-50%);
-  width: 3px; height: 70%;
-  background: linear-gradient(var(--p), var(--pl));
-  border-radius: 3px;
-}
-
-/* EDIT BUTTONS */
-.c_btnAccountF {
-  width: 34px; height: 34px; border-radius: 50%;
-  background: rgba(212,92,0,0.08);
-  border: 1px solid rgba(212,92,0,0.2);
-  color: var(--p) !important;
-  transition: var(--t);
-  display: inline-flex; align-items: center; justify-content: center;
-}
-
-.c_btnAccountF:hover:not([disabled]) {
-  background: var(--p);
-  color: #fff !important;
-  box-shadow: 0 4px 12px rgba(212,92,0,0.35);
-  transform: translateY(-1px);
-}
-
-.c_btnAccountF[disabled] { opacity: .35; cursor: not-allowed; }
-.c_btnAccountF mat-icon { color: inherit !important; }
-
-/* DIVIDER */
-hr { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
-
-/* INFO GRID — 2 colonnes côte à côte */
-.info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0 32px;
-  width: 100%;
-}
-
-/* FIELD ROW */
-.field-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  padding: 8px 10px;
-  border-radius: 8px;
-  transition: var(--t);
+.ic-barre {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 8px;
+  margin-bottom: 16px;
 }
 
-.field-row:hover { background: rgba(212,92,0,0.04); }
-
-/* LABEL */
-.span-text {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #6B4C3B;
-  font-size: 12px;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-/* VALUE */
-.field-value {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text);
-  word-break: break-word;
-}
-
-/* PERTES CARDS */
-.pertes-grid {
+.ic-grille {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 10px;
-  padding: 14px 0;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
 }
 
-.perte-card {
+.ic-carte {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px 20px;
+  background: var(--inv-surface);
+  border: 1px solid var(--inv-line);
+  border-radius: 12px;
+}
+.ic-carte--large { grid-column: 1 / -1; }
+.ic-carte__titre {
+  margin: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  font-size: 13px;
-  transition: var(--t);
+  gap: 8px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--inv-primary);
+}
+.ic-compte {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--inv-primary-50);
+  color: var(--inv-primary);
 }
 
-.perte-card:hover { border-color: var(--p); box-shadow: 0 2px 12px rgba(212,92,0,0.1); transform: translateY(-1px); }
-.perte-card strong { color: var(--text); font-weight: 600; }
-
-.perte-card.total {
+.ic-champs {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 20px;
+}
+.ic-champ {
+  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, rgba(212,92,0,0.08), rgba(255,133,52,0.06));
-  border-color: rgba(212,92,0,0.3);
-  padding: 16px;
-  text-align: center;
+  gap: 3px;
+  min-width: 0;
 }
-
-.total-label {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 12px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: .06em; color: var(--p);
+.ic-champ dt {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--inv-muted);
 }
-
-.total-amount {
-  font-size: 20px; font-weight: 800; color: var(--pd);
-  margin-top: 4px; letter-spacing: -.01em;
+.ic-champ dd {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--inv-ink);
+  overflow-wrap: anywhere;
 }
-
-/* SECTION TITLE (évaluation) */
-.eval-title {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 14px; font-weight: 700; color: var(--text);
-  margin-bottom: 12px;
+.ic-vide,
+.ic-champ dd.ic-vide {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--inv-subtle);
 }
-
-/* CO-PROPRIETAIRE CARD */
-.copro-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 14px 16px;
-  margin-bottom: 10px;
-  transition: var(--t);
-}
-
-.copro-card:hover { border-color: var(--p); box-shadow: 0 4px 16px rgba(212,92,0,0.09); }
-
-.copro-count {
-  font-size: 13px; font-weight: 600; color: var(--text);
-  padding: 4px 12px; background: rgba(212,92,0,0.08);
-  border-radius: 20px; display: inline-block; margin-bottom: 8px;
-}
-
-.copro-empty {
-  font-size: 13px; font-weight: 600; color: #EF4444;
-  padding: 4px 12px; background: rgba(239,68,68,0.08);
-  border-radius: 20px; display: inline-block; margin-bottom: 8px;
-}
-
-/* TAB PANEL */
-.tab-panel {
-  padding: 16px 4px;
-}
-
-/* INFO ETENDUES / CARACTERISTIQUES */
-.text-panel {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 16px;
-  font-size: 14px;
-  color: var(--text);
+.ic-texte {
+  margin: 0;
+  font-size: 0.875rem;
   line-height: 1.6;
-  min-height: 80px;
+  color: var(--inv-text);
+  white-space: pre-line;
 }
 
-/* PHOTO HABITAT */
-.photo-habitat {
-  margin-top: 14px;
+/* ---------- Co-propriétaires ---------- */
+.ic-copros {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.ic-copro {
+  padding: 12px 14px;
+  border: 1px solid var(--inv-line-soft);
+  border-radius: var(--inv-radius-sm);
+  background: #f9fafb;
+}
+.ic-copro__nom {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--inv-ink);
+}
+.ic-copro__nom span {
+  margin-left: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--inv-muted);
+}
+.ic-copro__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 4px;
+  font-size: 0.8125rem;
+  color: var(--inv-muted);
+}
+.ic-copro__info {
+  margin: 6px 0 0;
+  font-size: 0.8125rem;
+  color: var(--inv-text);
 }
 
-.photo-habitat img {
+/* ---------- Photo ---------- */
+.ic-photo {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
   border-radius: 10px;
-  box-shadow: 0 4px 16px rgba(26,10,0,0.1);
-  max-height: 180px;
+  overflow: hidden;
+}
+.ic-photo:focus-visible { outline: none; box-shadow: var(--inv-ring); }
+.ic-photo img {
+  display: block;
+  width: 100%;
+  max-height: 220px;
   object-fit: cover;
-  cursor: pointer;
-  transition: var(--t);
-  border: 2px solid var(--border);
 }
 
-.photo-habitat img:hover {
-  border-color: var(--p);
-  box-shadow: 0 8px 24px rgba(212,92,0,0.18);
-  transform: scale(1.01);
+/* ---------- Tableau des pertes ---------- */
+.ic-table-wrap {
+  overflow-x: auto;
+  background: var(--inv-surface);
+  border: 1px solid var(--inv-line);
+  border-radius: 12px;
+}
+.ic-table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.ic-table th {
+  padding: 12px 18px;
+  background: #f3f5f7;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--inv-muted);
+  text-align: left;
+}
+.ic-table td {
+  padding: 12px 18px;
+  border-top: 1px solid var(--inv-line);
+  color: var(--inv-ink);
+}
+.ic-table__libelle { font-weight: 500; }
+.ic-table__detail { color: var(--inv-muted) !important; }
+.ic-table__aucune { text-align: center; padding: 28px 18px !important; }
+.ic-num { text-align: right !important; white-space: nowrap; }
+.ic-table tfoot td {
+  border-top: 2px solid var(--inv-primary);
+  background: #f9fafb;
+  font-weight: 700;
+  color: var(--inv-primary);
 }
 
-/* SCROLLBAR */
-.scroll-area { overflow-y: auto; max-height: 420px; }
-.scroll-area::-webkit-scrollbar { width: 4px; }
-.scroll-area::-webkit-scrollbar-thumb { background: rgba(212,92,0,0.2); border-radius: 4px; }
-
-/* RESPONSIVE */
-@media (max-width: 900px) {
-  .info-grid { grid-template-columns: 1fr; gap: 0; }
-}
-
-@media (max-width: 600px) {
-  .field-row { grid-template-columns: 1fr; }
-  .pertes-grid { grid-template-columns: 1fr; }
+@media (max-width: 640px) {
+  .ic-grille { grid-template-columns: minmax(0, 1fr); }
+  .ic-champs { grid-template-columns: minmax(0, 1fr); }
 }

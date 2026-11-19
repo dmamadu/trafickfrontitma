@@ -1,3 +1,4 @@
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 import {
   ChangeDetectorRef,
   Component,
@@ -60,7 +61,7 @@ import { ActionButton, PageActionsComponent } from "src/app/shared/refactore/pag
     },
     DatePipe,
     { provide: MAT_DIALOG_DATA, useValue: {} },
-    { provide: MatPaginatorIntl },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { appearance: "outline" },
@@ -275,8 +276,8 @@ export class PapAgricoleComponent implements OnInit,OnDestroy {
   ngOnInit(): void {
     console.log("Valeur sélectionnée :", this.selectedOption);
     this.breadCrumbItems = [
-      { label: "Pap" },
-      { label: "Pap List", active: true },
+      { label: "Parties affectées" },
+      { label: "Agricole", active: true },
     ];
     this.getPapAgricole();
     this.headers = this.createHeader();
@@ -311,7 +312,7 @@ private destroy$ = new Subject<void>();
   // Actions configuration
   actions: ActionButton[] = [
     {
-      label: "Ajouter un PAP Agricole",
+      label: "Ajouter une PAP",
       icon: "plus",
       action: "add",
       type: "primary",
@@ -320,19 +321,19 @@ private destroy$ = new Subject<void>();
       label: "Importer Excel",
       icon: "file-excel",
       action: "import",
-      type: "primary",
+      type: "secondary",
     },
     {
       label: "Exporter Excel",
       icon: "file-excel",
       action: "export-excel",
-      type: "success",
+      type: "secondary",
     },
     {
       label: "Exporter PDF",
       icon: "file-pdf",
       action: "export-pdf",
-      type: "danger",
+      type: "secondary",
     },
   ];
 
@@ -371,27 +372,27 @@ private destroy$ = new Subject<void>();
   createHeader() {
     return [
       {
-        th: "CODE PAP",
+        th: "Code PAP",
         td: "codePap",
       },
       {
-        th: "CODE PARCELLE",
+        th: "Code parcelle",
         td: "codeParcelle",
       },
       {
-        th: "PRENOM",
+        th: "Prénom",
         td: "prenom",
       },
       {
-        th: "NOM",
+        th: "Nom",
         td: "nom",
       },
       {
-        th: "NUMERO TELEPHONE",
+        th: "Téléphone",
         td: "numeroTelephone",
       },
       {
-        th: "VULNÉRABLE",
+        th: "Vulnérable",
         td: "vulne",
       },
     ];
@@ -441,7 +442,7 @@ private destroy$ = new Subject<void>();
     console.log(information);
     this.snackbar.openModal(
       AddPapAgricoleComponent,
-      "50rem",
+      "64rem",
       "edit",
       "",
       information,
@@ -498,8 +499,16 @@ private destroy$ = new Subject<void>();
     this.isCollapsed = !this.isCollapsed;
   }
 
-  filterTable(event: Event) {
-    const searchTerm = (event.target as HTMLInputElement).value.trim();
+  /** Recherche serveur. app-page-actions émet une chaîne ; un ancien champ HTML émettrait un événement. */
+  filterTable(valeur: string | Event): void {
+    const searchTerm = (typeof valeur === "string"
+      ? valeur
+      : (valeur?.target as HTMLInputElement)?.value ?? ""
+    ).trim();
+    if (!searchTerm) {
+      this.getPapAgricole();
+      return;
+    }
     this.loadData = true;
     this.parentService
       .searchGlobal(
@@ -820,7 +829,7 @@ private destroy$ = new Subject<void>();
     }
     this.snackbar.openModal(
       AddPapAgricoleComponent,
-      "50rem",
+      "64rem",
       "new",
       "auto",
       this.datas,
@@ -924,7 +933,10 @@ private destroy$ = new Subject<void>();
     console.log(information);
     this.localService.saveDataJson("pap", information);
     this.sharedService.setSelectedItem(information);
-    this._router.navigate(["pap/detail"]);
+    const categorie = 'agricole';
+    this._router.navigate(["pap/detail"], {
+      queryParams: categorie && information?.id ? { categorie, id: information.id } : {},
+    });
   }
 
   private showProjectSelectionError(): void {

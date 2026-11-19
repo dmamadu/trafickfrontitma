@@ -67,10 +67,20 @@ export class AuthenticationService implements OnDestroy {
   }
 
   private getErrorMessage(error: any): string {
-    if (error.status === 403) {
-      return "Accès refusé - Problème CORS. Contactez l'administrateur.";
-    } else if (error.status === 401) {
-      return "Email ou mot de passe incorrect";
+    // ErrorInterceptor relaie le corps de la réponse (err.error) et non le HttpErrorResponse :
+    // on accepte les deux formes pour retrouver le message renvoyé par le back.
+    const body =
+      error?.error && typeof error.error === "object" ? error.error : error;
+    const backendMessage = body?.message;
+    if (typeof backendMessage === "string" && backendMessage.trim()) {
+      return backendMessage;
+    }
+
+    const status = error?.status ?? body?.responseCode ?? body?.status;
+    if (status === 401) {
+      return "Email ou mot de passe incorrect.";
+    } else if (status === 403) {
+      return "Accès refusé. Contactez l'administrateur.";
     }
     return "Erreur de connexion au serveur";
   }

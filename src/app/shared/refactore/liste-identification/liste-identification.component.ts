@@ -1,3 +1,4 @@
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 import {
   ChangeDetectorRef,
   Component,
@@ -46,7 +47,7 @@ const MESSAGES = {
     DatePipe,
     { provide: MatDialogRef, useValue: [] },
     { provide: MAT_DIALOG_DATA, useValue: {} },
-    { provide: MatPaginatorIntl },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: "outline" } },
   ],
   imports: [
@@ -285,7 +286,10 @@ export class ListeIdentificationComponent implements OnInit, OnDestroy {
   voirDetail(pap: any): void {
     this.localService.saveDataJson("pap", pap);
     this.sharedService.setSelectedItem(pap);
-    this._router.navigate(["pap/detail"]);
+    const categorie = "place-affaire"; // cette liste lit databasePapPlaceAffaire
+    this._router.navigate(["pap/detail"], {
+      queryParams: categorie && pap?.id ? { categorie, id: pap.id } : {},
+    });
   }
 
   localiserPap(pap: any): void {

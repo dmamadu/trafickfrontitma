@@ -1,3 +1,4 @@
+import { resolveUserImageUrl } from "src/app/shared/utils/user-image";
 import { Component, Inject, OnInit } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { AngularMaterialModule } from "src/app/shared/angular-materiel-module/angular-materiel-module";
@@ -11,6 +12,11 @@ import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/di
   styleUrl: "./detail-user.component.css",
 })
 export class DetailUserComponent  implements OnInit {
+  /** imageUrl peut être une URL complète ou un nom de fichier MinIO. */
+  get photoUrl(): string {
+    return resolveUserImageUrl((this as any).user?.imageUrl);
+  }
+
 
   user: any;
 

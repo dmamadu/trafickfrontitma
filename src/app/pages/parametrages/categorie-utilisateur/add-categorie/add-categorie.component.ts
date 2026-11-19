@@ -1,3 +1,5 @@
+import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
 import { ChangeDetectorRef, Component, Inject } from "@angular/core";
 import {
   UntypedFormGroup,
@@ -20,6 +22,7 @@ import { SnackBarService } from "src/app/shared/core/snackBar.service";
   selector: "app-add-categorie",
   standalone: true,
   imports: [
+    DialogHeaderComponent,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
@@ -31,7 +34,7 @@ import { SnackBarService } from "src/app/shared/core/snackBar.service";
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
-    { provide: MatPaginatorIntl },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     SnackBarService,
     MatDatepickerModule,
   ],
@@ -43,7 +46,7 @@ export class AddCategorieComponent {
   id: string;
   initForm: UntypedFormGroup;
   labelButton: string;
-  suffixe: string = " une entité";
+  suffixe: string = "un niveau de privilège";
   loader: boolean;
   action: string;
   loaderss = false;
@@ -69,7 +72,7 @@ export class AddCategorieComponent {
 
     this.action = _data?.action;
     this.canAdd = _data.canAdd;
-    this.dialogTitle = this.labelButton + this.suffixe;
+    this.dialogTitle = `${this.labelButton.trim()} ${this.suffixe}`;
   }
 
   currentUser: any;
@@ -110,7 +113,7 @@ export class AddCategorieComponent {
                   this.loader = false;
                   this.matDialogRef.close(resp);
                   this.snackbar.openSnackBar(
-                    "Entité  modifié avec succés",
+                    "Niveau de privilège modifié avec succès.",
                     "OK",
                     ["mycssSnackbarGreen"]
                   );
@@ -162,7 +165,7 @@ export class AddCategorieComponent {
               (resp) => {
                 if (resp["responseCode"] == 201) {
                   this.snackbar.openSnackBar(
-                    "Entité  ajoutée avec succés",
+                    "Niveau de privilège ajouté avec succès.",
                     "OK",
                     ["mycssSnackbarGreen"]
                   );

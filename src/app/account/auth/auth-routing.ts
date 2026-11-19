@@ -12,7 +12,13 @@ const routes: Routes = [
     component: LoginComponent,
   },
   {
+    // Sans jeton : demande d'un lien. Avec ?token=… : choix du nouveau mot de passe.
     path: "reset-password",
+    component: PasswordresetComponent,
+  },
+  {
+    // Ancienne adresse des e-mails de réinitialisation (avant nov. 2026) : les liens déjà envoyés restent valides
+    path: "login-2",
     component: PasswordresetComponent,
   },
   {

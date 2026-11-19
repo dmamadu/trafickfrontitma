@@ -1,3 +1,6 @@
+import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
+import { PaginatorIntlFr } from "src/app/shared/core/paginator-intl-fr";
+import { isExtensionAccepted } from "src/app/shared/utils/file-extension";
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,
@@ -46,6 +49,7 @@ import { Subject, takeUntil } from "rxjs";
   templateUrl: "./add-pap-agricole.component.html",
   styleUrl: "./add-pap-agricole.component.css",
   imports: [
+    DialogHeaderComponent,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
@@ -57,7 +61,7 @@ import { Subject, takeUntil } from "rxjs";
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: "fr-FR" },
-    { provide: MatPaginatorIntl },
+    { provide: MatPaginatorIntl, useClass: PaginatorIntlFr },
     SnackBarService,
     MatDatepickerModule,
   ],
@@ -139,7 +143,7 @@ export class AddPapAgricoleComponent implements OnInit,OnDestroy {
     }
     this.action = _data?.action;
     this.canAdd = _data.canAdd;
-    this.dialogTitle = this.labelButton + this.suffixe;
+    this.dialogTitle = `${this.labelButton.trim()} une PAP — agricole`;
     this.ng2TelOptions = { initialCountry: "sn" };
   }
   ngOnInit(): void {
@@ -341,7 +345,7 @@ export class AddPapAgricoleComponent implements OnInit,OnDestroy {
       const index = file.name.lastIndexOf(".");
       const strsubstring = file.name.substring(index, file.name.length);
       const ext = strsubstring;
-      if (accept.indexOf(strsubstring) === -1) {
+      if (!isExtensionAccepted(accept, strsubstring)) {
         this.snackbar.openSnackBar(
           "Ce fichier " + file.name + " n'est " + extension,
           "OK",

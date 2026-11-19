@@ -1,208 +1,268 @@
-<div class="stats-root">
-
-  <!-- ── Header ── -->
-  <div class="page-header">
-    <div class="header-left">
-      <div class="header-icon"><mat-icon>assessment</mat-icon></div>
-      <div>
-        <h1 class="page-title">Tableau de bord</h1>
-        <p class="page-subtitle">Statistiques et données du projet</p>
-      </div>
+<div class="bl">
+  <!-- ── En-tête ── -->
+  <header class="bl-header">
+    <div>
+      <p class="bl-crumb">Tableaux de bord / BaseLine PAR</p>
+      <h1 class="bl-title">Tableau de bord</h1>
+      <p class="bl-meta" *ngIf="stats">
+        <span class="bl-phase"><i></i>Situation de référence du PAR</span>
+        <span>Mis à jour le {{ stats.dateMaj | date:"dd/MM/yyyy 'à' HH:mm" }}</span>
+      </p>
     </div>
+
+    <div class="bl-filters">
+      <label class="bl-field">
+        <span>Zone</span>
+        <select [(ngModel)]="zone" (ngModelChange)="charger()" [disabled]="!stats">
+          <option value="">Toutes les zones</option>
+          <option *ngFor="let z of stats?.zones" [value]="z">{{ z }}</option>
+        </select>
+      </label>
+      <label class="bl-field">
+        <span>Catégorie</span>
+        <select [(ngModel)]="categorie" (ngModelChange)="charger()" [disabled]="!stats">
+          <option value="">Toutes les catégories</option>
+          <option *ngFor="let c of categories" [value]="c.key">{{ c.label }}</option>
+        </select>
+      </label>
+      <button type="button" class="bl-btn" (click)="exporter()" [disabled]="!stats">
+        <mat-icon>download</mat-icon> Exporter le rapport
+      </button>
+    </div>
+  </header>
+
+  <app-loader-custom *ngIf="loading"></app-loader-custom>
+
+  <div class="bl-empty" *ngIf="!loading && erreur">
+    <mat-icon>error_outline</mat-icon>
+    <p>Impossible de charger le tableau de bord.</p>
+    <button type="button" class="bl-link" (click)="charger()">Réessayer</button>
   </div>
 
-  <!-- ── KPI Cards ── -->
-  <div class="kpi-grid">
+  <ng-container *ngIf="!loading && stats as s">
+    <!-- ── Indicateurs ── -->
+    <section class="bl-kpis">
+      <article class="bl-kpi">
+        <div class="bl-kpi__head"><span>Personnes affectées</span><mat-icon class="is-secondary">group</mat-icon></div>
+        <p class="bl-kpi__value">{{ s.total.total | number:'1.0-0':'fr' }}</p>
+        <p class="bl-kpi__hint">{{ nbCategories }} catégorie{{ nbCategories > 1 ? 's' : '' }} · {{ s.nbZones }} zone{{ s.nbZones > 1 ? 's' : '' }}</p>
+      </article>
 
-    <div class="kpi-card kpi-orange">
-      <div class="kpi-icon"><mat-icon>people</mat-icon></div>
-      <div class="kpi-content">
-        <span class="kpi-value">{{ statsData?.summary?.totalPersonnesAffectees }}</span>
-        <span class="kpi-label">Personnes affectées</span>
-      </div>
-      <div class="kpi-bar"></div>
-    </div>
-
-    <div class="kpi-card kpi-green">
-      <div class="kpi-icon"><mat-icon>wc</mat-icon></div>
-      <div class="kpi-content">
-        <div class="gender-bar">
-          <span class="gender-seg gender-seg--h" [style.width.%]="statsData?.summary?.percentHommesGlobal"></span>
-          <span class="gender-seg gender-seg--f" [style.width.%]="statsData?.summary?.percentFemmesGlobal"></span>
-          <span class="gender-seg gender-seg--autre" [style.width.%]="statsData?.summary?.percentAutreGlobal"></span>
+      <article class="bl-kpi">
+        <div class="bl-kpi__head"><span>Répartition par sexe</span><mat-icon class="is-primary">wc</mat-icon></div>
+        <div class="bl-stack bl-stack--sexe">
+          <span class="bl-fill--h" [style.width.%]="pct(s.total.hommes, s.total.total)"></span>
+          <span class="bl-fill--f" [style.width.%]="pct(s.total.femmes, s.total.total)"></span>
+          <span class="bl-fill--nr" [style.width.%]="pct(s.total.autre, s.total.total)"></span>
         </div>
-        <div class="gender-legend">
-          <span class="gender-item">
-            <i class="gender-dot gender-dot--h"></i>H {{ statsData?.summary?.percentHommesGlobal | number:'1.0-1' }}%
-          </span>
-          <span class="gender-item">
-            <i class="gender-dot gender-dot--f"></i>F {{ statsData?.summary?.percentFemmesGlobal | number:'1.0-1' }}%
-          </span>
-          <span class="gender-item" title="Sexe non renseigné">
-            <i class="gender-dot gender-dot--autre"></i>NR {{ statsData?.summary?.percentAutreGlobal | number:'1.0-1' }}%
-          </span>
+        <div class="bl-sexe">
+          <span><i class="bl-fill--h"></i>Hommes <b>{{ pct(s.total.hommes, s.total.total) | number:'1.1-1':'fr' }} %</b></span>
+          <span><i class="bl-fill--f"></i>Femmes <b>{{ pct(s.total.femmes, s.total.total) | number:'1.1-1':'fr' }} %</b></span>
+          <span title="Sexe non renseigné"><i class="bl-fill--nr"></i>N.R. <b>{{ pct(s.total.autre, s.total.total) | number:'1.1-1':'fr' }} %</b></span>
         </div>
-        <span class="kpi-label">Répartition par sexe</span>
+      </article>
+
+      <article class="bl-kpi">
+        <div class="bl-kpi__head"><span>PAP vulnérables</span><mat-icon class="is-secondary">favorite_border</mat-icon></div>
+        <p class="bl-kpi__value">
+          {{ s.total.totalVulnerables | number:'1.0-0':'fr' }}
+          <small>{{ pct(s.total.totalVulnerables, s.total.total) | number:'1.0-0':'fr' }} % des PAP</small>
+        </p>
+        <p class="bl-kpi__hint">{{ s.total.vulnerablesHommes }} hommes · {{ s.total.vulnerablesFemmes }} femmes</p>
+      </article>
+
+      <article class="bl-kpi">
+        <div class="bl-kpi__head"><span>Consultations</span><mat-icon class="is-success">forum</mat-icon></div>
+        <p class="bl-kpi__value">{{ rencontres.length }}</p>
+        <p class="bl-kpi__hint" *ngIf="prochaineRencontre as r">Prochaine : {{ r.date | date:'EEE d MMM':undefined:'fr' }} — {{ r.libelle }}</p>
+        <p class="bl-kpi__hint" *ngIf="rencontresChargees && !prochaineRencontre">Aucune consultation à venir</p>
+      </article>
+    </section>
+
+    <div class="bl-grid bl-grid--main">
+      <!-- ── PAP par catégorie ── -->
+      <section class="bl-card">
+        <div class="bl-card__head">
+          <div>
+            <h2>PAP par catégorie</h2>
+            <p>Répartition par sexe et part de vulnérables</p>
+          </div>
+          <div class="bl-toggle" role="group" aria-label="Affichage">
+            <button type="button" [class.is-active]="vue === 'graphique'" (click)="vue = 'graphique'">Graphique</button>
+            <button type="button" [class.is-active]="vue === 'tableau'" (click)="vue = 'tableau'">Tableau</button>
+          </div>
+        </div>
+
+        <div class="bl-table-wrap" *ngIf="vue === 'tableau'">
+          <table class="bl-table">
+            <thead>
+              <tr>
+                <th>Catégorie</th>
+                <th class="num">Total</th>
+                <th class="num">Hommes</th>
+                <th class="num">Femmes</th>
+                <th class="num" title="Sexe non renseigné">N.R.</th>
+                <th class="num">Vuln. H</th>
+                <th class="num">Vuln. F</th>
+                <th class="num">Total vuln.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of categoriesVisibles">
+                <ng-container *ngIf="stat(c.key) as x">
+                  <td><strong>{{ c.label }}</strong></td>
+                  <td class="num"><strong>{{ x.total }}</strong></td>
+                  <td class="num">{{ x.hommes }}</td>
+                  <td class="num">{{ x.femmes }}</td>
+                  <td class="num">{{ x.autre }}</td>
+                  <td class="num">{{ x.vulnerablesHommes }}</td>
+                  <td class="num">{{ x.vulnerablesFemmes }}</td>
+                  <td class="num bl-vuln">{{ x.totalVulnerables }}</td>
+                </ng-container>
+              </tr>
+            </tbody>
+            <tfoot *ngIf="categoriesVisibles.length > 1">
+              <tr>
+                <td>Total général</td>
+                <td class="num">{{ s.total.total }}</td>
+                <td class="num">{{ s.total.hommes }}</td>
+                <td class="num">{{ s.total.femmes }}</td>
+                <td class="num">{{ s.total.autre }}</td>
+                <td class="num">{{ s.total.vulnerablesHommes }}</td>
+                <td class="num">{{ s.total.vulnerablesFemmes }}</td>
+                <td class="num bl-vuln">{{ s.total.totalVulnerables }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <div *ngIf="vue === 'graphique' && chart">
+          <apx-chart
+            [series]="chart.series"
+            [chart]="chart.chart"
+            [plotOptions]="chart.plotOptions"
+            [colors]="chart.colors"
+            [dataLabels]="chart.dataLabels"
+            [xaxis]="chart.xaxis"
+            [legend]="chart.legend"
+            [grid]="chart.grid"
+          ></apx-chart>
+        </div>
+      </section>
+
+      <!-- ── Avancement des indemnisations ── -->
+      <section class="bl-card">
+        <h2>Avancement des indemnisations</h2>
+        <p class="bl-card__sub">Statut des {{ totalAvancement | number:'1.0-0':'fr' }} PAP du projet</p>
+        <p class="bl-big">{{ pctIndemnisees | number:'1.1-1':'fr' }} % <small>indemnisées</small></p>
+        <div class="bl-stack" *ngIf="totalAvancement > 0">
+          <span *ngFor="let st of statutsPap" [style.background]="st.color" [style.width.%]="pct(avancementValeur(st.key), totalAvancement)"></span>
+        </div>
+        <ul class="bl-list">
+          <li *ngFor="let st of statutsPap">
+            <i [style.background]="st.color"></i>
+            <span>{{ st.label }}</span>
+            <b>{{ avancementValeur(st.key) }}</b>
+            <em>{{ pct(avancementValeur(st.key), totalAvancement) | number:'1.1-1':'fr' }} %</em>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <!-- ── Vulnérabilités par critère ── -->
+    <section class="bl-card">
+      <div class="bl-card__head">
+        <div>
+          <h2>Vulnérabilités par critère</h2>
+          <p>Plus la case est foncée, plus le nombre de PAP concernées est élevé</p>
+        </div>
+        <span class="bl-scale">Faible <i class="lvl-1"></i><i class="lvl-3"></i><i class="lvl-4"></i><i class="lvl-5"></i> Élevé</span>
       </div>
-      <div class="kpi-bar"></div>
-    </div>
-
-    <div class="kpi-card kpi-orange">
-      <div class="kpi-icon"><mat-icon>accessibility_new</mat-icon></div>
-      <div class="kpi-content">
-        <span class="kpi-value">{{ statsData?.summary?.totalVulnerables }}</span>
-        <span class="kpi-label">PAP vulnérables</span>
+      <div class="bl-table-wrap">
+        <table class="bl-heat">
+          <thead>
+            <tr>
+              <th>Catégorie</th>
+              <th *ngFor="let k of criteresVisibles">{{ k.label }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of categoriesVisibles">
+              <th scope="row">{{ c.label }}</th>
+              <td *ngFor="let k of criteresVisibles">
+                <span class="bl-cell" [ngClass]="'lvl-' + niveau(valeurCritere(c.key, k.key))">{{ valeurCritere(c.key, k.key) }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div class="kpi-bar"></div>
+    </section>
+
+    <div class="bl-grid bl-grid--bottom">
+      <!-- ── Zones impactées ── -->
+      <section class="bl-card">
+        <h2>Zones impactées</h2>
+        <p class="bl-card__sub">Une seule carte, filtrable par catégorie — {{ pointsCarte.length }} PAP affichées</p>
+        <div class="bl-chips" *ngIf="!categorie">
+          <button type="button" [class.is-active]="categorieCarte === ''" (click)="categorieCarte = ''">Toutes</button>
+          <button type="button" *ngFor="let c of categories" [class.is-active]="categorieCarte === c.key" (click)="categorieCarte = c.key">{{ c.court }}</button>
+        </div>
+        <app-baseline-map [points]="pointsCarte"></app-baseline-map>
+      </section>
+
+      <!-- ── Tâches de la semaine ── -->
+      <section class="bl-card">
+        <div class="bl-card__head">
+          <h2>Tâches de la semaine</h2>
+          <a class="bl-link" routerLink="/tasks/liste">Ouvrir le calendrier</a>
+        </div>
+
+        <p class="bl-empty-line" *ngIf="tachesErreur">Les tâches ne sont pas accessibles avec vos droits.</p>
+
+        <ng-container *ngIf="!tachesErreur">
+          <div class="bl-task-counts">
+            <div class="is-attente"><span>En attente</span><b>{{ compterTaches('en-attente') }}</b></div>
+            <div class="is-cours"><span>En cours</span><b>{{ compterTaches('en-cours') }}</b></div>
+            <div class="is-complete"><span>Complétées</span><b>{{ compterTaches('complete') }}</b></div>
+          </div>
+
+          <div class="bl-week">
+            <button
+              type="button"
+              *ngFor="let j of semaine; let i = index"
+              [class.is-today]="estAujourdhui(j)"
+              [class.is-selected]="jourSelectionne?.getTime() === j.getTime()"
+              (click)="basculerJour(j)"
+            >
+              <span>{{ jours[i] }}</span>
+              <b>{{ j.getDate() }}</b>
+              <i [class.is-visible]="aDesTaches(j)"></i>
+            </button>
+          </div>
+
+          <ul class="bl-tasks">
+            <li *ngFor="let t of tachesAffichees">
+              <span class="bl-tasks__day">
+                <small>{{ jours[(jourTache(t).getDay() + 6) % 7] }}</small>
+                <b>{{ jourTache(t).getDate() }}</b>
+              </span>
+              <span class="bl-tasks__body">
+                <strong>{{ t.libelle }}</strong>
+                <small *ngIf="t.description">{{ t.description }}</small>
+              </span>
+              <span class="bl-tag" [ngClass]="statutTache(t.statut).classe">{{ statutTache(t.statut).label }}</span>
+            </li>
+          </ul>
+          <p class="bl-empty-line" *ngIf="!tachesAffichees.length">
+            {{ jourSelectionne ? 'Aucune tâche ce jour-là.' : 'Aucune tâche cette semaine.' }}
+          </p>
+          <p class="bl-more" *ngIf="!jourSelectionne && tachesSemaine.length > 5">
+            + {{ tachesSemaine.length - 5 }} autres tâches cette semaine
+          </p>
+
+          <a class="bl-new-task" routerLink="/tasks/create">+ Nouvelle tâche</a>
+        </ng-container>
+      </section>
     </div>
-
-    <div class="kpi-card kpi-green">
-      <div class="kpi-icon"><mat-icon>forum</mat-icon></div>
-      <div class="kpi-content">
-        <span class="kpi-value">{{ lengthRencontre }}</span>
-        <span class="kpi-label">Consultations</span>
-      </div>
-      <div class="kpi-bar"></div>
-    </div>
-
-  </div>
-
-  <!-- ── Vue d'ensemble par catégorie ── -->
-  <div class="section-block">
-    <div class="section-header">
-      <mat-icon>bar_chart</mat-icon>
-      <h2>Vue d'ensemble des PAP par catégorie</h2>
-    </div>
-
-    <div class="table-wrap">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th class="th-label">Catégorie</th>
-            <th>Total PAP</th>
-            <th><mat-icon>male</mat-icon> Hommes</th>
-            <th><mat-icon>female</mat-icon> Femmes</th>
-            <th><mat-icon>help_outline</mat-icon> Sexe non renseigné</th>
-            <th>Vulnérables hommes</th>
-            <th>Vulnérables femmes</th>
-            <th>Total vulnérables</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngIf="statsData?.placeAffaireStats" class="row-pa">
-            <td class="td-label">Place Affaire / Économique</td>
-            <td class="td-total">{{ statsData.placeAffaireStats.total }}</td>
-            <td>{{ statsData.placeAffaireStats.hommes }}</td>
-            <td>{{ statsData.placeAffaireStats.femmes }}</td>
-            <td>{{ statsData.placeAffaireStats.autre }}</td>
-            <td>{{ statsData.placeAffaireStats.vulnerablesHommes }}</td>
-            <td>{{ statsData.placeAffaireStats.vulnerablesFemmes }}</td>
-            <td class="td-total">{{ statsData.placeAffaireStats.totalVulnerables }}</td>
-          </tr>
-          <tr *ngIf="statsData?.agricoleStats" class="row-ag">
-            <td class="td-label">Agricole / Exploitant</td>
-            <td class="td-total">{{ statsData.agricoleStats.total }}</td>
-            <td>{{ statsData.agricoleStats.hommes }}</td>
-            <td>{{ statsData.agricoleStats.femmes }}</td>
-            <td>{{ statsData.agricoleStats.autre }}</td>
-            <td>{{ statsData.agricoleStats.vulnerablesHommes }}</td>
-            <td>{{ statsData.agricoleStats.vulnerablesFemmes }}</td>
-            <td class="td-total">{{ statsData.agricoleStats.totalVulnerables }}</td>
-          </tr>
-          <tr *ngIf="statsData?.habitatStats" class="row-hab">
-            <td class="td-label">Habitat</td>
-            <td class="td-total">{{ statsData.habitatStats.total }}</td>
-            <td>{{ statsData.habitatStats.hommes }}</td>
-            <td>{{ statsData.habitatStats.femmes }}</td>
-            <td>{{ statsData.habitatStats.autre }}</td>
-            <td>{{ statsData.habitatStats.vulnerablesHommes }}</td>
-            <td>{{ statsData.habitatStats.vulnerablesFemmes }}</td>
-            <td class="td-total">{{ statsData.habitatStats.totalVulnerables }}</td>
-          </tr>
-          <tr *ngIf="statsData?.totalStats" class="row-total">
-            <td class="td-label"><strong>Total général</strong></td>
-            <td class="td-total"><strong>{{ statsData.totalStats.total }}</strong></td>
-            <td><strong>{{ statsData.totalStats.hommes }}</strong></td>
-            <td><strong>{{ statsData.totalStats.femmes }}</strong></td>
-            <td><strong>{{ statsData.totalStats.autre }}</strong></td>
-            <td><strong>{{ statsData.totalStats.vulnerablesHommes }}</strong></td>
-            <td><strong>{{ statsData.totalStats.vulnerablesFemmes }}</strong></td>
-            <td class="td-total"><strong>{{ statsData.totalStats.totalVulnerables }}</strong></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ── Vulnérabilités par critère ── -->
-  <div class="section-block">
-    <div class="section-header">
-      <mat-icon>category</mat-icon>
-      <h2>Répartition des vulnérabilités par critère</h2>
-    </div>
-
-    <div class="table-wrap overflow-x">
-      <table class="data-table vuln-table">
-        <thead>
-          <tr>
-            <th class="th-label">Catégories</th>
-            <th *ngFor="let criterion of CRITERES">{{ criterion.label }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="row-pa">
-            <td class="td-label">Place Affaire / Économique</td>
-            <td *ngFor="let criterion of CRITERES">
-              {{ statsData?.placeAffaireStats?.criteresVulnerabilite?.[criterion.key]?.total ?? 0 }}
-            </td>
-          </tr>
-          <tr class="row-ag">
-            <td class="td-label">Agricole / Exploitant</td>
-            <td *ngFor="let criterion of CRITERES">
-              {{ statsData?.agricoleStats?.criteresVulnerabilite?.[criterion.key]?.total ?? 0 }}
-            </td>
-          </tr>
-          <tr class="row-hab">
-            <td class="td-label">Habitat</td>
-            <td *ngFor="let criterion of CRITERES">
-              {{ statsData?.habitatStats?.criteresVulnerabilite?.[criterion.key]?.total ?? 0 }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ── Cartes ── -->
-  <div class="section-block">
-    <div class="section-header">
-      <mat-icon>map</mat-icon>
-      <h2>Zones impactées</h2>
-    </div>
-    <div class="maps-grid">
-      <div class="map-card">
-        <div class="map-card-header">PAP Places affaires / Économiques</div>
-        <app-pap-google-maps [paps]="paps" [isLoading]="isLoadingPap"></app-pap-google-maps>
-      </div>
-      <div class="map-card">
-        <div class="map-card-header">PAP Agricoles / Exploitants</div>
-        <app-pap-multi-polygon-maps [paps]="papsAgricole" [isLoading]="isLoadingPap"></app-pap-multi-polygon-maps>
-      </div>
-      <div class="map-card">
-        <div class="map-card-header">PAP Habitat</div>
-        <app-pap-google-maps [paps]="papsHabitat" [isLoading]="isLoadingPap"></app-pap-google-maps>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── Calendrier ── -->
-  <div class="section-block">
-    <div class="section-header">
-      <mat-icon>calendar_month</mat-icon>
-      <h2>Calendrier des tâches</h2>
-    </div>
-    <app-task-calendar></app-task-calendar>
-  </div>
-
-
+  </ng-container>
 </div>

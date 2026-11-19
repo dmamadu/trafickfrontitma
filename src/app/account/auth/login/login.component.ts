@@ -17,6 +17,7 @@ import { ResponseData } from "src/app/pages/projects/project.model";
 import { Project } from "src/app/store/ProjectsData/project.model";
 import { ChangePasswordComponent } from "../change-password/change-password.component";
 import { PermissionService } from "src/app/core/services/permission.service";
+import { ProjectService } from "src/app/core/services/project.service";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
@@ -49,7 +50,8 @@ export class LoginComponent implements OnInit {
     private localService: LocalService,
     private snackbar: SnackBarService,
     private _matDialog: MatDialog,
-    private permissionService: PermissionService
+    private permissionService: PermissionService,
+    private projectService: ProjectService
   ) {}
 
   ngOnInit() {
@@ -275,11 +277,13 @@ export class LoginComponent implements OnInit {
 
   private proceedAfterLogin(user: Auth): void {
     if (this.isSuperAdmin(user)) {
-      this.choicePeojectADmin();
+      this.proceedAsSuperAdmin();
       return;
     }
 
-    if (!this.hasAnyProject(user)) {
+    const projects = user.user?.projects ?? [];
+
+    if (projects.length === 0) {
       this.toastr.warning("Aucun projet n'est associé à votre compte.");
       // Ouvre quand même l'écran de sélection (état vide, avec le bouton "Nouveau projet")
       // plutôt que de laisser l'utilisateur bloqué sur le formulaire de connexion.
@@ -287,11 +291,65 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    if (this.hasMultipleProjects(user)) {
-      this.choicePeoject();
-    } else {
-      this.navigateToDefaultProject(user);
+    // Un seul projet affecté : pas d'écran de sélection, on bascule directement.
+    if (projects.length === 1) {
+      this.activateProject(projects[0]);
+      return;
     }
+
+    this.choicePeoject();
+  }
+
+  /**
+   * Le Super Admin voit tous les projets de la plateforme (projects/all), pas seulement
+   * ceux qui lui sont affectés. S'il n'en existe qu'un, on bascule directement dessus.
+   */
+  private proceedAsSuperAdmin(): void {
+    this.loader = true;
+    this.projectService.all<ResponseData<Project[]>>("projects/all").subscribe({
+      next: (resp) => {
+        this.loader = false;
+        const projects = resp?.data ?? [];
+        if (projects.length === 1) {
+          this.activateProject(projects[0]);
+        } else {
+          this.choicePeojectADmin();
+        }
+      },
+      // En cas d'échec, l'écran de sélection gère lui-même le chargement.
+      error: () => {
+        this.loader = false;
+        this.choicePeojectADmin();
+      },
+    });
+  }
+
+  /**
+   * Active un projet comme le font les écrans de sélection (select-project, select-project-admin) :
+   * couleurs, identifiant, libellé, logo, puis permissions du projet avant d'ouvrir le tableau de bord
+   * (le menu et les guards les trouvent ainsi déjà en cache au premier rendu).
+   */
+  private activateProject(project: any): void {
+    if (!project?.id) {
+      this.choicePeoject();
+      return;
+    }
+    if (project.colors) {
+      try {
+        this.colorService.setColors(JSON.parse(project.colors));
+      } catch {
+        // Couleurs mal formées : on garde la charte INVODIS.
+      }
+    }
+    this.localService.saveData("ProjectId", project.id.toString());
+    this.localService.saveData("libelleProject", project.libelle ?? "");
+    const projectLogo = project.imageUrl || project.image || "default-logo.png";
+    this.localService.saveData("ProjectLogo", projectLogo.toString());
+
+    this.permissionService.load(project.id).subscribe({
+      next: () => this.router.navigate(["/dashboards/jobs"]),
+      error: () => this.router.navigate(["/dashboards/jobs"]),
+    });
   }
 
   private isSuperAdmin(user: Auth): boolean {
@@ -300,26 +358,6 @@ export class LoginComponent implements OnInit {
 
   private isAdmin(user: Auth): boolean {
     return user.user?.role?.[0]?.name === "Admin";
-  }
-
-  private hasAnyProject(user: Auth): boolean {
-    return (user.user?.projects?.length ?? 0) > 0;
-  }
-
-  private hasMultipleProjects(user: Auth): boolean {
-    return (user.user?.projects?.length ?? 0) > 1;
-  }
-
-  private navigateToDefaultProject(user: Auth) {
-    const project = user.user.projects[0];
-    this.localService.saveData("ProjectId", project?.id?.toString() ?? "");
-    this.localService.saveData("ProjectLogo", project?.imageUrl ?? "default-logo.png");
-    // Charge les permissions du projet actif avant de naviguer, pour que le menu et les
-    // guards les trouvent déjà en cache dès le premier rendu du dashboard.
-    this.permissionService.load(project?.id).subscribe({
-      next: () => this.router.navigate(["/dashboards/jobs"]),
-      error: () => this.router.navigate(["/dashboards/jobs"]),
-    });
   }
 
 private showWelcomeToast(user: Auth) {
@@ -338,8 +376,11 @@ private showWelcomeToast(user: Auth) {
 
 private handleLoginError(error: any) {
   console.error('Login error:', error);
+  // AuthenticationService.login() transmet le message du back (ex. « Email ou mot de passe incorrect. »).
+  const message =
+    error?.message || "Une erreur s'est produite, veuillez réessayer.";
   this.toastr.error(
-    `Une erreur s'est produite ou veuillez vérifier vos identifiants`,
+    message,
     null, {
       timeOut: 5000,
       progressBar: true,
