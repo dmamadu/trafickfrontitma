@@ -14,3 +14,7 @@ export const STATUT_OPTIONS: StatutOption[] = [
   { value: 'approuve',   label: 'Approuvé',   icon: 'verified',        bg: '#E8F5E9', border: '#2E7D32', color: '#1B5E20' },
   { value: 'complete',   label: 'Complété',   icon: 'check_circle',    bg: '#EDE9FE', border: '#7C3AED', color: '#4C1D95' },
 ];
+
+// Plage horaire de travail : bornes du calendrier et des heures saisies à la création.
+export const HEURE_DEBUT_JOURNEE = '08:00';
+export const HEURE_FIN_JOURNEE = '17:00';

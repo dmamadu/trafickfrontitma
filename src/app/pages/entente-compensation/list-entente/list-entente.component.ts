@@ -21,7 +21,6 @@ import { SnackBarService } from "src/app/shared/core/snackBar.service";
 import { AddEntenteComponent } from "../add-entente/add-entente.component";
 import { AjoutEntenteComponent } from "../ajout-entente/ajout-entente.component";
 import { CoreService } from "src/app/shared/core/core.service";
-import { CompensationDetailComponent } from "../compensation-detail/compensation-detail.component";
 import { ToastrService } from "ngx-toastr";
 import { GestionEntenteComponent } from "../gestion-entente/gestion-entente.component";
 import { ProcessusEntenteService } from "src/app/core/services/processus-entente.service";
@@ -301,19 +300,11 @@ chargerEntente(): void {
   //   this._router.navigate(["ententeCompensation/detail"]);
   // }
 
+  /** Ouvre la fiche de l'entente (page dédiée, relue sur le serveur). */
   detailItems(element: any) {
-    console.log(element);
-    this.snackbar.openModal(
-      CompensationDetailComponent,
-      "51rem",
-      "edit",
-      "",
-      element,
-      "",
-      () => {
-        this.getEntente();
-      }
-    );
+    this._router.navigate(["ententeCompensation/detail"], {
+      queryParams: { id: element.ententeId },
+    });
   }
 
   getEntente() {

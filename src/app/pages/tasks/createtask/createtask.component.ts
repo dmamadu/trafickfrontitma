@@ -6,8 +6,11 @@ import {
   Inject,
 } from "@angular/core";
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
+  ValidationErrors,
+  ValidatorFn,
   FormsModule,
   ReactiveFormsModule,
   Validators,
@@ -32,7 +35,49 @@ import { LocalService } from "src/app/core/services/local.service";
 import { ServiceParent } from "src/app/core/services/serviceParent";
 import { DialogHeaderComponent } from "src/app/shared/refactore/dialog-header/dialog-header.component";
 import { UIModule } from "src/app/shared/ui/ui.module";
-import { STATUT_OPTIONS } from "../tasks.constants";
+import {
+  HEURE_DEBUT_JOURNEE,
+  HEURE_FIN_JOURNEE,
+  STATUT_OPTIONS,
+} from "../tasks.constants";
+
+/** "HH:mm" → minutes depuis minuit. */
+function toMinutes(heure: string): number {
+  const [h, m] = heure.split(":").map(Number);
+  return h * 60 + m;
+}
+
+/** "HH:mm" d'une date, en heure locale. */
+function heureDe(date: Date): string {
+  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+}
+
+/** Copie de la date avec l'heure "HH:mm" appliquée. */
+function combiner(date: any, heure: string): Date {
+  const d = new Date(date);
+  const [h, m] = heure.split(":").map(Number);
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+
+/** Heure comprise dans la plage de travail. */
+function dansPlage(control: AbstractControl): ValidationErrors | null {
+  const v = control.value as string | null;
+  if (!v) return null;
+  const min = toMinutes(v);
+  return min < toMinutes(HEURE_DEBUT_JOURNEE) || min > toMinutes(HEURE_FIN_JOURNEE)
+    ? { horsPlage: true }
+    : null;
+}
+
+/** La fin (date + heure) doit être après le début. */
+const finApresDebut: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+  const { dateDebut, dateFin, heureDebut, heureFin } = group.value;
+  if (!dateDebut || !dateFin || !heureDebut || !heureFin) return null;
+  return combiner(dateFin, heureFin) <= combiner(dateDebut, heureDebut)
+    ? { finAvantDebut: true }
+    : null;
+};
 
 @Component({
   selector: "app-createtask",
@@ -82,14 +127,18 @@ export class CreatetaskComponent implements OnInit {
     description:  this.fb.control<string | null>(null, Validators.required),
     dateDebut:    this.fb.control<string | null>(null, Validators.required),
     dateFin:      this.fb.control<string | null>(null, Validators.required),
-    statut:       this.fb.control<string | null>(null, Validators.required),
+    heureDebut:   this.fb.control<string>(HEURE_DEBUT_JOURNEE, [Validators.required, dansPlage]),
+    heureFin:     this.fb.control<string>(HEURE_FIN_JOURNEE, [Validators.required, dansPlage]),
+    statut:      this.fb.control<string | null>(null, Validators.required),
     progression:  this.fb.control<number>(0, [Validators.min(0), Validators.max(100)]),
     utilisateurs: this.fb.array([]),
     observation:  this.fb.control<string | null>(null),
-  });
+  }, { validators: finApresDebut });
 
   // Options statut avec couleurs Jibili
   readonly statutOptions = STATUT_OPTIONS;
+  readonly heureMin = HEURE_DEBUT_JOURNEE;
+  readonly heureMax = HEURE_FIN_JOURNEE;
 
   constructor(
     public matDialogRef: MatDialogRef<CreatetaskComponent>,
@@ -110,8 +159,10 @@ export class CreatetaskComponent implements OnInit {
       // Pré-remplissage dates depuis calendrier
       if (_data?.data?.prefillDateDebut) {
         this.initForm.patchValue({
-          dateDebut: _data.data.prefillDateDebut,
-          dateFin:   _data.data.prefillDateFin,
+          dateDebut:  _data.data.prefillDateDebut,
+          dateFin:    _data.data.prefillDateFin,
+          heureDebut: _data.data.prefillHeureDebut ?? HEURE_DEBUT_JOURNEE,
+          heureFin:   _data.data.prefillHeureFin ?? HEURE_FIN_JOURNEE,
         });
       }
     } else if (_data?.action === "edit") {
@@ -128,11 +179,20 @@ export class CreatetaskComponent implements OnInit {
 
   // ── Formulaire ───────────────────────────────────────────
   private patchForm(data: any): void {
+    // Les tâches créées avant l'ajout des heures sont à minuit : on leur
+    // propose la plage par défaut.
+    const heureOu = (valeur: any, defaut: string): string => {
+      if (!valeur) return defaut;
+      const h = heureDe(new Date(valeur));
+      return h === "00:00" ? defaut : h;
+    };
     this.initForm.patchValue({
       libelle:     data.libelle,
       description: data.description,
       dateDebut:   data.dateDebut,
       dateFin:     data.dateFin,
+      heureDebut:  heureOu(data.dateDebut, HEURE_DEBUT_JOURNEE),
+      heureFin:    heureOu(data.dateFin, HEURE_FIN_JOURNEE),
       statut:      data.statut,
       progression: data.progression ?? 0,
       observation: data.observation,
@@ -218,6 +278,16 @@ export class CreatetaskComponent implements OnInit {
     if (type === "edit") this.updateItems();
   }
 
+  /** Valeur envoyée au serveur : date + heure fusionnées, sans les champs heure. */
+  private payload(): any {
+    const { heureDebut, heureFin, ...valeur } = this.initForm.value;
+    return {
+      ...valeur,
+      dateDebut: combiner(valeur.dateDebut, heureDebut!),
+      dateFin:   combiner(valeur.dateFin, heureFin!),
+    };
+  }
+
   private addItems(): void {
     this.snackbar
       .showConfirmation("Voulez-vous vraiment créer cette tâche ?")
@@ -225,7 +295,7 @@ export class CreatetaskComponent implements OnInit {
         if (result?.value) {
           this.loader = true;
           this.coreService
-            .addItemWithProject(this.initForm.value, this.url, +this.currentProjectId)
+            .addItemWithProject(this.payload(), this.url, +this.currentProjectId)
             .subscribe({
               next: (resp: any) => {
                 this.loader = false;
@@ -252,7 +322,7 @@ export class CreatetaskComponent implements OnInit {
         if (result?.value) {
           this.loader = true;
           this.coreService
-            .updateItemWithProject(this.initForm.value, this.id, this.url, +this.currentProjectId)
+            .updateItemWithProject(this.payload(), this.id, this.url, +this.currentProjectId)
             .subscribe({
               next: (resp: any) => {
                 this.loader = false;
