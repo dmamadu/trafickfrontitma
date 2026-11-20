@@ -1,25 +1,303 @@
-.detail-entente h1 {
-  font-size: 18px;
-  margin-bottom: 5px;
-  font-weight: bold;
+/* ==========================================================================
+   Fiche entente de compensation (ententeCompensation/detail) — nov. 2026
+   Même construction que la fiche PAP (pap-detail.component.css).
+   Couleurs : variables du socle commun (src/styles/invodis-ui.scss).
+   Toutes les classes sont préfixées fe- (encapsulation désactivée).
+   ========================================================================== */
 
+.fe-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 40px;
+  color: var(--inv-text);
+}
+.fe-chargement { margin: 0 auto 12px; }
+.fe-retour { margin-top: 16px; }
+
+.fe-bloc,
+.fe-header,
+.fe-onglets {
+  background: var(--inv-surface);
+  border: 1px solid var(--inv-line);
+  border-radius: var(--inv-radius-lg);
+  box-shadow: var(--inv-shadow-sm);
 }
 
-.detail-entente {
-  color: black;
+/* ---------- En-tête ---------- */
+.fe-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 24px;
+}
+.fe-header__icone {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: var(--inv-primary-50);
+  color: var(--inv-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+}
+.fe-header__infos {
+  flex: 1 1 320px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.fe-header__surtitre {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--inv-muted);
+}
+.fe-header__titre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.fe-header__titre h1 {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--inv-ink);
+}
+.fe-header__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  font-size: 0.8125rem;
+  color: var(--inv-muted);
+}
+.fe-header__meta strong { color: var(--inv-ink); font-weight: 600; }
+
+/* ---------- Chiffres clés ---------- */
+.fe-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+.fe-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  background: var(--inv-surface);
+  border: 1px solid var(--inv-line);
+  border-radius: 12px;
+  box-shadow: var(--inv-shadow-sm);
+}
+.fe-kpi__label { font-size: 0.75rem; font-weight: 500; color: var(--inv-muted); }
+.fe-kpi__valeur {
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--inv-ink);
+}
+.fe-kpi__valeur small { font-size: 0.8125rem; font-weight: 500; color: var(--inv-muted); }
+.fe-kpi__valeur--primary { color: var(--inv-primary); }
+.fe-kpi__valeur--texte { font-size: 1.0625rem; }
+.fe-kpi__valeur--ok { color: var(--inv-success); }
+.fe-kpi__valeur--vide { font-size: 1rem; font-weight: 500; font-style: italic; color: var(--inv-subtle); }
+.fe-barre { height: 6px; border-radius: 999px; background: var(--inv-primary-50); overflow: hidden; }
+.fe-barre__remplie { height: 100%; background: var(--inv-secondary); }
+
+/* ---------- Frise ---------- */
+.fe-frise {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px 24px;
+}
+.fe-frise__entete {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: var(--inv-muted);
+}
+.fe-frise__entete h2 { margin: 0; font-size: 0.9375rem; font-weight: 700; color: var(--inv-primary); }
+.fe-frise__entete strong { color: var(--inv-secondary-700); }
+.fe-frise__termine { color: var(--inv-success); font-weight: 600; }
+.fe-frise__etapes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+.fe-etape { display: flex; flex-direction: column; gap: 8px; }
+.fe-etape__ligne { display: flex; align-items: center; gap: 8px; }
+.fe-etape__pastille {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 2px solid #cbd5db;
+  background: #fff;
+  color: var(--inv-muted);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fe-etape__pastille i { font-size: 18px; }
+.fe-etape__trait { flex: 1; height: 2px; border-radius: 2px; background: var(--inv-line); }
+.fe-etape__libelle { font-size: 0.8125rem; font-weight: 600; color: var(--inv-muted); }
+.fe-etape__date { font-size: 0.75rem; color: var(--inv-muted); }
+.fe-etape.is-faite .fe-etape__pastille { background: var(--inv-primary); border-color: var(--inv-primary); color: #fff; }
+.fe-etape.is-faite .fe-etape__trait { background: var(--inv-primary); }
+.fe-etape.is-faite .fe-etape__libelle { color: var(--inv-ink); }
+.fe-etape.is-en-cours .fe-etape__pastille { background: var(--inv-secondary); border-color: var(--inv-secondary); color: #fff; }
+.fe-etape.is-en-cours .fe-etape__libelle { color: var(--inv-secondary-700); font-weight: 700; }
+
+/* ---------- Onglets ---------- */
+.fe-onglets { overflow: hidden; }
+.fe-onglets__barre {
+  display: flex;
+  gap: 22px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--inv-line);
+  overflow-x: auto;
+}
+.fe-onglet {
+  padding: 14px 2px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--inv-muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.fe-onglet:hover { color: var(--inv-ink); }
+.fe-onglet:focus-visible { outline: none; box-shadow: var(--inv-ring); border-radius: 6px 6px 0 0; }
+.fe-onglet.is-actif { color: var(--inv-primary); font-weight: 600; border-bottom-color: var(--inv-secondary); }
+.fe-onglets__contenu { padding: 24px; background: #f9fafb; }
+
+/* ---------- Cartes de contenu ---------- */
+.fe-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.fe-carte {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 20px;
+  background: var(--inv-surface);
+  border: 1px solid var(--inv-line);
+  border-radius: 12px;
+  min-width: 0;
+}
+.fe-carte--large { grid-column: 1 / -1; }
+.fe-carte h3 { margin: 0; font-size: 0.9375rem; font-weight: 700; color: var(--inv-primary); }
+.fe-carte h3.fe-titre-secondaire { color: var(--inv-secondary-700); }
+.fe-texte { margin: 0; font-size: 0.875rem; line-height: 1.55; color: var(--inv-ink); white-space: pre-line; overflow-wrap: anywhere; }
+.fe-vide { margin: 0; font-size: 0.875rem; font-style: italic; color: var(--inv-subtle); }
+.fe-meta { font-size: 0.75rem; color: var(--inv-muted); }
+
+.fe-champs {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px 20px;
+}
+.fe-champs > div { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.fe-champs dt { font-size: 0.75rem; font-weight: 400; color: var(--inv-muted); }
+.fe-champs dd { margin: 0; font-size: 0.875rem; font-weight: 500; color: var(--inv-ink); overflow-wrap: anywhere; }
+
+/* ---------- Tableau des postes ---------- */
+.fe-tableau { padding: 0; gap: 0; overflow-x: auto; }
+.fe-tableau table { width: 100%; min-width: 520px; border-collapse: collapse; font-size: 0.875rem; }
+.fe-tableau th {
+  padding: 12px 18px;
+  background: #f3f5f7;
+  color: var(--inv-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: left;
+}
+.fe-tableau td { padding: 12px 18px; border-top: 1px solid var(--inv-line); }
+.fe-tableau__poste { font-weight: 500; color: var(--inv-ink); }
+.fe-tableau__detail { color: var(--inv-muted); }
+.fe-num { text-align: right !important; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fe-tableau__total td {
+  border-top: 2px solid var(--inv-primary);
+  background: #f9fafb;
+  font-weight: 700;
+  color: var(--inv-primary);
+}
+.fe-tableau__note { margin: 0; padding: 10px 18px 14px; font-size: 0.75rem; color: var(--inv-muted); }
+.fe-tableau__ecart { display: block; margin-top: 4px; color: var(--inv-warning); font-weight: 600; }
+
+/* ---------- Carte de localisation ---------- */
+.fe-map { height: 180px; border-radius: 10px; overflow: hidden; background: var(--inv-primary-50); z-index: 0; }
+.fe-map--vide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-style: italic;
+  color: var(--inv-muted);
 }
 
-.titre {
-  font-size: 16px
+/* ---------- Processus ---------- */
+.fe-etapes-detail { display: flex; flex-direction: column; gap: 12px; }
+.fe-etape-carte__entete {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.fe-etape-carte__entete h3 { color: var(--inv-ink); }
+.fe-etape-carte.is-en-cours { border: 2px solid var(--inv-secondary); }
+.fe-etape-carte.is-a-venir { opacity: 0.75; }
+
+/* ---------- Pièces ---------- */
+.fe-piece {
+  height: 140px;
+  padding: 8px;
+  border: 1px solid var(--inv-line);
+  border-radius: 10px;
+  background: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-in;
+}
+.fe-piece:focus-visible { outline: none; box-shadow: var(--inv-ring); }
+.fe-piece img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.fe-piece--vide {
+  cursor: default;
+  border-style: dashed;
+  border-color: #cbd5db;
+  background: transparent;
+  padding: 12px;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--inv-muted);
 }
 
-.description {
-  font-size: 15px;
-}
-
-.signature h1{
-  font-size:15px;
-  color: black;
-  font-weight: bold;
-  margin-bottom: 10px
+@media (max-width: 640px) {
+  .fe-header { padding: 18px 16px; }
+  .fe-onglets__contenu { padding: 16px; }
 }

@@ -1,46 +1,281 @@
-<div class="flex flex-col">
-  <div class="flex items-start">
-    <span class="font-bold text-md">DETAILS D'UNE ENTENTE DE COMPENSATION</span>
-  </div>
-  <div class=" w-full h-[100px] flex justify-between">
-    <img src="assets/images/Rectangle108.png" alt="" srcset="">
-    <img src="assets/images/Rectangle109.png" alt="" srcset="">
-  </div>
-  <div class="flex flex-col text-[15px] text-black">
-    <label for="">Plan de réinstallation : {{projectName}}</label>
-    <label for="">Code Pap : {{entente.codePap}}</label>
-    <label for="">Mr/Mme</label>
-    <label for="">Prénom & Nom : {{entente.prenom}} {{entente.nom}}</label>
-    <label for="">Date & Lieu de naissance : {{entente.dateNaissance}} à {{entente.lieuNaissance}}</label>
-    <label for="">Cni/Passport : {{entente.numeroPiece}}</label>
-  </div>
-  <div class="p-4 detail-entente">
-    <h1>Détail de l'entente</h1>
+<div class="fe-page">
 
-    <div *ngFor="let item of entente.articles" class="article">
-      <div class="titre">
-        {{item.titre}}
+  @if (chargement) {
+    <div class="inv-empty">
+      <mat-progress-spinner mode="indeterminate" [strokeWidth]="3" [diameter]="32" class="fe-chargement">
+      </mat-progress-spinner>
+      <p class="inv-empty__text">Chargement de l'entente…</p>
+    </div>
+  } @else if (!entente) {
+    <div class="inv-empty fe-bloc">
+      <p class="inv-empty__title">{{ erreur ? "Impossible de charger l'entente" : 'Aucune entente sélectionnée' }}</p>
+      <p class="inv-empty__text">Ouvrez une entente depuis la liste des ententes de compensation.</p>
+      <a routerLink="/ententeCompensation/list" class="inv-btn inv-btn--outline-primary fe-retour">Liste des ententes</a>
+    </div>
+  } @else {
+
+    <!-- ===== En-tête ===== -->
+    <section class="fe-header">
+      <div class="fe-header__icone" aria-hidden="true"><i class="bx bx-file"></i></div>
+      <div class="fe-header__infos">
+        <span class="fe-header__surtitre">Entente de compensation</span>
+        <div class="fe-header__titre">
+          <h1>{{ nomComplet }}</h1>
+          @if (categorie) {
+            <span class="inv-badge inv-badge--primary">{{ categorie }}</span>
+          }
+          @if (estVulnerable) {
+            <span class="inv-badge inv-badge--secondary">Vulnérable</span>
+          }
+          @if (statut) {
+            <span class="inv-badge" [ngClass]="statut.badge">{{ statut.libelle }}</span>
+          }
+        </div>
+        <div class="fe-header__meta">
+          <span>Code PAP <strong>{{ entente.codePap || '—' }}</strong></span>
+          @if (entente.commune) {
+            <span>Commune <strong>{{ entente.commune }}</strong></span>
+          }
+          @if (entente.numeroTelephone) {
+            <span>Tél. <strong>{{ entente.numeroTelephone }}</strong></span>
+          }
+          @if (entente.dateCreation) {
+            <span>Créée le <strong>{{ entente.dateCreation | date:'dd/MM/yyyy' }}</strong></span>
+          }
+          @if (entente.dateFinalisation) {
+            <span>Finalisée le <strong>{{ entente.dateFinalisation | date:'dd/MM/yyyy' }}</strong></span>
+          } @else if (entente.dateSynchronisation) {
+            <span>Synchronisée le <strong>{{ entente.dateSynchronisation | date:'dd/MM/yyyy' }}</strong></span>
+          }
+        </div>
       </div>
-      <div class="description">
-        {{item.description}}
+    </section>
+
+    <!-- ===== Chiffres clés ===== -->
+    <section class="fe-kpis" aria-label="Chiffres clés">
+      <div class="fe-kpi">
+        <span class="fe-kpi__label">Montant de la compensation</span>
+        @if (entente.perteTotale != null) {
+          <span class="fe-kpi__valeur fe-kpi__valeur--primary">{{ entente.perteTotale | number:'1.0-0':'fr' }} <small>FCFA</small></span>
+        } @else {
+          <span class="fe-kpi__valeur fe-kpi__valeur--vide">Non évalué</span>
+        }
+      </div>
+      <div class="fe-kpi">
+        <span class="fe-kpi__label">Avancement du processus</span>
+        <span class="fe-kpi__valeur">{{ etapesFaites }} / {{ etapes.length }} <small>étapes</small></span>
+        <div class="fe-barre" role="progressbar" [attr.aria-valuenow]="etapesFaites" aria-valuemin="0"
+          [attr.aria-valuemax]="etapes.length">
+          <div class="fe-barre__remplie" [style.width.%]="etapes.length ? (etapesFaites / etapes.length) * 100 : 0"></div>
+        </div>
+      </div>
+      <div class="fe-kpi">
+        <span class="fe-kpi__label">Option de paiement</span>
+        @if (entente.optionPaiement) {
+          <span class="fe-kpi__valeur fe-kpi__valeur--texte">{{ entente.optionPaiement }}</span>
+        } @else {
+          <span class="fe-kpi__valeur fe-kpi__valeur--vide">Non renseignée</span>
+        }
+      </div>
+      <div class="fe-kpi">
+        <span class="fe-kpi__label">Accord de la PAP</span>
+        @if (entente.accordPapObtenu) {
+          <span class="fe-kpi__valeur fe-kpi__valeur--texte fe-kpi__valeur--ok">
+            Obtenu{{ entente.dateAccordPap ? ' le ' + (entente.dateAccordPap | date:'dd/MM/yyyy') : '' }}
+          </span>
+        } @else {
+          <span class="fe-kpi__valeur fe-kpi__valeur--vide">Pas encore obtenu</span>
+        }
+      </div>
+    </section>
+
+    <!-- ===== Frise du processus ===== -->
+    <section class="fe-bloc fe-frise" aria-label="Processus de l'entente">
+      <div class="fe-frise__entete">
+        <h2>Processus de l'entente</h2>
+        @if (etapeEnCours) {
+          <span>Étape en cours : <strong>{{ etapeEnCours.libelle }}</strong></span>
+        } @else {
+          <span class="fe-frise__termine">Processus terminé</span>
+        }
+      </div>
+      <ol class="fe-frise__etapes">
+        @for (e of etapes; track e.libelle; let i = $index; let dernier = $last) {
+          <li class="fe-etape" [class.is-faite]="e.faite" [class.is-en-cours]="e.enCours">
+            <div class="fe-etape__ligne">
+              <span class="fe-etape__pastille">
+                @if (e.faite) { <i class="bx bx-check" aria-label="Terminée"></i> } @else { {{ i + 1 }} }
+              </span>
+              @if (!dernier) { <span class="fe-etape__trait"></span> }
+            </div>
+            <span class="fe-etape__libelle">{{ e.libelle }}</span>
+            <span class="fe-etape__date">
+              @if (e.faite) { {{ e.date ? (e.date | date:'dd/MM/yyyy') : 'Terminée' }} }
+              @else if (e.enCours) { En cours }
+              @else { À venir }
+            </span>
+          </li>
+        }
+      </ol>
+    </section>
+
+    <!-- ===== Onglets ===== -->
+    <section class="fe-onglets">
+      <div class="fe-onglets__barre" role="tablist">
+        <button type="button" role="tab" class="fe-onglet" [class.is-actif]="onglet === 'compensation'"
+          [attr.aria-selected]="onglet === 'compensation'" (click)="choisirOnglet('compensation')">Compensation</button>
+        <button type="button" role="tab" class="fe-onglet" [class.is-actif]="onglet === 'processus'"
+          [attr.aria-selected]="onglet === 'processus'" (click)="choisirOnglet('processus')">Processus</button>
+        <button type="button" role="tab" class="fe-onglet" [class.is-actif]="onglet === 'pieces'"
+          [attr.aria-selected]="onglet === 'pieces'" (click)="choisirOnglet('pieces')">Signature &amp; paiement</button>
       </div>
 
-    </div>
+      <div class="fe-onglets__contenu">
 
-  </div>
+        <!-- Compensation -->
+        @if (onglet === 'compensation') {
+          <div class="fe-grille">
+            <div class="fe-carte fe-carte--large fe-tableau">
+              @if (postes.length === 0) {
+                <div class="inv-empty">
+                  <p class="inv-empty__title">Aucun poste de perte chiffré</p>
+                  <p class="inv-empty__text">Les montants seront affichés dès qu'ils auront été évalués.</p>
+                </div>
+              } @else {
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Caractéristiques de la perte</th>
+                      <th scope="col">Détail</th>
+                      <th scope="col" class="fe-num">Montant (FCFA)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (p of postes; track p.libelle) {
+                      <tr>
+                        <td class="fe-tableau__poste">{{ p.libelle }}</td>
+                        <td class="fe-tableau__detail">{{ p.detail || '—' }}</td>
+                        <td class="fe-num">{{ p.montant | number:'1.0-0':'fr' }}</td>
+                      </tr>
+                    }
+                    <tr class="fe-tableau__total">
+                      <td colspan="2">Montant total de la compensation</td>
+                      <td class="fe-num">{{ (entente.perteTotale ?? sommePostes) | number:'1.0-0':'fr' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p class="fe-tableau__note">
+                  Les postes sans montant ne sont pas affichés.
+                  @if (ecartTotal) {
+                    <span class="fe-tableau__ecart">La somme des postes ({{ sommePostes | number:'1.0-0':'fr' }} FCFA) diffère du montant total importé.</span>
+                  }
+                </p>
+              }
+            </div>
 
-  <div class="signature flex items-center justify-content-around">
+            <div class="fe-carte">
+              <h3>Évaluation des pertes</h3>
+              @if (entente.evaluationPerte || entente.description) {
+                <p class="fe-texte">{{ entente.evaluationPerte || entente.description }}</p>
+              } @else {
+                <p class="fe-vide">Non renseignée</p>
+              }
+            </div>
 
-    <div>
-      <h1>Signature du Pap</h1>
-      <img class="w-32 h-32 " [src]="entente.urlSignaturePap ? entente.urlSignaturePap : imageDefautSignature " alt="" style="border-radius: 5%;">
-    </div>
+            <div class="fe-carte">
+              <h3 class="fe-titre-secondaire">Vulnérabilité</h3>
+              @if (entente.vulnerabilite) {
+                <p class="fe-texte">{{ entente.vulnerabilite }}</p>
+              } @else {
+                <p class="fe-vide">Non renseignée</p>
+              }
+            </div>
 
-    <div>
-      <h1>Signature du Responsable</h1>
-      <img class="w-32 h-32" [src]="entente.urlSignatureResponsable ? entente.urlSignatureResponsable : imageDefautSignature " alt="" style="border-radius: 5%;">
-    </div>
+            <div class="fe-carte">
+              <h3>Localisation</h3>
+              @if (position) {
+                <div #carte class="fe-map" role="img" [attr.aria-label]="'Position du bien affecté : ' + position[0] + ', ' + position[1]"></div>
+              } @else {
+                <div class="fe-map fe-map--vide">Localisation non renseignée</div>
+              }
+              <dl class="fe-champs">
+                @if (position) {
+                  <div><dt>Latitude</dt><dd>{{ position[0] }}</dd></div>
+                  <div><dt>Longitude</dt><dd>{{ position[1] }}</dd></div>
+                }
+                <div><dt>Commune</dt><dd>{{ entente.commune || '—' }}</dd></div>
+                <div><dt>Département</dt><dd>{{ entente.departement || '—' }}</dd></div>
+              </dl>
+            </div>
+          </div>
+        }
 
-  </div>
+        <!-- Processus -->
+        @if (onglet === 'processus') {
+          <div class="fe-etapes-detail">
+            @for (e of etapes; track e.libelle; let i = $index) {
+              <div class="fe-carte fe-etape-carte" [class.is-en-cours]="e.enCours" [class.is-a-venir]="!e.faite && !e.enCours">
+                <div class="fe-etape-carte__entete">
+                  <h3>{{ i + 1 }}. {{ e.libelle }}</h3>
+                  @if (e.faite) {
+                    <span class="inv-badge inv-badge--success">Terminée{{ e.date ? ' le ' + (e.date | date:'dd/MM/yyyy') : '' }}</span>
+                  } @else if (e.enCours) {
+                    <span class="inv-badge inv-badge--secondary">Étape en cours</span>
+                  } @else {
+                    <span class="inv-badge">À venir</span>
+                  }
+                </div>
+                @if (e.champs.length) {
+                  <dl class="fe-champs">
+                    @for (c of e.champs; track c.libelle) {
+                      <div><dt>{{ c.libelle }}</dt><dd>{{ c.valeur }}</dd></div>
+                    }
+                  </dl>
+                }
+              </div>
+            }
+          </div>
+        }
 
+        <!-- Signature & paiement -->
+        @if (onglet === 'pieces') {
+          <div class="fe-grille">
+            <div class="fe-carte">
+              <h3>Signature de la PAP (accord)</h3>
+              @if (estUneImage(entente.preuveAccord)) {
+                <button type="button" class="fe-piece" (click)="ouvrirImage(entente.preuveAccord)"
+                  aria-label="Agrandir la signature de la PAP">
+                  <img [src]="entente.preuveAccord" alt="Signature de la PAP" />
+                </button>
+              } @else if (entente.preuveAccord) {
+                <p class="fe-texte">{{ entente.preuveAccord }}</p>
+              } @else {
+                <div class="fe-piece fe-piece--vide">Aucune signature — recueillie à l'étape « Accord PAP obtenu »</div>
+              }
+              @if (entente.dateAccordPap) {
+                <span class="fe-meta">Signée le {{ entente.dateAccordPap | date:'dd/MM/yyyy' }}</span>
+              }
+            </div>
+
+            <div class="fe-carte">
+              <h3>Preuve de paiement</h3>
+              @if (estUneImage(entente.referencePaiement)) {
+                <button type="button" class="fe-piece" (click)="ouvrirImage(entente.referencePaiement)"
+                  aria-label="Agrandir la preuve de paiement">
+                  <img [src]="entente.referencePaiement" alt="Preuve de paiement" />
+                </button>
+              } @else if (entente.referencePaiement) {
+                <p class="fe-texte">Référence : {{ entente.referencePaiement }}</p>
+              } @else {
+                <div class="fe-piece fe-piece--vide">Aucune pièce — ajoutée à l'étape « Paiement effectué »</div>
+              }
+              @if (entente.datePaiement) {
+                <span class="fe-meta">Payé le {{ entente.datePaiement | date:'dd/MM/yyyy' }}</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  }
 </div>
