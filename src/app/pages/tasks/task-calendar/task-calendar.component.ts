@@ -33,6 +33,7 @@ import { LocalService } from 'src/app/core/services/local.service';
 import { CreatetaskComponent } from '../createtask/createtask.component';
 import { DetailComponent } from '../detail/detail.component';
 import { UIModule } from 'src/app/shared/ui/ui.module';
+import { HEURE_DEBUT_JOURNEE, HEURE_FIN_JOURNEE } from '../tasks.constants';
 
 // Statut → couleur
 const STATUT_COLORS: Record<string, { bg: string; border: string; text: string }> = {
@@ -101,7 +102,15 @@ export class TaskCalendarComponent implements OnInit, OnDestroy {
     navLinks: true,
     weekends: true,
     nowIndicator: true,
-    businessHours: { daysOfWeek: [1, 2, 3, 4, 5] },
+    // Vues semaine / jour limitées à la plage de travail.
+    slotMinTime: HEURE_DEBUT_JOURNEE,
+    slotMaxTime: HEURE_FIN_JOURNEE,
+    scrollTime: HEURE_DEBUT_JOURNEE,
+    businessHours: {
+      daysOfWeek: [1, 2, 3, 4, 5],
+      startTime: HEURE_DEBUT_JOURNEE,
+      endTime: HEURE_FIN_JOURNEE,
+    },
     events: [],
 
     // Callbacks
@@ -224,19 +233,26 @@ export class TaskCalendarComponent implements OnInit, OnDestroy {
   handleDateSelect(arg: DateSelectArg): void {
     if (!this.currentProjectId) { this.showProjectError(); return; }
 
+    // En vue mois, la fin est exclusive (lendemain à minuit) et sans heure :
+    // on reprend le dernier jour sélectionné et la plage de travail par défaut.
+    const fin = new Date(arg.end);
+    if (arg.allDay) fin.setDate(fin.getDate() - 1);
+    const heure = (d: Date) =>
+      `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
     this.snackbar.openModal(
       CreatetaskComponent,
       '45rem',
       'new',
       'auto',
-      this.tasks,
+      {
+        prefillDateDebut: arg.start,
+        prefillDateFin: fin,
+        prefillHeureDebut: arg.allDay ? HEURE_DEBUT_JOURNEE : heure(arg.start),
+        prefillHeureFin: arg.allDay ? HEURE_FIN_JOURNEE : heure(arg.end),
+      },
       '',
-      () => this.loadTasks(),
-      // Pré-remplir les dates sélectionnées
-    //   {
-    //     prefillDateDebut: arg.startStr,
-    //     prefillDateFin: arg.endStr,
-    //   }
+      () => this.loadTasks()
     );
 
     // Désélection visuelle
